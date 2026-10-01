@@ -1,0 +1,20 @@
+# Lives in the BE and FE repos: blocks a PR when mapped code changed without a docs update.
+name: docs-freshness
+on: pull_request
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'docs-not-affected') }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Checkout docs repo
+        uses: actions/checkout@v4
+        with: { repository: ORG/advisory-docs, path: docs, token: "${{ secrets.DOCS_REPO_TOKEN }}" }
+      - name: Check
+        shell: pwsh
+        run: |
+          # prefix paths with repo root name used in docs-map.yml (be/ or fe/)
+          $changed = git diff --name-only origin/${{ github.base_ref }}...HEAD | ForEach-Object { "be/$_" }
+          ./docs/scripts/check-freshness.ps1 -ChangedPaths $changed -SinceDate (Get-Date).AddDays(-30) -AllowUnmapped

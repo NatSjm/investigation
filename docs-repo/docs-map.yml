@@ -1,0 +1,28 @@
+# Traceability: code path globs (relative to FE/BE repo roots) -> feature specs.
+# Used by scripts/map-paths.ps1 (PR changed files -> specs) and scripts/check-freshness.ps1 (CI gate).
+# Rule: a PR touching a mapped path must either bump last_verified in the spec or carry label `docs-not-affected`.
+
+mappings:
+  - paths: ["be/hedge/**", "fe/src/features/hedge/**"]
+    specs: ["features/hedges/HEDGE-001.md"]
+  - paths: ["be/hedge/src/main/kotlin/com/bank/advisory/hedge/calc/**"]
+    specs: ["domain/calculations/hedge_monthly_cashflow.md"]
+  - paths: ["be/loan/**", "fe/src/features/loan/**"]
+    specs: []            # TODO: LOAN-* specs
+  - paths: ["be/calc/**"]
+    specs: []            # TODO: CALC-* specs
+  - paths: ["be/stress/**", "fe/src/features/stress/**"]
+    specs: []            # TODO: STRESS-* specs
+  - paths: ["be/graph/**", "fe/src/features/graph/**"]
+    specs: []            # TODO: GRAPH-* specs
+  - paths: ["be/admin/**", "fe/src/features/admin/**"]
+    specs: []            # TODO: ADMIN-* specs
+  - paths: ["be/integration/**"]
+    specs: ["architecture/integrations.md"]
+  - paths: ["be/common/**"]
+    specs: ["domain/calculations/**"]
+
+ignore:
+  - "**/*Test.kt"
+  - "**/*.test.tsx"
+  - "**/README.md"

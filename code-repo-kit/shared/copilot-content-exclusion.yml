@@ -1,0 +1,35 @@
+# GitHub Copilot content exclusion (Repository settings -> Copilot -> Content exclusion).
+# Honoured by the VS Code AND JetBrains Copilot plugins: excluded files are never sent as context,
+# not indexed, and not completed in. Keep the lists short and generic; use repo-level entries per repo.
+
+# --- advisory-be (Kotlin / Spring / Maven) ---
+"*":
+  - "**/target/**"
+  - "**/build/**"
+  - "**/*.iml"
+  - "**/generated/**"
+  - "**/generated-sources/**"
+  - "**/src/test/resources/**/*.json"
+  - "**/src/test/resources/**/*.csv"
+  - "**/src/main/resources/db/migration/V1_*__*.sql"   # pre-2025 baseline migrations, see db-schema.md instead
+  - "**/*.p12"
+  - "**/*.jks"
+  - "**/application-*.yml"                             # env configs - secrets risk + noise
+
+# --- advisory-fe (React / TS) ---
+# "*":
+#   - "**/node_modules/**"
+#   - "**/dist/**"
+#   - "**/coverage/**"
+#   - "**/package-lock.json"
+#   - "**/pnpm-lock.yaml"
+#   - "**/*.snap"
+#   - "**/src/api/generated/**"
+#   - "**/public/locales/**"
+#   - "**/__mocks__/**/*.json"
+
+# Organisation-level (Settings -> Copilot -> Content exclusion) can hold the common part, e.g.:
+# ORG/*:
+#   - "**/*.pem"
+#   - "**/*.key"
+#   - "**/secrets/**"

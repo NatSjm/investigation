@@ -1,0 +1,31 @@
+{
+  "_meta": { "feature": "HEDGE-001", "purpose": "cashflow-preview", "synthetic": true },
+  "client": { "id": "ACME-SYN", "name": "Acme Widgets sp. z o.o." },
+  "loan": {
+    "id": "L-1",
+    "currency": "EUR",
+    "index": "EURIBOR-3M",
+    "schedule": [
+      { "month": "2027-01", "outstanding": 1000000.00 },
+      { "month": "2027-02", "outstanding": 1000000.00 },
+      { "month": "2027-03", "outstanding": 950000.00 }
+    ]
+  },
+  "proposal": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "notional": 1000000.00,
+    "fixedRate": 3.00,
+    "tenorMonths": 24,
+    "startDate": "2027-01-01"
+  },
+  "fixings": [
+    { "date": "2027-01-01", "rate": 2.50 },
+    { "date": "2027-02-01", "rate": 2.50 },
+    { "date": "2027-03-01", "rate": -0.50 }
+  ],
+  "expectedNetCashflows": [
+    { "month": "2027-01", "days": 31, "net": 430.56 },
+    { "month": "2027-02", "days": 28, "net": 388.89 },
+    { "month": "2027-03", "days": 31, "net": 2863.19 }
+  ]
+}

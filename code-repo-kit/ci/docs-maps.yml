@@ -1,0 +1,56 @@
+# Lives in each code repo as .github/workflows/docs-maps.yml.
+# Lib-free: PowerShell 7 is preinstalled on GitHub-hosted runners (also fine on self-hosted with pwsh).
+name: docs-maps
+on:
+  pull_request:
+    paths: ["**/src/**", "**/pom.xml", "scripts/docs/**"]
+  push:
+    branches: [main]
+    paths: ["**/src/**", "**/pom.xml"]
+
+jobs:
+  freshness:
+    name: generated maps up to date / file size budget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generated maps match source
+        shell: pwsh
+        run: ./scripts/docs/gen-all.ps1 -Root . -Check
+      - name: File size budget (token hygiene)
+        shell: pwsh
+        run: ./scripts/check-file-size.ps1 -Root . -MaxLines 400 -Baseline .filesize-baseline.txt
+
+  publish-to-docs-repo:
+    if: github.event_name == 'push'
+    needs: freshness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regenerate
+        shell: pwsh
+        run: ./scripts/docs/gen-all.ps1 -Root .
+      # Optional precise graph export (adds no library):
+      #   BE: mvn -Dtest=GraphExportTest -Ddocs.graph=true test   -> docs/_generated/graph-export-be.json  (be/templates/GraphExportTest.kt)
+      #   FE: npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json
+      # Both files are picked up by the docs repo scripts/gen-graph.ps1 and override the regex edges.
+      - name: Open PR in docs repo with generated/<repo>/*
+        env: { GIT_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}, GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }} }
+        run: |
+          set -e
+          git clone --depth 1 https://x:${GIT_TOKEN}@github.com/ORG/advisory-docs docs
+          mkdir -p docs/generated/be
+          rsync -a --delete docs/_generated/ docs/generated/be/
+          cd docs
+          # docs repo convention: generated/* carries OKF frontmatter generated.by: process:<pipeline>
+          sed -i 's/^  by: process:gen-docs$/  by: process:advisory-be-docs-maps/' generated/be/*.md
+          # Rebuild the architectural graph (BE + FE maps + @docs tags) so REPO_MAP / graph.json / #impact stay current.
+          pwsh ./scripts/gen-graph.ps1
+          git checkout -b gen/be-${GITHUB_SHA::7}
+          git add generated
+          git -c user.name=ci -c user.email=ci@bank commit -m "chore(generated): BE maps from ${GITHUB_SHA::7}
+
+          Changed source paths:
+          $(git -C .. diff --name-only HEAD~1 HEAD | sed 's/^/- /')" || exit 0
+          git push -u origin HEAD
+          gh pr create --fill --label generated --body "Run agent doc-sync on this PR."

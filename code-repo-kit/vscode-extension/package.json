@@ -1,0 +1,129 @@
+{
+  "name": "bank-docs-copilot",
+  "displayName": "Bank Docs for Copilot",
+  "description": "MCP-free retrieval tools for GitHub Copilot: look up specs, generated code maps and spec-to-code locations instead of dumping files into context.",
+  "version": "0.1.0",
+  "publisher": "bank-internal",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": { "vscode": "^1.95.0" },
+  "categories": ["AI", "Chat"],
+  "extensionDependencies": ["github.copilot-chat"],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Bank Docs",
+      "properties": {
+        "bankDocs.docsRepoPath": {
+          "type": "string",
+          "default": "../advisory-docs",
+          "description": "Path to the OKF docs bundle (absolute or relative to the first workspace folder)."
+        },
+        "bankDocs.generatedPaths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["docs/_generated"],
+          "description": "Folders containing generated code maps (BE/FE), absolute or relative to workspace folders."
+        },
+        "bankDocs.maxResultChars": {
+          "type": "number",
+          "default": 6000,
+          "description": "Hard cap on characters returned by any tool call (token budget)."
+        },
+        "bankDocs.graphPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to graph.json from scripts/gen-graph.ps1. Empty = <docsRepoPath>/generated/graph/graph.json."
+        }
+      }
+    },
+    "chatParticipants": [
+      {
+        "id": "bank.docs",
+        "name": "docs",
+        "fullName": "Bank Docs",
+        "description": "Answer from specs and generated maps; cite spec IDs and file:line",
+        "isSticky": true,
+        "commands": [
+          { "name": "spec", "description": "Find and summarise a spec/calculation by ID or keywords" },
+          { "name": "where", "description": "Where is a spec ID implemented (BE/FE)?" },
+          { "name": "impact", "description": "Blast radius of a change across BE/FE/docs" }
+        ]
+      }
+    ],
+    "languageModelTools": [
+      {
+        "name": "bank-docs_docsLookup",
+        "toolReferenceName": "docsLookup",
+        "displayName": "Docs lookup",
+        "modelDescription": "Search the OKF docs bundle (index.md files first, then concept frontmatter) for a spec ID, calculation ID or keywords. Returns matching concept paths, type, status, trust badge and the first section of the best match. Use before reading any source code.",
+        "canBeReferencedInPrompt": true,
+        "icon": "$(book)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": { "type": "string", "description": "Spec ID (HEDGE-001), calculation ID (hedge_monthly_cashflow) or 2-5 keywords" },
+            "section": { "type": "string", "description": "Optional heading to return instead of the first section, e.g. 'Business rules' or 'Computation'" }
+          },
+          "required": ["query"]
+        }
+      },
+      {
+        "name": "bank-docs_codeMap",
+        "toolReferenceName": "codeMap",
+        "displayName": "Generated code map",
+        "modelDescription": "Return rows from the generated code maps (api-index, events, db-schema, codebase-map, routes, types-index) that match a query. Cheap alternative to searching or opening source files. Returns table rows with file:line locations.",
+        "canBeReferencedInPrompt": true,
+        "icon": "$(map)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "map": { "type": "string", "enum": ["api-index", "events", "db-schema", "codebase-map", "routes", "types-index", "docs-tags", "any"], "description": "Which map to query" },
+            "query": { "type": "string", "description": "Path fragment, topic, table, module, component or symbol" }
+          },
+          "required": ["query"]
+        }
+      },
+      {
+        "name": "bank-docs_specToCode",
+        "toolReferenceName": "specToCode",
+        "displayName": "Spec to code",
+        "modelDescription": "Resolve a spec or calculation ID to the exact code locations tagged with @docs <ID> in the BE and FE repos (from docs-tags.md). Returns declaration, summary and file:line so only those ranges need to be opened.",
+        "canBeReferencedInPrompt": true,
+        "icon": "$(references)",
+        "inputSchema": {
+          "type": "object",
+          "properties": { "id": { "type": "string", "description": "Spec or calculation ID" } },
+          "required": ["id"]
+        }
+      },
+      {
+        "name": "bank-docs_impact",
+        "toolReferenceName": "impact",
+        "displayName": "Impact (architectural graph)",
+        "modelDescription": "Blast radius of a change using the generated architectural graph (modules, endpoints, classes, Kafka topics, tables, FE features/routes, spec IDs). Input a node id (endpoint:GET /api/v1/..., topic:..., table:..., spec:HEDGE-001, class:HedgeFacade, feature:hedges), a substring, or a changed file path. Returns neighbours by depth, the edges, and the spec IDs affected. Use for impact analysis, Jira subtask scoping and test-case scoping instead of searching the code.",
+        "canBeReferencedInPrompt": true,
+        "icon": "$(type-hierarchy)",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "target": { "type": "string", "description": "Graph node id, substring, or repo-relative file path" },
+            "depth": { "type": "number", "description": "Hops to follow (1-4, default 2)" }
+          },
+          "required": ["target"]
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p .",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.95.0",
+    "typescript": "^5.6.0"
+  }
+}

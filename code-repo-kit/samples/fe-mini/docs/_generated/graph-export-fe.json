@@ -1,0 +1,153 @@
+{
+  "generated": {
+    "by": "process:graph-export-fe"
+  },
+  "nodes": [
+    {
+      "id": "feature:fe-app",
+      "kind": "feature",
+      "label": "fe-app",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "",
+      "note": ""
+    },
+    {
+      "id": "component:AdminRoutes",
+      "kind": "component",
+      "label": "AdminRoutes",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "src/app/AdminRoutes.tsx:2",
+      "note": ""
+    },
+    {
+      "id": "feature:hedges",
+      "kind": "feature",
+      "label": "hedges",
+      "community": "hedges",
+      "repo": "fe",
+      "location": "src/features/hedges/index.ts",
+      "note": ""
+    },
+    {
+      "id": "hook:useHedgeProposals",
+      "kind": "hook",
+      "label": "useHedgeProposals",
+      "community": "hedges",
+      "repo": "fe",
+      "location": "src/features/hedges/api/useHedgeProposals.ts:6",
+      "note": ""
+    },
+    {
+      "id": "url:GET /api/v1/hedges/{*}/proposals",
+      "kind": "url",
+      "label": "GET /api/v1/hedges/{*}/proposals",
+      "community": "hedges",
+      "repo": "fe",
+      "location": "src/features/hedges/api/useHedgeProposals.ts:9",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useStressTest",
+      "kind": "hook",
+      "label": "useStressTest",
+      "community": "hedges",
+      "repo": "fe",
+      "location": "src/features/hedges/api/useHedgeProposals.ts:13",
+      "note": ""
+    },
+    {
+      "id": "url:POST /api/v1/hedges/{*}/stress-test",
+      "kind": "url",
+      "label": "POST /api/v1/hedges/{*}/stress-test",
+      "community": "hedges",
+      "repo": "fe",
+      "location": "src/features/hedges/api/useHedgeProposals.ts:16",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:HedgeProposalList",
+      "kind": "component",
+      "label": "HedgeProposalList",
+      "community": "hedges",
+      "repo": "fe",
+      "location": "src/features/hedges/ui/HedgeProposalList.tsx:2",
+      "note": ""
+    },
+    {
+      "id": "component:HedgeStressChart",
+      "kind": "component",
+      "label": "HedgeStressChart",
+      "community": "hedges",
+      "repo": "fe",
+      "location": "src/features/hedges/ui/HedgeStressChart.tsx:1",
+      "note": ""
+    },
+    {
+      "id": "feature:loans",
+      "kind": "feature",
+      "label": "loans",
+      "community": "loans",
+      "repo": "fe",
+      "location": "src/features/loans/index.ts",
+      "note": ""
+    },
+    {
+      "id": "component:LoanSchedule",
+      "kind": "component",
+      "label": "LoanSchedule",
+      "community": "loans",
+      "repo": "fe",
+      "location": "src/features/loans/LoanSchedule.tsx:1",
+      "note": ""
+    }
+  ],
+  "edges": [
+    {
+      "from": "feature:fe-app",
+      "to": "component:AdminRoutes",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:hedges",
+      "to": "hook:useHedgeProposals",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useHedgeProposals",
+      "to": "url:GET /api/v1/hedges/{*}/proposals",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:hedges",
+      "to": "hook:useStressTest",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useStressTest",
+      "to": "url:POST /api/v1/hedges/{*}/stress-test",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:hedges",
+      "to": "component:HedgeProposalList",
+      "rel": "contains"
+    },
+    {
+      "from": "component:HedgeProposalList",
+      "to": "hook:useHedgeProposals",
+      "rel": "uses"
+    },
+    {
+      "from": "feature:hedges",
+      "to": "component:HedgeStressChart",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:loans",
+      "to": "component:LoanSchedule",
+      "rel": "contains"
+    }
+  ]
+}

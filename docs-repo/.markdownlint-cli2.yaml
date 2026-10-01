@@ -1,0 +1,10 @@
+config:
+  default: true
+  MD013: { line_length: 120, tables: false, code_blocks: false }
+  MD033: false   # inline HTML allowed (Mermaid labels, banners)
+  MD041: false   # first line may be frontmatter
+  MD024: { siblings_only: true }
+ignores:
+  - "generated/**"
+  - "confluence-import/**"
+  - "node_modules/**"

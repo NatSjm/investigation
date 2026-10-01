@@ -1,0 +1,723 @@
+{
+    "generated":  {
+                      "by":  "process:gen-graph",
+                      "at":  "2026-10-01"
+                  },
+    "communities":  [
+                        {
+                            "id":  "fe-app",
+                            "repo":  "fe",
+                            "nodes":  4
+                        },
+                        {
+                            "id":  "hedges",
+                            "repo":  "be+fe",
+                            "nodes":  21
+                        },
+                        {
+                            "id":  "loans",
+                            "repo":  "be+fe",
+                            "nodes":  7
+                        }
+                    ],
+    "nodes":  [
+                  {
+                      "id":  "module:hedges",
+                      "kind":  "module",
+                      "label":  "hedges",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeFacade.kt",
+                      "note":  "Hedge proposals: monthly cash-flow computation, stress tests, proposal API",
+                      "component":  1,
+                      "rank":  77.27,
+                      "degree":  9
+                  },
+                  {
+                      "id":  "class:HedgeFacade",
+                      "kind":  "class",
+                      "label":  "HedgeFacade",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeFacade.kt",
+                      "note":  "facade",
+                      "component":  1,
+                      "rank":  11.47,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "class:HedgeController",
+                      "kind":  "class",
+                      "label":  "HedgeController",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeController.kt",
+                      "note":  "controller",
+                      "component":  1,
+                      "rank":  48.57,
+                      "degree":  6
+                  },
+                  {
+                      "id":  "class:HedgeEvents",
+                      "kind":  "class",
+                      "label":  "HedgeEvents",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/messaging/HedgeEvents.kt",
+                      "note":  "listener",
+                      "component":  1,
+                      "rank":  48.24,
+                      "degree":  4
+                  },
+                  {
+                      "id":  "module:loans",
+                      "kind":  "module",
+                      "label":  "loans",
+                      "community":  "loans",
+                      "repo":  "be",
+                      "location":  "",
+                      "note":  "Loan proposals and repayment schedules",
+                      "component":  2,
+                      "rank":  33.52,
+                      "degree":  3
+                  },
+                  {
+                      "id":  "class:LoanController",
+                      "kind":  "class",
+                      "label":  "LoanController",
+                      "community":  "loans",
+                      "repo":  "be",
+                      "location":  "loans/src/main/kotlin/com/bank/adv/loans/LoanController.kt",
+                      "note":  "controller",
+                      "component":  2,
+                      "rank":  45.12,
+                      "degree":  4
+                  },
+                  {
+                      "id":  "endpoint:GET /api/v1/hedges/{clientId}/proposals",
+                      "kind":  "endpoint",
+                      "label":  "GET /api/v1/hedges/{clientId}/proposals",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeController.kt:13",
+                      "note":  "handler HedgeController.listProposals; params clientId: String",
+                      "component":  1,
+                      "rank":  33.25,
+                      "degree":  4
+                  },
+                  {
+                      "id":  "endpoint:POST /api/v1/hedges/{clientId}/proposals",
+                      "kind":  "endpoint",
+                      "label":  "POST /api/v1/hedges/{clientId}/proposals",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeController.kt:17",
+                      "note":  "handler HedgeController.createProposal; params clientId: String, req: CreateHedgeRequest",
+                      "component":  1,
+                      "rank":  25.69,
+                      "degree":  3
+                  },
+                  {
+                      "id":  "endpoint:DELETE /api/v1/hedges/{proposalId}",
+                      "kind":  "endpoint",
+                      "label":  "DELETE /api/v1/hedges/{proposalId}",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeController.kt:25",
+                      "note":  "handler HedgeController.delete; params proposalId: String",
+                      "component":  1,
+                      "rank":  18.35,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "endpoint:POST /api/v1/hedges/{proposalId}/stress-test",
+                      "kind":  "endpoint",
+                      "label":  "POST /api/v1/hedges/{proposalId}/stress-test",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeController.kt:21",
+                      "note":  "handler HedgeController.stressTest; params proposalId: String, scenario: StressScenarioDto",
+                      "component":  1,
+                      "rank":  33.62,
+                      "degree":  4
+                  },
+                  {
+                      "id":  "endpoint:GET /api/v1/loans/{clientId}/schedule",
+                      "kind":  "endpoint",
+                      "label":  "GET /api/v1/loans/{clientId}/schedule",
+                      "community":  "loans",
+                      "repo":  "be",
+                      "location":  "loans/src/main/kotlin/com/bank/adv/loans/LoanController.kt:10",
+                      "note":  "handler LoanController.schedule; params clientId: String",
+                      "component":  2,
+                      "rank":  23.25,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "endpoint:PUT /api/v1/loans/{loanId}",
+                      "kind":  "endpoint",
+                      "label":  "PUT /api/v1/loans/{loanId}",
+                      "community":  "loans",
+                      "repo":  "be",
+                      "location":  "loans/src/main/kotlin/com/bank/adv/loans/LoanController.kt:13",
+                      "note":  "handler LoanController.update; params loanId: String, body: Any",
+                      "component":  2,
+                      "rank":  23.25,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "topic:client.kyc.changed",
+                      "kind":  "topic",
+                      "label":  "client.kyc.changed",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "",
+                      "note":  "produced outside this repo",
+                      "component":  1,
+                      "rank":  14.41,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "topic:hedge.proposal.created",
+                      "kind":  "topic",
+                      "label":  "hedge.proposal.created",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "",
+                      "note":  "consumed outside this repo",
+                      "component":  1,
+                      "rank":  14.41,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "topic:market.rates.updated",
+                      "kind":  "topic",
+                      "label":  "market.rates.updated",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "",
+                      "note":  "produced outside this repo",
+                      "component":  1,
+                      "rank":  14.41,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "table:hedge_proposal",
+                      "kind":  "table",
+                      "label":  "hedge_proposal",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/resources/db/migration/V1__hedges_init.sql",
+                      "note":  "10 columns: id, client_id, notional, fixed_rate, start_month, end_month, status, created_at, advisor_id, stress_shift_bp",
+                      "component":  1,
+                      "rank":  19.94,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "table:hedge_cashflow",
+                      "kind":  "table",
+                      "label":  "hedge_cashflow",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/resources/db/migration/V1__hedges_init.sql",
+                      "note":  "3 columns: proposal_id, month, amount",
+                      "component":  1,
+                      "rank":  19.94,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "feature:hedges",
+                      "kind":  "feature",
+                      "label":  "hedges",
+                      "community":  "hedges",
+                      "repo":  "fe",
+                      "location":  "src/features/hedges/index.ts",
+                      "note":  "Hedge proposal screens for client meetings: proposal list, editor, stress-test chart.",
+                      "component":  1,
+                      "rank":  86.43,
+                      "degree":  10
+                  },
+                  {
+                      "id":  "feature:loans",
+                      "kind":  "feature",
+                      "label":  "loans",
+                      "community":  "loans",
+                      "repo":  "fe",
+                      "location":  "src/features/loans/index.ts",
+                      "note":  "Loan proposal and repayment schedule screens.",
+                      "component":  3,
+                      "rank":  40.76,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "route:/admin/rates",
+                      "kind":  "route",
+                      "label":  "/admin/rates",
+                      "community":  "fe-app",
+                      "repo":  "fe",
+                      "location":  "src/app/AdminRoutes.tsx:5",
+                      "note":  "renders div",
+                      "component":  4,
+                      "rank":  19.12,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "route:/admin/users",
+                      "kind":  "route",
+                      "label":  "/admin/users",
+                      "community":  "fe-app",
+                      "repo":  "fe",
+                      "location":  "src/app/AdminRoutes.tsx:4",
+                      "note":  "renders div",
+                      "component":  4,
+                      "rank":  19.12,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "route:/clients/:clientId/hedges",
+                      "kind":  "route",
+                      "label":  "/clients/:clientId/hedges",
+                      "community":  "hedges",
+                      "repo":  "fe",
+                      "location":  "src/app/routes.tsx:6",
+                      "note":  "renders HedgeProposalList",
+                      "component":  1,
+                      "rank":  11.51,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "route:/clients/:clientId/hedges/:proposalId/stress",
+                      "kind":  "route",
+                      "label":  "/clients/:clientId/hedges/:proposalId/stress",
+                      "community":  "hedges",
+                      "repo":  "fe",
+                      "location":  "src/app/routes.tsx:7",
+                      "note":  "renders HedgeStressChart",
+                      "component":  1,
+                      "rank":  11.51,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "route:/clients/:clientId/loans",
+                      "kind":  "route",
+                      "label":  "/clients/:clientId/loans",
+                      "community":  "loans",
+                      "repo":  "fe",
+                      "location":  "src/app/routes.tsx:8",
+                      "note":  "renders LoanSchedule",
+                      "component":  3,
+                      "rank":  21.29,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "spec:hedge_monthly_cashflow",
+                      "kind":  "calculation",
+                      "label":  "hedge_monthly_cashflow",
+                      "community":  "docs",
+                      "repo":  "docs",
+                      "location":  "domain/calculations/hedge_monthly_cashflow.md",
+                      "note":  "status stable; be hedges/src/main/kotlin/com/bank/adv/hedges/calc/HedgeCashflowCalculator.kt:10; be hedges/src/main/kotlin/com/bank/adv/hedges/calc/HedgeCashflowCalculator.kt:17",
+                      "component":  5,
+                      "rank":  21.29,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "class:HedgeCashflowCalculator",
+                      "kind":  "class",
+                      "label":  "HedgeCashflowCalculator",
+                      "community":  "hedges",
+                      "repo":  "be",
+                      "location":  "hedges/src/main/kotlin/com/bank/adv/hedges/calc/HedgeCashflowCalculator.kt",
+                      "note":  "",
+                      "component":  5,
+                      "rank":  40.76,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "spec:hedge_stress_test",
+                      "kind":  "calculation",
+                      "label":  "hedge_stress_test",
+                      "community":  "docs",
+                      "repo":  "docs",
+                      "location":  "",
+                      "note":  "be hedges/src/main/kotlin/com/bank/adv/hedges/calc/HedgeCashflowCalculator.kt:26",
+                      "component":  5,
+                      "rank":  21.29,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "spec:HEDGE-001",
+                      "kind":  "spec",
+                      "label":  "HEDGE-001",
+                      "community":  "docs",
+                      "repo":  "docs",
+                      "location":  "features/hedges/HEDGE-001.md",
+                      "note":  "status stable; be hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeController.kt:11; fe src/features/hedges/hedges.types.ts:2; fe src/features/hedges/index.ts:6",
+                      "component":  1,
+                      "rank":  18.39,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "spec:LOAN-RATES-JOB",
+                      "kind":  "spec",
+                      "label":  "LOAN-RATES-JOB",
+                      "community":  "docs",
+                      "repo":  "docs",
+                      "location":  "",
+                      "note":  "be loans/src/main/kotlin/com/bank/adv/loans/LoanController.kt:21",
+                      "component":  2,
+                      "rank":  13.75,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "feature:fe-app",
+                      "kind":  "feature",
+                      "label":  "fe-app",
+                      "community":  "fe-app",
+                      "repo":  "fe",
+                      "location":  "",
+                      "note":  "",
+                      "component":  4,
+                      "rank":  53.74,
+                      "degree":  3
+                  },
+                  {
+                      "id":  "component:AdminRoutes",
+                      "kind":  "component",
+                      "label":  "AdminRoutes",
+                      "community":  "fe-app",
+                      "repo":  "fe",
+                      "location":  "src/app/AdminRoutes.tsx:2",
+                      "note":  "",
+                      "component":  4,
+                      "rank":  19.12,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "hook:useHedgeProposals",
+                      "kind":  "hook",
+                      "label":  "useHedgeProposals",
+                      "community":  "hedges",
+                      "repo":  "fe",
+                      "location":  "src/features/hedges/api/useHedgeProposals.ts:6",
+                      "note":  "",
+                      "component":  1,
+                      "rank":  26.68,
+                      "degree":  3
+                  },
+                  {
+                      "id":  "hook:useStressTest",
+                      "kind":  "hook",
+                      "label":  "useStressTest",
+                      "community":  "hedges",
+                      "repo":  "fe",
+                      "location":  "src/features/hedges/api/useHedgeProposals.ts:13",
+                      "note":  "",
+                      "component":  1,
+                      "rank":  18.66,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "component:HedgeProposalList",
+                      "kind":  "component",
+                      "label":  "HedgeProposalList",
+                      "community":  "hedges",
+                      "repo":  "fe",
+                      "location":  "src/features/hedges/ui/HedgeProposalList.tsx:2",
+                      "note":  "",
+                      "component":  1,
+                      "rank":  19.07,
+                      "degree":  2
+                  },
+                  {
+                      "id":  "component:HedgeStressChart",
+                      "kind":  "component",
+                      "label":  "HedgeStressChart",
+                      "community":  "hedges",
+                      "repo":  "fe",
+                      "location":  "src/features/hedges/ui/HedgeStressChart.tsx:1",
+                      "note":  "",
+                      "component":  1,
+                      "rank":  11.51,
+                      "degree":  1
+                  },
+                  {
+                      "id":  "component:LoanSchedule",
+                      "kind":  "component",
+                      "label":  "LoanSchedule",
+                      "community":  "loans",
+                      "repo":  "fe",
+                      "location":  "src/features/loans/LoanSchedule.tsx:1",
+                      "note":  "",
+                      "component":  3,
+                      "rank":  21.29,
+                      "degree":  1
+                  }
+              ],
+    "edges":  [
+                  {
+                      "from":  "class:HedgeEvents",
+                      "to":  "topic:hedge.proposal.created",
+                      "rel":  "produces",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "component:HedgeProposalList",
+                      "to":  "hook:useHedgeProposals",
+                      "rel":  "uses",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "endpoint:DELETE /api/v1/hedges/{proposalId}",
+                      "to":  "class:HedgeController",
+                      "rel":  "handled-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "endpoint:GET /api/v1/hedges/{clientId}/proposals",
+                      "to":  "class:HedgeController",
+                      "rel":  "handled-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "endpoint:GET /api/v1/loans/{clientId}/schedule",
+                      "to":  "class:LoanController",
+                      "rel":  "handled-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "endpoint:POST /api/v1/hedges/{clientId}/proposals",
+                      "to":  "class:HedgeController",
+                      "rel":  "handled-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "endpoint:POST /api/v1/hedges/{proposalId}/stress-test",
+                      "to":  "class:HedgeController",
+                      "rel":  "handled-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "endpoint:PUT /api/v1/loans/{loanId}",
+                      "to":  "class:LoanController",
+                      "rel":  "handled-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "feature:fe-app",
+                      "to":  "component:AdminRoutes",
+                      "rel":  "contains",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "feature:hedges",
+                      "to":  "endpoint:GET /api/v1/hedges/{clientId}/proposals",
+                      "rel":  "calls",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "feature:hedges",
+                      "to":  "endpoint:POST /api/v1/hedges/{clientId}/proposals",
+                      "rel":  "calls",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "feature:hedges",
+                      "to":  "endpoint:POST /api/v1/hedges/{proposalId}/stress-test",
+                      "rel":  "calls",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "feature:hedges",
+                      "to":  "component:HedgeProposalList",
+                      "rel":  "contains",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "feature:hedges",
+                      "to":  "component:HedgeStressChart",
+                      "rel":  "contains",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "feature:hedges",
+                      "to":  "hook:useHedgeProposals",
+                      "rel":  "contains",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "feature:hedges",
+                      "to":  "hook:useStressTest",
+                      "rel":  "contains",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "feature:loans",
+                      "to":  "component:LoanSchedule",
+                      "rel":  "contains",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "hook:useHedgeProposals",
+                      "to":  "endpoint:GET /api/v1/hedges/{clientId}/proposals",
+                      "rel":  "calls",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "hook:useStressTest",
+                      "to":  "endpoint:POST /api/v1/hedges/{proposalId}/stress-test",
+                      "rel":  "calls",
+                      "source":  "export"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "class:HedgeController",
+                      "rel":  "contains",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "class:HedgeEvents",
+                      "rel":  "contains",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "class:HedgeFacade",
+                      "rel":  "contains",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "endpoint:DELETE /api/v1/hedges/{proposalId}",
+                      "rel":  "exposes",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "endpoint:GET /api/v1/hedges/{clientId}/proposals",
+                      "rel":  "exposes",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "endpoint:POST /api/v1/hedges/{clientId}/proposals",
+                      "rel":  "exposes",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "endpoint:POST /api/v1/hedges/{proposalId}/stress-test",
+                      "rel":  "exposes",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "table:hedge_cashflow",
+                      "rel":  "owns",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:hedges",
+                      "to":  "table:hedge_proposal",
+                      "rel":  "owns",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:loans",
+                      "to":  "class:LoanController",
+                      "rel":  "contains",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:loans",
+                      "to":  "endpoint:GET /api/v1/loans/{clientId}/schedule",
+                      "rel":  "exposes",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "module:loans",
+                      "to":  "endpoint:PUT /api/v1/loans/{loanId}",
+                      "rel":  "exposes",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "route:/admin/rates",
+                      "to":  "feature:fe-app",
+                      "rel":  "renders",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "route:/admin/users",
+                      "to":  "feature:fe-app",
+                      "rel":  "renders",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "route:/clients/:clientId/hedges",
+                      "to":  "feature:hedges",
+                      "rel":  "renders",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "route:/clients/:clientId/hedges/:proposalId/stress",
+                      "to":  "feature:hedges",
+                      "rel":  "renders",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "route:/clients/:clientId/loans",
+                      "to":  "feature:loans",
+                      "rel":  "renders",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "spec:hedge_monthly_cashflow",
+                      "to":  "class:HedgeCashflowCalculator",
+                      "rel":  "implemented-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "spec:hedge_stress_test",
+                      "to":  "class:HedgeCashflowCalculator",
+                      "rel":  "implemented-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "spec:HEDGE-001",
+                      "to":  "class:HedgeController",
+                      "rel":  "implemented-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "spec:HEDGE-001",
+                      "to":  "feature:hedges",
+                      "rel":  "implemented-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "spec:LOAN-RATES-JOB",
+                      "to":  "class:LoanController",
+                      "rel":  "implemented-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "table:hedge_cashflow",
+                      "to":  "table:hedge_proposal",
+                      "rel":  "fk proposal_id",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "topic:client.kyc.changed",
+                      "to":  "class:HedgeEvents",
+                      "rel":  "consumed-by",
+                      "source":  "regex-map"
+                  },
+                  {
+                      "from":  "topic:market.rates.updated",
+                      "to":  "class:HedgeEvents",
+                      "rel":  "consumed-by",
+                      "source":  "regex-map"
+                  }
+              ]
+}

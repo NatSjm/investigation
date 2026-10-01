@@ -1,0 +1,34 @@
+# Schema for work-items/<FEATURE-ID>.yml (documented example; validated by scripts/validate-work-items.ps1)
+feature: CTX-000                # required, must exist in features/
+project: ADV                    # Jira project key
+epic:
+  jira_key: null                # filled by jira-push
+  summary: "<= 80 chars"
+  description: |
+    Multi-line. Link to spec.
+  labels: [hedges, docs-generated]
+stories:
+  - id: S1                      # local id for depends_on
+    jira_key: null
+    summary: "Imperative, <= 80 chars"
+    component: vertical         # vertical | fe | be | db | integration
+    description: |
+      ...
+    acceptance_criteria:
+      - rule: BR-CTX-000-1
+        gherkin: |
+          Given ...
+          When ...
+          Then ...
+    estimate: 3                 # 1,2,3,5,8
+    labels: []
+    depends_on: []              # [S0]
+    subtasks:
+      - summary: "[BE] ..."
+        estimate_hours: 6       # <= 8
+      - summary: "[FE] ..."
+        estimate_hours: 4
+      - summary: "[TEST] ..."
+        estimate_hours: 3
+questions:
+  - "Open question the analyst could not resolve from the spec"

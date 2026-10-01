@@ -1,0 +1,5 @@
+# build artifacts
+.publish/          # machine-translated renderings for Confluence (confluence-publish.ps1 -Lang cs)
+.confluence-map.json.bak
+okf-graph.html
+node_modules/
