@@ -1,26 +1,37 @@
 # Scripts
 
-All scripts are PowerShell (works on Windows dev machines and `pwsh` in CI). No MCP or third-party agent
-frameworks; only REST calls with tokens from environment variables.
+All scripts are PowerShell 7 (Windows dev machines and `pwsh` in CI). No MCP, no third-party agent frameworks, no
+modules; external systems are reached with plain REST calls and tokens from environment variables.
 
 | Script | Purpose | Env |
 |---|---|---|
-| `validate-frontmatter.ps1` | check repo-specific keys on `Feature Spec` / `Attested Computation` concepts (ID format, BR rules, calc links) | — |
-| `okf-validate.ps1` | OKF v0.2 §11 conformance + provenance/trust warnings for the whole bundle (`-Strict`, `-MaxWarnings N`) | — |
-| `build-index.ps1` | regenerate every `index.md` (reserved OKF file) from concept frontmatter; `-Check` for CI | — |
-| `validate-work-items.ps1` | check YAML against `work-items/_schema.yml` rules | — |
-| `map-paths.ps1` | changed code paths → affected specs (uses `docs-map.yml`) | — |
-| `check-freshness.ps1` | CI gate: mapped code changed but `last_verified` not bumped | — |
-| `gen-graph.ps1` | join `generated/be`, `generated/fe` maps + `@docs` tags (+ optional `graph-export-*.json`) into `generated/graph/` (`graph.json`, `<community>.md`, `REPO_MAP.md`); `-Check` for CI; `-Budget N` lines for REPO_MAP | — |
-| `graph-query.ps1` | query `graph.json`: `-Node <id|substring> -Depth n`, `-Files <changed paths>` (impacted specs), `-Find <text>`, `-Json`; CLI twin of the VS Code `#impact` tool for IntelliJ and CI | — |
+| `context-pack.ps1` | **task-scoped context** for an agent: spec + badge, calculations, graph neighbourhood, contract operations, tables, related work items / tests, legacy pages -> `.context/<task>.md` (`-Budget N`, `-Print`) | - |
+| `graph-query.ps1` | query `generated/graph/graph.json`: `-Node <id|substring> -Depth n`, `-Files <changed paths>` (impacted specs), `-Find <text>`, `-Json`; CLI twin of the VS Code `#impact` tool | - |
+| `gen-graph.ps1` | join `generated/be`, `generated/fe` maps + `@docs` tags (+ optional `graph-export-*.json`) into `generated/graph/` (`graph.json`, `<community>.md`, `REPO_MAP.md`); `-Check` for CI | - |
+| `coverage-matrix.ps1` | analytics: BR -> story -> scenario coverage, badges, calculations' worked examples / audits -> `generated/analytics/coverage-matrix.md|json` | - |
+| `build-index.ps1` | regenerate every `index.md` (reserved OKF file) from concept frontmatter with trust badges; `-Check` for CI | - |
+| `okf-validate.ps1` | OKF v0.2 §11 conformance + provenance/trust warnings for the whole bundle (`-Strict`, `-MaxWarnings N`) | - |
+| `validate-frontmatter.ps1` | repo-specific keys on `Feature Spec` / `Attested Computation` concepts (ID format, BR numbering, calculation links) | - |
+| `validate-work-items.ps1` | `work-items/*.yml` against `_schema.yml` rules (BR citations exist in the spec, estimates, subtasks <= 8 h) | - |
+| `map-paths.ps1` | changed code paths -> affected specs (uses `docs-map.yml`) | - |
+| `check-freshness.ps1` | CI gate in the code repos: mapped code changed but `last_verified` not bumped | - |
+| `publish-local.ps1` | local stand-in for the code repos' CI publish job: copies maps + contracts from `../backend`, `../frontend` into `generated/` | - |
+| `hooks/guard-generated.ps1` | Copilot `preToolUse` hook: denies edits under `generated/**` and of `index.md` files | - |
 | `jira-push.ps1` | create/update epic/stories/subtasks via Jira REST v3, write back keys | `JIRA_URL`, `JIRA_USER`, `JIRA_TOKEN` |
-| `jira-csv.ps1` | fallback: export work items to Jira bulk-import CSV | — |
-| `confluence-export.ps1` | Confluence REST → Markdown into `confluence-import/` | `CONFLUENCE_URL`, `CONFLUENCE_TOKEN` |
-| `confluence-publish.ps1` | Markdown → Confluence page (one-way), keeps page id map in `.confluence-map.json` | same |
-| `push-to-tests-repo.ps1` | copy `test-design/**` into tests repo branch + open PR | `TESTS_REPO_URL`, `GIT_TOKEN` |
+| `confluence-export.ps1` | Confluence REST -> Markdown into `confluence-import/` | `CONFLUENCE_URL`, `CONFLUENCE_TOKEN` |
+| `confluence-publish.ps1` | Markdown -> Confluence page (one-way), keeps page id map in `.confluence-map.json` | same |
+| `push-to-tests-repo.ps1` | copy `test-design/**` into the tests repo branch + open PR | `TESTS_REPO_URL`, `GIT_TOKEN` |
 
-Only `validate-frontmatter.ps1`, `okf-validate.ps1`, `build-index.ps1`, `map-paths.ps1`, `check-freshness.ps1`,
-`gen-graph.ps1` and `graph-query.ps1` are implemented in this prototype; the others are stubs describing the intended API calls.
+`jira-push.ps1`, `confluence-export.ps1`, `confluence-publish.ps1` and `push-to-tests-repo.ps1` are stubs that
+describe the intended API calls; everything else is implemented and exercised against the simulated repositories.
 
 Python equivalents of the OKF checker/visualiser (vendored from `scaccogatto/okf-skills`, MIT) live under
 `.github/skills/okf-validate/scripts/` and `.github/skills/okf-visualize/scripts/`; CI runs both flavours.
+
+Typical local loop:
+```powershell
+..\code-repo-kit\be\scripts\docs\gen-all.ps1 -Root ..\backend
+..\code-repo-kit\fe\scripts\docs\gen-all.ps1 -Root ..\frontend
+.\publish-local.ps1; .\gen-graph.ps1; .\build-index.ps1; .\okf-validate.ps1 -Strict; .\coverage-matrix.ps1
+.\context-pack.ps1 -Task P1-001 -Print
+```

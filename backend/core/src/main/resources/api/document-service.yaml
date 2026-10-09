@@ -1,0 +1,56 @@
+openapi: 3.0.3
+info:
+  title: document-service
+  version: 1.4.0
+  description: >-
+    PDF rendering. Harbor requests rendering asynchronously over Kafka (`harbor.reports.render-requested`)
+    and downloads the finished document through this REST API.
+servers:
+  - url: https://document-service.internal.example.com
+tags:
+  - name: documents
+paths:
+  /render:
+    post:
+      operationId: renderDocument
+      tags: [documents]
+      summary: Synchronous rendering (fallback used by regenerateReport)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RenderRequest' }
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RenderAccepted' }
+  /documents/{id}:
+    get:
+      operationId: getDocument
+      tags: [documents]
+      summary: Download a rendered document
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: PDF bytes
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+        '404': { description: Unknown document }
+components:
+  schemas:
+    RenderRequest:
+      type: object
+      required: [template, payloadRef]
+      properties:
+        template: { type: string, example: meeting-report }
+        payloadRef: { type: string }
+        correlationId: { type: string }
+    RenderAccepted:
+      type: object
+      required: [documentId]
+      properties:
+        documentId: { type: string }

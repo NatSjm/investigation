@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: cover-provider
+  version: 1.0.0
+  description: External provider that prices cover for the uncovered part of a client's projected value.
+servers:
+  - url: https://cover-provider.partner.example.com
+tags:
+  - name: quotes
+paths:
+  /quotes:
+    post:
+      operationId: createQuote
+      tags: [quotes]
+      summary: Price a cover quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/QuoteRequest' }
+      responses:
+        '201':
+          description: Quote
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/QuoteResponse' }
+        '422': { description: Request rejected by the provider }
+components:
+  schemas:
+    QuoteRequest:
+      type: object
+      required: [clientRef, productGroup, uncoveredValue, fromPeriod, toPeriod]
+      properties:
+        clientRef: { type: string }
+        productGroup: { type: string, enum: [product1, product2] }
+        subProducts: { type: array, items: { type: string } }
+        uncoveredValue: { type: number, format: decimal }
+        targetCoveredShare: { type: number, format: decimal }
+        fromPeriod: { type: string, example: '2026-03' }
+        toPeriod: { type: string, example: '2027-02' }
+    QuoteResponse:
+      type: object
+      required: [providerRef, premium, premiumRate, validUntil]
+      properties:
+        providerRef: { type: string }
+        premium: { type: number, format: decimal }
+        premiumRate: { type: number, format: decimal }
+        validUntil: { type: string, format: date-time }

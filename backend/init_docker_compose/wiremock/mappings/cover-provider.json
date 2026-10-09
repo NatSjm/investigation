@@ -1,0 +1,14 @@
+{
+  "mappings": [
+    {
+      "name": "cover-provider: quote for the uncovered value (premium rate 0.012)",
+      "request": { "method": "POST", "urlPath": "/quotes", "headers": { "Content-Type": { "contains": "application/json" } } },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "transformers": ["response-template"],
+        "body": "{ \"providerRef\": \"CP-LOCAL-{{randomValue length=6 type='NUMERIC'}}\", \"premium\": {{math (jsonPath request.body '$.uncoveredValue') '*' 0.012}}, \"premiumRate\": 0.012, \"validUntil\": \"{{now offset='14 days' format=\"yyyy-MM-dd'T'HH:mm:ss'Z'\"}}\" }"
+      }
+    }
+  ]
+}

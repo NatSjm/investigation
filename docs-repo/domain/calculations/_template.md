@@ -6,36 +6,40 @@ tags: [calculation, <context>]
 status: draft
 runtime: kotlin                 # required for this type
 parameters:                     # the only things an agent may bind — never re-derive the formula
-  - { name: <param>, type: <Decimal|Int|LocalDate>, required: true }
+  - { name: <param>, type: <Decimal|Int|LocalDate|Enum>, required: true }
 executor:
-  resource: <be/src/test/kotlin/.../XxxTest.kt>     # the BE unit test that runs the sanctioned computation
+  resource: backend/core/src/test/kotlin/harbor/utils/<X>Test.kt   # unit test running the sanctioned computation
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.ps1          # compares worked-examples table with test output (stub)
 generated: { by: copilot/doc-sync, at: 2026-01-01T00:00:00Z }
-# verified: { by: human:<quant-or-analyst>, at: <ISO> }
+# verified: { by: human:<reviewer>, at: <ISO> }
 # stale_after: <ISO>
 sources:
   - id: impl
     resource: <code URL#Lx-Ly>
-    title: <Calculator.kt>
+    title: <X>.kt
 # --- repo extensions ---
 name: <snake_case_name>
 used_by: [CTX-000]
 code_refs:
-  - be/src/main/kotlin/...#L10-L80
-  - be/src/test/kotlin/...        # source of worked examples
+  - backend/core/src/main/kotlin/harbor/utils/<X>.kt#L10-L80
+  - backend/core/src/test/kotlin/harbor/utils/<X>Test.kt        # source of worked examples
 last_verified: null
 ---
 
 # <Human title>
 
 ## Purpose
-What business quantity it produces and where it is shown.
+What business quantity it produces and on which page / table it is shown.
 
 ## Inputs
 | Name | Type | Unit | Source | Constraints |
 |---|---|---|---|---|
+
+## Parameters
+| Key (`parameter_set.key`) | Default | Scope |
+|---|---|---|
 
 ## Outputs
 | Name | Type | Unit | Precision / rounding |
@@ -54,7 +58,7 @@ Step list:
 ```
 
 ## Conventions
-Day-count: · Rounding: · Calendar: · Negative rates: · Time zone:
+Month grid: · Rounding: · Price basis: · Missing data: · Time zone:
 
 ## Worked examples
 | # | Case | Inputs | Expected output |
@@ -64,7 +68,7 @@ Day-count: · Rounding: · Calendar: · Negative rates: · Time zone:
 | 3 | degenerate | | |
 
 ## Performance notes
-e.g. computed for `months × scenarios`; caching; batch size.
+e.g. computed for `months × scenarios × dimension values`; caching; batch size.
 
 ## Change log
 | Date | Change | Ref |

@@ -3,7 +3,7 @@
   Validates frontmatter of feature specs and calculation docs.
 .EXAMPLE
   .\validate-frontmatter.ps1                       # all specs
-  .\validate-frontmatter.ps1 features\hedges\HEDGE-001.md
+  .\validate-frontmatter.ps1 features\product1\P1-001.md
 #>
 param([string[]]$Paths)
 
@@ -35,11 +35,11 @@ foreach ($p in $Paths) {
     foreach ($k in $required) { if ($keys -notcontains $k) { $errors += "$p : missing key '$k'" } }
 
     if (-not $isCalc) {
-        if ($fm -match 'id:\s*([A-Z]+-\d{3}[a-z]?)') {
+        if ($fm -match 'id:\s*([A-Z][A-Z0-9]*-\d{3}[a-z]?)') {
             $id = $Matches[1]
             if ((Split-Path $full -Leaf) -ne "$id.md") { $errors += "$p : filename must be $id.md" }
             if ($text -notmatch "BR-$id-1") { $errors += "$p : no business rule BR-$id-1 found" }
-        } else { $errors += "$p : id must match ^[A-Z]+-\d{3}$" }
+        } else { $errors += "$p : id must match ^[A-Z][A-Z0-9]*-\d{3}$" }
         if ($fm -match '(?m)^status:\s*(\w+)' -and $Matches[1] -notin 'draft','stable','deprecated') { $errors += "$p : bad status (OKF §5.4: draft|stable|deprecated)" }
     }
 

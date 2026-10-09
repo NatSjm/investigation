@@ -1,0 +1,24 @@
+{
+  "mappings": [
+    {
+      "name": "file-exchange: files received since",
+      "request": { "method": "GET", "urlPath": "/files", "queryParameters": { "since": { "matches": ".+" } } },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": [
+          { "id": "fx-0001", "name": "movements_2026-10-08.tsv", "receivedAt": "2026-10-08T23:40:00Z", "sizeBytes": 412 }
+        ]
+      }
+    },
+    {
+      "name": "file-exchange: content of a movement file (tab separated, synthetic)",
+      "request": { "method": "GET", "urlPathPattern": "/files/[^/]+/content" },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/octet-stream" },
+        "body": "client_ref\tproduct_group\tsub_product\tcity\ttransport_mode\tdirection\tperiod\tquantity\tunit_price\tprice_basis\nCR-1001\tproduct1\tP1-STD\tAldmoor\tROAD\tIN\t2026-09\t100\t12.50\tVLD\nCR-1001\tproduct1\tP1-PRM\tCarrow\tRAIL\tOUT\t2026-09\t40\t15.00\tNRL\nCR-2001\tproduct2\tP2-M\tBrightwater\tSEA\tIN\t2026-09\t250\t8.75\tCST\n"
+      }
+    }
+  ]
+}

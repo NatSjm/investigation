@@ -1,28 +1,50 @@
-# Traceability: code path globs (relative to FE/BE repo roots) -> feature specs.
+# Traceability: code path globs (relative to the code repo roots, prefixed `be/` = harbor-backend,
+# `fe/` = harbor-frontend) -> feature specs / calculation docs.
 # Used by scripts/map-paths.ps1 (PR changed files -> specs) and scripts/check-freshness.ps1 (CI gate).
 # Rule: a PR touching a mapped path must either bump last_verified in the spec or carry label `docs-not-affected`.
+# The backend is layered (core/src/main/kotlin/harbor/<layer>/), so BE globs select a context by CLASS-NAME PREFIX
+# (prefixes from contexts.yml; `**/` = any layer folder, `*` = rest of the file name). A file matching prefixes of
+# two contexts (e.g. `Movement*` vs `MovementInput*`) maps to both specs - harmless, the union is reviewed.
 
 mappings:
-  - paths: ["be/hedge/**", "fe/src/features/hedge/**"]
-    specs: ["features/hedges/HEDGE-001.md"]
-  - paths: ["be/hedge/src/main/kotlin/com/bank/advisory/hedge/calc/**"]
-    specs: ["domain/calculations/hedge_monthly_cashflow.md"]
-  - paths: ["be/loan/**", "fe/src/features/loan/**"]
-    specs: []            # TODO: LOAN-* specs
-  - paths: ["be/calc/**"]
-    specs: []            # TODO: CALC-* specs
-  - paths: ["be/stress/**", "fe/src/features/stress/**"]
-    specs: []            # TODO: STRESS-* specs
-  - paths: ["be/graph/**", "fe/src/features/graph/**"]
-    specs: []            # TODO: GRAPH-* specs
-  - paths: ["be/admin/**", "fe/src/features/admin/**"]
-    specs: []            # TODO: ADMIN-* specs
-  - paths: ["be/integration/**"]
-    specs: ["architecture/integrations.md"]
-  - paths: ["be/common/**"]
+  # --- bounded contexts with a spec ---
+  - paths: ["be/core/src/main/kotlin/harbor/**/Client*.kt", "fe/src/features/clients/**"]
+    specs: ["features/clients/CLI-001.md"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Session*.kt", "be/core/src/main/kotlin/harbor/**/Meeting*.kt", "be/core/src/main/kotlin/harbor/**/RoleOverride*.kt", "fe/src/features/meetings/**", "fe/src/api/sessionStore.ts"]
+    specs: ["features/meetings/MTG-001.md"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Product1*.kt", "be/core/src/main/kotlin/harbor/**/Projection*.kt", "be/core/src/main/kotlin/harbor/**/Peer*.kt", "be/core/src/main/kotlin/harbor/**/MovementInput*.kt", "be/core/src/main/kotlin/harbor/**/SessionMovementInput*.kt", "be/core/src/main/kotlin/harbor/**/SessionPeerSimulation*.kt", "fe/src/features/product1/**"]
+    specs: ["features/product1/P1-001.md"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Stress*.kt", "fe/src/features/stress/**"]
+    specs: ["features/stress/STR-001.md"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Market*.kt", "be/core/src/main/kotlin/harbor/**/Scenario*.kt", "be/core/src/main/kotlin/harbor/**/BaselinePrice*.kt", "fe/src/features/market/**"]
+    specs: ["features/market/MKT-001.md"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Report*.kt", "be/core/src/main/resources/pdf/**", "fe/src/features/reports/**"]
+    specs: ["features/reports/RPT-001.md"]
+
+  # --- bounded contexts without a spec yet (appear as `code only` in generated/graph/REPO_MAP.md) ---
+  - paths: ["be/core/src/main/kotlin/harbor/**/Product2*.kt", "fe/src/features/product2/**"]
+    specs: []  # TODO: P2-001
+  - paths: ["be/core/src/main/kotlin/harbor/**/Cover*.kt", "fe/src/features/cover/**"]
+    specs: []  # TODO: COV-001
+  - paths: ["be/core/src/main/kotlin/harbor/**/Import*.kt", "be/core/src/main/kotlin/harbor/**/Movement*.kt", "be/core/src/main/kotlin/harbor/**/GoodsMovement*.kt", "be/core/src/main/kotlin/harbor/**/Xls*.kt", "be/core/src/main/kotlin/harbor/**/Workbook*.kt", "be/core/src/main/kotlin/harbor/**/DailyMovement*.kt", "be/core/src/main/kotlin/harbor/**/MonthlySnapshot*.kt"]
+    specs: []  # TODO: IMP-001
+  - paths: ["be/core/src/main/kotlin/harbor/**/Admin*.kt", "be/core/src/main/kotlin/harbor/**/Parameter*.kt", "fe/src/features/admin/**", "fe/src/app/AdminRoutes.tsx"]
+    specs: []  # TODO: ADM-001
+
+  # --- calculations, messaging, external services, contracts ---
+  - paths: ["be/core/src/main/kotlin/harbor/utils/**"]
     specs: ["domain/calculations/**"]
+  - paths: ["be/kafka_client/**", "be/core/src/main/kotlin/harbor/event/**", "be/core/src/main/resources/openapi/harbor-events.yaml"]
+    specs: ["architecture/integrations.md"]
+  - paths: ["be/core/src/main/kotlin/harbor/client/**", "be/core/src/main/resources/api/**"]
+    specs: ["architecture/integrations.md"]
+  - paths: ["be/core/src/main/resources/openapi/**"]
+    specs: ["architecture/adr/0002-openapi-first-contracts.md", "features/clients/CLI-001.md", "features/meetings/MTG-001.md", "features/product1/P1-001.md", "features/stress/STR-001.md", "features/market/MKT-001.md", "features/reports/RPT-001.md"]
 
 ignore:
   - "**/*Test.kt"
+  - "**/src/test/**"
+  - "**/*.test.ts"
   - "**/*.test.tsx"
   - "**/README.md"
+  - "fe/src/api/generated/**"

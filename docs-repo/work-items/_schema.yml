@@ -1,12 +1,12 @@
 # Schema for work-items/<FEATURE-ID>.yml (documented example; validated by scripts/validate-work-items.ps1)
-feature: CTX-000                # required, must exist in features/
-project: ADV                    # Jira project key
+feature: CTX-000                # required, must exist in features/ (e.g. P1-001)
+project: HRB                    # Jira project key
 epic:
   jira_key: null                # filled by jira-push
   summary: "<= 80 chars"
   description: |
-    Multi-line. Link to spec.
-  labels: [hedges, docs-generated]
+    Multi-line. Link to spec, e.g. features/product1/P1-001.md
+  labels: [product1, docs-generated]
 stories:
   - id: S1                      # local id for depends_on
     jira_key: null
@@ -15,11 +15,11 @@ stories:
     description: |
       ...
     acceptance_criteria:
-      - rule: BR-CTX-000-1
+      - rule: BR-CTX-000-1      # exactly one business rule of the feature spec
         gherkin: |
-          Given ...
-          When ...
-          Then ...
+          Given a session for client "ACME-SYN" and product group product1
+          When the representative requests the overview
+          Then the response contains four tables
     estimate: 3                 # 1,2,3,5,8
     labels: []
     depends_on: []              # [S0]

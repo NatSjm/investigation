@@ -45,6 +45,16 @@ foreach ($f in $migrations) {
     }
 }
 
+# which classes reference each table in code (@Table(name = "x"), JPA/JDBC SQL strings) - lets the docs graph
+# attribute a table to the bounded context (class-name prefix) that owns it instead of where the migrations live
+$ktFiles = @(Get-SourceFiles $Root @('*.kt') | Where-Object { $_.FullName -match '[\\/]src[\\/]main[\\/]' })
+$ktText = @{}; foreach ($k in $ktFiles) { $ktText[$k.FullName] = Read-Text $k.FullName }
+foreach ($tn in @($tables.Keys)) {
+    $rx = '(?i)["`'' ]' + [regex]::Escape($tn) + '["`'' \s(,;]'
+    $mods = @($ktFiles | Where-Object { $ktText[$_.FullName] -match $rx } | ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_.Name) } | Sort-Object -Unique)   # classes (one class per file)
+    $tables[$tn].usedIn = $mods
+}
+
 $sb = [System.Text.StringBuilder]::new()
 [void]$sb.Append((New-Header 'DB schema (approximate, from migrations)' 'Flyway V*.sql'))
 [void]$sb.AppendLine("$($tables.Count) table(s). Derived by regex from migrations - types/constraints are indicative; verify against a real DB for DDL work.")
@@ -61,6 +71,8 @@ foreach ($tn in $tables.Keys) {
 foreach ($tn in $tables.Keys) {
     [void]$sb.AppendLine("## ``$tn``")
     [void]$sb.AppendLine("Created in ``$($tables[$tn].src)``")
+    $used = @($tables[$tn].usedIn)
+    [void]$sb.AppendLine("Used in: $(if ($used.Count) { ($used | ForEach-Object { '`' + $_ + '`' }) -join ', ' } else { '_no code reference found_' })")
     [void]$sb.AppendLine()
     [void]$sb.AppendLine('| Column | Type / flags |')
     [void]$sb.AppendLine('|---|---|')

@@ -1,0 +1,35 @@
+{
+  "folders": [
+    { "name": "be/harbor", "path": "../../backend/core/src/main/kotlin/harbor" },
+    { "name": "be/resources", "path": "../../backend/core/src/main/resources" },
+    { "name": "be/_generated", "path": "../../backend/docs/_generated" },
+    { "name": "fe/product1", "path": "../../frontend/src/features/product1" },
+    { "name": "fe/_generated", "path": "../../frontend/docs/_generated" },
+    { "name": "docs", "path": "../../docs-repo" }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/target": true,
+      "**/build": true,
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/coverage": true
+    },
+    "search.exclude": {
+      "**/target": true,
+      "**/build": true,
+      "**/node_modules": true,
+      "**/*.snap": true,
+      "**/*-lock.*": true,
+      "**/confluence-import": true
+    },
+    "github.copilot.chat.codesearch.enabled": true,
+    "chat.tools.autoApprove": false,
+    "harborDocs.docsRepoPath": "../../docs-repo",
+    "harborDocs.generatedPaths": [
+      "../../backend/docs/_generated",
+      "../../frontend/docs/_generated"
+    ],
+    "harborDocs.graphPath": "../../docs-repo/generated/graph/graph.json"
+  }
+}

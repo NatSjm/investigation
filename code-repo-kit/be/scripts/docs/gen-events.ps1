@@ -33,6 +33,8 @@ function Add-Usage([string]$topic, [string]$kind, [string]$who) {
 foreach ($f in $files) {
     $t = Read-Text $f.FullName
     if ($t -notmatch 'KafkaListener|KafkaTemplate') { continue }
+    # blank out comments (keeping newlines so file:line stays right) - KDoc examples like `.send(Topics.X, ...)` are not producers
+    $t = [regex]::Replace($t, '(?s)/\*.*?\*/|//[^\r\n]*', { param($m) ($m.Value -replace '[^\r\n]', ' ') })
     $rel = Get-RelPath $Root $f.FullName
     foreach ($m in [regex]::Matches($t, '@KafkaListener\(([^)]*)\)\s*(?:@\w+\s*)*fun\s+(\w+)')) {
         $args = $m.Groups[1].Value

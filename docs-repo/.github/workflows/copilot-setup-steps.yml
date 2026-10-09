@@ -1,0 +1,24 @@
+# Environment for the Copilot coding agent (runs before the agent starts; job name is mandatory).
+# PowerShell 7 is preinstalled on GitHub-hosted runners; Python is only needed for the vendored OKF reference tools.
+name: Copilot setup steps
+on:
+  workflow_dispatch:
+  push:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install pyyaml
+      - name: Warm up validators and indexes
+        shell: pwsh
+        run: |
+          ./scripts/build-index.ps1 -Check
+          ./scripts/okf-validate.ps1
+          if (Test-Path generated/graph/graph.json) { ./scripts/graph-query.ps1 -Find product1 | Out-Null }

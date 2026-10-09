@@ -1,0 +1,54 @@
+openapi: 3.0.3
+info:
+  title: market-data
+  version: 2.0.0
+  description: Baseline price and transport price curves per product group and corridor.
+servers:
+  - url: https://market-data.internal.example.com
+tags:
+  - name: prices
+paths:
+  /prices/{productGroup}/{corridor}:
+    get:
+      operationId: getPrices
+      tags: [prices]
+      summary: Monthly baseline prices
+      parameters:
+        - { name: productGroup, in: path, required: true, schema: { type: string, enum: [product1, product2] } }
+        - { name: corridor, in: path, required: true, schema: { type: string, example: VLD-NRL } }
+        - { name: from, in: query, required: true, schema: { type: string, pattern: '^\d{4}-\d{2}$' } }
+        - { name: to, in: query, required: true, schema: { type: string, pattern: '^\d{4}-\d{2}$' } }
+      responses:
+        '200':
+          description: Curve
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PriceCurve' }
+  /transport-prices/{productGroup}/{corridor}:
+    get:
+      operationId: getTransportPrices
+      tags: [prices]
+      summary: Monthly transport prices per unit
+      parameters:
+        - { name: productGroup, in: path, required: true, schema: { type: string, enum: [product1, product2] } }
+        - { name: corridor, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Curve
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PriceCurve' }
+components:
+  schemas:
+    PricePoint:
+      type: object
+      required: [period, price]
+      properties:
+        period: { type: string, example: '2026-03' }
+        price: { type: number, format: decimal }
+    PriceCurve:
+      type: object
+      required: [asOf, points]
+      properties:
+        asOf: { type: string, format: date-time }
+        points: { type: array, items: { $ref: '#/components/schemas/PricePoint' } }

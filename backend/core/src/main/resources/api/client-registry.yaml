@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: client-registry
+  version: 1.2.0
+  description: Company master data. Harbor proxies client search to this service and merges its local profile.
+servers:
+  - url: https://client-registry.internal.example.com
+tags:
+  - name: registry
+paths:
+  /registry/clients:
+    get:
+      operationId: searchRegistryClients
+      tags: [registry]
+      summary: Search companies by name or reference
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string } }
+        - { name: limit, in: query, required: false, schema: { type: integer, default: 20 } }
+      responses:
+        '200':
+          description: Matches
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/RegistryClient' } }
+  /registry/clients/{ref}:
+    get:
+      operationId: getRegistryClient
+      tags: [registry]
+      summary: Company by external reference
+      parameters:
+        - { name: ref, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: Company
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RegistryClient' }
+        '404': { description: Unknown reference }
+components:
+  schemas:
+    RegistryClient:
+      type: object
+      required: [ref, name]
+      properties:
+        ref: { type: string }
+        name: { type: string }
+        country: { type: string }
+        segment: { type: string }
+        active: { type: boolean }

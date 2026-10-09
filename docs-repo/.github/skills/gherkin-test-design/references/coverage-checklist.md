@@ -1,33 +1,34 @@
 # Coverage checklist
 
 ## All features
-- [ ] Happy path per actor
+- [ ] Happy path per actor (representative, administrator, client-facing vs preparation session)
 - [ ] Each BR: positive + boundary + negative
 - [ ] Validation errors (required, format, range) with exact error codes
-- [ ] Authorisation: advisor vs. admin vs. read-only
-- [ ] Concurrency / optimistic locking where edit exists
-- [ ] Audit entry produced
+- [ ] Authorisation: representative vs administrator vs read-only
+- [ ] Session scope: missing `X-Harbor-Session` -> 428; closed session -> 409; unknown -> 404
+- [ ] Audit / change-log entry produced where the spec says so
 
 ## Calculations
-- [ ] First month, last month, month with 28/29/30/31 days
-- [ ] Leap year, year boundary
-- [ ] Zero, negative interest rate, extreme stress scenario
-- [ ] Rounding (banker's vs. half-up — as specified in calculation doc)
-- [ ] Currency conversion date (spot vs. fixing)
+- [ ] First month and last month of the horizon; horizon 12 and 60
+- [ ] Zero quantities, empty movement set, total below `role.min_volume`
+- [ ] Importer, exporter and MIXED sign conventions
+- [ ] Rounding (`HALF_EVEN`, scale 2 / 4) exactly as the calculation concept states
+- [ ] Price basis per corridor side (VLD/NRL, CST/MRD) kept apart
 - [ ] Idempotent recomputation produces identical results
 
 ## API
-- [ ] Contract matches `generated/openapi` (status codes, schemas)
-- [ ] Pagination / filtering if present
-- [ ] Idempotency key on POST where specified
+- [ ] Contract matches `generated/openapi/backend.yaml` (status codes, schemas, `operationId`)
+- [ ] Filtering (`city`, `transportMode`, `dimension`) if present
+- [ ] Idempotency on POST where specified (`runStressTest`, `regenerateReport`)
 
 ## Kafka
 - [ ] Consumer idempotency (duplicate message)
 - [ ] Out-of-order message
-- [ ] Poison message → DLQ
-- [ ] Schema compatibility with `generated/asyncapi`
+- [ ] Poison message -> DLQ
+- [ ] Schema compatibility with `generated/asyncapi/backend.yaml`
 
 ## UI
 - [ ] Loading / empty / error states
-- [ ] Graph renders with min/max data points
+- [ ] Charts render with min / max data points; dimension toggle switches series
+- [ ] Modals validate before submit; PDF download button disabled until the report is rendered
 - [ ] Accessibility basics (labels, keyboard)

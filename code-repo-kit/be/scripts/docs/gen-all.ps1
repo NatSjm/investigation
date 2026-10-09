@@ -18,20 +18,26 @@ New-Item -ItemType Directory -Force -Path $work | Out-Null
 $rel = if ($Check) { $work } else { $OutDir }
 
 & (Join-Path $PSScriptRoot 'gen-codebase-map.ps1') -Root $Root -Out (Join-Path $rel 'codebase-map.md')
+& (Join-Path $PSScriptRoot 'gen-components.ps1')   -Root $Root -Out (Join-Path $rel 'components.md')
 & (Join-Path $PSScriptRoot 'gen-api-index.ps1')    -Root $Root -Out (Join-Path $rel 'api-index.md')
 & (Join-Path $PSScriptRoot 'gen-events.ps1')       -Root $Root -Out (Join-Path $rel 'events.md')
 & (Join-Path $PSScriptRoot 'gen-db-schema.ps1')    -Root $Root -Out (Join-Path $rel 'db-schema.md')
+& (Join-Path $PSScriptRoot 'gen-jobs.ps1')         -Root $Root -Out (Join-Path $rel 'jobs.md')
 & (Join-Path $PSScriptRoot 'gen-docs-tags.ps1')    -Root $Root -Out (Join-Path $rel 'docs-tags.md')
 
 $index = @"
 # Generated code maps
 
 Read these before opening source. Each file is a few hundred tokens.
+Contracts: ``core/src/main/resources/openapi/harbor-api.yaml`` (REST; FE client and BE interfaces are generated from it),
+``core/src/main/resources/openapi/harbor-events.yaml`` (Kafka), ``core/src/main/resources/api/*.yaml`` (external services).
 
-- [codebase-map.md](codebase-map.md): modules, purpose, facade/controller/listener/job entry points
-- [api-index.md](api-index.md): REST endpoints (method, path, handler, file:line)
+- [codebase-map.md](codebase-map.md): modules, technical layers with their classes, resource folders
+- [components.md](components.md): one row per class - layer, stereotype, injected dependencies, tables, @docs, file:line
+- [api-index.md](api-index.md): REST operations from the contract (method, path, operationId, handler, file:line)
 - [events.md](events.md): Kafka topics with producers/consumers
 - [db-schema.md](db-schema.md): tables and columns from migrations, ER diagram
+- [jobs.md](jobs.md): scheduled jobs with their cron triggers
 - [docs-tags.md](docs-tags.md): spec ID (``@docs``) to code location
 "@
 Write-Text (Join-Path $work 'index.md') $index

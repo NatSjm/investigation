@@ -1,0 +1,73 @@
+spring:
+  application:
+    name: harbor-backend
+  datasource:
+    url: ${HARBOR_DB_URL:jdbc:postgresql://localhost:5432/harbor}
+    username: ${HARBOR_DB_USER:harbor}
+    password: ${HARBOR_DB_PASSWORD:harbor}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        default_batch_fetch_size: 50
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: false
+  kafka:
+    bootstrap-servers: ${HARBOR_KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: harbor
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+  error:
+    include-message: never
+
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: health,info,prometheus
+
+harbor:
+  session:
+    # Header carrying the meeting session id; required on every /api/v1/session/** request.
+    header: X-Harbor-Session
+  web:
+    allowed-origins: ${HARBOR_ALLOWED_ORIGINS:http://localhost:5173}
+  reports:
+    # Base URL document-service uses to fetch report payloads (getReport).
+    payload-base-url: ${HARBOR_PUBLIC_BASE_URL:http://localhost:8080/api/v1}
+    # Meeting report template (pdf/report.css is inlined) sent to document-service with every render request.
+    template: classpath:pdf/meeting-report.html
+  # Base URLs of the external services (contracts in src/main/resources/api/).
+  # init_docker_compose serves all five from one WireMock on http://localhost:8089.
+  external:
+    client-registry:
+      base-url: ${HARBOR_CLIENT_REGISTRY_URL:https://client-registry.internal.example.com}
+    market-data:
+      base-url: ${HARBOR_MARKET_DATA_URL:https://market-data.internal.example.com}
+    cover-provider:
+      base-url: ${HARBOR_COVER_PROVIDER_URL:https://cover-provider.partner.example.com}
+    document-service:
+      base-url: ${HARBOR_DOCUMENT_SERVICE_URL:https://document-service.internal.example.com}
+    file-exchange:
+      base-url: ${HARBOR_FILE_EXCHANGE_URL:https://file-exchange.internal.example.com}
+
+logging:
+  level:
+    harbor: INFO
+    org.apache.kafka: WARN

@@ -7,20 +7,20 @@ status: draft                   # draft | stable | deprecated
 generated: { by: copilot/doc-sync, at: 2026-01-01T00:00:00Z }
 # verified: { by: human:<id>, at: <ISO> }     # added by a human reviewer only
 # stale_after: <ISO>                          # verified + 90 days
-sources: []                     # Confluence pages / code URLs actually read; cite claims with [^id]
+sources: []                     # legacy pages / code URLs actually read; cite claims with [^id]
 # --- repo extensions ---
 id: CTX-000
 lang: en                       # repo language is always English
-source_lang: cs                # language of the Confluence/original source, if different
-aliases: []                    # Czech (or other) terms people search for, e.g. [zajištění, úrokový swap]
-context: hedges | loans | stress-test | monthly-calc | graphs | admin | integration
-owners: [team-or-person]
+source_lang: en                # language of the legacy/original source, if different
+aliases: []                    # synonyms or source-language terms people search for
+context: clients | meetings | imports | product1 | product2 | cover | market | stress | reports | admin
+owners: [harbor-platform-team]
 last_verified: null            # ISO date, set only after check vs generated/ (mirrors latest verified.at)
-code_refs:                     # relative to FE/BE repo roots, from generated/codebase-map.md
-  - be/src/main/kotlin/...
-  - fe/src/features/...
-api: []                        # e.g. "GET /hedges/{id}"
-events: []                     # Kafka topics
+code_refs:                     # relative to the code repo roots, from generated/be/components.md and fe/codebase-map.md
+  - be/core/src/main/kotlin/harbor/manager/<Ctx>Manager.kt     # context entry point; other classes from generated/be/components.md
+  - fe/src/features/<context>/index.ts
+api: []                        # e.g. "GET /session/product1/overview"
+events: []                     # Kafka topics, e.g. harbor.imports.movements-loaded
 tables: []                     # DB tables
 calculations: []               # /domain/calculations/<name>.md
 jira: { epic: null }
@@ -41,16 +41,16 @@ One paragraph: who, what, why (business value).
 - **BR-<ID>-2** — The system MUST NOT …
 
 ## UI flow
-Screens/steps; Mermaid `flowchart` if > 3 steps.
+Screens/steps; Mermaid `flowchart` if > 3 steps. Routes from `generated/fe/routes.md`.
 
 ## API / Events
 | Kind | Name | Purpose | Contract |
 |---|---|---|---|
-| REST | `GET /…` | | `generated/openapi/be.yaml#/paths/…` |
-| Kafka | `topic.name` | | `generated/asyncapi/be.yaml#/channels/…` |
+| REST | `GET /…` | | `generated/openapi/backend.yaml#/paths/~1…` |
+| Kafka | `harbor.<context>.<event>` | | `generated/asyncapi/backend.yaml#/channels/harbor.<context>.<event>` |
 
 ## Data
-Tables/columns touched; link `generated/db/schema.md#table`.
+Tables/columns touched; see `generated/be/db-schema.md`.
 
 ## Calculations
 Links to `domain/calculations/*.md` and which BRs they satisfy.

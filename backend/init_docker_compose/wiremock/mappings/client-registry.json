@@ -1,0 +1,32 @@
+{
+  "mappings": [
+    {
+      "name": "client-registry: search clients",
+      "request": { "method": "GET", "urlPath": "/registry/clients", "queryParameters": { "q": { "matches": ".*" } } },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": [
+          { "ref": "CR-1001", "name": "Aldmoor Trading Co", "country": "VLD", "segment": "MID", "active": true },
+          { "ref": "CR-1002", "name": "Carrow Goods Ltd", "country": "NRL", "segment": "MID", "active": true },
+          { "ref": "CR-2001", "name": "Meridia Freight Works", "country": "MRD", "segment": "LARGE", "active": true }
+        ]
+      }
+    },
+    {
+      "name": "client-registry: client by ref",
+      "request": { "method": "GET", "urlPathPattern": "/registry/clients/[A-Z0-9-]+" },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "ref": "{{request.pathSegments.[2]}}",
+          "name": "Synthetic client {{request.pathSegments.[2]}}",
+          "country": "VLD",
+          "segment": "MID",
+          "active": true
+        }
+      }
+    }
+  ]
+}

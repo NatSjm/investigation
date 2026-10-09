@@ -1,0 +1,20 @@
+# Context pack - section markers
+
+`scripts/context-pack.ps1` writes these H2 headings in this order. Agents and prompts refer to them by name.
+
+| Heading | Source | Truncation rank (1 = never) |
+|---|---|---|
+| `## Subject` | resolution of `-Task`; frontmatter of the spec / calculation; `index.md` badge logic | 1 |
+| `## Spec` | `features/<ctx>/<ID>.md` body | 1 (reduced to key sections if > 200 lines) |
+| `## Calculations` | `domain/calculations/<name>.md` for every `calculations[]` entry | 2 |
+| `## Graph neighbourhood` | `scripts/graph-query.ps1 -Node spec:<ID> -Depth 2` (or `context:`/`feature:` for a community); class detail from `generated/be/components.md` | 2 |
+| `## Contracts` | `generated/openapi/backend.yaml` path blocks for `api[]`; `generated/asyncapi/backend.yaml` channel names for `events[]` | 4 |
+| `## Data` | `generated/be/db-schema.md` sections for `tables[]` | 4 |
+| `## Related work items and tests` | `work-items/<ID>.yml` (`summary:` lines), `test-design/features/<ID>.feature` (`Scenario` lines) | 3 |
+| `## Legacy pages` | `confluence-import/**/*.md` containing the ID or 2+ title keywords; first 5 lines each | 5 |
+| `## Sources and limits` | list of files read with `generated.at` where present; truncated sections; the reading rule | 1 |
+
+Header line format: `# Context pack: <task> - <resolved subject> - <badge> - built <ISO>`.
+
+Free-text resolution: tokens of the task (>= 4 chars) are scored against `title`, `description`, `tags`, `aliases`
+of every spec and calculation; the best match is packed, up to two runners-up are listed under `candidates:`.

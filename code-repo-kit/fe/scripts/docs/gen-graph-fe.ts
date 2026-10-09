@@ -1,6 +1,8 @@
 // Precise FE graph export using the TypeScript compiler API - `typescript` is already a devDependency in any
 // TS React repo, so this adds no library. Complements the regex maps (gen-codebase-map.ps1) with exact
-// import edges and resolved fetch/axios URLs (template literals + `const BASE = '...'` constants).
+// import edges and resolved API URLs: openapi-fetch calls such as `api.GET('/session/product1/overview', ...)`
+// (method from the member name, literal contract path), plus fetch/axios with template literals and
+// `const BASE = '...'` constants.
 //
 // Output: docs/_generated/graph-export-fe.json, consumed by docs repo scripts/gen-graph.ps1 (edges source=export).
 //

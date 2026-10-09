@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "powershell": "pwsh -NoProfile -File scripts/hooks/guard-generated.ps1",
+        "bash": "pwsh -NoProfile -File scripts/hooks/guard-generated.ps1",
+        "timeoutSec": 20
+      }
+    ],
+    "agentStop": [
+      {
+        "type": "command",
+        "powershell": "pwsh -NoProfile -Command \"./scripts/build-index.ps1; ./scripts/okf-validate.ps1 -Strict; ./scripts/validate-frontmatter.ps1; ./scripts/validate-work-items.ps1\"",
+        "bash": "pwsh -NoProfile -Command \"./scripts/build-index.ps1; ./scripts/okf-validate.ps1 -Strict; ./scripts/validate-frontmatter.ps1; ./scripts/validate-work-items.ps1\"",
+        "timeoutSec": 120
+      }
+    ]
+  }
+}

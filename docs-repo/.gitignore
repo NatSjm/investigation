@@ -1,5 +1,8 @@
 # build artifacts
-.publish/          # machine-translated renderings for Confluence (confluence-publish.ps1 -Lang cs)
+# machine-translated renderings for Confluence (confluence-publish.ps1 -Lang <code>)
+.publish/
+# task-scoped context packs built by scripts/context-pack.ps1 (rebuild, never commit)
+.context/
 .confluence-map.json.bak
 okf-graph.html
 node_modules/

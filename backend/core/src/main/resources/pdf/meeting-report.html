@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<!--
+  Meeting report template, rendered to PDF by document-service.
+  Sent inline with topic harbor.reports.render-requested (ReportTemplateLoader inlines report.css in place of the
+  link tag below). Placeholders use {{path.in.payload}} against the JSON built by ReportPayloadService;
+  {{#each list}} ... {{/each}} repeats a block per element.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Meeting report {{session.sessionId}}</title>
+  <link rel="stylesheet" href="report.css">
+</head>
+<body>
+  <header class="report-header">
+    <h1>Meeting report</h1>
+    <table class="meta">
+      <tr><th>Client</th><td>{{session.clientName}} ({{session.clientId}})</td></tr>
+      <tr><th>Product group</th><td>{{session.productGroup}}</td></tr>
+      <tr><th>Session</th><td>{{session.sessionId}} - {{session.kind}}</td></tr>
+      <tr><th>Representative</th><td>{{session.representativeId}}</td></tr>
+      <tr><th>Started / closed</th><td>{{session.startedAt}} / {{session.closedAt}}</td></tr>
+      <tr><th>Horizon / price basis</th><td>{{session.horizonMonths}} months / {{session.priceBasis}}</td></tr>
+      <tr><th>Role override</th><td>{{session.roleOverride}} {{session.roleOverrideReason}}</td></tr>
+    </table>
+  </header>
+
+  <section>
+    <h2>Projection by sub-product</h2>
+    <table class="figures">
+      <thead><tr><th>Period</th><th>Sub-product</th><th>Quantity</th><th>Value</th><th>Landed cost</th><th>Cumulative value</th></tr></thead>
+      <tbody>
+      {{#each projectionTables.bySubProduct}}
+        <tr><td>{{period}}</td><td>{{key}}</td><td>{{quantity}}</td><td>{{value}}</td><td>{{landedCost}}</td><td>{{cumulativeValue}}</td></tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Projection by {{projectionTables.dimensionKind}}</h2>
+    <table class="figures">
+      <thead><tr><th>Period</th><th>Dimension</th><th>Quantity</th><th>Value</th><th>Landed cost</th><th>Cumulative value</th></tr></thead>
+      <tbody>
+      {{#each projectionTables.byDimension}}
+        <tr><td>{{period}}</td><td>{{key}}</td><td>{{quantity}}</td><td>{{value}}</td><td>{{landedCost}}</td><td>{{cumulativeValue}}</td></tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Projection by direction</h2>
+    <table class="figures">
+      <thead><tr><th>Period</th><th>Direction</th><th>Quantity</th><th>Value</th><th>Landed cost</th><th>Cumulative value</th></tr></thead>
+      <tbody>
+      {{#each projectionTables.byDirection}}
+        <tr><td>{{period}}</td><td>{{key}}</td><td>{{quantity}}</td><td>{{value}}</td><td>{{landedCost}}</td><td>{{cumulativeValue}}</td></tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Summary</h2>
+    <table class="figures">
+      <thead><tr><th>Period</th><th>Total quantity</th><th>Total value</th><th>Total landed cost</th><th>Cover ratio</th><th>Cumulative value</th></tr></thead>
+      <tbody>
+      {{#each projectionSummary}}
+        <tr><td>{{period}}</td><td>{{totalQuantity}}</td><td>{{totalValue}}</td><td>{{totalLandedCost}}</td><td>{{coverRatio}}</td><td>{{cumulativeValue}}</td></tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="page-break">
+    <h2>Stress test</h2>
+    <!-- Chart image drawn by document-service from scenarios[].stressTest (cumulative exposure per month and scenario). -->
+    <img class="chart" src="{{stressChartImage}}" alt="Stress test: cumulative exposure per scenario">
+    {{#each scenarios}}
+      <h3>{{name}} ({{kind}})</h3>
+      <table class="figures">
+        <thead><tr><th>Period</th><th>Dimension</th><th>Exposure</th><th>Transport cost delta</th><th>Cumulative exposure</th></tr></thead>
+        <tbody>
+        {{#each stressTest}}
+          <tr><td>{{period}}</td><td>{{dimensionValue}}</td><td>{{exposure}}</td><td>{{transportCostDelta}}</td><td>{{cumulativeExposure}}</td></tr>
+        {{/each}}
+        </tbody>
+      </table>
+    {{/each}}
+  </section>
+
+  <footer>Generated {{generatedAt}} - payload schema {{schemaVersion}} - synthetic data only</footer>
+</body>
+</html>

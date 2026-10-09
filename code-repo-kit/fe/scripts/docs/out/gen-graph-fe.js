@@ -35,7 +35,9 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 // Precise FE graph export using the TypeScript compiler API - `typescript` is already a devDependency in any
 // TS React repo, so this adds no library. Complements the regex maps (gen-codebase-map.ps1) with exact
-// import edges and resolved fetch/axios URLs (template literals + `const BASE = '...'` constants).
+// import edges and resolved API URLs: openapi-fetch calls such as `api.GET('/session/product1/overview', ...)`
+// (method from the member name, literal contract path), plus fetch/axios with template literals and
+// `const BASE = '...'` constants.
 //
 // Output: docs/_generated/graph-export-fe.json, consumed by docs repo scripts/gen-graph.ps1 (edges source=export).
 //
@@ -73,11 +75,11 @@ for (const sf of program.getSourceFiles()) {
     if (sf.isDeclarationFile || !files.includes(path.resolve(sf.fileName)))
         continue;
     const feature = featureOf(sf.fileName);
-    addNode({ id: `feature:${feature}`, kind: 'feature', label: feature, community: feature, repo: 'fe', location: `src/features/${feature}/index.ts`, note: '' });
+    addNode({ id: `feature:${feature}`, kind: 'feature', label: feature, community: feature, repo: 'fe', location: feature === 'fe-app' ? '' : `src/features/${feature}/index.ts`, note: '' });
     const consts = new Map(); // string constants in this file, for template-literal URLs
     // Exported declarations become nodes: components (PascalCase function returning JSX), hooks (use*), others skipped.
     const declNode = (name, line) => {
-        const kind = /^use[A-Z]/.test(name) ? 'hook' : /^[A-Z]/.test(name) ? 'component' : undefined;
+        const kind = /^use[A-Z]/.test(name) ? 'hook' : /^[A-Z][A-Za-z0-9]*[a-z][A-Za-z0-9]*$/.test(name) ? 'component' : undefined; // ALL_CAPS consts are not components
         if (!kind)
             return undefined;
         const id = `${kind}:${name}`;
@@ -120,11 +122,11 @@ for (const sf of program.getSourceFiles()) {
                 }
             }
             // calls to our own hooks/components -> uses edges (resolved through the checker, so re-exports work)
-            if (ts.isIdentifier(n.expression)) {
+            if (ts.isIdentifier(n.expression) && /^use[A-Z]/.test(n.expression.text)) {
                 const sym = checker.getSymbolAtLocation(n.expression);
-                const decl = sym && (checker.getAliasedSymbol(sym) ?? sym).declarations?.[0];
-                const target = decl?.getSourceFile();
-                if (target && files.includes(path.resolve(target.fileName)) && /^use[A-Z]/.test(n.expression.text))
+                const real = sym && (sym.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(sym) : sym);
+                const target = real?.declarations?.[0]?.getSourceFile();
+                if (target && files.includes(path.resolve(target.fileName)))
                     addEdge(owner, `hook:${n.expression.text}`, 'uses');
             }
         }

@@ -11,7 +11,8 @@ param(
     [string]$Path = (Split-Path $PSScriptRoot -Parent),
     [switch]$Strict,
     [int]$MaxWarnings = -1,
-    [string[]]$Exclude = @('.github', 'scripts', 'ci-examples', 'third-party', 'node_modules', '.git', 'confluence-import', 'work-items', 'test-design')
+    # AGENTS.md is an agent-instruction file (cross-tool convention), not a knowledge concept; .context holds throwaway packs
+    [string[]]$Exclude = @('.github', 'scripts', 'ci-examples', 'third-party', 'node_modules', '.git', 'confluence-import', 'work-items', 'test-design', 'AGENTS.md', '.context')
 )
 $ErrorActionPreference = 'Stop'
 try { [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch {}

@@ -33,12 +33,14 @@ function Get-LineNumber([string]$Text, [int]$Index) {
     return ([regex]::Matches($Text.Substring(0, $Index), "`n")).Count + 1
 }
 
-function New-Header([string]$Title, [string]$Source) {
+function New-Header([string]$Title, [string]$Source, [string]$Description = "") {
+    if (-not $Description) { $Description = "Generated map: $Title, derived from $Source; read instead of source files." }
     $date = (Get-Date).ToUniversalTime().ToString('yyyy-MM-dd')
 @"
 ---
 type: Document
 title: $Title
+description: $Description
 generated:
   by: process:gen-docs
   at: $date

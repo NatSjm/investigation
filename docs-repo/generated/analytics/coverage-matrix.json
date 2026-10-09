@@ -1,0 +1,167 @@
+[
+  {
+    "id": "CLI-001",
+    "context": "clients",
+    "rules": 9,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 1,
+    "badge": "human-reviewed",
+    "staleAfter": "2027-01-06T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-CLI-001-1",
+      "BR-CLI-001-2",
+      "BR-CLI-001-3",
+      "BR-CLI-001-4",
+      "BR-CLI-001-5",
+      "BR-CLI-001-6",
+      "BR-CLI-001-7",
+      "BR-CLI-001-8",
+      "BR-CLI-001-9"
+    ],
+    "rulesWithoutScenario": [
+      "BR-CLI-001-1",
+      "BR-CLI-001-2",
+      "BR-CLI-001-3",
+      "BR-CLI-001-4",
+      "BR-CLI-001-5",
+      "BR-CLI-001-6",
+      "BR-CLI-001-7",
+      "BR-CLI-001-8",
+      "BR-CLI-001-9"
+    ]
+  },
+  {
+    "id": "MKT-001",
+    "context": "market",
+    "rules": 3,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 3,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-07T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-MKT-001-1",
+      "BR-MKT-001-2",
+      "BR-MKT-001-3"
+    ],
+    "rulesWithoutScenario": [
+      "BR-MKT-001-1",
+      "BR-MKT-001-2",
+      "BR-MKT-001-3"
+    ]
+  },
+  {
+    "id": "MTG-001",
+    "context": "meetings",
+    "rules": 10,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 1,
+    "badge": "human-reviewed",
+    "staleAfter": "2027-01-06T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-MTG-001-1",
+      "BR-MTG-001-2",
+      "BR-MTG-001-3",
+      "BR-MTG-001-4",
+      "BR-MTG-001-5",
+      "BR-MTG-001-6",
+      "BR-MTG-001-7",
+      "BR-MTG-001-8",
+      "BR-MTG-001-9",
+      "BR-MTG-001-10"
+    ],
+    "rulesWithoutScenario": [
+      "BR-MTG-001-1",
+      "BR-MTG-001-2",
+      "BR-MTG-001-3",
+      "BR-MTG-001-4",
+      "BR-MTG-001-5",
+      "BR-MTG-001-6",
+      "BR-MTG-001-7",
+      "BR-MTG-001-8",
+      "BR-MTG-001-9",
+      "BR-MTG-001-10"
+    ]
+  },
+  {
+    "id": "P1-001",
+    "context": "product1",
+    "rules": 10,
+    "rulesWithStory": 10,
+    "rulesWithScenario": 0,
+    "stories": 5,
+    "scenarios": 0,
+    "openQuestions": 1,
+    "badge": "human-reviewed",
+    "staleAfter": "2027-01-06T00:00:00Z",
+    "rulesWithoutStory": [],
+    "rulesWithoutScenario": [
+      "BR-P1-001-1",
+      "BR-P1-001-2",
+      "BR-P1-001-3",
+      "BR-P1-001-4",
+      "BR-P1-001-5",
+      "BR-P1-001-6",
+      "BR-P1-001-7",
+      "BR-P1-001-8",
+      "BR-P1-001-9",
+      "BR-P1-001-10"
+    ]
+  },
+  {
+    "id": "RPT-001",
+    "context": "reports",
+    "rules": 3,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 3,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-07T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-RPT-001-1",
+      "BR-RPT-001-2",
+      "BR-RPT-001-3"
+    ],
+    "rulesWithoutScenario": [
+      "BR-RPT-001-1",
+      "BR-RPT-001-2",
+      "BR-RPT-001-3"
+    ]
+  },
+  {
+    "id": "STR-001",
+    "context": "stress",
+    "rules": 8,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 6,
+    "stories": 0,
+    "scenarios": 9,
+    "openQuestions": 2,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-07T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-STR-001-1",
+      "BR-STR-001-2",
+      "BR-STR-001-3",
+      "BR-STR-001-4",
+      "BR-STR-001-5",
+      "BR-STR-001-6",
+      "BR-STR-001-7",
+      "BR-STR-001-8"
+    ],
+    "rulesWithoutScenario": [
+      "BR-STR-001-4",
+      "BR-STR-001-7"
+    ]
+  }
+]

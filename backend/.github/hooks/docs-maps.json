@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "agentStop": [
+      {
+        "type": "command",
+        "powershell": "pwsh -NoProfile -File scripts/docs/gen-all.ps1 -Check",
+        "bash": "pwsh -NoProfile -File scripts/docs/gen-all.ps1 -Check",
+        "timeoutSec": 120
+      }
+    ]
+  }
+}

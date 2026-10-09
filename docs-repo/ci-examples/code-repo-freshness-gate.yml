@@ -11,7 +11,7 @@ jobs:
         with: { fetch-depth: 0 }
       - name: Checkout docs repo
         uses: actions/checkout@v4
-        with: { repository: ORG/advisory-docs, path: docs, token: "${{ secrets.DOCS_REPO_TOKEN }}" }
+        with: { repository: harbor/harbor-docs, path: docs, token: "${{ secrets.DOCS_REPO_TOKEN }}" }
       - name: Check
         shell: pwsh
         run: |

@@ -1,0 +1,32 @@
+{
+  "folders": [
+    { "name": "harbor-backend", "path": "backend" },
+    { "name": "harbor-frontend", "path": "frontend" },
+    { "name": "harbor-docs", "path": "docs-repo" },
+    { "name": "code-repo-kit", "path": "code-repo-kit" }
+  ],
+  "settings": {
+    "harborDocs.docsRepoPath": "${workspaceFolder:harbor-docs}",
+    "harborDocs.generatedPaths": [
+      "${workspaceFolder:harbor-backend}/docs/_generated",
+      "${workspaceFolder:harbor-frontend}/docs/_generated"
+    ],
+    "harborDocs.graphPath": "${workspaceFolder:harbor-docs}/generated/graph/graph.json",
+    "chat.useAgentsMdFile": true,
+    "chat.useHooks": true,
+    "files.exclude": {
+      "**/target": true,
+      "**/node_modules": true,
+      "**/.context": false
+    },
+    "search.exclude": {
+      "**/target": true,
+      "**/node_modules": true,
+      "**/src/api/generated": true,
+      "**/docs-repo/.context": true
+    }
+  },
+  "extensions": {
+    "recommendations": ["github.copilot", "github.copilot-chat"]
+  }
+}

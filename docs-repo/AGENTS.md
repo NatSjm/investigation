@@ -1,0 +1,69 @@
+# AGENTS.md - Harbor documentation repository
+
+This repository is the **single source of truth** for functional and technical documentation of the Harbor
+platform (client meetings, Product 1 / Product 2 movements and projections, cover, market scenarios, stress tests,
+reports, administration). Confluence is a *publish target*; the code repositories `harbor-backend` (Kotlin/Spring,
+`be/`) and `harbor-frontend` (React/TypeScript, `fe/`) are *inputs*; Jira and the tests repository are *outputs*.
+
+The repository is one **Open Knowledge Format v0.2 bundle**: every document is a concept with YAML frontmatter and
+every folder has a generated `index.md`. Agents orient through indexes, never through directory listings.
+
+## Work task-scoped: build the context pack first
+
+For any task about a feature, calculation, change or ticket:
+
+```powershell
+./scripts/context-pack.ps1 -Task P1-001          # spec ID, calculation name, graph node or free text
+```
+
+It writes `.context/<task>.md` (git-ignored, ~300-500 lines): the spec with its trust badge, linked calculations
+(formula + worked examples), the depth-2 graph neighbourhood (endpoints, classes, tables, topics, FE routes with
+`file:line`), the OpenAPI operations and tables involved, existing work items / tests, and legacy pages that mention
+the subject. **Read the pack, not the repository.** Open anything else only to answer a question the pack leaves
+open, and then only the `file:line` it names. Skill: `.github/skills/task-context/SKILL.md`.
+
+## Read order when there is no pack (cheapest first)
+
+1. `index.md` -> the area's `index.md` (one line + trust badge per concept)
+2. `features/<context>/<ID>.md` - functional spec; business rules are `BR-<ID>-<n>`
+3. `domain/calculations/<name>.md` - formulas and worked examples (never re-derive from Kotlin)
+4. `contexts.yml` (context -> BE class-name prefixes, FE feature, spec prefix), then `generated/graph/REPO_MAP.md` ->
+   `generated/graph/<context>.md` - architectural graph (`context:`, `class:` nodes, `depends-on` / `persists-to` edges) with `file:line`
+5. `generated/be/*.md`, `generated/fe/*.md` - code maps (BE layers in `codebase-map.md`, one row per class in `components.md`,
+   API index with `Tag` = context, events, schema, jobs, routes, types, `@docs` tags)
+6. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` - contracts
+7. Only then source code in `../backend` / `../frontend`, smallest possible range, located via the graph, `components.md` or
+   `docs-tags.md`. The backend is layered (`core/src/main/kotlin/harbor/<layer>/`): start at the context's `manager/<Ctx>Manager.kt`.
+
+## Hard rules
+
+- Never hand-edit `generated/**`; it is published by the code repositories' CI. Fix the generator or the code.
+- Every concept under `architecture/`, `domain/`, `features/`, `generated/` has frontmatter with `type`; folders use
+  `index.md` (built by `scripts/build-index.ps1`), never `README.md`.
+- Provenance: set `generated: { by: copilot/<agent>, at: <ISO> }` on anything you write; cite `sources[]` with
+  `[^id]`; never write `verified.by: human:<id>` yourself; `status: draft` until a person verifies.
+- Traceability IDs are mandatory: specs `<CTX>-<NNN>` (`CLI MTG IMP P1 P2 COV MKT STR RPT ADM`), rules
+  `BR-<ID>-<n>`, calculations `snake_case`. Work items and test scenarios cite them.
+- Terminology from `domain/glossary.md`; English only in files (answer in the user's language in chat).
+- Synthetic data only: no real client names, identifiers or contract values in docs, fixtures or examples.
+- Keep outputs in files; chat summaries <= 15 lines. Specs <= 300 lines; diagrams <= 25 nodes.
+
+## Commands (PowerShell 7, no other dependencies)
+
+| Purpose | Command |
+|---|---|
+| Task context pack | `./scripts/context-pack.ps1 -Task <ID|name|text> [-Budget 400]` |
+| Validate bundle | `./scripts/okf-validate.ps1 -Strict`; `./scripts/validate-frontmatter.ps1`; `./scripts/validate-work-items.ps1` |
+| Rebuild indexes | `./scripts/build-index.ps1` (`-Check` in CI) |
+| Graph | `./scripts/gen-graph.ps1 [-Check]`; `./scripts/graph-query.ps1 -Node spec:P1-001 -Depth 2` / `-Files <paths>` / `-Find <text>` |
+| Changed code -> specs | `git -C ../backend diff --name-only main | % { "be/$_" } | ./scripts/map-paths.ps1` |
+| Analytics | `./scripts/coverage-matrix.ps1` (BR <-> story <-> scenario matrix into `generated/analytics/`) |
+
+Before finishing any edit: `okf-validate.ps1 -Strict`, `build-index.ps1`, and a dated entry in `log.md` for
+lifecycle events (created / deprecated / verified / regenerated).
+
+## Agents, prompts, skills
+
+Custom agents live in `.github/agents/` (`analyst`, `spec-writer`, `doc-sync`, `calc-auditor`, `test-designer`,
+`architect`, `impact-analyst`, `confluence-migrator`), one-shot prompts in `.github/prompts/`, procedures in
+`.github/skills/`. Copilot-specific notes are in `.github/copilot-instructions.md`. Layout table: `README.md`.

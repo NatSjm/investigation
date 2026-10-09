@@ -1,9 +1,9 @@
 {
-  "name": "bank-docs-copilot",
-  "displayName": "Bank Docs for Copilot",
-  "description": "MCP-free retrieval tools for GitHub Copilot: look up specs, generated code maps and spec-to-code locations instead of dumping files into context.",
-  "version": "0.1.0",
-  "publisher": "bank-internal",
+  "name": "harbor-docs-copilot",
+  "displayName": "Harbor Docs for Copilot",
+  "description": "MCP-free retrieval tools for GitHub Copilot: look up specs, generated code maps, spec-to-code locations and the architectural graph instead of dumping files into context.",
+  "version": "0.2.0",
+  "publisher": "harbor-internal",
   "private": true,
   "license": "UNLICENSED",
   "engines": { "vscode": "^1.95.0" },
@@ -13,25 +13,25 @@
   "main": "./out/extension.js",
   "contributes": {
     "configuration": {
-      "title": "Bank Docs",
+      "title": "Harbor Docs",
       "properties": {
-        "bankDocs.docsRepoPath": {
+        "harborDocs.docsRepoPath": {
           "type": "string",
-          "default": "../advisory-docs",
-          "description": "Path to the OKF docs bundle (absolute or relative to the first workspace folder)."
+          "default": "../docs-repo",
+          "description": "Path to the OKF docs bundle (harbor-docs), absolute or relative to the first workspace folder."
         },
-        "bankDocs.generatedPaths": {
+        "harborDocs.generatedPaths": {
           "type": "array",
           "items": { "type": "string" },
           "default": ["docs/_generated"],
-          "description": "Folders containing generated code maps (BE/FE), absolute or relative to workspace folders."
+          "description": "Folders containing generated code maps (backend/frontend), absolute or relative to workspace folders."
         },
-        "bankDocs.maxResultChars": {
+        "harborDocs.maxResultChars": {
           "type": "number",
           "default": 6000,
           "description": "Hard cap on characters returned by any tool call (token budget)."
         },
-        "bankDocs.graphPath": {
+        "harborDocs.graphPath": {
           "type": "string",
           "default": "",
           "description": "Path to graph.json from scripts/gen-graph.ps1. Empty = <docsRepoPath>/generated/graph/graph.json."
@@ -40,21 +40,21 @@
     },
     "chatParticipants": [
       {
-        "id": "bank.docs",
+        "id": "harbor.docs",
         "name": "docs",
-        "fullName": "Bank Docs",
+        "fullName": "Harbor Docs",
         "description": "Answer from specs and generated maps; cite spec IDs and file:line",
         "isSticky": true,
         "commands": [
           { "name": "spec", "description": "Find and summarise a spec/calculation by ID or keywords" },
-          { "name": "where", "description": "Where is a spec ID implemented (BE/FE)?" },
-          { "name": "impact", "description": "Blast radius of a change across BE/FE/docs" }
+          { "name": "where", "description": "Where is a spec ID implemented (backend/frontend)?" },
+          { "name": "impact", "description": "Blast radius of a change across backend, frontend and docs" }
         ]
       }
     ],
     "languageModelTools": [
       {
-        "name": "bank-docs_docsLookup",
+        "name": "harbor-docs_docsLookup",
         "toolReferenceName": "docsLookup",
         "displayName": "Docs lookup",
         "modelDescription": "Search the OKF docs bundle (index.md files first, then concept frontmatter) for a spec ID, calculation ID or keywords. Returns matching concept paths, type, status, trust badge and the first section of the best match. Use before reading any source code.",
@@ -63,46 +63,46 @@
         "inputSchema": {
           "type": "object",
           "properties": {
-            "query": { "type": "string", "description": "Spec ID (HEDGE-001), calculation ID (hedge_monthly_cashflow) or 2-5 keywords" },
+            "query": { "type": "string", "description": "Spec ID (P1-001), calculation ID (monthly_projection) or 2-5 keywords" },
             "section": { "type": "string", "description": "Optional heading to return instead of the first section, e.g. 'Business rules' or 'Computation'" }
           },
           "required": ["query"]
         }
       },
       {
-        "name": "bank-docs_codeMap",
+        "name": "harbor-docs_codeMap",
         "toolReferenceName": "codeMap",
         "displayName": "Generated code map",
-        "modelDescription": "Return rows from the generated code maps (api-index, events, db-schema, codebase-map, routes, types-index) that match a query. Cheap alternative to searching or opening source files. Returns table rows with file:line locations.",
+        "modelDescription": "Return rows from the generated code maps (api-index, events, db-schema, jobs, codebase-map, components, routes, types-index, docs-tags) that match a query. Cheap alternative to searching or opening source files. Returns table rows with file:line locations.",
         "canBeReferencedInPrompt": true,
         "icon": "$(map)",
         "inputSchema": {
           "type": "object",
           "properties": {
-            "map": { "type": "string", "enum": ["api-index", "events", "db-schema", "codebase-map", "routes", "types-index", "docs-tags", "any"], "description": "Which map to query" },
-            "query": { "type": "string", "description": "Path fragment, topic, table, module, component or symbol" }
+            "map": { "type": "string", "enum": ["api-index", "events", "db-schema", "jobs", "codebase-map", "components", "routes", "types-index", "docs-tags", "any"], "description": "Which map to query" },
+            "query": { "type": "string", "description": "Path fragment, operationId, topic, table, context, class, component or symbol" }
           },
           "required": ["query"]
         }
       },
       {
-        "name": "bank-docs_specToCode",
+        "name": "harbor-docs_specToCode",
         "toolReferenceName": "specToCode",
         "displayName": "Spec to code",
-        "modelDescription": "Resolve a spec or calculation ID to the exact code locations tagged with @docs <ID> in the BE and FE repos (from docs-tags.md). Returns declaration, summary and file:line so only those ranges need to be opened.",
+        "modelDescription": "Resolve a spec or calculation ID to the exact code locations tagged with @docs <ID> in the backend and frontend repos (from docs-tags.md). Returns declaration, summary and file:line so only those ranges need to be opened.",
         "canBeReferencedInPrompt": true,
         "icon": "$(references)",
         "inputSchema": {
           "type": "object",
-          "properties": { "id": { "type": "string", "description": "Spec or calculation ID" } },
+          "properties": { "id": { "type": "string", "description": "Spec or calculation ID, e.g. P1-001 or monthly_projection" } },
           "required": ["id"]
         }
       },
       {
-        "name": "bank-docs_impact",
+        "name": "harbor-docs_impact",
         "toolReferenceName": "impact",
         "displayName": "Impact (architectural graph)",
-        "modelDescription": "Blast radius of a change using the generated architectural graph (modules, endpoints, classes, Kafka topics, tables, FE features/routes, spec IDs). Input a node id (endpoint:GET /api/v1/..., topic:..., table:..., spec:HEDGE-001, class:HedgeFacade, feature:hedges), a substring, or a changed file path. Returns neighbours by depth, the edges, and the spec IDs affected. Use for impact analysis, Jira subtask scoping and test-case scoping instead of searching the code.",
+        "modelDescription": "Blast radius of a change using the generated architectural graph (contexts, endpoints, classes with depends-on edges, Kafka topics, tables, frontend features/routes, spec IDs). Input a node id (endpoint:GET /api/v1/session/product1/overview, topic:harbor.market.prices-updated, table:meeting_session, spec:P1-001, class:Product1Manager, context:product1, feature:product1), a substring, or a changed file path. Returns neighbours by depth, the edges, and the spec IDs affected. Use for impact analysis, work-item scoping and test-case scoping instead of searching the code.",
         "canBeReferencedInPrompt": true,
         "icon": "$(type-hierarchy)",
         "inputSchema": {

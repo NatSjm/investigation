@@ -2,8 +2,11 @@
 .SYNOPSIS
   Token-budget lint: fails when source files exceed a line cap (Copilot pulls whole files on #file / open editor).
   No external tools. Put in CI as a warn-first, then blocking gate. Grandfather existing offenders via -Baseline.
+  Used by harbor-backend (400 lines, *.kt) and harbor-frontend (300 lines, *.ts/*.tsx); copied to scripts/ by apply-kit.ps1.
 .EXAMPLE
-  ./check-file-size.ps1 -Root . -MaxLines 400 -Include *.kt,*.ts,*.tsx -Baseline .filesize-baseline.txt
+  ./check-file-size.ps1 -Root . -MaxLines 400 -Include *.kt -Baseline .filesize-baseline.txt
+.EXAMPLE
+  ./check-file-size.ps1 -Root . -MaxLines 300 -Include *.ts,*.tsx -Baseline .filesize-baseline.txt -WriteBaseline
 #>
 param(
     [string]$Root = '.',

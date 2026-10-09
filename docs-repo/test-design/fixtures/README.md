@@ -7,12 +7,16 @@ tests repo from a small seed described here.
 | Entity | Pattern | Example |
 |---|---|---|
 | Client id | `<WORD>-SYN` | `ACME-SYN` |
-| Client name | fictional company | "Acme Widgets sp. z o.o." |
-| Loan id | `L-<n>` | `L-1` |
-| Proposal id | UUID v4 fixed per fixture | `11111111-1111-4111-8111-111111111111` |
-| Amounts | round numbers | `1000000` |
-| Rates | 2 dp | `3.00` |
-| Dates | 2027+ (future, obviously fake) | `2027-01-01` |
-| Persons | none — use roles (`advisor`, `admin`) | — |
+| Client name | fictional company | "Acme Goods Ltd." |
+| External reference | `REG-<n>` | `REG-1001` |
+| Session id | UUID v4 fixed per fixture | `11111111-1111-4111-8111-111111111111` |
+| Scenario id | UUID v4 fixed per fixture, second block `2222` | `22222222-2222-4222-8222-222222222222` |
+| Quantities | round numbers | `100` |
+| Prices | 2 dp | `10.00` |
+| Percentages | ratio with 2-4 dp | `0.10` |
+| Months | 2027+ (future, obviously fake) | `2027-01` |
+| Cities / modes | the blueprint values only | `Aldmoor`, `ROAD` |
+| Persons | none — use roles (`representative`, `admin`) | — |
 
-Never copy production/UAT records, even anonymised.
+Never copy production or UAT records, even anonymised. Numbers in fixtures that back a `@calc` scenario are the
+worked examples of the corresponding `domain/calculations/*.md`.

@@ -15,7 +15,7 @@ Every non-reserved `.md` file has parseable YAML frontmatter with a non-empty `t
 Consequence: folder `README.md` files are **not allowed** inside the bundle — use `index.md`.
 
 ## Conventions (this repo)
-- One concept = one file; path minus `.md` is the concept id. Absolute bundle links: `/features/hedges/HEDGE-001.md`.
+- One concept = one file; path minus `.md` is the concept id. Absolute bundle links: `/features/product1/P1-001.md`.
 - `type` vocabulary (keep to these): `Feature Spec`, `Attested Computation`, `Glossary`, `Decision`,
   `Architecture View`, `Integration Map`, `HLD`, `Codebase Map`, `API Module`, `Kafka Topic`, `Table Group`,
   `API Surface`, `Document` (misc prose), `Imported Page` (Confluence quarantine).

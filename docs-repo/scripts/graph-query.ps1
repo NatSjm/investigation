@@ -5,11 +5,11 @@
 
 .EXAMPLE
   .\graph-query.ps1 -Node topic:market.rates.updated                 # neighbourhood, depth 2
-  .\graph-query.ps1 -Node spec:HEDGE-001 -Depth 3                    # spec -> code -> tables/topics/routes
-  .\graph-query.ps1 -Files hedges/src/main/kotlin/com/bank/adv/hedges/api/HedgeController.kt,src/features/hedges/index.ts
+  .\graph-query.ps1 -Node spec:P1-001 -Depth 3                    # spec -> code -> tables/topics/routes
+  .\graph-query.ps1 -Files core/src/main/kotlin/harbor/api/Product1Controller.kt,src/features/product1/index.ts
                                                                      # git diff --name-only | impacted nodes + specs
   .\graph-query.ps1 -Find proposal                                   # fuzzy node search
-  .\graph-query.ps1 -Node feature:hedges -Json                       # machine output
+  .\graph-query.ps1 -Node feature:product1 -Json                       # machine output
 #>
 param(
     [string]$Graph = (Join-Path (Split-Path $PSScriptRoot -Parent) 'generated/graph/graph.json'),

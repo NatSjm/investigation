@@ -11,11 +11,11 @@ generated: { by: human:<id>, at: <ISO> }
 
 - **Status**: Proposed | Accepted | Superseded by ADR-XXXX
 - **Date**: YYYY-MM-DD
-- **Deciders**: 
-- **Related**: features / HLDs
+- **Deciders**: harbor-platform-team
+- **Related**: feature specs (`<CTX>-<NNN>`), HLDs, other ADRs
 
 ## Context
-What forces are at play (business, technical, regulatory).
+What forces are at play (business, technical, operational). Name the modules, tables, topics or contracts affected.
 
 ## Decision
 What we decided, in one paragraph.
@@ -25,4 +25,4 @@ What we decided, in one paragraph.
 |---|---|---|
 
 ## Consequences
-Positive, negative, follow-ups.
+Positive, negative, follow-ups (specs to update, `docs-map.yml` entries, migrations).

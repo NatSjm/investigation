@@ -1,0 +1,18 @@
+# build output (also holds the generated OpenAPI sources - never commit them)
+target/
+**/target/
+
+# IDE
+*.iml
+.idea/
+*.swp
+
+# runtime
+*.log
+logs/
+.env
+init_docker_compose/.data/
+
+# OS
+.DS_Store
+Thumbs.db

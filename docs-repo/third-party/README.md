@@ -5,7 +5,7 @@
 | Open Knowledge Format specification v0.2 | [GoogleCloudPlatform/open-knowledge-format](https://github.com/GoogleCloudPlatform/open-knowledge-format) © Google LLC | Apache-2.0 (`okf-spec-LICENSE.md`) | `.github/skills/okf/reference/SPEC.md` (verbatim, provenance header added as an HTML comment) |
 | okf-skills scripts & templates (`okf_validate.py`, `okf_visualize.py`, `okf_init.py`, `templates/*.md`) | [scaccogatto/okf-skills](https://github.com/scaccogatto/okf-skills) © Marco Boffo | MIT (`okf-skills/LICENSE`, upstream `okf-skills/NOTICE`) | `.github/skills/okf*/scripts`, `.github/skills/okf/templates` |
 
-## Licence compliance summary (not legal advice - confirm with the bank's OSS policy owner)
+## Licence compliance summary (not legal advice - confirm with your organisation's OSS policy owner)
 
 | Obligation | MIT (okf-skills) | Apache-2.0 (OKF spec) | Status |
 |---|---|---|---|
@@ -16,7 +16,7 @@
 | Copyleft / share-alike | none | none | no obligation to publish our changes or open-source the docs repo |
 | Trademarks | - | no right to use Google marks beyond describing origin (§6) | we only name the format and link the source |
 
-Internal use inside the bank is not "distribution" in most readings, so even fewer obligations apply - but the notices
+Internal use inside the organisation is not "distribution" in most readings, so even fewer obligations apply - but the notices
 above are kept regardless, which is the conservative, audit-friendly position.
 
 The `SKILL.md`, prompt, agent and PowerShell files in `.github/` are rewritten for GitHub Copilot and are
@@ -24,4 +24,4 @@ this repository's own work; the Claude Code plugin manifest, Stop hook, MCP serv
 were **not** ported (see `.github/skills/okf/PORTING.md`).
 
 Security note: vendored Python requires `pyyaml` only. Pin by commit when adopting for real; review the
-scripts before enabling them in bank CI images.
+scripts before enabling them in your CI images.

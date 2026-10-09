@@ -1,0 +1,183 @@
+feature: P1-001
+project: HRB
+epic:
+  jira_key: null
+  summary: "Product 1 overview: four projection tables, cover charts, movement and peer modals"
+  description: |
+    Session-scoped Product 1 page showing the monthly projection as four cumulative tables
+    (by sub-product, by city, by direction, summary) with cover ratio charts, plus two modals
+    for modelled movements and peer simulation. Projections refresh on movements-loaded.
+    Spec: features/product1/P1-001.md
+  labels: [product1, docs-generated]
+stories:
+  - id: S1
+    jira_key: null
+    summary: "Return the four projection tables and cover series for a session"
+    component: vertical
+    description: |
+      GET /session/product1/overview returns bySubProduct, byDimension (CITY), byDirection and summary
+      for the session horizon, computed by monthly_projection from actual + modelled rows in the
+      session's price basis and parameter snapshot. Grouping in Kotlin (ADR-0003).
+    acceptance_criteria:
+      - rule: BR-P1-001-1
+        gherkin: |
+          Given an open product1 session "S-1" for client "ACME-SYN" with horizon 24 months
+          When the representative requests the Product 1 overview
+          Then the response contains tables "bySubProduct", "byDimension", "byDirection", "summary" with 24 rows each
+          And the response contains a cover ratio series per sub-product
+      - rule: BR-P1-001-3
+        gherkin: |
+          Given actual movement 2027-01 P1-STD Aldmoor IN quantity 100 unit price 12.50
+          And modelled movement 2027-01 P1-STD Aldmoor IN quantity 80 unit price 12.50
+          When the representative requests the Product 1 projection
+          Then the bySubProduct row for 2027-01 P1-STD has quantity 80
+      - rule: BR-P1-001-4
+        gherkin: |
+          Given session "S-1" has price basis NRL
+          And the parameter tariff.rate for product1/NRL was changed after the session started
+          When the representative requests the Product 1 projection
+          Then landed cost uses the tariff rate from the session parameter snapshot
+      - rule: BR-P1-001-10
+        gherkin: |
+          Given a projection row whose unrounded value is 1.005
+          When the representative requests the Product 1 projection
+          Then the value cell is 1.00
+    estimate: 8
+    labels: [product1, calc]
+    depends_on: []
+    subtasks:
+      - summary: "[DB] Flyway V5__projection.sql: projection_by_subproduct, projection_by_dimension, projection_by_direction, projection_summary"
+        estimate_hours: 3
+      - summary: "[BE] Product1Manager -> service/ProjectionService: merge actual + modelled rows, call utils/ProjectionAggregator, persist via dao/ProjectionDao"
+        estimate_hours: 8
+      - summary: "[BE] getProduct1Overview / getProduct1Projection in api/Product1Controller (generated Product1Api) delegating to manager/Product1Manager"
+        estimate_hours: 5
+      - summary: "[FE] Product1OverviewPage + ProjectionTables (4 tables) + CoverRatioChart via useProduct1Overview"
+        estimate_hours: 8
+      - summary: "[TEST] API scenarios P1-001 S1 + calc scenario outline from monthly_projection worked examples"
+        estimate_hours: 4
+  - id: S2
+    jira_key: null
+    summary: "Filter the city table with the city selector"
+    component: vertical
+    description: |
+      Query parameter city restricts byDimension to one hub; absent = all four; unknown = 400.
+    acceptance_criteria:
+      - rule: BR-P1-001-2
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative requests the Product 1 overview with city "Carrow"
+          Then the byDimension table contains only dimension value "Carrow"
+          And the other three tables are unchanged
+      - rule: BR-P1-001-2
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative requests the Product 1 overview with city "Nowhere"
+          Then the response status is 400
+    estimate: 2
+    labels: [product1]
+    depends_on: [S1]
+    subtasks:
+      - summary: "[BE] Product1Manager: city filter + validation against the four hubs"
+        estimate_hours: 2
+      - summary: "[FE] CitySelector wired to useProduct1Overview params"
+        estimate_hours: 3
+      - summary: "[TEST] city filter scenarios"
+        estimate_hours: 2
+  - id: S3
+    jira_key: null
+    summary: "Model movements per month in the movement modal"
+    component: vertical
+    description: |
+      PUT /session/product1/movements replaces the session's modelled movements, validates rows and
+      recomputes the four tables before responding.
+    acceptance_criteria:
+      - rule: BR-P1-001-5
+        gherkin: |
+          Given an open product1 session "S-1" with 3 modelled movement rows
+          When the representative saves 2 modelled movement rows
+          Then the session has exactly 2 modelled movement rows
+      - rule: BR-P1-001-5
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative saves a modelled movement with city "Nowhere"
+          Then the response status is 400
+          And no modelled movement row of the session was changed
+      - rule: BR-P1-001-6
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative saves a modelled movement 2027-02 P1-PRM Dunmere OUT quantity 50 unit price 20.00
+          Then the Product 1 projection returned immediately afterwards reflects quantity 50 for 2027-02 P1-PRM
+    estimate: 5
+    labels: [product1]
+    depends_on: [S1]
+    subtasks:
+      - summary: "[DB] Flyway V4__session_inputs.sql: session_movement_input"
+        estimate_hours: 2
+      - summary: "[BE] putProduct1Movements: validator/MovementInputValidator, replace-all via dao/SessionMovementInputDao, synchronous recompute in Product1Manager"
+        estimate_hours: 6
+      - summary: "[FE] MovementInputModal (month × grade × city × direction) via useProduct1Movements"
+        estimate_hours: 8
+      - summary: "[TEST] replace-all and validation scenarios"
+        estimate_hours: 3
+  - id: S4
+    jira_key: null
+    summary: "Run the peer simulation modal"
+    component: vertical
+    description: |
+      POST /session/product1/peer-simulation stores segment + scaling factor and returns a separate peer series.
+    acceptance_criteria:
+      - rule: BR-P1-001-7
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative runs the peer simulation for segment "SEG-A" with scaling factor 1.5
+          Then a session_peer_simulation row with scaling factor 1.5 exists for "S-1"
+          And the response contains a peer series
+          And the four projection tables are unchanged
+      - rule: BR-P1-001-7
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative runs the peer simulation for segment "SEG-A" with scaling factor 7.0
+          Then the response status is 400
+    estimate: 3
+    labels: [product1]
+    depends_on: [S1]
+    subtasks:
+      - summary: "[BE] postProduct1PeerSimulation: service/PeerSimulationService + utils/PeerBenchmark, dao/SessionPeerSimulationDao"
+        estimate_hours: 5
+      - summary: "[FE] PeerSimulationModal via usePeerSimulation1; peer series on chart"
+        estimate_hours: 5
+      - summary: "[TEST] peer simulation scenarios"
+        estimate_hours: 2
+  - id: S5
+    jira_key: null
+    summary: "Refresh projections of open sessions on movements-loaded"
+    component: integration
+    description: |
+      Product1ProjectionRefreshListener consumes harbor.imports.movements-loaded and recomputes
+      the projection of every OPEN product1 session of the affected clients; cover ratio is recomputed too.
+    acceptance_criteria:
+      - rule: BR-P1-001-8
+        gherkin: |
+          Given an open product1 session "S-1" for client "ACME-SYN" and a closed session "S-0" for the same client
+          When message from fixture "P1-001-movements-loaded.json" is published to "harbor.imports.movements-loaded"
+          Then the projection of session "S-1" is recomputed
+          And the projection of session "S-0" is unchanged
+      - rule: BR-P1-001-9
+        gherkin: |
+          Given an open product1 session "S-1" with a cover policy covering 50% of P1-STD
+          When the projection of session "S-1" is recomputed
+          Then the summary table carries cover ratio 0.5000 for every month with P1-STD value only
+    estimate: 3
+    labels: [product1, kafka]
+    depends_on: [S1]
+    subtasks:
+      - summary: "[INT] @KafkaListener event/Product1ProjectionRefreshListener (groupId harbor-product1) -> Product1Manager"
+        estimate_hours: 4
+      - summary: "[BE] service/ProjectionService: cover_ratio (utils/CoverRatioCalculator) into projection_summary on recompute"
+        estimate_hours: 3
+      - summary: "[TEST] consumer contract test with synthetic MovementsLoadedEvent"
+        estimate_hours: 3
+questions:
+  - "Should the peer simulation series be included in the report payload (RPT-001)?"
+  - "Is a modelled row with quantity 0 a deletion of the actual row or a zero movement?"

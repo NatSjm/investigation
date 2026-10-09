@@ -1,0 +1,756 @@
+openapi: 3.0.3
+info:
+  title: Harbor Backend API
+  version: 1.0.0
+  description: >-
+    REST contract of the Harbor meeting support application. Server interfaces (`harbor.api.generated.*Api`,
+    one per tag) and the frontend client are generated from this file. Every `/session/**` path is scoped
+    by the meeting session passed in the `X-Harbor-Session` header.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+tags:
+  - { name: clients, description: Client search, profile, overview indicators, role classification }
+  - { name: meetings, description: Meeting session lifecycle and session list }
+  - { name: product1, description: Product 1 (corridor VLD-NRL) overview, modals and projection }
+  - { name: product2, description: Product 2 (corridor CST-MRD) overview, modals and projection }
+  - { name: cover, description: Cover policies, cover ratio and quotes }
+  - { name: market, description: Market scenarios and baseline prices }
+  - { name: stress, description: Stress test per scenario and dimension }
+  - { name: reports, description: Meeting report payload and PDF }
+  - { name: admin, description: Parameter sets and import monitoring }
+
+paths:
+  /clients:
+    get:
+      operationId: searchClients
+      tags: [clients]
+      summary: Search clients (proxies client-registry, merges the local profile)
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 2 } }
+      responses:
+        '200': { description: Matching clients, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ClientSummary' } } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /clients/{clientId}:
+    parameters: [ { $ref: '#/components/parameters/ClientId' } ]
+    get:
+      operationId: getClient
+      tags: [clients]
+      summary: Client profile
+      responses:
+        '200': { description: Client, content: { application/json: { schema: { $ref: '#/components/schemas/Client' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /clients/{clientId}/overview:
+    parameters: [ { $ref: '#/components/parameters/ClientId' } ]
+    get:
+      operationId: getClientOverview
+      tags: [clients]
+      summary: Per product group - last-12-month volume, value, role, cover ratio, open sessions, sparkline data
+      responses:
+        '200': { description: Overview, content: { application/json: { schema: { $ref: '#/components/schemas/ClientOverview' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /clients/{clientId}/role:
+    parameters: [ { $ref: '#/components/parameters/ClientId' } ]
+    get:
+      operationId: getClientRole
+      tags: [clients]
+      summary: Algorithm result plus manual override history for a product group
+      parameters:
+        - { name: productGroup, in: query, required: true, schema: { $ref: '#/components/schemas/ProductGroup' } }
+      responses:
+        '200': { description: Role information, content: { application/json: { schema: { $ref: '#/components/schemas/ClientRoleInfo' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /clients/{clientId}/sessions:
+    parameters: [ { $ref: '#/components/parameters/ClientId' } ]
+    post:
+      operationId: createSession
+      tags: [meetings]
+      summary: Create a meeting session (CLIENT or PREPARATION)
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/CreateSessionRequest' } } } }
+      responses:
+        '201': { description: Session created, content: { application/json: { schema: { $ref: '#/components/schemas/SessionCreated' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /clients/{clientId}/cover-policies:
+    parameters: [ { $ref: '#/components/parameters/ClientId' } ]
+    get:
+      operationId: listCoverPolicies
+      tags: [cover]
+      summary: Cover policies of a client
+      responses:
+        '200': { description: Policies, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/CoverPolicy' } } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /sessions:
+    get:
+      operationId: listSessions
+      tags: [meetings]
+      summary: List sessions (Meetings page)
+      parameters:
+        - { name: clientId, in: query, required: false, schema: { type: string, format: uuid } }
+        - { name: status, in: query, required: false, schema: { $ref: '#/components/schemas/SessionStatus' } }
+        - { name: kind, in: query, required: false, schema: { $ref: '#/components/schemas/SessionKind' } }
+      responses:
+        '200': { description: Sessions, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Session' } } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /sessions/{sessionId}:
+    parameters: [ { $ref: '#/components/parameters/SessionId' } ]
+    get:
+      operationId: getSession
+      tags: [meetings]
+      summary: Session details
+      responses:
+        '200': { $ref: '#/components/responses/Session' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /sessions/{sessionId}/close:
+    parameters: [ { $ref: '#/components/parameters/SessionId' } ]
+    post:
+      operationId: closeSession
+      tags: [meetings]
+      summary: Close a session; emits harbor.meetings.session-closed
+      responses:
+        '200': { $ref: '#/components/responses/Session' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /sessions/{sessionId}/role:
+    parameters: [ { $ref: '#/components/parameters/SessionId' } ]
+    put:
+      operationId: setRoleOverride
+      tags: [meetings]
+      summary: Set a manual role override for the session
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/RoleOverrideRequest' } } } }
+      responses:
+        '200': { $ref: '#/components/responses/Session' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /sessions/{sessionId}/report:
+    parameters: [ { $ref: '#/components/parameters/SessionId' } ]
+    get:
+      operationId: getReport
+      tags: [reports]
+      summary: Report payload (JSON)
+      responses:
+        '200': { $ref: '#/components/responses/Report' }
+        default: { $ref: '#/components/responses/Problem' }
+    post:
+      operationId: regenerateReport
+      tags: [reports]
+      summary: Rebuild the report payload and request a new PDF
+      responses:
+        '202': { $ref: '#/components/responses/Report' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /sessions/{sessionId}/report.pdf:
+    parameters: [ { $ref: '#/components/parameters/SessionId' } ]
+    get:
+      operationId: downloadReportPdf
+      tags: [reports]
+      summary: Download the rendered PDF
+      responses:
+        '200': { description: PDF document, content: { application/pdf: { schema: { type: string, format: binary } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/product1/overview:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    get:
+      operationId: getProduct1Overview
+      tags: [product1]
+      summary: Product 1 overview - four tables + cover chart series, optional city filter
+      parameters:
+        - { name: city, in: query, required: false, schema: { type: string } }
+      responses:
+        '200': { $ref: '#/components/responses/ProductOverview' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/product1/movements:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    put:
+      operationId: putProduct1Movements
+      tags: [product1]
+      summary: Replace modelled movements per month (modal 1)
+      requestBody: { $ref: '#/components/requestBodies/MovementInputList' }
+      responses:
+        '200': { $ref: '#/components/responses/Projection' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/product1/peer-simulation:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    post:
+      operationId: postProduct1PeerSimulation
+      tags: [product1]
+      summary: Simulate movements of similar products at peer firms (modal 2)
+      requestBody: { $ref: '#/components/requestBodies/PeerSimulationRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/PeerSimulationResult' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/product1/projection:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    get:
+      operationId: getProduct1Projection
+      tags: [product1]
+      summary: The four projection tables
+      responses:
+        '200': { $ref: '#/components/responses/Projection' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/product2/overview:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    get:
+      operationId: getProduct2Overview
+      tags: [product2]
+      summary: Product 2 overview - four tables + cover chart series, optional transport mode filter
+      parameters:
+        - { name: transportMode, in: query, required: false, schema: { $ref: '#/components/schemas/TransportMode' } }
+      responses:
+        '200': { $ref: '#/components/responses/ProductOverview' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/product2/movements:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    put:
+      operationId: putProduct2Movements
+      tags: [product2]
+      summary: Replace modelled movements per month (modal 1)
+      requestBody: { $ref: '#/components/requestBodies/MovementInputList' }
+      responses:
+        '200': { $ref: '#/components/responses/Projection' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/product2/peer-simulation:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    post:
+      operationId: postProduct2PeerSimulation
+      tags: [product2]
+      summary: Simulate movements of similar products at peer firms (modal 2)
+      requestBody: { $ref: '#/components/requestBodies/PeerSimulationRequest' }
+      responses:
+        '200': { $ref: '#/components/responses/PeerSimulationResult' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/product2/projection:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    get:
+      operationId: getProduct2Projection
+      tags: [product2]
+      summary: The four projection tables
+      responses:
+        '200': { $ref: '#/components/responses/Projection' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/cover/summary:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    get:
+      operationId: getCoverSummary
+      tags: [cover]
+      summary: Cover ratio per month per sub-product
+      responses:
+        '200': { description: Cover summary, content: { application/json: { schema: { $ref: '#/components/schemas/CoverSummary' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/cover/quotes:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    post:
+      operationId: requestCoverQuote
+      tags: [cover]
+      summary: Request a quote for the uncovered part from cover-provider
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/CoverQuoteRequest' } } } }
+      responses:
+        '201': { description: Quote stored, content: { application/json: { schema: { $ref: '#/components/schemas/CoverQuote' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/scenarios:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    get:
+      operationId: listScenarios
+      tags: [market]
+      summary: Scenarios of the session
+      responses:
+        '200': { description: Scenarios, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Scenario' } } } } }
+        default: { $ref: '#/components/responses/Problem' }
+    post:
+      operationId: createScenario
+      tags: [market]
+      summary: Create a scenario
+      requestBody: { $ref: '#/components/requestBodies/ScenarioInput' }
+      responses:
+        '201': { $ref: '#/components/responses/Scenario' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/scenarios/{scenarioId}:
+    parameters:
+      - { $ref: '#/components/parameters/SessionHeader' }
+      - { name: scenarioId, in: path, required: true, schema: { type: string, format: uuid } }
+    put:
+      operationId: updateScenario
+      tags: [market]
+      summary: Update a scenario
+      requestBody: { $ref: '#/components/requestBodies/ScenarioInput' }
+      responses:
+        '200': { $ref: '#/components/responses/Scenario' }
+        default: { $ref: '#/components/responses/Problem' }
+    delete:
+      operationId: deleteScenario
+      tags: [market]
+      summary: Delete a scenario
+      responses:
+        '204': { description: Deleted }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/market/baseline:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    get:
+      operationId: getBaselinePrices
+      tags: [market]
+      summary: Baseline price and transport price curve (baseline_price, fed by market-data)
+      responses:
+        '200': { description: Baseline curve, content: { application/json: { schema: { $ref: '#/components/schemas/BaselinePrices' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /session/stress-test:
+    parameters: [ { $ref: '#/components/parameters/SessionHeader' } ]
+    post:
+      operationId: runStressTest
+      tags: [stress]
+      summary: Run the stress test for all scenarios of the session
+      responses:
+        '200': { $ref: '#/components/responses/StressTestResult' }
+        default: { $ref: '#/components/responses/Problem' }
+    get:
+      operationId: getStressTest
+      tags: [stress]
+      summary: Stored stress test result (dimension = CITY | TRANSPORT_MODE)
+      parameters:
+        - { name: dimension, in: query, required: false, schema: { $ref: '#/components/schemas/DimensionKind' } }
+      responses:
+        '200': { $ref: '#/components/responses/StressTestResult' }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/parameters:
+    get:
+      operationId: listParameters
+      tags: [admin]
+      summary: List parameters
+      parameters:
+        - { name: productGroup, in: query, required: false, schema: { $ref: '#/components/schemas/ProductGroup' } }
+      responses:
+        '200': { description: Parameters, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Parameter' } } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/parameters/{key}:
+    parameters:
+      - { name: key, in: path, required: true, schema: { type: string }, example: tariff.rate }
+    put:
+      operationId: upsertParameter
+      tags: [admin]
+      summary: Create or update a parameter value
+      requestBody: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ParameterUpsert' } } } }
+      responses:
+        '200': { description: Stored parameter, content: { application/json: { schema: { $ref: '#/components/schemas/Parameter' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/imports:
+    get:
+      operationId: listImportBatches
+      tags: [admin]
+      summary: Import batch monitor (newest first)
+      responses:
+        '200': { description: Batches, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/ImportBatch' } } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+  /admin/imports/run:
+    post:
+      operationId: triggerImport
+      tags: [admin]
+      summary: Trigger the daily movement import now
+      responses:
+        '202': { description: Import started, content: { application/json: { schema: { $ref: '#/components/schemas/ImportBatch' } } } }
+        default: { $ref: '#/components/responses/Problem' }
+
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+
+  parameters:
+    SessionHeader:
+      name: X-Harbor-Session
+      in: header
+      required: true
+      description: Id of the OPEN meeting session. Required on every `/session/**` path (428 if missing, 404 unknown, 409 closed).
+      schema: { type: string, format: uuid }
+    ClientId: { name: clientId, in: path, required: true, schema: { type: string, format: uuid } }
+    SessionId: { name: sessionId, in: path, required: true, schema: { type: string, format: uuid } }
+
+  requestBodies:
+    MovementInputList: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/MovementInputList' } } } }
+    PeerSimulationRequest: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/PeerSimulationRequest' } } } }
+    ScenarioInput: { required: true, content: { application/json: { schema: { $ref: '#/components/schemas/ScenarioInput' } } } }
+
+  responses:
+    Problem: { description: Error (RFC 7807), content: { application/problem+json: { schema: { $ref: '#/components/schemas/Problem' } } } }
+    Session: { description: Session, content: { application/json: { schema: { $ref: '#/components/schemas/Session' } } } }
+    ProductOverview: { description: Product overview, content: { application/json: { schema: { $ref: '#/components/schemas/ProductOverview' } } } }
+    Projection: { description: Projection tables, content: { application/json: { schema: { $ref: '#/components/schemas/Projection' } } } }
+    PeerSimulationResult: { description: Peer simulation series, content: { application/json: { schema: { $ref: '#/components/schemas/PeerSimulationResult' } } } }
+    Scenario: { description: Scenario, content: { application/json: { schema: { $ref: '#/components/schemas/Scenario' } } } }
+    StressTestResult: { description: Stress test result, content: { application/json: { schema: { $ref: '#/components/schemas/StressTestResult' } } } }
+    Report: { description: Report, content: { application/json: { schema: { $ref: '#/components/schemas/Report' } } } }
+
+  schemas:
+    # ---- enums and scalars ----
+    ProductGroup: { type: string, enum: [product1, product2] }
+    Direction: { type: string, enum: [IN, OUT] }
+    ClientRole: { type: string, enum: [IMPORTER, EXPORTER, MIXED, UNDETERMINED] }
+    TransportMode: { type: string, enum: [ROAD, RAIL, SEA, AIR] }
+    PriceBasis: { type: string, enum: [VLD, NRL, CST, MRD] }
+    SessionKind: { type: string, enum: [CLIENT, PREPARATION] }
+    SessionStatus: { type: string, enum: [OPEN, CLOSED] }
+    DimensionKind: { type: string, enum: [CITY, TRANSPORT_MODE] }
+    Period: { type: string, pattern: '^\d{4}-\d{2}$', description: Calendar month YYYY-MM, example: '2026-03' }
+    Money: { type: number, format: decimal, description: Scale 2, HALF_EVEN }
+    Ratio: { type: number, format: decimal, description: Scale 4, HALF_EVEN }
+    Problem:
+      type: object
+      properties: { type: { type: string }, title: { type: string }, status: { type: integer }, detail: { type: string }, instance: { type: string } }
+
+    # ---- clients ----
+    ClientSummary:
+      type: object
+      required: [clientId, externalRef, name]
+      properties:
+        clientId: { type: string, format: uuid }
+        externalRef: { type: string }
+        name: { type: string }
+        country: { type: string }
+        segment: { type: string }
+        productGroups: { type: array, items: { $ref: '#/components/schemas/ProductGroup' } }
+    Client:
+      allOf:
+        - $ref: '#/components/schemas/ClientSummary'
+        - type: object
+          properties:
+            createdAt: { type: string, format: date-time }
+            roles: { type: array, items: { $ref: '#/components/schemas/RoleDecision' } }
+    RoleDecision:
+      type: object
+      required: [productGroup, role, source, decidedAt]
+      properties:
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        role: { $ref: '#/components/schemas/ClientRole' }
+        source: { type: string, enum: [ALGORITHM, MANUAL] }
+        reason: { type: string }
+        decidedAt: { type: string, format: date-time }
+    ClientRoleInfo:
+      type: object
+      required: [clientId, productGroup, algorithm, history]
+      properties:
+        clientId: { type: string, format: uuid }
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        algorithm: { $ref: '#/components/schemas/RoleDecision' }
+        inboundQuantity: { $ref: '#/components/schemas/Money' }
+        outboundQuantity: { $ref: '#/components/schemas/Money' }
+        history: { type: array, items: { $ref: '#/components/schemas/RoleDecision' } }
+    SparklinePoint:
+      type: object
+      required: [period, value]
+      properties: { period: { $ref: '#/components/schemas/Period' }, value: { $ref: '#/components/schemas/Money' } }
+    ProductGroupIndicators:
+      type: object
+      required: [productGroup, volume12m, value12m, role, coverRatio, openSessions, sparkline]
+      properties:
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        volume12m: { $ref: '#/components/schemas/Money' }
+        value12m: { $ref: '#/components/schemas/Money' }
+        role: { $ref: '#/components/schemas/ClientRole' }
+        coverRatio: { $ref: '#/components/schemas/Ratio' }
+        openSessions: { type: integer }
+        sparkline: { type: array, items: { $ref: '#/components/schemas/SparklinePoint' } }
+    ClientOverview:
+      type: object
+      required: [client, productGroups]
+      properties:
+        client: { $ref: '#/components/schemas/Client' }
+        productGroups: { type: array, items: { $ref: '#/components/schemas/ProductGroupIndicators' } }
+
+    # ---- meetings ----
+    CreateSessionRequest:
+      type: object
+      required: [productGroup, kind]
+      properties:
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        kind: { $ref: '#/components/schemas/SessionKind' }
+        horizonMonths: { type: integer, minimum: 12, maximum: 60 }
+    SessionCreated:
+      type: object
+      required: [sessionId]
+      properties: { sessionId: { type: string, format: uuid } }
+    Session:
+      type: object
+      required: [sessionId, clientId, productGroup, kind, status, startedAt, horizonMonths]
+      properties:
+        sessionId: { type: string, format: uuid }
+        clientId: { type: string, format: uuid }
+        clientName: { type: string }
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        kind: { $ref: '#/components/schemas/SessionKind' }
+        status: { $ref: '#/components/schemas/SessionStatus' }
+        representativeId: { type: string }
+        startedAt: { type: string, format: date-time }
+        closedAt: { type: string, format: date-time }
+        horizonMonths: { type: integer }
+        roleOverride: { $ref: '#/components/schemas/ClientRole' }
+        roleOverrideReason: { type: string }
+        reportRequestedAt: { type: string, format: date-time }
+    RoleOverrideRequest:
+      type: object
+      required: [role, reason]
+      properties: { role: { $ref: '#/components/schemas/ClientRole' }, reason: { type: string, minLength: 3 } }
+
+    # ---- projection (product1 / product2) ----
+    ProjectionLine:
+      type: object
+      required: [period, key, quantity, value, landedCost, cumulativeValue]
+      properties:
+        period: { $ref: '#/components/schemas/Period' }
+        key: { type: string, description: Sub-product, dimension value or direction }
+        quantity: { $ref: '#/components/schemas/Money' }
+        value: { $ref: '#/components/schemas/Money' }
+        landedCost: { $ref: '#/components/schemas/Money' }
+        cumulativeValue: { $ref: '#/components/schemas/Money' }
+    SummaryLine:
+      type: object
+      required: [period, totalQuantity, totalValue, totalLandedCost, coverRatio, cumulativeValue]
+      properties:
+        period: { $ref: '#/components/schemas/Period' }
+        totalQuantity: { $ref: '#/components/schemas/Money' }
+        totalValue: { $ref: '#/components/schemas/Money' }
+        totalLandedCost: { $ref: '#/components/schemas/Money' }
+        coverRatio: { $ref: '#/components/schemas/Ratio' }
+        cumulativeValue: { $ref: '#/components/schemas/Money' }
+    ProjectionTables:
+      type: object
+      required: [bySubProduct, byDimension, byDirection, summary]
+      properties:
+        dimensionKind: { $ref: '#/components/schemas/DimensionKind' }
+        bySubProduct: { type: array, items: { $ref: '#/components/schemas/ProjectionLine' } }
+        byDimension: { type: array, items: { $ref: '#/components/schemas/ProjectionLine' } }
+        byDirection: { type: array, items: { $ref: '#/components/schemas/ProjectionLine' } }
+        summary: { type: array, items: { $ref: '#/components/schemas/SummaryLine' } }
+    CoverSeriesPoint:
+      type: object
+      required: [period, subProduct, coverRatio]
+      properties: { period: { $ref: '#/components/schemas/Period' }, subProduct: { type: string }, coverRatio: { $ref: '#/components/schemas/Ratio' } }
+    ProductOverview:
+      type: object
+      required: [sessionId, productGroup, tables, coverSeries]
+      properties:
+        sessionId: { type: string, format: uuid }
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        dimensionFilter: { type: string, description: City or transport mode the tables are restricted to }
+        role: { $ref: '#/components/schemas/ClientRole' }
+        tables: { $ref: '#/components/schemas/ProjectionTables' }
+        coverSeries: { type: array, items: { $ref: '#/components/schemas/CoverSeriesPoint' } }
+    Projection:
+      type: object
+      required: [sessionId, horizonMonths, tables]
+      properties:
+        sessionId: { type: string, format: uuid }
+        horizonMonths: { type: integer }
+        computedAt: { type: string, format: date-time }
+        tables: { $ref: '#/components/schemas/ProjectionTables' }
+    MovementInput:
+      type: object
+      required: [period, subProduct, direction, quantity, unitPrice]
+      properties:
+        period: { $ref: '#/components/schemas/Period' }
+        subProduct: { type: string }
+        city: { type: string }
+        transportMode: { $ref: '#/components/schemas/TransportMode' }
+        direction: { $ref: '#/components/schemas/Direction' }
+        quantity: { $ref: '#/components/schemas/Money' }
+        unitPrice: { $ref: '#/components/schemas/Money' }
+        priceBasis: { $ref: '#/components/schemas/PriceBasis' }
+    MovementInputList:
+      type: object
+      required: [movements]
+      properties: { movements: { type: array, items: { $ref: '#/components/schemas/MovementInput' } } }
+    PeerSimulationRequest:
+      type: object
+      required: [peerSegment]
+      properties: { peerSegment: { type: string }, scalingFactor: { $ref: '#/components/schemas/Ratio' } }
+    PeerSimulationResult:
+      type: object
+      required: [simulationId, peerSegment, scalingFactor, series]
+      properties:
+        simulationId: { type: string, format: uuid }
+        peerSegment: { type: string }
+        scalingFactor: { $ref: '#/components/schemas/Ratio' }
+        generatedAt: { type: string, format: date-time }
+        series: { type: array, items: { $ref: '#/components/schemas/SparklinePoint' } }
+
+    # ---- cover ----
+    CoverPolicy:
+      type: object
+      required: [policyId, clientId, productGroup, coveredShare, premiumRate, validFrom]
+      properties:
+        policyId: { type: string, format: uuid }
+        clientId: { type: string, format: uuid }
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        subProduct: { type: string }
+        coveredShare: { $ref: '#/components/schemas/Ratio' }
+        premiumRate: { $ref: '#/components/schemas/Ratio' }
+        validFrom: { type: string, format: date }
+        validTo: { type: string, format: date }
+    CoverMonth:
+      type: object
+      required: [period, subProduct, totalValue, coveredValue, coverRatio]
+      properties:
+        period: { $ref: '#/components/schemas/Period' }
+        subProduct: { type: string, description: Sub-product or ALL }
+        totalValue: { $ref: '#/components/schemas/Money' }
+        coveredValue: { $ref: '#/components/schemas/Money' }
+        coverRatio: { $ref: '#/components/schemas/Ratio' }
+    CoverSummary:
+      type: object
+      required: [sessionId, months, uncoveredValue]
+      properties:
+        sessionId: { type: string, format: uuid }
+        months: { type: array, items: { $ref: '#/components/schemas/CoverMonth' } }
+        uncoveredValue: { $ref: '#/components/schemas/Money' }
+    CoverQuoteRequest:
+      type: object
+      required: [subProducts]
+      properties:
+        subProducts: { type: array, items: { type: string } }
+        targetCoveredShare: { $ref: '#/components/schemas/Ratio' }
+        fromPeriod: { $ref: '#/components/schemas/Period' }
+        toPeriod: { $ref: '#/components/schemas/Period' }
+    CoverQuote:
+      type: object
+      required: [quoteId, sessionId, requestedAt, uncoveredValue, premium]
+      properties:
+        quoteId: { type: string, format: uuid }
+        sessionId: { type: string, format: uuid }
+        requestedAt: { type: string, format: date-time }
+        uncoveredValue: { $ref: '#/components/schemas/Money' }
+        premium: { $ref: '#/components/schemas/Money' }
+        providerRef: { type: string }
+
+    # ---- market ----
+    Shock:
+      type: object
+      required: [fromMonth, priceChangePct, transportChangePct]
+      properties:
+        fromMonth: { type: integer, minimum: 1, description: 1-based month index in the horizon }
+        priceChangePct: { $ref: '#/components/schemas/Ratio' }
+        transportChangePct: { $ref: '#/components/schemas/Ratio' }
+    ScenarioInput:
+      type: object
+      required: [name, kind, shocks]
+      properties:
+        name: { type: string }
+        kind: { type: string, enum: [REPRESENTATIVE, CLIENT] }
+        shocks: { type: array, items: { $ref: '#/components/schemas/Shock' } }
+    Scenario:
+      allOf:
+        - $ref: '#/components/schemas/ScenarioInput'
+        - type: object
+          required: [scenarioId, sessionId, createdAt]
+          properties:
+            scenarioId: { type: string, format: uuid }
+            sessionId: { type: string, format: uuid }
+            createdBy: { type: string }
+            createdAt: { type: string, format: date-time }
+    BaselinePricePoint:
+      type: object
+      required: [period, price, transportPrice]
+      properties: { period: { $ref: '#/components/schemas/Period' }, price: { $ref: '#/components/schemas/Money' }, transportPrice: { $ref: '#/components/schemas/Money' } }
+    BaselinePrices:
+      type: object
+      required: [productGroup, corridor, asOf, points]
+      properties:
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        corridor: { type: string, example: VLD-NRL }
+        asOf: { type: string, format: date-time }
+        points: { type: array, items: { $ref: '#/components/schemas/BaselinePricePoint' } }
+
+    # ---- stress ----
+    StressTestRow:
+      type: object
+      required: [period, dimensionValue, exposure, transportCostDelta, cumulativeExposure]
+      properties:
+        period: { $ref: '#/components/schemas/Period' }
+        dimensionValue: { type: string }
+        scenarioPrice: { $ref: '#/components/schemas/Money' }
+        scenarioTransportPrice: { $ref: '#/components/schemas/Money' }
+        exposure: { $ref: '#/components/schemas/Money' }
+        transportCostDelta: { $ref: '#/components/schemas/Money' }
+        cumulativeExposure: { $ref: '#/components/schemas/Money' }
+    StressTestScenarioResult:
+      type: object
+      required: [scenarioId, scenarioName, rows]
+      properties:
+        scenarioId: { type: string, format: uuid }
+        scenarioName: { type: string }
+        rows: { type: array, items: { $ref: '#/components/schemas/StressTestRow' } }
+    StressTestResult:
+      type: object
+      required: [sessionId, dimension, role, scenarios]
+      properties:
+        sessionId: { type: string, format: uuid }
+        dimension: { $ref: '#/components/schemas/DimensionKind' }
+        role: { $ref: '#/components/schemas/ClientRole' }
+        computedAt: { type: string, format: date-time }
+        scenarios: { type: array, items: { $ref: '#/components/schemas/StressTestScenarioResult' } }
+
+    # ---- reports ----
+    Report:
+      type: object
+      required: [sessionId, status, payload]
+      properties:
+        sessionId: { type: string, format: uuid }
+        status: { type: string, enum: [PENDING, REQUESTED, RENDERED, FAILED] }
+        payload: { type: object, additionalProperties: true, description: Report payload as stored in meeting_report.payload }
+        pdfAvailable: { type: boolean }
+        renderedAt: { type: string, format: date-time }
+
+    # ---- admin ----
+    Parameter:
+      type: object
+      required: [key, value, validFrom]
+      properties:
+        parameterId: { type: string, format: uuid }
+        key: { type: string, example: role.min_volume }
+        scopeProductGroup: { $ref: '#/components/schemas/ProductGroup' }
+        scopeCountry: { type: string }
+        scopeValue: { type: string, description: City or transport mode the value applies to }
+        value: { type: number, format: decimal }
+        validFrom: { type: string, format: date }
+        updatedBy: { type: string }
+        updatedAt: { type: string, format: date-time }
+    ParameterUpsert:
+      type: object
+      required: [value]
+      properties:
+        scopeProductGroup: { $ref: '#/components/schemas/ProductGroup' }
+        scopeCountry: { type: string }
+        scopeValue: { type: string }
+        value: { type: number, format: decimal }
+        validFrom: { type: string, format: date }
+    ImportBatch:
+      type: object
+      required: [batchId, sourceFile, receivedAt, rowsTotal, rowsRejected, status]
+      properties:
+        batchId: { type: string, format: uuid }
+        sourceFile: { type: string }
+        receivedAt: { type: string, format: date-time }
+        rowsTotal: { type: integer }
+        rowsRejected: { type: integer }
+        status: { type: string, enum: [RUNNING, DONE, FAILED] }

@@ -19,7 +19,7 @@
 
 .EXAMPLE
   .\gen-graph.ps1
-  .\gen-graph.ps1 -BeMaps ..\code-repo-kit\samples\be-mini\docs\_generated -FeMaps ..\code-repo-kit\samples\fe-mini\docs\_generated -Out generated\graph
+  .\gen-graph.ps1 -BeMaps ..\backend\docs\_generated -FeMaps ..\frontend\docs\_generated -Out generated\graph
   .\gen-graph.ps1 -Check        # exit 1 if outputs are stale (CI)
 #>
 param(
@@ -81,12 +81,6 @@ function Add-Edge([string]$From, [string]$To, [string]$Rel, [string]$Source = 'r
     if (-not $edges.ContainsKey($k)) { $edges[$k] = [ordered]@{ from = $From; to = $To; rel = $Rel; source = $Source } }
     elseif ($Source -ne 'regex-map') { $edges[$k].source = $Source }
 }
-function Module-Of([string]$Location, [string[]]$Modules) {
-    $first = ($Location -split '[\\/]')[0]
-    if ($Modules -contains $first) { return $first }
-    foreach ($m in $Modules) { if ($Location -match "[\\/]$([regex]::Escape($m))[\\/]") { return $m } }
-    return 'be-root'
-}
 function Feature-Of([string]$Location) {
     if ($Location -match 'src/features/([^/]+)/') { return $Matches[1] }
     return 'fe-app'
@@ -95,11 +89,11 @@ function File-Of([string]$Location) { ($Location -split ':')[0] }
 function Class-Of([string]$Location) { [IO.Path]::GetFileNameWithoutExtension((File-Of $Location)) }
 function Path-Tokens([string]$p) {
     $p = $p -replace '^<BASE>', '' -replace '^/api/v\d+', '' -replace '\{[^}]*\}', '{*}' -replace ':[A-Za-z_]+', '{*}'
-    return @($p.Trim('/') -split '/' | Where-Object { $_ })
+    return @($p.Trim('/') -split '/' | Where-Object { $_ })   # callers wrap the result in @() (single token unrolls to a string)
 }
-# FE call "<BASE>/{*}/proposals" matches BE "/api/v1/hedges/{clientId}/proposals" when FE tokens are a suffix of BE tokens.
+# FE call "/clients/{*}/overview" matches BE "/api/v1/clients/{clientId}/overview" when FE tokens are a suffix of BE tokens.
 function Url-Matches([string]$FeUrl, [string]$BePath) {
-    $f = Path-Tokens $FeUrl; $b = Path-Tokens $BePath
+    $f = @(Path-Tokens $FeUrl); $b = @(Path-Tokens $BePath)
     if ($f.Count -eq 0 -or $f.Count -gt $b.Count) { return $false }
     for ($i = 1; $i -le $f.Count; $i++) {
         $ft = $f[$f.Count - $i]; $bt = $b[$b.Count - $i]
@@ -109,61 +103,89 @@ function Url-Matches([string]$FeUrl, [string]$BePath) {
     return $true
 }
 
-# ---------- BE ----------
-$beModules = @()
-$beMap = Read-Text (Join-Path $BeMaps 'codebase-map.md')
-foreach ($r in Get-TableRows $beMap) {
-    $m = Strip $r['Module']; if (-not $m) { continue }
-    $beModules += $m
-    $entry = ($r['Entry points'] -replace '<br>', '; ')
-    $facade = if ($entry -match 'facades: `([^`]+)`') { $Matches[1] } else { '' }
-    $null = Add-Node "module:$m" 'module' $m $m 'be' $facade (Strip $r['Purpose'])
-    foreach ($kv in [regex]::Matches($entry, '(\w+): `([^`]+)`')) {
-        foreach ($f in ($kv.Groups[2].Value -split ';\s*')) {
-            $cls = Class-Of $f
-            $null = Add-Node "class:$cls" 'class' $cls $m 'be' $f ($kv.Groups[1].Value.TrimEnd('s'))
-            Add-Edge "module:$m" "class:$cls" 'contains'
-        }
+# ---------- bounded contexts (contexts.yml) ----------
+# Layered backend: the business context of a class is its NAME PREFIX (longest match wins), not its folder.
+$ctxPrefixes = @(); $ctxOfFeature = @{}; $ctxNames = @()
+foreach ($line in ((Read-Text (Join-Path $Root 'contexts.yml')) -split "`r?`n")) {
+    if ($line -notmatch '^\s{2}([\w-]+):\s*\{(.*)\}') { continue }
+    $c = $Matches[1]; $body = $Matches[2]; $ctxNames += $c
+    if ($body -match 'be:\s*\[([^\]]*)\]') { foreach ($p in ($Matches[1] -split ',')) { $p = $p.Trim().Trim('"', "'"); if ($p) { $ctxPrefixes += [pscustomobject]@{ Ctx = $c; Prefix = $p } } } }
+    if ($body -match 'fe:\s*"?([\w-]*)"?') { if ($Matches[1]) { $ctxOfFeature[$Matches[1]] = $c } }
+}
+$ctxPrefixes = @($ctxPrefixes | Sort-Object { $_.Prefix.Length } -Descending)
+function Context-Of([string]$Class) {
+    foreach ($p in $ctxPrefixes) { if ($Class.StartsWith($p.Prefix, [StringComparison]::Ordinal)) { return $p.Ctx } }
+    return 'shared'
+}
+
+# ---------- BE (components.md: one row per class with layer, deps, tables) ----------
+$graphLayers = @('api', 'manager', 'service', 'dao', 'event', 'job', 'client', 'utils', 'validator', 'component')
+$classInfo = @{}
+foreach ($r in Get-TableRows (Read-Text (Join-Path $BeMaps 'components.md'))) {
+    $cls = Strip $r['Class']; if (-not $cls) { continue }
+    $classInfo[$cls] = [pscustomobject]@{
+        Layer = Strip $r['Layer']; Loc = Strip $r['Location']; Kind = Strip $r['Kind']
+        Deps = @([regex]::Matches([string]$r['Depends on'], '`(\w+)`') | ForEach-Object { $_.Groups[1].Value })
+        Tables = @([regex]::Matches([string]$r['Tables'], '`(\w+)`') | ForEach-Object { $_.Groups[1].Value })
     }
+}
+foreach ($cls in $classInfo.Keys) {
+    $ci = $classInfo[$cls]; if ($ci.Layer -notin $graphLayers) { continue }
+    $ctx = Context-Of $cls
+    $null = Add-Node "class:$cls" 'class' $cls $ctx 'be' $ci.Loc "$($ci.Layer)$(if ($ci.Kind) { '; ' + $ci.Kind })"
+    if ($ctx -ne 'shared') {
+        $null = Add-Node "context:$ctx" 'context' $ctx $ctx 'be'
+        Add-Edge "context:$ctx" "class:$cls" 'contains'
+        if ($ci.Layer -eq 'manager') { $nodes["context:$ctx"].location = File-Of $ci.Loc; $nodes["context:$ctx"].note = "entry point $cls (manager)" }
+    }
+}
+# constructor injection between architectural classes (controller -> manager -> service -> dao / utils / client)
+foreach ($cls in $classInfo.Keys) {
+    if (-not $nodes.Contains("class:$cls")) { continue }
+    foreach ($d in $classInfo[$cls].Deps) { if ($nodes.Contains("class:$d")) { Add-Edge "class:$cls" "class:$d" 'depends-on' } }
 }
 foreach ($r in Get-TableRows (Read-Text (Join-Path $BeMaps 'api-index.md'))) {
     $path = Strip $r['Path']; if (-not $path) { continue }
-    $loc = Strip $r['Location']; $mod = Module-Of $loc $beModules
-    $handler = Strip $r['Handler']; $cls = ($handler -split '\.')[0]
+    $loc = Strip $r['Location']; $handler = Strip $r['Handler']
+    if ($handler -match '^_') { $cls = ''; $ctx = if ($r['Tag']) { Strip $r['Tag'] } else { 'shared' } } else { $cls = ($handler -split '\.')[0]; $ctx = Context-Of $cls }
     $id = "endpoint:$($r['Method']) $path"
-    $null = Add-Node $id 'endpoint' "$($r['Method']) $path" $mod 'be' $loc "handler $handler; params $($r['Params'])"
-    $null = Add-Node "class:$cls" 'class' $cls $mod 'be' (File-Of $loc) 'controller'
-    Add-Edge $id "class:$cls" 'handled-by'
-    Add-Edge "module:$mod" $id 'exposes'
+    $null = Add-Node $id 'endpoint' "$($r['Method']) $path" $ctx 'be' $loc "operationId $(Strip $r['operationId']); handler $handler; params $($r['Params'])"
+    if ($cls) { $null = Add-Node "class:$cls" 'class' $cls $ctx 'be' (File-Of $loc) 'api'; Add-Edge $id "class:$cls" 'handled-by' }
+    if ($ctx -ne 'shared') { $null = Add-Node "context:$ctx" 'context' $ctx $ctx 'be'; Add-Edge "context:$ctx" $id 'exposes' }
 }
 foreach ($r in Get-TableRows (Read-Text (Join-Path $BeMaps 'events.md'))) {
     $t = Strip $r['Topic']; if (-not $t) { continue }
     $tid = "topic:$t"
     $null = Add-Node $tid 'topic' $t 'external' 'kafka'
     foreach ($m in [regex]::Matches($r['Producers (this repo)'], '`?(\w+)`?\s*\(([^,)]+)')) {
-        $loc = $m.Groups[2].Value.Trim(); $mod = Module-Of $loc $beModules; $cls = Class-Of $loc
-        $null = Add-Node "class:$cls" 'class' $cls $mod 'be' (File-Of $loc) 'producer'
+        $loc = $m.Groups[2].Value.Trim(); $cls = Class-Of $loc; $ctx = Context-Of $cls
+        $null = Add-Node "class:$cls" 'class' $cls $ctx 'be' (File-Of $loc) 'event; producer'
         Add-Edge "class:$cls" $tid 'produces'
-        $nodes[$tid].community = $mod; $nodes[$tid].repo = 'be'
+        $nodes[$tid].community = $ctx; $nodes[$tid].repo = 'be'
     }
     foreach ($m in [regex]::Matches($r['Consumers (this repo)'], '`?(\w+)`?\s*\(([^,)]+)')) {
-        $loc = $m.Groups[2].Value.Trim(); $mod = Module-Of $loc $beModules; $cls = Class-Of $loc
-        $null = Add-Node "class:$cls" 'class' $cls $mod 'be' (File-Of $loc) 'listener'
+        $loc = $m.Groups[2].Value.Trim(); $cls = Class-Of $loc; $ctx = Context-Of $cls
+        $null = Add-Node "class:$cls" 'class' $cls $ctx 'be' (File-Of $loc) 'event; listener'
         Add-Edge $tid "class:$cls" 'consumed-by'
-        if ($nodes[$tid].community -eq 'external') { $nodes[$tid].community = $mod; $nodes[$tid].repo = 'be' }
+        if ($nodes[$tid].community -eq 'external') { $nodes[$tid].community = $ctx; $nodes[$tid].repo = 'be' }
     }
     if ($r['Producers (this repo)'] -match '_external_') { $nodes[$tid].note = 'produced outside this repo' }
     if ($r['Consumers (this repo)'] -match '_external_') { $nodes[$tid].note = (($nodes[$tid].note, 'consumed outside this repo') | Where-Object { $_ }) -join '; ' }
 }
 $schema = Read-Text (Join-Path $BeMaps 'db-schema.md')
 foreach ($m in [regex]::Matches($schema, '(?m)^## `(\w+)`\s*\r?\nCreated in `([^`]+)`')) {
-    $t = $m.Groups[1].Value; $loc = $m.Groups[2].Value; $mod = Module-Of $loc $beModules
-    $cols = @((Get-TableRows (Get-Section $schema "``$t``")) | ForEach-Object { Strip $_['Column'] })
-    $null = Add-Node "table:$t" 'table' $t $mod 'be' $loc "$($cols.Count) columns: $($cols -join ', ')"
-    Add-Edge "module:$mod" "table:$t" 'owns'
-    # table -> class heuristic: PascalCase(table) prefixes a known class name (Entity/Repository)
-    $pascal = (($t -split '_') | ForEach-Object { $_.Substring(0,1).ToUpper() + $_.Substring(1) }) -join ''
-    foreach ($n in @($nodes.Values | Where-Object { $_.kind -eq 'class' -and $_.label -like "$pascal*" })) { Add-Edge $n.id "table:$t" 'persists-to' 'name-heuristic' }
+    $t = $m.Groups[1].Value; $loc = $m.Groups[2].Value
+    $section = Get-Section $schema "``$t``"
+    $cols = @((Get-TableRows $section) | ForEach-Object { Strip $_['Column'] })
+    # classes touching the table: components.md (exact: @Table, SQL, Spring Data entity) first, db-schema "Used in" second
+    $touch = @($classInfo.Keys | Where-Object { $classInfo[$_].Tables -contains $t })
+    if (-not $touch) { $touch = @([regex]::Matches(([regex]::Match($section, '(?m)^Used in:\s*(.+)$').Groups[1].Value), '`(\w+)`') | ForEach-Object { $_.Groups[1].Value }) }
+    $daos = @($touch | Where-Object { $classInfo.ContainsKey($_) -and $classInfo[$_].Layer -eq 'dao' })
+    $ownerCls = @($daos + $touch | Where-Object { (Context-Of $_) -ne 'shared' } | Select-Object -First 1)
+    $ctx = if ($ownerCls) { Context-Of $ownerCls[0] } else { 'shared' }
+    $null = Add-Node "table:$t" 'table' $t $ctx 'be' $loc "$($cols.Count) columns: $($cols -join ', ')"
+    if ($ctx -ne 'shared') { $null = Add-Node "context:$ctx" 'context' $ctx $ctx 'be'; Add-Edge "context:$ctx" "table:$t" 'owns' }
+    foreach ($c in $touch) { if ($nodes.Contains("class:$c")) { Add-Edge "class:$c" "table:$t" 'persists-to' } }
 }
 foreach ($m in [regex]::Matches($schema, '(?m)^\s*(\w+)\s*\|[|o}{\-]+\s*(\w+)\s*:\s*(\w+)')) {
     Add-Edge "table:$($m.Groups[2].Value)" "table:$($m.Groups[1].Value)" "fk $($m.Groups[3].Value)"
@@ -198,7 +220,7 @@ function Add-Tags([string]$File, [string]$Repo) {
     foreach ($r in Get-TableRows (Read-Text $File)) {
         $id = Strip $r['Spec ID']; if (-not $id) { continue }
         $loc = Strip $r['Location']
-        $comm = if ($Repo -eq 'be') { Module-Of $loc $beModules } else { Feature-Of $loc }
+        $comm = if ($Repo -eq 'be') { Context-Of (Class-Of $loc) } else { Feature-Of $loc }
         $kind = if ($id -match '^[a-z][a-z0-9_]+$') { 'calculation' } else { 'spec' }
         $null = Add-Node "spec:$id" $kind $id 'docs' 'docs'
         $target = if ($Repo -eq 'be') { "class:$(Class-Of $loc)" } else { "feature:$comm" }
@@ -229,7 +251,12 @@ foreach ($x in @(@{ f = 'graph-export-be.json'; d = $BeMaps }, @{ f = 'graph-exp
     $p = Join-Path $x.d $x.f
     if (-not (Test-Path $p)) { continue }
     $j = Read-Text $p | ConvertFrom-Json
-    foreach ($n in @($j.nodes)) { $null = Add-Node $n.id $n.kind $n.label $n.community $n.repo ([string]$n.location) ([string]$n.note) }
+    foreach ($n in @($j.nodes)) {
+        # the BE export leaves the community empty: the bounded context comes from the class-name prefix (contexts.yml)
+        $comm = [string]$n.community
+        if (-not $comm) { $comm = if ($n.kind -eq 'class') { Context-Of $n.label } elseif ($n.kind -eq 'topic') { 'external' } else { 'shared' } }
+        $null = Add-Node $n.id $n.kind $n.label $comm $n.repo ([string]$n.location) ([string]$n.note)
+    }
     foreach ($e in @($j.edges)) { Add-Edge $e.from $e.to $e.rel 'export' }
 }
 # Fold exported FE "url:METHOD path" nodes onto the matching BE endpoint (method + suffix match); unmatched ones stay as url nodes.
@@ -304,12 +331,12 @@ foreach ($g in $communities) {
     $members = @($g.Group | Sort-Object @{ e = { -$_.rank } }, id)
     $ids = @($members | ForEach-Object { $_.id })
     $sb = New-Object System.Text.StringBuilder
-    $head = $members | Where-Object { $_.kind -in 'module', 'feature' } | Select-Object -First 1
+    $head = $members | Where-Object { $_.kind -in 'context', 'feature' } | Select-Object -First 1
     $desc = if ($head -and $head.note) { $head.note } else { "Neighbourhood of $comm" }
     [void]$sb.Append((Header "Graph: $comm ($repo)" $desc))
     [void]$sb.AppendLine("$($members.Count) nodes. Read this file instead of walking the module; open only the ``file:line`` you need.")
     [void]$sb.AppendLine()
-    foreach ($kg in ($members | Group-Object -Property kind | Sort-Object { @('module','feature','endpoint','route','class','topic','table','url','unknown').IndexOf($_.Name) })) {
+    foreach ($kg in ($members | Group-Object -Property kind | Sort-Object { @('context','feature','endpoint','route','class','topic','table','url','unknown').IndexOf($_.Name) })) {
         $plural = if ($kg.Name -eq 'class') { 'classes' } else { "$($kg.Name)s" }
         [void]$sb.AppendLine("## $plural")
         foreach ($n in $kg.Group) { [void]$sb.AppendLine("- $(Fmt $n)") }
@@ -334,7 +361,7 @@ $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("$($nodes.Count) nodes, $($edges.Count) edges, $($communities.Count) communities, $cid connected component(s). Budget $Budget lines; lower-ranked nodes live only in ``<community>.md`` / ``graph.json``.")
 [void]$sb.AppendLine()
 [void]$sb.AppendLine('## Communities')
-foreach ($g in $communities) { $h = $g.Group | Where-Object { $_.kind -in 'module','feature' } | Select-Object -First 1; $d = if ($h -and $h.note) { " - $($h.note)" } else { '' }; $rp = (@($g.Group | ForEach-Object { $_.repo } | Sort-Object -Unique)) -join '+'; [void]$sb.AppendLine("- [$($g.Name)]($($g.Name).md) ($rp, $($g.Count) nodes)$d") }
+foreach ($g in $communities) { $h = $g.Group | Where-Object { $_.kind -in 'context','feature' } | Select-Object -First 1; $d = if ($h -and $h.note) { " - $($h.note)" } else { '' }; $rp = (@($g.Group | ForEach-Object { $_.repo } | Sort-Object -Unique)) -join '+'; [void]$sb.AppendLine("- [$($g.Name)]($($g.Name).md) ($rp, $($g.Count) nodes)$d") }
 [void]$sb.AppendLine()
 [void]$sb.AppendLine('## Top nodes (PageRank)')
 $used = $sb.ToString().Split("`n").Count
@@ -381,8 +408,12 @@ if ($Check) {
         $p = Join-Path $OutDir $k
         if (-not (Test-Path $p) -or (Norm (Read-Text $p)) -ne (Norm $files[$k])) { $stale += $k }
     }
+    # community files of contexts that no longer exist are stale too
+    if (Test-Path $OutDir) { $stale += @(Get-ChildItem $OutDir -File -Filter '*.md' | Where-Object { $_.Name -ne 'index.md' -and -not $files.Contains($_.Name) } | ForEach-Object { "$($_.Name) (orphan)" }) }
     if ($stale.Count) { Write-Host "STALE: $($stale -join ', ')  (run scripts/gen-graph.ps1)" -ForegroundColor Red; exit 1 }
     Write-Host "graph up to date ($($nodes.Count) nodes, $($edges.Count) edges)"; exit 0
 }
 foreach ($k in $files.Keys) { Write-Text (Join-Path $OutDir $k) $files[$k] }
+# prune community files of contexts that disappeared (renamed/merged contexts, restructured repos)
+if (Test-Path $OutDir) { Get-ChildItem $OutDir -File -Filter '*.md' | Where-Object { $_.Name -ne 'index.md' -and -not $files.Contains($_.Name) } | ForEach-Object { [IO.File]::Delete($_.FullName); Write-Host "  removed orphan $($_.Name)" } }
 Write-Host "graph: $($nodes.Count) nodes, $($edges.Count) edges, $($communities.Count) communities -> $OutDir"

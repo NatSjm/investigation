@@ -1,9 +1,15 @@
 ---
 applyTo: "**/src/test/**"
+description: "Unit and integration tests: worked-example naming, synthetic fixtures, small JSON, spec IDs in test names."
 ---
 # Tests
 
-- Unit tests next to calculations are the canonical worked examples; name them `<calcId>__<case>` so the docs repo can reference them.
-- Fixtures: synthetic clients only (`CLIENT-TEST-*`), notional values in round thousands, no real rates or names.
-- Keep fixtures small (< 100 lines JSON); for larger scenarios build data in code with a builder.
-- When fixing a bug, add the failing case to the test first and mention the spec ID in the test name or KDoc.
+- Unit tests of calculations (`core/src/test/kotlin/harbor/utils/<Class>Test.kt`) are the canonical worked examples; name them `<calculation_id>__<case>`
+  (e.g. `monthly_projection__importer_two_cities`) so `harbor-docs/domain/calculations/*.md` can quote them.
+- Fixtures: synthetic clients only (`CLIENT-TEST-*`), quantities and prices in round numbers, corridor codes from the
+  domain (`VLD`, `NRL`, `CST`, `MRD`), no real company names or prices.
+- Keep JSON/CSV fixtures under 100 lines; for larger scenarios build data in code with a builder.
+- Controller tests go through the generated `*Api` interface contract (`MockMvc` against the OpenAPI paths) and send
+  `X-Harbor-Session` for `/session/**` operations.
+- Manager/service tests mock the injected dependencies listed in `components.md`. When fixing a bug, add the failing case first and mention the spec ID (`P1-001`, `STR-001`, ...) in the test name or KDoc.
+- `GraphExportTest` (profile `graph-export`) runs only with `-Ddocs.graph=true`; never make it part of the default test loop.

@@ -1,0 +1,25 @@
+{
+  "mappings": [
+    {
+      "name": "document-service: synchronous render request",
+      "request": { "method": "POST", "urlPath": "/render" },
+      "response": {
+        "status": 202,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": { "documentId": "doc-local-0001" }
+      }
+    },
+    {
+      "name": "document-service: download a rendered document",
+      "request": { "method": "GET", "urlPathPattern": "/documents/.+" },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/pdf",
+          "Content-Disposition": "attachment; filename=meeting-report.pdf"
+        },
+        "body": "%PDF-1.4\n% synthetic placeholder document served by WireMock\n%%EOF\n"
+      }
+    }
+  ]
+}

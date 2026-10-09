@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Traceability index: every KDoc/JSDoc `@docs <ID>` tag -> declaration signature + first summary line + file:line.
-  Lets agents jump from a spec ID (HEDGE-001, hedge_monthly_cashflow) straight to the code without searching.
+  Lets agents jump from a spec ID (P1-001, monthly_projection) straight to the code without searching.
 #>
 param(
     [string]$Root = '.',

@@ -1,0 +1,54 @@
+{
+  "mappings": [
+    {
+      "name": "market-data: baseline price curve",
+      "request": { "method": "GET", "urlPathPattern": "/prices/(product1|product2)/[A-Z]{3}-[A-Z]{3}" },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "asOf": "2026-10-01T06:00:00Z",
+          "points": [
+            { "period": "2026-11", "price": 10.00 },
+            { "period": "2026-12", "price": 10.20 },
+            { "period": "2027-01", "price": 10.40 },
+            { "period": "2027-02", "price": 10.40 },
+            { "period": "2027-03", "price": 10.60 },
+            { "period": "2027-04", "price": 10.60 },
+            { "period": "2027-05", "price": 10.80 },
+            { "period": "2027-06", "price": 10.80 },
+            { "period": "2027-07", "price": 11.00 },
+            { "period": "2027-08", "price": 11.00 },
+            { "period": "2027-09", "price": 11.20 },
+            { "period": "2027-10", "price": 11.20 }
+          ]
+        }
+      }
+    },
+    {
+      "name": "market-data: transport price curve",
+      "request": { "method": "GET", "urlPathPattern": "/transport-prices/(product1|product2)/[A-Z]{3}-[A-Z]{3}" },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "asOf": "2026-10-01T06:00:00Z",
+          "points": [
+            { "period": "2026-11", "price": 2.00 },
+            { "period": "2026-12", "price": 2.00 },
+            { "period": "2027-01", "price": 2.10 },
+            { "period": "2027-02", "price": 2.10 },
+            { "period": "2027-03", "price": 2.20 },
+            { "period": "2027-04", "price": 2.20 },
+            { "period": "2027-05", "price": 2.20 },
+            { "period": "2027-06", "price": 2.30 },
+            { "period": "2027-07", "price": 2.30 },
+            { "period": "2027-08", "price": 2.30 },
+            { "period": "2027-09", "price": 2.40 },
+            { "period": "2027-10", "price": 2.40 }
+          ]
+        }
+      }
+    }
+  ]
+}

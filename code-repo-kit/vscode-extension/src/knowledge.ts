@@ -12,7 +12,7 @@ export interface Concept {
   status?: string;
   trust: 'human-reviewed' | 'machine-confirmed' | 'unverified' | 'STALE';
   description?: string;  // from the folder index.md line, if present
-  aliases: string[];     // frontmatter aliases (e.g. Czech terms) so non-English queries still match
+  aliases: string[];     // frontmatter aliases (e.g. source-language terms) so non-English queries still match
   body: string;          // full markdown without frontmatter
 }
 
@@ -143,14 +143,14 @@ export function clip(text: string, max: number): string {
 // --- architectural graph (generated/graph/graph.json from scripts/gen-graph.ps1) --------------
 
 export interface GraphNode { id: string; kind: string; label: string; community: string; repo: string; location?: string; note?: string; rank?: number; degree?: number }
-export interface GraphEdge { from: string; to: string; rel: string; source?: string }
-export interface Graph { nodes: GraphNode[]; edges: GraphEdge[]; byId: Map<string, GraphNode>; adj: Map<string, GraphEdge[]> }
+export interface GraphLink { from: string; to: string; rel: string; source?: string }
+export interface Graph { nodes: GraphNode[]; edges: GraphLink[]; byId: Map<string, GraphNode>; adj: Map<string, GraphLink[]> }
 
 export function loadGraph(file: string): Graph | undefined {
   if (!fs.existsSync(file)) return undefined;
-  const raw = JSON.parse(fs.readFileSync(file, 'utf8')) as { nodes: GraphNode[]; edges: GraphEdge[] };
+  const raw = JSON.parse(fs.readFileSync(file, 'utf8')) as { nodes: GraphNode[]; edges: GraphLink[] };
   const byId = new Map(raw.nodes.map(n => [n.id, n]));
-  const adj = new Map<string, GraphEdge[]>();
+  const adj = new Map<string, GraphLink[]>();
   for (const e of raw.edges) {
     (adj.get(e.from) ?? adj.set(e.from, []).get(e.from)!).push(e);
     (adj.get(e.to) ?? adj.set(e.to, []).get(e.to)!).push(e);
@@ -168,10 +168,10 @@ export function resolveNodes(g: Graph, query: string): GraphNode[] {
 }
 
 /** Undirected BFS; returns nodes grouped by depth and the touched edges - the blast radius. */
-export function impact(g: Graph, start: GraphNode[], depth: number): { levels: GraphNode[][]; edges: GraphEdge[] } {
+export function impact(g: Graph, start: GraphNode[], depth: number): { levels: GraphNode[][]; edges: GraphLink[] } {
   const dist = new Map<string, number>(start.map(n => [n.id, 0]));
   const queue = start.map(n => n.id);
-  const touched = new Set<GraphEdge>();
+  const touched = new Set<GraphLink>();
   while (queue.length) {
     const c = queue.shift()!;
     const d = dist.get(c)!;
@@ -188,7 +188,7 @@ export function impact(g: Graph, start: GraphNode[], depth: number): { levels: G
   return { levels, edges: [...touched].sort((a, b) => (a.rel + a.from + a.to).localeCompare(b.rel + b.from + b.to)) };
 }
 
-export function renderImpact(res: { levels: GraphNode[][]; edges: GraphEdge[] }): string {
+export function renderImpact(res: { levels: GraphNode[][]; edges: GraphLink[] }): string {
   const fmt = (n: GraphNode) => `- \`${n.id}\` [${n.community}]${n.location ? ` - \`${n.location}\`` : ''}${n.note ? ` - ${n.note}` : ''}`;
   const out: string[] = [];
   res.levels.forEach((l, d) => { if (l?.length) out.push(`#### depth ${d}`, ...l.map(fmt)); });

@@ -1,0 +1,68 @@
+{
+  "_meta": {
+    "feature": "STR-001",
+    "purpose": "stress-run",
+    "synthetic": true,
+    "calculation": "domain/calculations/stress_test_monthly.md",
+    "note": "Numbers are the worked examples 1-2 of stress_test_monthly (importer, uncovered 100 of 150 units)."
+  },
+  "client": { "id": "ACME-SYN", "externalRef": "REG-1001", "name": "Acme Goods Ltd.", "role": "IMPORTER" },
+  "session": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "productGroup": "product1",
+    "kind": "CLIENT",
+    "priceBasis": "VLD",
+    "horizonMonths": 12,
+    "parameterSnapshot": {
+      "role.importer_threshold": 0.65,
+      "role.exporter_threshold": 0.35,
+      "role.min_volume": 100,
+      "stress.rounding_scale": 2
+    }
+  },
+  "baseline": [
+    { "period": "2027-01", "price": 10.00, "transportPrice": 2.00 },
+    { "period": "2027-02", "price": 10.00, "transportPrice": 2.00 }
+  ],
+  "projectionByDimension": [
+    { "period": "2027-01", "dimensionKind": "CITY", "dimensionValue": "Aldmoor", "quantity": 150, "uncoveredQuantity": 100 },
+    { "period": "2027-02", "dimensionKind": "CITY", "dimensionValue": "Aldmoor", "quantity": 150, "uncoveredQuantity": 100 }
+  ],
+  "scenarios": [
+    {
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "price-up",
+      "kind": "CUSTOM",
+      "shocks": [
+        { "fromMonth": 1, "priceChangePct": 0.10, "transportChangePct": 0.25 },
+        { "fromMonth": 2, "priceChangePct": 0.090909, "transportChangePct": 0.0 }
+      ],
+      "pricePath": [
+        { "period": "2027-01", "price": 11.00, "transportPrice": 2.50 },
+        { "period": "2027-02", "price": 12.00, "transportPrice": 2.50 }
+      ]
+    }
+  ],
+  "expectedStressResults": [
+    {
+      "scenarioId": "22222222-2222-4222-8222-222222222222",
+      "period": "2027-01",
+      "dimensionValue": "Aldmoor",
+      "exposure": 100.00,
+      "transportCostDelta": 75.00,
+      "cumulativeExposure": 175.00
+    },
+    {
+      "scenarioId": "22222222-2222-4222-8222-222222222222",
+      "period": "2027-02",
+      "dimensionValue": "Aldmoor",
+      "exposure": 200.00,
+      "transportCostDelta": 75.00,
+      "cumulativeExposure": 450.00
+    }
+  ],
+  "expectedForOtherRoles": {
+    "EXPORTER": { "period": "2027-01", "exposure": -100.00, "transportCostDelta": 75.00, "cumulativeExposure": -25.00 },
+    "MIXED": { "period": "2027-01", "uncoveredIn": 60, "uncoveredOut": 40, "exposure": 20.00 }
+  }
+}

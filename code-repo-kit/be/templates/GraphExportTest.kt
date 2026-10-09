@@ -1,5 +1,5 @@
-// TEMPLATE - copy to <be-repo>/<app-module>/src/test/kotlin/com/bank/adv/docs/GraphExportTest.kt
-// Not compiled in the investigation workspace (be-mini has no Spring classpath); verify on the real repo.
+// TEMPLATE - copy to harbor-backend/core/src/test/kotlin/harbor/docs/GraphExportTest.kt
+// Not compiled in the investigation workspace (no Spring classpath here); verify on the real repo.
 //
 // Exports the *real* architectural graph from the running Spring context, which the regex maps can only
 // approximate: DI edges through interfaces, exact request mappings, Kafka listeners, JPA entity -> table.
@@ -7,9 +7,9 @@
 // which a 2-year Spring Boot service already depends on. Output: docs/_generated/graph-export-be.json,
 // consumed by the docs repo `scripts/gen-graph.ps1` (edges tagged source=export win over regex edges).
 //
-// Run in CI after the unit tests:   mvn -pl app -Dtest=GraphExportTest -Ddocs.graph=true test
+// Run in CI after the unit tests:   mvn -pl core -am -Dtest=GraphExportTest -Ddocs.graph=true test
 // Guard: @EnabledIfSystemProperty so it never runs in the normal developer test loop.
-package com.bank.adv.docs
+package harbor.docs
 
 import jakarta.persistence.EntityManager
 import jakarta.persistence.Table
@@ -43,12 +43,12 @@ class GraphExportTest {
         val bf = ctx.beanFactory
         val appBeans = bf.beanDefinitionNames.filter { isOurs(bf, it) }
 
-        // 1. classes + module (community) from the package: com.bank.adv.<module>...
+        // 1. classes with their layer (package segment after the base package: harbor.<layer>...). The business context
         for (name in appBeans) {
             val type = bf.getType(name) ?: continue
-            node("class:${type.simpleName}", "class", type.simpleName, moduleOf(type), "be",
-                location = type.name.replace('.', '/') + ".kt", note = roleOf(type))
-            edge("module:${moduleOf(type)}", "class:${type.simpleName}", "contains")
+        //    (community) is assigned by the docs repo from the class-name prefix (contexts.yml), so it is left empty here.
+            node("class:${type.simpleName}", "class", type.simpleName, "", "be",
+                location = "core/src/main/kotlin/" + type.name.replace('.', '/') + ".kt", note = layerOf(type))
         }
         // 2. DI edges - the ones regex cannot see through interfaces
         for (name in appBeans) {
@@ -65,10 +65,9 @@ class GraphExportTest {
             for (p in paths) for (v in verbs) {
                 val id = "endpoint:$v $p"
                 val cls = method.beanType.simpleName
-                node(id, "endpoint", "$v $p", moduleOf(method.beanType), "be",
+                node(id, "endpoint", "$v $p", "", "be",
                     note = "handler $cls.${method.method.name}")
                 edge(id, "class:$cls", "handled-by")
-                edge("module:${moduleOf(method.beanType)}", id, "exposes")
             }
         }
         // 4. Kafka consumers (producers stay regex-detected: KafkaTemplate.send(Topics.X, ...))
@@ -80,13 +79,13 @@ class GraphExportTest {
                 edge("topic:$t", "class:$bean", "consumed-by")
             }
         }
-        // 5. JPA entity -> table (+ repository -> table via generic type)
+        // 5. JPA entity -> table (+ dao -> table via the Spring Data generic type)
         em?.metamodel?.entities?.forEach { e ->
             val table = e.javaType.getAnnotation(Table::class.java)?.name?.ifBlank { null } ?: toSnake(e.name)
-            node("table:$table", "table", table, moduleOf(e.javaType), "be")
+            node("table:$table", "table", table, "", "be")
             edge("class:${e.javaType.simpleName}", "table:$table", "persists-to")
             appBeans.mapNotNull { bf.getType(it) }
-                .filter { it.simpleName.endsWith("Repository") && repoEntity(it) == e.javaType }
+                .filter { it.simpleName.endsWith("Dao") && repoEntity(it) == e.javaType }
                 .forEach { edge("class:${it.simpleName}", "table:$table", "persists-to") }
         }
 
@@ -98,20 +97,11 @@ class GraphExportTest {
 
     // ---- helpers ------------------------------------------------------------------------------
     private fun isOurs(bf: ConfigurableListableBeanFactory, name: String) =
-        bf.getType(name)?.name?.startsWith("com.bank.adv.") == true
+        bf.getType(name)?.name?.startsWith("harbor.") == true
 
-    private fun moduleOf(type: Class<*>): String =
-        type.name.removePrefix("com.bank.adv.").substringBefore('.').ifBlank { "be-root" }
-
-    private fun roleOf(type: Class<*>): String = when {
-        type.simpleName.endsWith("Controller") -> "controller"
-        type.simpleName.endsWith("Facade") -> "facade"
-        type.simpleName.endsWith("Repository") -> "repository"
-        type.simpleName.endsWith("Calculator") -> "calculator"
-        type.simpleName.contains("Publisher") -> "producer"
-        type.simpleName.contains("Listener") || type.simpleName.endsWith("Events") -> "listener"
-        else -> ""
-    }
+    // layer = package segment after the base package (harbor.api.X -> api); empty for the package root
+    private fun layerOf(type: Class<*>): String =
+        type.name.removePrefix("harbor.").substringBeforeLast('.', "").substringBefore('.')
 
     private fun repoEntity(repo: Class<*>): Class<*>? =
         repo.genericInterfaces.filterIsInstance<java.lang.reflect.ParameterizedType>()

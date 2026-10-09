@@ -1,0 +1,49 @@
+openapi: 3.0.3
+info:
+  title: file-exchange
+  version: 1.0.0
+  description: Drop zone for the daily XLS movement files. Harbor polls it at 02:00 (DailyMovementImportJob).
+servers:
+  - url: https://file-exchange.internal.example.com
+tags:
+  - name: files
+paths:
+  /files:
+    get:
+      operationId: listFiles
+      tags: [files]
+      summary: Files received since a timestamp
+      parameters:
+        - { name: since, in: query, required: true, schema: { type: string, format: date-time } }
+        - { name: channel, in: query, required: false, schema: { type: string, default: movements } }
+      responses:
+        '200':
+          description: Files, oldest first
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/ExchangeFile' } }
+  /files/{id}/content:
+    get:
+      operationId: getFileContent
+      tags: [files]
+      summary: Raw file content
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: XLS bytes
+          content:
+            application/vnd.ms-excel:
+              schema: { type: string, format: binary }
+        '404': { description: Unknown file }
+components:
+  schemas:
+    ExchangeFile:
+      type: object
+      required: [id, name, receivedAt, sizeBytes]
+      properties:
+        id: { type: string }
+        name: { type: string, example: movements_2026-03-14.xls }
+        receivedAt: { type: string, format: date-time }
+        sizeBytes: { type: integer, format: int64 }
+        checksum: { type: string }

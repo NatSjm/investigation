@@ -2,7 +2,7 @@
 .SYNOPSIS
   Maps changed code paths (relative to FE/BE repo roots) to affected docs using docs-map.yml.
 .EXAMPLE
-  .\map-paths.ps1 be/hedge/src/main/kotlin/Foo.kt fe/src/features/hedge/Bar.tsx
+  .\map-paths.ps1 be/product1/src/main/kotlin/Foo.kt fe/src/features/product1/Bar.tsx
   git diff --name-only origin/main | .\map-paths.ps1
 .OUTPUTS
   Objects { Path; Specs } ; unmapped paths have Specs = @('UNMAPPED')

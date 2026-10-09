@@ -9,8 +9,8 @@ function resolveRel(p: string): string {
   const base = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? process.cwd();
   return path.resolve(base, p);
 }
-const cfg = () => vscode.workspace.getConfiguration('bankDocs');
-const docsRoot = () => resolveRel(cfg().get<string>('docsRepoPath', '../advisory-docs'));
+const cfg = () => vscode.workspace.getConfiguration('harborDocs');
+const docsRoot = () => resolveRel(cfg().get<string>('docsRepoPath', '../docs-repo'));
 const generatedDirs = () => {
   const dirs = new Set<string>();
   for (const g of cfg().get<string[]>('generatedPaths', ['docs/_generated'])) {
@@ -41,7 +41,7 @@ function docsLookup(query: string, heading?: string): string {
 }
 
 function codeMap(map: string, query: string): string {
-  const names = map === 'any' || !map ? ['api-index', 'events', 'db-schema', 'codebase-map', 'routes', 'types-index', 'docs-tags'] : [map];
+  const names = map === 'any' || !map ? ['api-index', 'events', 'db-schema', 'jobs', 'codebase-map', 'components', 'routes', 'types-index', 'docs-tags'] : [map];
   const out: string[] = [];
   for (const dir of generatedDirs()) for (const n of names) {
     const rows = mapRows(path.join(dir, `${n}.md`), query);
@@ -79,26 +79,26 @@ export function activate(ctx: vscode.ExtensionContext) {
   const text = (s: string) => new vscode.LanguageModelToolResult([new vscode.LanguageModelTextPart(s)]);
 
   ctx.subscriptions.push(
-    vscode.lm.registerTool<{ query: string; section?: string }>('bank-docs_docsLookup', {
+    vscode.lm.registerTool<{ query: string; section?: string }>('harbor-docs_docsLookup', {
       invoke: async ({ input }) => text(docsLookup(input.query, input.section)),
       prepareInvocation: async ({ input }) => ({ invocationMessage: `Looking up "${input.query}" in docs bundle` }),
     }),
-    vscode.lm.registerTool<{ map?: string; query: string }>('bank-docs_codeMap', {
+    vscode.lm.registerTool<{ map?: string; query: string }>('harbor-docs_codeMap', {
       invoke: async ({ input }) => text(codeMap(input.map ?? 'any', input.query)),
       prepareInvocation: async ({ input }) => ({ invocationMessage: `Querying ${input.map ?? 'all'} map for "${input.query}"` }),
     }),
-    vscode.lm.registerTool<{ id: string }>('bank-docs_specToCode', {
+    vscode.lm.registerTool<{ id: string }>('harbor-docs_specToCode', {
       invoke: async ({ input }) => text(specToCode(input.id)),
       prepareInvocation: async ({ input }) => ({ invocationMessage: `Resolving @docs ${input.id}` }),
     }),
-    vscode.lm.registerTool<{ target: string; depth?: number }>('bank-docs_impact', {
+    vscode.lm.registerTool<{ target: string; depth?: number }>('harbor-docs_impact', {
       invoke: async ({ input }) => text(graphImpact(input.target, input.depth ?? 2)),
       prepareInvocation: async ({ input }) => ({ invocationMessage: `Computing blast radius of ${input.target}` }),
     }),
   );
 
   // @docs participant: retrieval first, then one bounded model call with only the retrieved context.
-  const participant = vscode.chat.createChatParticipant('bank.docs', async (request, _chatCtx, stream, token) => {
+  const participant = vscode.chat.createChatParticipant('harbor.docs', async (request, _chatCtx, stream, token) => {
     const q = request.prompt.trim();
     let context = '';
     switch (request.command) {
