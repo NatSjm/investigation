@@ -89,14 +89,14 @@ status: stable
 - 4.22 `class:ReportRenderRequester` [reports] deg 4 - `core/src/main/kotlin/harbor/event/ReportRenderRequester.kt:16`
 
 ## Cross-repo flows (route -> feature -> endpoint -> class -> topic/table)
-- `route:/admin/imports`, `route:/admin/parameters`, `feature:admin` -> `endpoint:GET /api/v1/admin/imports` -> `class:AdminController`
-- `route:/admin/imports`, `route:/admin/parameters`, `feature:admin` -> `endpoint:GET /api/v1/admin/parameters` -> `class:AdminController`
-- `route:/admin/imports`, `route:/admin/parameters`, `feature:admin` -> `endpoint:POST /api/v1/admin/imports/run` -> `class:AdminController`
-- `route:/admin/imports`, `route:/admin/parameters`, `feature:admin` -> `endpoint:PUT /api/v1/admin/parameters/{key}` -> `class:AdminController`
-- `route:/clients/:clientId`, `route:/clients`, `feature:clients` -> `endpoint:GET /api/v1/clients` -> `class:ClientController`
-- `route:/clients/:clientId`, `route:/clients`, `feature:clients` -> `endpoint:GET /api/v1/clients/{clientId}` -> `class:ClientController`
-- `route:/clients/:clientId`, `route:/clients`, `feature:clients` -> `endpoint:GET /api/v1/clients/{clientId}/overview` -> `class:ClientController`
-- `route:/clients/:clientId`, `route:/clients`, `feature:clients` -> `endpoint:GET /api/v1/clients/{clientId}/role` -> `class:ClientController`
+- `route:/admin/parameters`, `route:/admin/imports`, `feature:admin` -> `endpoint:GET /api/v1/admin/imports` -> `class:AdminController`
+- `route:/admin/parameters`, `route:/admin/imports`, `feature:admin` -> `endpoint:GET /api/v1/admin/parameters` -> `class:AdminController`
+- `route:/admin/parameters`, `route:/admin/imports`, `feature:admin` -> `endpoint:POST /api/v1/admin/imports/run` -> `class:AdminController`
+- `route:/admin/parameters`, `route:/admin/imports`, `feature:admin` -> `endpoint:PUT /api/v1/admin/parameters/{key}` -> `class:AdminController`
+- `route:/clients`, `route:/clients/:clientId`, `feature:clients` -> `endpoint:GET /api/v1/clients` -> `class:ClientController`
+- `route:/clients`, `route:/clients/:clientId`, `feature:clients` -> `endpoint:GET /api/v1/clients/{clientId}` -> `class:ClientController`
+- `route:/clients`, `route:/clients/:clientId`, `feature:clients` -> `endpoint:GET /api/v1/clients/{clientId}/overview` -> `class:ClientController`
+- `route:/clients`, `route:/clients/:clientId`, `feature:clients` -> `endpoint:GET /api/v1/clients/{clientId}/role` -> `class:ClientController`
 - `feature:cover` -> `endpoint:GET /api/v1/clients/{clientId}/cover-policies` -> `class:CoverController`
 - `feature:cover` -> `endpoint:GET /api/v1/session/cover/summary` -> `class:CoverController`
 - `feature:cover` -> `endpoint:POST /api/v1/session/cover/quotes` -> `class:CoverController`
@@ -105,11 +105,11 @@ status: stable
 - `route:/session/:sessionId/scenarios`, `feature:market` -> `endpoint:GET /api/v1/session/scenarios` -> `class:ScenarioController`
 - `route:/session/:sessionId/scenarios`, `feature:market` -> `endpoint:POST /api/v1/session/scenarios` -> `class:ScenarioController`
 - `route:/session/:sessionId/scenarios`, `feature:market` -> `endpoint:PUT /api/v1/session/scenarios/{scenarioId}` -> `class:ScenarioController`
-- `route:/meetings`, `route:/session/:sessionId/summary`, `feature:meetings` -> `endpoint:GET /api/v1/sessions` -> `class:SessionController`
-- `route:/meetings`, `route:/session/:sessionId/summary`, `feature:meetings` -> `endpoint:GET /api/v1/sessions/{sessionId}` -> `class:SessionController`
-- `route:/meetings`, `route:/session/:sessionId/summary`, `feature:meetings` -> `endpoint:POST /api/v1/clients/{clientId}/sessions` -> `class:SessionController`
-- `route:/meetings`, `route:/session/:sessionId/summary`, `feature:meetings` -> `endpoint:POST /api/v1/sessions/{sessionId}/close` -> `class:SessionController`
-- `route:/meetings`, `route:/session/:sessionId/summary`, `feature:meetings` -> `endpoint:PUT /api/v1/sessions/{sessionId}/role` -> `class:SessionController`
+- `route:/session/:sessionId/summary`, `route:/meetings`, `feature:meetings` -> `endpoint:GET /api/v1/sessions` -> `class:SessionController`
+- `route:/session/:sessionId/summary`, `route:/meetings`, `feature:meetings` -> `endpoint:GET /api/v1/sessions/{sessionId}` -> `class:SessionController`
+- `route:/session/:sessionId/summary`, `route:/meetings`, `feature:meetings` -> `endpoint:POST /api/v1/clients/{clientId}/sessions` -> `class:SessionController`
+- `route:/session/:sessionId/summary`, `route:/meetings`, `feature:meetings` -> `endpoint:POST /api/v1/sessions/{sessionId}/close` -> `class:SessionController`
+- `route:/session/:sessionId/summary`, `route:/meetings`, `feature:meetings` -> `endpoint:PUT /api/v1/sessions/{sessionId}/role` -> `class:SessionController`
 - `route:/session/:sessionId/product1`, `feature:product1` -> `endpoint:GET /api/v1/session/product1/overview` -> `class:Product1Controller`
 - `route:/session/:sessionId/product1`, `feature:product1` -> `endpoint:GET /api/v1/session/product1/projection` -> `class:Product1Controller`
 - `route:/session/:sessionId/product1`, `feature:product1` -> `endpoint:POST /api/v1/session/product1/peer-simulation` -> `class:Product1Controller`

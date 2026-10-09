@@ -1,6 +1,9 @@
 # Update Log
 
 ## 2026-10-09
+* **Spec lifecycle and migration planning added.** Skill `spec-lifecycle` (run-by-run lifecycle + review checklist),
+  agent `migration-lead` with prompt `migration-plan`, script `scripts/migration-status.ps1`; first plan
+  [migration/all.md](/migration/all.md): 16 runs due, 1 of 10 contexts ready for the analyst.
 * **Bundle rebuilt for the Harbor simulated domain.** Concepts: [CLI-001](/features/clients/CLI-001.md),
   [MTG-001](/features/meetings/MTG-001.md), [P1-001](/features/product1/P1-001.md),
   [STR-001](/features/stress/STR-001.md), [MKT-001](/features/market/MKT-001.md), [RPT-001](/features/reports/RPT-001.md);

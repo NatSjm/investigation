@@ -80,6 +80,9 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
 - Pages in another language are translated during normalisation through the glossary `Aliases` column; the original
   title and key terms go into `aliases:` so searches in the source language still work.
 
+The run-by-run lifecycle of one spec (skeleton -> legacy merge -> calculation audit -> owner decision), with what
+each run reads and writes, is documented in `docs-repo/features/conventions.md`, section "Lifecycle of one spec".
+
 Review rhythm: one agent run, then a 10-15 minute human review of the diff (the hook `agentStop` already ran
 `build-index`, `okf-validate -Strict`, `validate-frontmatter`, `validate-work-items`). Commit per page.
 
@@ -110,11 +113,20 @@ legacy page keeps `superseded_by:` for the audit trail. Index badges (`build-ind
 - At least the high-value specs are `stable` (human-verified); the analyst labels stories from `draft` specs
   `needs-spec-review` automatically.
 
+## 3a. Tracking the work
+
+`./scripts/migration-status.ps1 -Scope all` (or `@migration-lead` / `/migration-plan all` in Copilot) writes
+`docs-repo/migration/all.md`: per context the runs still due with the exact command to type, pending legacy pages,
+calculations without concept or audit, and specs waiting for an owner. The lead agent appends processing order,
+targets for unclassified pages, batch-vs-interactive advice and blockers; it never edits specs itself.
+Lifecycle and per-run review checklist: `docs-repo/.github/skills/spec-lifecycle/`.
+
 ## 4. Who does what
 
 | Role | Steps | Tools |
 |---|---|---|
 | Dev lead | 1, 2, 7.2 | kit scripts, CI, `contexts.yml` |
+| Migration lead (one analyst) | 3a | `migration-lead` agent, `migration-status.ps1`, `migration/all.md` as the team board |
 | Analysts (2) | 3, 4, 5 | Copilot agents `spec-writer`, `confluence-migrator`, `calc-auditor`, `architect`; prompts in `.github/prompts/` |
 | Domain owners | 6 | review diffs, add `verified.by` |
 | Everyone | - | `AGENTS.md` read order, `context-pack.ps1` before any question |

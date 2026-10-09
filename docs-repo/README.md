@@ -46,6 +46,9 @@ flowchart LR
   `/spec-skeleton-from-graph` — spec skeleton prefilled from a context neighbourhood (skill `code-graph`).
   CLI: `scripts/graph-query.ps1 -Node spec:P1-001 -Depth 2` or `-Files (git diff --name-only)`.
 - `@confluence-migrator confluence-import/HARBOR/<page>.md` — migrate a legacy page.
+- `@migration-lead` / `/migration-plan all` — which lifecycle runs (skeleton, legacy merge, calculation audit, owner
+  decision) are still due per context, with the command for each → `migration/<scope>.md`
+  (skill `spec-lifecycle`, script `scripts/migration-status.ps1`).
 - `/okf-validate`, `/okf-produce` — OKF conformance and knowledge capture
   (skills `okf`, `okf-validate`, `okf-visualize`).
 

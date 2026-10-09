@@ -65,5 +65,7 @@ lifecycle events (created / deprecated / verified / regenerated).
 ## Agents, prompts, skills
 
 Custom agents live in `.github/agents/` (`analyst`, `spec-writer`, `doc-sync`, `calc-auditor`, `test-designer`,
-`architect`, `impact-analyst`, `confluence-migrator`), one-shot prompts in `.github/prompts/`, procedures in
-`.github/skills/`. Copilot-specific notes are in `.github/copilot-instructions.md`. Layout table: `README.md`.
+`architect`, `impact-analyst`, `confluence-migrator`, `migration-lead`), one-shot prompts in `.github/prompts/`,
+procedures in `.github/skills/`. A spec is written run by run (skeleton -> legacy merge -> calculation audit ->
+owner decision; skill `spec-lifecycle`); `./scripts/migration-status.ps1 -Scope all` lists the runs still due per
+context in `migration/all.md` (agent `migration-lead` / prompt `migration-plan`). Copilot-specific notes are in `.github/copilot-instructions.md`. Layout table: `README.md`.

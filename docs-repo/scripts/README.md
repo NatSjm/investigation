@@ -13,6 +13,7 @@ modules; external systems are reached with plain REST calls and tokens from envi
 | `okf-validate.ps1` | OKF v0.2 §11 conformance + provenance/trust warnings for the whole bundle (`-Strict`, `-MaxWarnings N`) | - |
 | `validate-frontmatter.ps1` | repo-specific keys on `Feature Spec` / `Attested Computation` concepts (ID format, BR numbering, calculation links) | - |
 | `validate-work-items.ps1` | `work-items/*.yml` against `_schema.yml` rules (BR citations exist in the spec, estimates, subtasks <= 8 h) | - |
+| `migration-status.ps1` | migration plan: per context the lifecycle runs still due (skeleton, legacy merge, calculation audit, owner decision) with their commands, pending legacy pages, unaudited calculations -> `migration/<scope>.md` (`-Scope all|<ctx>`, `-Print`) | - |
 | `map-paths.ps1` | changed code paths -> affected specs (uses `docs-map.yml`) | - |
 | `check-freshness.ps1` | CI gate in the code repos: mapped code changed but `last_verified` not bumped | - |
 | `publish-local.ps1` | local stand-in for the code repos' CI publish job: copies maps + contracts from `../backend`, `../frontend` into `generated/` | - |
