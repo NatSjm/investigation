@@ -3,8 +3,8 @@ import { ApiError, SESSION_HEADER } from '@/api/client';
 
 /**
  * Downloads the rendered PDF (`downloadReportPdf`, `application/pdf`). Uses plain `fetch` because the
- * response is binary; the session header is set explicitly since `/sessions/**` is outside the
- * middleware's `/session/**` scope. Triggers a browser download named `harbor-report-<sessionId>.pdf`.
+ * response is binary; the session header is set from the argument because the download can be
+ * triggered outside the session routes. Triggers a browser download named `harbor-report-<sessionId>.pdf`.
  * @docs RPT-001
  */
 export function useDownloadReportPdf() {

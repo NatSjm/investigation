@@ -2,6 +2,7 @@
 
 # Concepts
 * [Codebase map (FE)](codebase-map.md) - Generated map: Codebase map (FE), derived from src/features/* + index.ts barrels; read instead of source files. · unverified
+* [Component library (FE)](components.md) - One row per shared UI component: props, purpose, which features render it, file:line; name these in stories instead of inventing new components. · unverified
 * [Spec-to-code traceability (@docs tags)](docs-tags.md) - Generated map: Spec-to-code traceability (@docs tags), derived from @docs <ID> tags in KDoc/JSDoc; read instead of source files. · unverified
 * [Routes (FE)](routes.md) - Generated map: Routes (FE), derived from react-router route objects / <Route> elements; read instead of source files. · unverified
 * [Types index (FE)](types-index.md) - Generated map: Types index (FE), derived from *.types.ts; read instead of source files. · unverified

@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-10-12
+* **Presentation context added (FE-only).** [PRS-001](/features/presentation/PRS-001.md) (draft, Run 1 from `feature:presentation` and the channel module) and the first flow document [client-presentation](/flows/client-presentation.md) (`type: Flow`, new folder `flows/`); `contexts.yml` gained `presentation`, the FE maps a `components.md` (shared component library) and a Channels column (BroadcastChannel), the graph `channel:` and `shared-ui` `component:` nodes. [MTG-001](/features/meetings/MTG-001.md): meetings list split into client / preparation pages (change log).
+
 ## 2026-10-09
 * **Spec lifecycle and migration planning added.** Skill `spec-lifecycle` (run-by-run lifecycle + review checklist),
   agent `migration-lead` with prompt `migration-plan`, script `scripts/migration-status.ps1`; first plan

@@ -42,6 +42,19 @@ See `references/pack-anatomy.md` for the exact section markers the agents rely o
 - A truncated section (`... (truncated: see <path>)`) tells you exactly which file to open if you need more.
 - If the pack has no graph section, the graph is missing or stale: run `./scripts/gen-graph.ps1` or say so.
 
+## When the pack is not enough (escalate in this order, stop at the first step that answers)
+1. Rebuild wider: `./scripts/context-pack.ps1 -Task <x> -Budget 800` - truncated sections come back.
+2. Follow the pointer of the truncated or thin section: open that one file under `generated/` (schema, contract, map).
+3. Go deeper in the graph: `./scripts/graph-query.ps1 -Node <id> -Depth 3`, or start from the table / topic / class
+   node in question - no files opened.
+4. Build a second pack for the neighbour the first one points at (linked calculation, spec of another context, topic).
+5. Open exactly the `file:line` the pack names, 40-120 lines, chosen by `write-feature-spec/references/source-priority.md`
+   (unit test for edge cases, manager for intent, validator for error codes). Never a whole layer, never a code search.
+6. Still missing -> it is a documentation gap, not a context problem: write it as an open question in the spec,
+   hand off to `spec-writer` / `doc-sync`, label your output `needs-spec-review`. Never fill the gap from memory.
+
+The analyst may do step 5 only when the question blocks the task and the pack names the range (analyst agent, step 7).
+
 ## Why a script and not "just search"
 Deterministic, budgeted, reviewable (the pack can be attached to the PR), cheap (one read instead of 10-20 tool
 calls), and it carries provenance (which files, which generated-at dates) into the agent's reasoning.

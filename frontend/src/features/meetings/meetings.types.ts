@@ -1,6 +1,6 @@
 /**
- * View-model types for meeting sessions. Mirror `Session`, `CreateSessionRequest` and
- * `RoleOverrideRequest` from the backend contract (`meetings` module, `SessionController`).
+ * View-model types for meeting sessions. Aliases of `Session`, `CreateSessionRequest`, `SessionCreated` and
+ * `RoleOverrideRequest` from the backend contract (`meetings` module, `SessionController`); `SessionFilter` is FE-only.
  * @docs MTG-001
  */
 import type { components } from '@/api/generated/schema';
@@ -9,39 +9,17 @@ export type ProductGroup = components['schemas']['ProductGroup'];
 
 export type ClientRole = components['schemas']['ClientRole'];
 
-export type SessionKind = 'CLIENT' | 'PREPARATION';
+export type SessionKind = components['schemas']['SessionKind'];
 
-export type SessionStatus = 'OPEN' | 'CLOSED';
+export type SessionStatus = components['schemas']['SessionStatus'];
 
-export interface Session {
-  sessionId: string;
-  clientId: string;
-  clientName?: string;
-  productGroup: ProductGroup;
-  kind: SessionKind;
-  status: SessionStatus;
-  representativeId: string;
-  startedAt: string;
-  closedAt?: string;
-  roleOverride?: ClientRole;
-  roleOverrideReason?: string;
-  horizonMonths: number;
-  priceBasis: components['schemas']['PriceBasis'];
-}
+export type Session = components['schemas']['Session'];
 
-export interface CreateSessionRequest {
-  productGroup: ProductGroup;
-  kind: SessionKind;
-}
+export type CreateSessionRequest = components['schemas']['CreateSessionRequest'];
 
-export interface CreateSessionResponse {
-  sessionId: string;
-}
+export type CreateSessionResponse = components['schemas']['SessionCreated'];
 
-export interface RoleOverrideRequest {
-  role: ClientRole;
-  reason: string;
-}
+export type RoleOverrideRequest = components['schemas']['RoleOverrideRequest'];
 
 /** Query filter of the Meetings page (`listSessions`). */
 export interface SessionFilter {

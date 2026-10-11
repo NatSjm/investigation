@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, unwrap } from '@/api/client';
+import { api, sessionHeader, unwrap } from '@/api/client';
 import { useSessionStore } from '@/api/sessionStore';
 import type { CoverPolicy, CoverSummary } from '../cover.types';
 
@@ -11,7 +11,7 @@ export function useCoverSummary() {
   const sessionId = useSessionStore((s) => s.sessionId);
   return useQuery<CoverSummary>({
     queryKey: ['session', sessionId, 'cover', 'summary'],
-    queryFn: async () => unwrap(await api.GET('/session/cover/summary')),
+    queryFn: async () => unwrap(await api.GET('/session/cover/summary', { params: { header: sessionHeader() } })),
     enabled: Boolean(sessionId),
   });
 }

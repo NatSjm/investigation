@@ -15,6 +15,8 @@ Deterministic mapping used by `analyst` and `test-designer`. Start from `spec:<I
 | `topic:*` consumed-by | `[INT] <topic>: consumer idempotency + retry` | `@kafka` | duplicate / out-of-order payloads |
 | external contract (`generated/openapi/external/*.yaml`) | `[INT] <service>: contract change + client regeneration` | `@api` (mocked service) | mocked responses |
 | `feature:*`, `hook:*` | `[FE] <feature>: hook + regenerated client types (`npm run generate:api`)` | `@ui` | mocked endpoint responses |
+| `channel:*` (BroadcastChannel) | `[FE] <channel>: message type + publisher + subscriber (both windows)` | `@ui` | message payload JSON per type |
+| `component:*` in `shared-ui` | `[FE] <Component>: library change (props), then the features that render it` | `@ui` | - |
 | `component:*`, `route:*` | `[FE] <route>: screen behaviour` | `@ui` | - |
 | `spec:*` other than the start | `[DOC] update <ID> (cross-impact)` | - | - |
 

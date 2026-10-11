@@ -1,7 +1,7 @@
 ---
 type: Decision
 title: "ADR-NNNN: <Title>"
-description: <One sentence: what was decided.>
+description: "<One sentence: what was decided.>"
 tags: [adr]
 status: draft                   # draft = Proposed; stable = Accepted; deprecated = Superseded
 generated: { by: human:<id>, at: <ISO> }

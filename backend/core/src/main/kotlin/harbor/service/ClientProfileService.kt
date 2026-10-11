@@ -20,12 +20,12 @@ class ClientProfileService(
 ) {
 
     /** Registry hits first (merged with the local profile when one exists), then local-only profiles. */
-    @Transactional(readOnly = true)
+    @Transactional
     fun search(query: String): List<ClientProfile> {
         val registryHits = registry.search(query)
         val local = profileDao.findAllByExternalRefIn(registryHits.map { it.externalRef }).associateBy { it.externalRef }
         val merged = registryHits.map { hit ->
-            local[hit.externalRef] ?: ClientProfile(externalRef = hit.externalRef, name = hit.name, country = hit.country, segment = hit.segment)
+            local[hit.externalRef] ?: profileDao.save(ClientProfile(externalRef = hit.externalRef, name = hit.name, country = hit.country, segment = hit.segment))   // registry hits get a stable local id on first sight
         }
         val localOnly = profileDao.searchLocal(query).filter { it.externalRef !in local }
         return (merged + localOnly).distinctBy { it.externalRef }

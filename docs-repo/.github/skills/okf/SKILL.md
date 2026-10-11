@@ -18,7 +18,7 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
 - One concept = one file; path minus `.md` is the concept id. Absolute bundle links: `/features/product1/P1-001.md`.
 - `type` vocabulary (keep to these): `Feature Spec`, `Attested Computation`, `Glossary`, `Decision`,
   `Architecture View`, `Integration Map`, `HLD`, `Codebase Map`, `API Module`, `Kafka Topic`, `Table Group`,
-  `API Surface`, `Document` (misc prose), `Imported Page` (Confluence quarantine).
+  `API Surface`, `Flow` (cross-context behaviour under flows/), `Document` (misc prose), `Imported Page` (Confluence quarantine).
 - Actors (§7): `copilot/<agent-name>` for agents (e.g. `copilot/doc-sync`), `human:<id>` for people,
   `process:<ci-job>` for CI. Use `human:` **only** for real human sign-off — trust tiers key off it.
 - Lifecycle: `status: draft|stable|deprecated`; `stale_after` absolute ISO datetime. Feature specs default

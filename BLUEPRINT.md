@@ -105,7 +105,7 @@ Controllers are `@RestController class XxxController(...) : XxxApi` and implemen
 mapping annotations (they are on the generated interface). The API index is produced from `openapi/harbor-api.yaml` + `override fun` lookup.
 Calculations live in `utils/` with a unit test in `core/src/test/kotlin/harbor/utils/` whose cases are the **worked examples**
 quoted in `docs-repo/domain/calculations/*.md`. Business context of a class = its name prefix (`Product1*`, `Stress*`, ...),
-mapped in `docs-repo/contexts.yml` (contexts: clients, meetings, imports, product1, product2, cover, market, stress, reports, admin).
+mapped in `docs-repo/contexts.yml` (contexts: clients, meetings, imports, product1, product2, cover, market, stress, reports, admin, and the FE-only presentation).
 
 ### 3.1 Kafka topics (`kafka_client/src/main/kotlin/harbor/kafka/Topics.kt`, `object Topics { const val ... }`)
 
@@ -199,10 +199,11 @@ External contracts (`core/src/main/resources/api/`): `client-registry.yaml` (`GE
 ## 5. Frontend (`frontend/src`)
 
 ```
-src/api/client.ts                  openapi-fetch client `api` (baseUrl /api/v1) + middleware adding X-Harbor-Session from sessionStore
+src/api/client.ts                  openapi-fetch client `api` (baseUrl /api/v1) + `sessionHeader()` typed helper (X-Harbor-Session from sessionStore, required by the contract on every /session/** call)
 src/api/generated/schema.d.ts      openapi-typescript output (committed, trimmed to the paths above)
 src/api/sessionStore.ts
-src/app/routes.tsx, src/app/AdminRoutes.tsx, src/app/App.tsx
+src/app/routes.tsx, src/app/AdminRoutes.tsx, src/app/App.tsx, src/app/RootLayout.tsx (sidebar), src/app/SessionLayout.tsx (session steps, "Open client screen"), src/app/PresentationLayout.tsx (client window: no sidebar)
+src/shared/ui/DataTable.tsx, src/shared/ui/Modal.tsx   shared component library (mapped by scripts/docs/gen-components.ps1)
 src/shared/charts/LineChart.tsx, src/shared/charts/StackedBars.tsx
 src/shared/utils/months.ts (month grid helpers), src/shared/utils/format.ts
 src/features/<feature>/index.ts (barrel with /** @module ... @docs <ID> */), <feature>.types.ts, api/use*.ts hooks, ui/*.tsx
@@ -211,7 +212,7 @@ src/features/<feature>/index.ts (barrel with /** @module ... @docs <ID> */), <fe
 | Feature (= BE module name) | Routes (object routes in `src/app/routes.tsx`) | Hooks (`api/`) | UI |
 |---|---|---|---|
 | `clients` | `/clients` -> `ClientSearchPage`; `/clients/:clientId` -> `ClientOverviewPage` (product group cards with key indicators, sparkline charts, client info, "Start meeting" / "Prepare" buttons) | `useClientSearch`, `useClientOverview`, `useClientRole` | `ClientSearchPage.tsx`, `ClientOverviewPage.tsx`, `ProductGroupCard.tsx`, `ClientInfoPanel.tsx` |
-| `meetings` | `/meetings` -> `MeetingsListPage`; `/session/:sessionId/summary` -> `SessionSummaryPage` | `useSessions`, `useCreateSession`, `useCloseSession`, `useRoleOverride` | `MeetingsListPage.tsx`, `SessionSummaryPage.tsx`, `RoleOverrideDialog.tsx` |
+| `meetings` | `/meetings` -> redirect; `/meetings/client` -> `ClientMeetingsPage` (kind CLIENT); `/meetings/preparation` -> `PreparationSessionsPage` (kind PREPARATION); `/session/:sessionId/summary` -> `SessionSummaryPage` | `useSessions`, `useCreateSession`, `useCloseSession` (publishes `session-closed`), `useRoleOverride` | `MeetingsListPage.tsx` (shared list), `ClientMeetingsPage.tsx`, `PreparationSessionsPage.tsx`, `SessionSummaryPage.tsx`, `RoleOverrideDialog.tsx` |
 | `product1` | `/session/:sessionId/product1` -> `Product1OverviewPage` | `useProduct1Overview`, `useProduct1Movements`, `usePeerSimulation1` | `Product1OverviewPage.tsx`, `ProjectionTables.tsx` (4 tables), `CoverRatioChart.tsx`, `MovementInputModal.tsx`, `PeerSimulationModal.tsx`, `CitySelector.tsx` |
 | `product2` | `/session/:sessionId/product2` -> `Product2OverviewPage` | `useProduct2Overview`, `useProduct2Movements`, `usePeerSimulation2` | `Product2OverviewPage.tsx`, `TransportModeSelector.tsx` (reuses product1 tables/modals via `shared`) |
 | `market` | `/session/:sessionId/scenarios` -> `ScenariosPage` | `useScenarios`, `useBaselinePrices` | `ScenariosPage.tsx`, `ScenarioEditor.tsx`, `ShockRow.tsx` |
@@ -219,6 +220,7 @@ src/features/<feature>/index.ts (barrel with /** @module ... @docs <ID> */), <fe
 | `reports` | (used from meetings list) | `useReport`, `useDownloadReportPdf` | `DownloadPdfButton.tsx`, `ReportPreview.tsx` |
 | `admin` | `/admin/parameters` -> `ParametersPage`; `/admin/imports` -> `ImportsPage` (in `AdminRoutes.tsx`) | `useParameters`, `useImportBatches` | `ParametersPage.tsx`, `ParameterRow.tsx`, `ImportsPage.tsx` |
 | `cover` | (widgets embedded in product pages) | `useCoverSummary`, `useCoverQuote` | `CoverQuotePanel.tsx` |
+| `presentation` (FE-only context `PRS`) | `/present/:sessionId` -> `PresentationLayout` -> `PresentationPage` (client-facing second window, no sidebar, no controls; mirrors product1 / product2 / scenarios / stress-test; "Waiting for the representative" otherwise) | `usePresentationPublisher`, `usePresentationSubscriber` (`channel.ts`, the only `BroadcastChannel` `harbor.session.<sessionId>`; messages `route`, `view`, `session-closed`, `hello` replay) | `PresentationPage.tsx`, `ProductMirror.tsx`, `ScenariosMirror.tsx`, `StressMirror.tsx` |
 
 API calls in hooks use the generated client: `api.GET('/clients/{clientId}/overview', { params: { path: { clientId } } })` - the literal path string
 is what the FE codebase map and the graph join on.

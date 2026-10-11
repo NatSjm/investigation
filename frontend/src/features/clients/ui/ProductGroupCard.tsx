@@ -16,9 +16,12 @@ const ROLE_LABEL: Record<ProductGroupIndicators['role'], string> = {
   UNDETERMINED: 'Undetermined',
 };
 
-/** Key indicators for one product group + sparkline (last 12 months) + session start buttons. */
+/**
+ * Key indicators for one product group + sparkline (last 12 months) + session start buttons.
+ * The contract carries no price basis on the indicators, so `value12m` is shown without a basis suffix.
+ */
 export function ProductGroupCard({ indicators, busy, onStartMeeting, onPrepare }: ProductGroupCardProps) {
-  const sparkData = indicators.sparkline.map((value, i) => ({ period: `M-${indicators.sparkline.length - i}`, value }));
+  const sparkData = indicators.sparkline.map((p) => ({ period: p.period, value: p.value }));
 
   return (
     <article className="product-card" aria-label={PRODUCT_GROUP_LABEL[indicators.productGroup]}>
@@ -30,7 +33,7 @@ export function ProductGroupCard({ indicators, busy, onStartMeeting, onPrepare }
         <dt>Volume (12m)</dt>
         <dd>{formatQty(indicators.volume12m)}</dd>
         <dt>Value (12m)</dt>
-        <dd>{formatValue(indicators.value12m, indicators.priceBasis)}</dd>
+        <dd>{formatValue(indicators.value12m)}</dd>
         <dt>Cover ratio</dt>
         <dd>{formatRatio(indicators.coverRatio)}</dd>
         <dt>Open sessions</dt>

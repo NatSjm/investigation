@@ -39,8 +39,8 @@ function New-Header([string]$Title, [string]$Source, [string]$Description = "") 
 @"
 ---
 type: Document
-title: $Title
-description: $Description
+title: "$($Title -replace '"', '\"')"
+description: "$($Description -replace '"', '\"')"
 generated:
   by: process:gen-docs
   at: $date

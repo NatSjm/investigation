@@ -1,10 +1,10 @@
 ---
 type: Document
-title: Graph: shared (be)
-description: Neighbourhood of shared
+title: "Graph: shared (be)"
+description: "Neighbourhood of shared"
 generated:
   by: process:gen-graph
-  at: 2026-10-09
+  at: 2026-10-11
 status: stable
 ---
 # Graph: shared (be)

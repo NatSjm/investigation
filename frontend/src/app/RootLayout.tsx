@@ -3,7 +3,8 @@ import { useSessionStore } from '@/api/sessionStore';
 
 const links = [
   { to: '/clients', label: 'Clients' },
-  { to: '/meetings', label: 'Meetings' },
+  { to: '/meetings/client', label: 'Client meetings' },
+  { to: '/meetings/preparation', label: 'Preparation sessions' },
   { to: '/admin/parameters', label: 'Parameters' },
   { to: '/admin/imports', label: 'Imports' },
 ];

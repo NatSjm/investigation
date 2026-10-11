@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { useSessionStore } from '@/api/sessionStore';
 import type { Session } from '@/features/meetings';
 import { useBaselinePrices } from '@/features/market';
+import { usePresentationPublisher } from '@/features/presentation';
 import { formatDateTime } from '@/shared/utils/format';
 import { useStressTest } from '../api/useStressTest';
 import { useRunStressTest } from '../api/useRunStressTest';
@@ -28,6 +29,12 @@ export function StressTestPage() {
   const result = useStressTest(dimension);
   const run = useRunStressTest();
   const baseline = useBaselinePrices();
+  const publish = usePresentationPublisher(session.sessionId);
+
+  // Mirror the breakdown dimension to the client screen (`view` message).
+  useEffect(() => {
+    publish({ type: 'view', stress: { dimension } });
+  }, [dimension, publish]);
 
   const baselineTransport = baseline.data?.points.map((p) => ({ period: p.period, value: p.transportPrice }));
 
@@ -40,7 +47,7 @@ export function StressTestPage() {
           <button type="button" className="primary" disabled={run.isPending || session.status !== 'OPEN'} onClick={() => run.mutate()}>
             {run.isPending ? 'Computing...' : 'Run stress test'}
           </button>
-          {result.data && <span className="hint">computed {formatDateTime(result.data.computedAt)}</span>}
+          {result.data?.computedAt && <span className="hint">computed {formatDateTime(result.data.computedAt)}</span>}
         </div>
       </header>
 
@@ -51,7 +58,7 @@ export function StressTestPage() {
       <TransportPriceChart scenarios={result.data?.scenarios ?? []} baseline={baselineTransport} />
 
       {(result.data?.scenarios ?? []).map((s) => (
-        <StressTable key={s.scenarioId} scenario={s} dimension={dimension} priceBasis={session.priceBasis} />
+        <StressTable key={s.scenarioId} scenario={s} dimension={dimension} />
       ))}
       {result.data && result.data.scenarios.length === 0 && (
         <p className="hint">No scenarios defined - add scenarios in the previous step, then run the stress test.</p>

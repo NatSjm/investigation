@@ -19,3 +19,5 @@ contexts:
   stress:   { spec: STR, fe: stress,   be: [Stress] }
   reports:  { spec: RPT, fe: reports,  be: [Report, DocumentService] }
   admin:    { spec: ADM, fe: admin,    be: [Admin, Parameter] }
+  # FE-only context: the client-facing presentation window (second browser window synchronised over a BroadcastChannel)
+  presentation: { spec: PRS, fe: presentation, be: [] }

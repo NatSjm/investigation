@@ -30,6 +30,8 @@ mappings:
     specs: []  # TODO: IMP-001
   - paths: ["be/core/src/main/kotlin/harbor/**/Admin*.kt", "be/core/src/main/kotlin/harbor/**/Parameter*.kt", "fe/src/features/admin/**", "fe/src/app/AdminRoutes.tsx"]
     specs: []  # TODO: ADM-001
+  - paths: ["fe/src/features/presentation/**", "fe/src/app/PresentationLayout.tsx"]
+    specs: ["features/presentation/PRS-001.md", "flows/client-presentation.md"]
 
   # --- calculations, messaging, external services, contracts ---
   - paths: ["be/core/src/main/kotlin/harbor/utils/**"]

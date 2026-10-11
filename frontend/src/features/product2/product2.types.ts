@@ -8,11 +8,11 @@ import type { ProductOverview } from '../product1/product1.types';
 
 export type TransportMode = components['schemas']['TransportMode'];
 
-/** Product 2 overview: `dimensionValues` are transport modes, `selectedDimensionValue` the active filter. */
-export interface Product2Overview extends ProductOverview {
-  productGroup: 'product2';
-  selectedDimensionValue?: TransportMode;
-}
+/**
+ * Product 2 overview: the contract uses the same `ProductOverview` shape for both product groups;
+ * `dimensionFilter` holds the active transport mode (absent = all modes).
+ */
+export type Product2Overview = ProductOverview;
 
 export const P2_TRANSPORT_MODES: readonly TransportMode[] = ['ROAD', 'RAIL', 'SEA', 'AIR'];
 

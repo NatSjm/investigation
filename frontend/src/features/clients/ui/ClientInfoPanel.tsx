@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { formatDateTime } from '@/shared/utils/format';
-import type { ClientOverview, ClientSummary } from '../clients.types';
+import type { Session } from '@/features/meetings';
+import type { ClientSummary } from '../clients.types';
 
 export interface ClientInfoPanelProps {
   client: ClientSummary;
-  openSessions: ClientOverview['openSessions'];
+  /** Open sessions of the client (`listSessions` with `status=OPEN`; the overview itself does not list them). */
+  openSessions: Session[];
 }
 
 /** Static client information (registry data) and the list of currently open sessions. */
@@ -36,7 +38,7 @@ export function ClientInfoPanel({ client, openSessions }: ClientInfoPanelProps) 
         </ul>
       )}
       <p>
-        <Link to={`/meetings?clientId=${client.clientId}`}>All meetings of this client</Link>
+        <Link to={`/meetings/client?clientId=${client.clientId}`}>All meetings of this client</Link>
       </p>
     </aside>
   );

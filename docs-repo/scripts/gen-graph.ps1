@@ -205,6 +205,28 @@ foreach ($r in Get-TableRows (Read-Text (Join-Path $FeMaps 'codebase-map.md'))) 
         }
         foreach ($h in $hits) { Add-Edge "feature:$f" $h.id 'calls' }
     }
+    # browser channels (BroadcastChannel) - the FE counterpart of topics: `defines` / `pub` / `sub` <name>
+    if ($r.Contains('Channels')) {
+        foreach ($c in (($r['Channels'] -split '<br>') | ForEach-Object { $_.Trim() } | Where-Object { $_ })) {
+            if ($c -notmatch '^(defines|pub|sub)\s+(\S+)$') { continue }
+            $verb = $Matches[1]; $cname = $Matches[2]; $cid = "channel:$cname"
+            $null = Add-Node $cid 'channel' $cname $f 'fe' '' 'BroadcastChannel'
+            switch ($verb) {
+                'defines' { $nodes[$cid].community = $f; $nodes[$cid].location = ((Strip $r['Entry']) -replace '/index\.tsx?$', '/channel.ts'); Add-Edge "feature:$f" $cid 'defines' }
+                'pub'     { Add-Edge "feature:$f" $cid 'produces' }
+                'sub'     { Add-Edge $cid "feature:$f" 'consumed-by' }
+            }
+        }
+    }
+}
+# shared component library (components.md, optional): component nodes in community `shared-ui`, rendered by features
+$feComponents = Join-Path $FeMaps 'components.md'
+if (Test-Path $feComponents) {
+    foreach ($r in Get-TableRows (Read-Text $feComponents)) {
+        $c = Strip $r['Component']; if (-not $c) { continue }
+        $null = Add-Node "component:$c" 'component' $c 'shared-ui' 'fe' (Strip $r['Location']) "library/$(Strip $r['Group']); $(Strip $r['Purpose'])"
+        foreach ($u in ([regex]::Matches($r['Used by'], '`([\w-]+)`') | ForEach-Object { $_.Groups[1].Value })) { Add-Edge "feature:$u" "component:$c" 'renders' }
+    }
 }
 foreach ($r in Get-TableRows (Read-Text (Join-Path $FeMaps 'routes.md'))) {
     $p = Strip $r['Path']; if (-not $p) { continue }
@@ -305,8 +327,8 @@ function Header([string]$Title, [string]$Desc) {
 @"
 ---
 type: Document
-title: $Title
-description: $Desc
+title: "$($Title -replace '"', '\"')"
+description: "$($Desc -replace '"', '\"')"
 generated:
   by: process:gen-graph
   at: $date
@@ -336,7 +358,7 @@ foreach ($g in $communities) {
     [void]$sb.Append((Header "Graph: $comm ($repo)" $desc))
     [void]$sb.AppendLine("$($members.Count) nodes. Read this file instead of walking the module; open only the ``file:line`` you need.")
     [void]$sb.AppendLine()
-    foreach ($kg in ($members | Group-Object -Property kind | Sort-Object { @('context','feature','endpoint','route','class','topic','table','url','unknown').IndexOf($_.Name) })) {
+    foreach ($kg in ($members | Group-Object -Property kind | Sort-Object { @('context','feature','endpoint','route','class','topic','channel','component','table','url','unknown').IndexOf($_.Name) })) {
         $plural = if ($kg.Name -eq 'class') { 'classes' } else { "$($kg.Name)s" }
         [void]$sb.AppendLine("## $plural")
         foreach ($n in $kg.Group) { [void]$sb.AppendLine("- $(Fmt $n)") }

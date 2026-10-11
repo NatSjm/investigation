@@ -5,12 +5,13 @@ import type { ProjectionRow, ProjectionSummaryRow, ProjectionTables as Projectio
 
 export interface ProjectionTablesProps {
   tables: ProjectionTablesDto;
-  priceBasis: string;
+  /** Suffix for monetary columns; omitted while the contract does not provide a price basis. */
+  priceBasis?: string;
   /** Column header of the dimension table: "City" (Product 1) or "Transport mode" (Product 2). */
   dimensionLabel: string;
 }
 
-function groupedColumns(keyHeader: string, priceBasis: string): Column<ProjectionRow>[] {
+function groupedColumns(keyHeader: string, priceBasis?: string): Column<ProjectionRow>[] {
   return [
     { key: 'period', header: 'Month', render: (r) => formatPeriod(r.period) },
     { key: 'key', header: keyHeader },
@@ -21,7 +22,7 @@ function groupedColumns(keyHeader: string, priceBasis: string): Column<Projectio
   ];
 }
 
-function summaryColumns(priceBasis: string): Column<ProjectionSummaryRow>[] {
+function summaryColumns(priceBasis?: string): Column<ProjectionSummaryRow>[] {
   return [
     { key: 'period', header: 'Month', render: (r) => formatPeriod(r.period) },
     { key: 'totalQuantity', header: 'Total quantity', align: 'right', render: (r) => formatQty(r.totalQuantity) },

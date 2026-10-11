@@ -6,7 +6,8 @@ import { DIMENSION_LABEL, type Dimension, type StressRow, type StressScenarioRes
 export interface StressTableProps {
   scenario: StressScenarioResult;
   dimension: Dimension;
-  priceBasis: string;
+  /** Suffix for monetary values; omitted while the contract does not provide a price basis. */
+  priceBasis?: string;
 }
 
 /**

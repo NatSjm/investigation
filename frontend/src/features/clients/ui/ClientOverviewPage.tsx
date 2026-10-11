@@ -1,23 +1,23 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useSessionStore } from '@/api/sessionStore';
-import { useCreateSession } from '@/features/meetings';
+import { useCreateSession, useSessions, type SessionKind } from '@/features/meetings';
 import { useClientOverview } from '../api/useClientOverview';
 import { ProductGroupCard } from './ProductGroupCard';
 import { ClientInfoPanel } from './ClientInfoPanel';
 import type { ProductGroup } from '../clients.types';
 
-type SessionKind = 'CLIENT' | 'PREPARATION';
-
 /**
  * `/clients/:clientId` - client info panel plus one card per product group.
  * Selecting a product group ("Start meeting" = CLIENT, "Prepare" = PREPARATION) creates the session
  * and navigates into the product overview; from then on requests carry `X-Harbor-Session`.
+ * Open sessions are not part of `ClientOverview`; they come from `listSessions` filtered by client and status.
  */
 export function ClientOverviewPage() {
   const { clientId = '' } = useParams<{ clientId: string }>();
   const navigate = useNavigate();
   const setSession = useSessionStore((s) => s.setSession);
   const { data, isLoading, error } = useClientOverview(clientId);
+  const openSessions = useSessions({ clientId, status: 'OPEN' });
   const createSession = useCreateSession(clientId);
 
   const start = async (productGroup: ProductGroup, kind: SessionKind) => {
@@ -36,7 +36,7 @@ export function ClientOverviewPage() {
       </nav>
       <h1>{data.client.name}</h1>
       <div className="overview-grid">
-        <ClientInfoPanel client={data.client} openSessions={data.openSessions} />
+        <ClientInfoPanel client={data.client} openSessions={openSessions.data ?? []} />
         <div className="product-cards">
           {data.productGroups.map((pg) => (
             <ProductGroupCard

@@ -1,6 +1,6 @@
 /**
- * View-model types for the clients feature. Mirror the backend DTOs (`getClient`, `getClientOverview`,
- * `getClientRole`) 1:1 - derived from the generated schema so a contract change surfaces here first.
+ * View-model types for the clients feature. Aliases of the contract schemas behind `searchClients`, `getClient`,
+ * `getClientOverview` and `getClientRole`, so a contract change surfaces here first.
  * @docs CLI-001
  */
 import type { components } from '@/api/generated/schema';
@@ -11,46 +11,19 @@ export type ClientRole = components['schemas']['ClientRole'];
 
 export type PriceBasis = components['schemas']['PriceBasis'];
 
-export interface ClientSummary {
-  clientId: string;
-  externalRef: string;
-  name: string;
-  country: string;
-  segment: string;
-}
+export type ClientSummary = components['schemas']['ClientSummary'];
 
-export interface ProductGroupIndicators {
-  productGroup: ProductGroup;
-  corridor: string;
-  priceBasis: PriceBasis;
-  volume12m: number;
-  value12m: number;
-  role: ClientRole;
-  coverRatio: number;
-  openSessions: number;
-  sparkline: number[];
-}
+/** Full client profile (`getClient`): summary plus `createdAt` and role decisions. */
+export type Client = components['schemas']['Client'];
 
-export interface ClientOverview {
-  client: ClientSummary;
-  productGroups: ProductGroupIndicators[];
-  openSessions: components['schemas']['Session'][];
-}
+export type ProductGroupIndicators = components['schemas']['ProductGroupIndicators'];
 
-export interface RoleHistoryEntry {
-  role: ClientRole;
-  source: 'ALGORITHM' | 'MANUAL';
-  reason?: string;
-  decidedAt: string;
-}
+export type ClientOverview = components['schemas']['ClientOverview'];
 
-export interface ClientRoleInfo {
-  productGroup: ProductGroup;
-  algorithmRole: ClientRole;
-  effectiveRole: ClientRole;
-  inboundShare: number;
-  history: RoleHistoryEntry[];
-}
+/** One role decision (`RoleDecision`), algorithmic or manual. */
+export type RoleHistoryEntry = components['schemas']['RoleDecision'];
+
+export type ClientRoleInfo = components['schemas']['ClientRoleInfo'];
 
 /** Labels for the two product groups as shown on cards and headers. */
 export const PRODUCT_GROUP_LABEL: Record<ProductGroup, string> = {

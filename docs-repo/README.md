@@ -21,7 +21,7 @@ flowchart LR
   BE[harbor-backend<br/>Kotlin/Spring, layered core] -- CI: OpenAPI, AsyncAPI, schema,<br/>API index, codebase map, components --> GEN[generated/]
   FE[harbor-frontend<br/>React] -- CI: types index, routes --> GEN
   CONF[Confluence legacy] -- export --> IMP[confluence-import/]
-  GEN --> SPEC[features/ · domain/ · architecture/]
+  GEN --> SPEC[features/ · domain/ · flows/ · architecture/]
   CTX[contexts.yml<br/>class-name prefixes] --> GRAPH
   GEN -- gen-graph.ps1 --> GRAPH[generated/graph/<br/>REPO_MAP · context.md · graph.json]
   GRAPH -- agent impact-analyst / #impact --> SPEC

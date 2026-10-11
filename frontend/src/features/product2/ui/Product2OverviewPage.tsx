@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { currentPeriod, monthGrid } from '@/shared/utils/months';
 import { CoverQuotePanel } from '@/features/cover';
 import type { Session } from '@/features/meetings';
+import { usePresentationPublisher } from '@/features/presentation';
 // Intentional cross-feature import: product2 reuses the product1 tables, chart and modals.
 import { ProjectionTables, MovementInputModal, PeerSimulationModal, CoverRatioChart } from '../../product1';
 import { useProduct2Overview } from '../api/useProduct2Overview';
@@ -16,6 +17,7 @@ const PEER_SEGMENTS = ['Retail', 'Wholesale', 'Manufacturing', 'Distribution'] a
 /**
  * `/session/:sessionId/product2` - first meeting step for Product 2: transport mode filter,
  * the four projection tables, cover ratio chart, cover quote panel and the two input modals.
+ * The horizon comes from the session; the overview itself carries no horizon or price basis.
  */
 export function Product2OverviewPage() {
   const session = useOutletContext<Session>();
@@ -26,11 +28,17 @@ export function Product2OverviewPage() {
   const { data, isLoading, error } = useProduct2Overview(mode);
   const movements = useProduct2Movements();
   const peer = usePeerSimulation2();
+  const publish = usePresentationPublisher(session.sessionId);
+
+  // Mirror the transport mode filter to the client screen (`view` message).
+  useEffect(() => {
+    publish({ type: 'view', product2: { transportMode: mode } });
+  }, [mode, publish]);
 
   if (isLoading) return <p>Computing projection...</p>;
   if (error || !data) return <p role="alert">The Product 2 overview could not be loaded.</p>;
 
-  const periods = monthGrid(currentPeriod(), data.horizonMonths);
+  const periods = monthGrid(currentPeriod(), session.horizonMonths);
 
   return (
     <section className="page product-overview product2">
@@ -48,10 +56,10 @@ export function Product2OverviewPage() {
       </header>
 
       <div className="overview-grid">
-        <ProjectionTables tables={data.tables} priceBasis={data.priceBasis} dimensionLabel="Transport mode" />
+        <ProjectionTables tables={data.tables} dimensionLabel="Transport mode" />
         <aside>
           <CoverRatioChart series={data.coverSeries} />
-          <CoverQuotePanel priceBasis={data.priceBasis} subProducts={P2_SUB_PRODUCTS} />
+          <CoverQuotePanel subProducts={P2_SUB_PRODUCTS} />
         </aside>
       </div>
 
@@ -76,7 +84,8 @@ export function Product2OverviewPage() {
         onSubmit={(req) => peer.mutateAsync(req)}
       />
       <p className="hint">
-        Session {session.sessionId.slice(0, 8)} - horizon {data.horizonMonths} months - price basis {data.priceBasis}
+        Session {session.sessionId.slice(0, 8)} - horizon {session.horizonMonths} months
+        {data.role ? ` - role ${data.role}` : ''}
       </p>
     </section>
   );

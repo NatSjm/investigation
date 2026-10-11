@@ -5,7 +5,9 @@ okf_version: "0.2"
 <!-- manual:start -->
 # Start here
 * [Glossary](domain/glossary.md) - canonical terms
-* [Codebase map](generated/codebase-map.md) - module в†’ responsibility в†’ entry files
+* [REPO_MAP](generated/graph/REPO_MAP.md) - ranked architectural map, one community per bounded context
+* [Codebase maps](generated/be/codebase-map.md) - backend modules and layers; [frontend features](generated/fe/codebase-map.md)
+* [Migration board](migration/all.md) - documentation runs still due per context
 <!-- manual:end -->
 
 # Harbor documentation bundle
@@ -14,9 +16,10 @@ okf_version: "0.2"
 # Sections
 * [architecture](architecture/) - 6 concept(s)
 * [domain](domain/) - 7 concept(s)
-* [features](features/) - 7 concept(s)
-* [generated](generated/) - 25 concept(s)
-* [migration](migration/) - 1 concept(s)
+* [features](features/) - 8 concept(s)
+* [flows](flows/) - 1 concept(s)
+* [generated](generated/) - 28 concept(s)
+* [migration](migration/) - 2 concept(s)
 
 # Concepts
 * [Harbor documentation repository](README.md) - Entry point for humans — what this repo is, how Copilot agents use it, and where things live; agents start at index.md instead. · unverified

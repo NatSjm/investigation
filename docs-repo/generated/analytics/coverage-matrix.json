@@ -117,6 +117,42 @@
     ]
   },
   {
+    "id": "PRS-001",
+    "context": "presentation",
+    "rules": 10,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 3,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-10T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-PRS-001-1",
+      "BR-PRS-001-2",
+      "BR-PRS-001-3",
+      "BR-PRS-001-4",
+      "BR-PRS-001-5",
+      "BR-PRS-001-6",
+      "BR-PRS-001-7",
+      "BR-PRS-001-8",
+      "BR-PRS-001-9",
+      "BR-PRS-001-10"
+    ],
+    "rulesWithoutScenario": [
+      "BR-PRS-001-1",
+      "BR-PRS-001-2",
+      "BR-PRS-001-3",
+      "BR-PRS-001-4",
+      "BR-PRS-001-5",
+      "BR-PRS-001-6",
+      "BR-PRS-001-7",
+      "BR-PRS-001-8",
+      "BR-PRS-001-9",
+      "BR-PRS-001-10"
+    ]
+  },
+  {
     "id": "RPT-001",
     "context": "reports",
     "rules": 3,

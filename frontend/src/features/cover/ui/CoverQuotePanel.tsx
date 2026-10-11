@@ -2,34 +2,37 @@ import { useMemo, useState } from 'react';
 import { formatDateTime, formatRatio, formatValue } from '@/shared/utils/format';
 import { useCoverSummary } from '../api/useCoverSummary';
 import { useCoverQuote } from '../api/useCoverQuote';
-import { uncoveredValue } from '../cover.types';
+import { uncoveredValue, type CoverQuoteRequest } from '../cover.types';
 
 export interface CoverQuotePanelProps {
-  priceBasis: string;
+  /** Suffix for monetary values; omitted while the contract does not provide a price basis. */
+  priceBasis?: string;
   subProducts: readonly string[];
 }
 
 /**
  * Embedded in the product overview pages: current cover position over the horizon and a
- * one-click quote request for the uncovered part (per sub-product or all).
+ * one-click quote request for the uncovered part (per sub-product or all). The request names the
+ * sub-products and period range; the backend computes the uncovered value itself.
  */
 export function CoverQuotePanel({ priceBasis, subProducts }: CoverQuotePanelProps) {
   const [subProduct, setSubProduct] = useState<string>('');
   const summary = useCoverSummary();
   const quote = useCoverQuote();
 
-  const rows = summary.data?.rows ?? [];
-  const uncovered = useMemo(() => uncoveredValue(rows, subProduct || undefined), [rows, subProduct]);
-  const total = rows.filter((r) => !subProduct || r.subProduct === subProduct).reduce((s, r) => s + r.totalValue, 0);
-  const periods = rows.map((r) => r.period).sort();
+  const months = summary.data?.months ?? [];
+  const uncovered = useMemo(() => uncoveredValue(months, subProduct || undefined), [months, subProduct]);
+  const total = months.filter((r) => !subProduct || r.subProduct === subProduct).reduce((s, r) => s + r.totalValue, 0);
+  const periods = months.map((r) => r.period).sort();
 
-  const request = () =>
-    quote.mutate({
-      subProduct: subProduct || undefined,
-      uncoveredValue: uncovered,
-      periodFrom: periods[0] ?? '',
-      periodTo: periods[periods.length - 1] ?? '',
-    });
+  const request = () => {
+    const body: CoverQuoteRequest = { subProducts: subProduct ? [subProduct] : [...subProducts] };
+    if (periods.length > 0) {
+      body.fromPeriod = periods[0];
+      body.toPeriod = periods[periods.length - 1];
+    }
+    quote.mutate(body);
+  };
 
   return (
     <section className="cover-quote-panel">
@@ -58,7 +61,8 @@ export function CoverQuotePanel({ priceBasis, subProducts }: CoverQuotePanelProp
       </button>
       {quote.data && (
         <p className="quote-result">
-          Quote {quote.data.providerRef}: premium {formatValue(quote.data.premium, priceBasis)} ({formatDateTime(quote.data.requestedAt)})
+          Quote {quote.data.providerRef ?? quote.data.quoteId}: premium {formatValue(quote.data.premium, priceBasis)} (
+          {formatDateTime(quote.data.requestedAt)})
         </p>
       )}
       {quote.error && <p role="alert">The cover provider did not return a quote.</p>}

@@ -11,11 +11,11 @@ servers:
 security:
   - bearerAuth: []
 tags:
-  - { name: clients, description: Client search, profile, overview indicators, role classification }
+  - { name: clients, description: "Client search, profile, overview indicators, role classification" }
   - { name: meetings, description: Meeting session lifecycle and session list }
-  - { name: product1, description: Product 1 (corridor VLD-NRL) overview, modals and projection }
-  - { name: product2, description: Product 2 (corridor CST-MRD) overview, modals and projection }
-  - { name: cover, description: Cover policies, cover ratio and quotes }
+  - { name: product1, description: "Product 1 (corridor VLD-NRL) overview, modals and projection" }
+  - { name: product2, description: "Product 2 (corridor CST-MRD) overview, modals and projection" }
+  - { name: cover, description: "Cover policies, cover ratio and quotes" }
   - { name: market, description: Market scenarios and baseline prices }
   - { name: stress, description: Stress test per scenario and dimension }
   - { name: reports, description: Meeting report payload and PDF }
@@ -414,8 +414,8 @@ components:
     SessionStatus: { type: string, enum: [OPEN, CLOSED] }
     DimensionKind: { type: string, enum: [CITY, TRANSPORT_MODE] }
     Period: { type: string, pattern: '^\d{4}-\d{2}$', description: Calendar month YYYY-MM, example: '2026-03' }
-    Money: { type: number, format: decimal, description: Scale 2, HALF_EVEN }
-    Ratio: { type: number, format: decimal, description: Scale 4, HALF_EVEN }
+    Money: { type: number, format: decimal, description: "Scale 2, HALF_EVEN" }
+    Ratio: { type: number, format: decimal, description: "Scale 4, HALF_EVEN" }
     Problem:
       type: object
       properties: { type: { type: string }, title: { type: string }, status: { type: integer }, detail: { type: string }, instance: { type: string } }
@@ -519,7 +519,7 @@ components:
       required: [period, key, quantity, value, landedCost, cumulativeValue]
       properties:
         period: { $ref: '#/components/schemas/Period' }
-        key: { type: string, description: Sub-product, dimension value or direction }
+        key: { type: string, description: "Sub-product, dimension value or direction" }
         quantity: { $ref: '#/components/schemas/Money' }
         value: { $ref: '#/components/schemas/Money' }
         landedCost: { $ref: '#/components/schemas/Money' }

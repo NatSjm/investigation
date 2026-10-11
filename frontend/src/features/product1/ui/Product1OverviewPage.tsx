@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { currentPeriod, monthGrid } from '@/shared/utils/months';
 import { CoverQuotePanel } from '@/features/cover';
 import type { Session } from '@/features/meetings';
+import { usePresentationPublisher } from '@/features/presentation';
 import { useProduct1Overview } from '../api/useProduct1Overview';
 import { useProduct1Movements } from '../api/useProduct1Movements';
 import { usePeerSimulation1 } from '../api/usePeerSimulation1';
@@ -18,6 +19,7 @@ const PEER_SEGMENTS = ['Retail', 'Wholesale', 'Manufacturing', 'Distribution'] a
 /**
  * `/session/:sessionId/product1` - first meeting step for Product 1: city filter, the four
  * projection tables, cover ratio chart, cover quote panel and the two input modals.
+ * The horizon comes from the session; the overview itself carries no horizon, price basis or city list.
  */
 export function Product1OverviewPage() {
   const session = useOutletContext<Session>();
@@ -28,17 +30,23 @@ export function Product1OverviewPage() {
   const { data, isLoading, error } = useProduct1Overview(city);
   const movements = useProduct1Movements();
   const peer = usePeerSimulation1();
+  const publish = usePresentationPublisher(session.sessionId);
+
+  // Mirror the city filter to the client screen (`view` message).
+  useEffect(() => {
+    publish({ type: 'view', product1: { city } });
+  }, [city, publish]);
 
   if (isLoading) return <p>Computing projection...</p>;
   if (error || !data) return <p role="alert">The Product 1 overview could not be loaded.</p>;
 
-  const periods = monthGrid(currentPeriod(), data.horizonMonths);
+  const periods = monthGrid(currentPeriod(), session.horizonMonths);
 
   return (
     <section className="page product-overview product1">
       <header className="toolbar">
         <h2>Product 1 overview</h2>
-        <CitySelector value={city} options={data.dimensionValues.length ? data.dimensionValues : P1_CITIES} onChange={setCity} />
+        <CitySelector value={city} options={P1_CITIES} onChange={setCity} />
         <div className="actions">
           <button type="button" onClick={() => setMovementsOpen(true)}>
             Model movements
@@ -50,10 +58,10 @@ export function Product1OverviewPage() {
       </header>
 
       <div className="overview-grid">
-        <ProjectionTables tables={data.tables} priceBasis={data.priceBasis} dimensionLabel="City" />
+        <ProjectionTables tables={data.tables} dimensionLabel="City" />
         <aside>
           <CoverRatioChart series={data.coverSeries} />
-          <CoverQuotePanel priceBasis={data.priceBasis} subProducts={P1_SUB_PRODUCTS} />
+          <CoverQuotePanel subProducts={P1_SUB_PRODUCTS} />
         </aside>
       </div>
 
@@ -78,7 +86,8 @@ export function Product1OverviewPage() {
         onSubmit={(req) => peer.mutateAsync(req)}
       />
       <p className="hint">
-        Session {session.sessionId.slice(0, 8)} - horizon {data.horizonMonths} months - price basis {data.priceBasis}
+        Session {session.sessionId.slice(0, 8)} - horizon {session.horizonMonths} months
+        {data.role ? ` - role ${data.role}` : ''}
       </p>
     </section>
   );

@@ -15,7 +15,7 @@
 
 - Node kinds: `context` (BE side of a bounded context, located at its `manager/<Ctx>Manager.kt`), `feature`,
   `endpoint`, `route`, `class` (one per architectural class; `note` = layer + stereotype), `hook`, `component`,
-  `topic`, `table`, `spec`. `depends-on` edges (class -> class) come from constructor injection, `persists-to`
+  `topic`, `channel` (browser `BroadcastChannel`, the FE counterpart of a topic: `defines` / `produces` / `consumed-by` edges to features), `table`, `spec`. Shared library components (`generated/fe/components.md`) are `component` nodes in community `shared-ui` with `renders` edges from the features that use them. `depends-on` edges (class -> class) come from constructor injection, `persists-to`
   edges (class -> table) from `components.md` / `db-schema.md` "Used in:".
 - `community` = bounded context from `contexts.yml` (BE class-name prefixes + FE feature): one community spans both
   repos on purpose (`clients`, `meetings`, `product1`, `product2`, `cover`, `market`, `stress`, `reports`, `admin`;

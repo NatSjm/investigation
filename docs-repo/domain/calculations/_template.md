@@ -1,7 +1,7 @@
 ---
 type: Attested Computation      # OKF §10
 title: <Human title>
-description: <One sentence: what business quantity it produces.>
+description: "<One sentence: what business quantity it produces.>"
 tags: [calculation, <context>]
 status: draft
 runtime: kotlin                 # required for this type

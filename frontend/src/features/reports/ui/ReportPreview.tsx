@@ -8,6 +8,7 @@ export interface ReportPreviewProps {
 
 const STATUS_LABEL: Record<Report['status'], string> = {
   PENDING: 'Rendering in progress',
+  REQUESTED: 'Rendering requested',
   RENDERED: 'PDF rendered',
   FAILED: 'Rendering failed',
 };

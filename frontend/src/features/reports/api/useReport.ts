@@ -2,8 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api, unwrap } from '@/api/client';
 import type { Report } from '../reports.types';
 
+const RENDERING: ReadonlyArray<Report['status']> = ['PENDING', 'REQUESTED'];
+
 /**
- * Report payload of a closed session (`getReport`). Polls while the PDF is still being rendered.
+ * Report payload of a closed session (`getReport`). Polls while the PDF is still being rendered
+ * (`PENDING` after close, `REQUESTED` after a regenerate).
  * @docs RPT-001
  */
 export function useReport(sessionId: string, enabled = true) {
@@ -11,7 +14,10 @@ export function useReport(sessionId: string, enabled = true) {
     queryKey: ['reports', sessionId],
     queryFn: async () => unwrap(await api.GET('/sessions/{sessionId}/report', { params: { path: { sessionId } } })),
     enabled: enabled && Boolean(sessionId),
-    refetchInterval: (query) => (query.state.data?.status === 'PENDING' ? 5_000 : false),
+    refetchInterval: (query) => {
+      const status = query.state.data?.status;
+      return status && RENDERING.includes(status) ? 5_000 : false;
+    },
   });
 }
 

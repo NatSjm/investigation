@@ -16,6 +16,7 @@ New-Item -ItemType Directory -Force -Path $work | Out-Null
 $rel = if ($Check) { $work } else { $OutDir }
 
 & (Join-Path $PSScriptRoot 'gen-codebase-map.ps1') -Root $Root -Out (Join-Path $rel 'codebase-map.md')
+& (Join-Path $PSScriptRoot 'gen-components.ps1')   -Root $Root -Out (Join-Path $rel 'components.md')
 & (Join-Path $PSScriptRoot 'gen-routes.ps1')       -Root $Root -Out (Join-Path $rel 'routes.md')
 & (Join-Path $PSScriptRoot 'gen-types-index.ps1')  -Root $Root -Out (Join-Path $rel 'types-index.md')
 & (Join-Path $PSScriptRoot 'gen-docs-tags.ps1')    -Root $Root -Out (Join-Path $rel 'docs-tags.md') -Include @('*.ts','*.tsx')
@@ -26,6 +27,7 @@ $index = @"
 Read these before opening source. Each file is a few hundred tokens.
 
 - [codebase-map.md](codebase-map.md): features, purpose, public exports, API calls
+- [components.md](components.md): shared component library (src/shared/**): props, purpose, used by which features
 - [routes.md](routes.md): URL -> component
 - [types-index.md](types-index.md): exported types/interfaces (DTO mirrors)
 - [docs-tags.md](docs-tags.md): spec ID (``@docs``) to code location

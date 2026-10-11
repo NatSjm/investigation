@@ -1,5 +1,5 @@
 /**
- * View-model types for administration. Mirror `Parameter` and `ImportBatch` from the contract
+ * View-model types for administration. Aliases of `Parameter`, `ParameterUpsert` and `ImportBatch` from the contract
  * (`admin` module, `AdminController`; tables `parameter_set`, `import_batch`).
  * @docs ADM-001
  */
@@ -8,36 +8,14 @@ import type { components } from '@/api/generated/schema';
 export type ProductGroup = components['schemas']['ProductGroup'];
 
 /** One row of `parameter_set`; the scope columns narrow a key to a product group, country or dimension value. */
-export interface Parameter {
-  key: string;
-  scopeProductGroup?: ProductGroup;
-  scopeCountry?: string;
-  scopeValue?: string;
-  value: number;
-  validFrom: string;
-  updatedBy: string;
-  updatedAt: string;
-}
+export type Parameter = components['schemas']['Parameter'];
 
-export interface ParameterUpsertRequest {
-  value: number;
-  scopeProductGroup?: ProductGroup;
-  scopeCountry?: string;
-  scopeValue?: string;
-  validFrom: string;
-}
-
-export type ImportStatus = 'RUNNING' | 'DONE' | 'FAILED';
+export type ParameterUpsertRequest = components['schemas']['ParameterUpsert'];
 
 /** One daily XLS import run (`import_batch`). */
-export interface ImportBatch {
-  batchId: string;
-  sourceFile: string;
-  receivedAt: string;
-  rowsTotal: number;
-  rowsRejected: number;
-  status: ImportStatus;
-}
+export type ImportBatch = components['schemas']['ImportBatch'];
+
+export type ImportStatus = ImportBatch['status'];
 
 /** Known parameter keys (see blueprint 3.4); unknown keys are still rendered. */
 export const PARAMETER_KEYS = [

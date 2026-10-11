@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, unwrap } from '@/api/client';
+import { api, sessionHeader, unwrap } from '@/api/client';
 import { useSessionStore } from '@/api/sessionStore';
-import type { ProjectionTablesDto } from '../../product1';
+import type { Projection } from '../../product1';
 import type { Product2Overview, TransportMode } from '../product2.types';
 
 /**
  * Product 2 overview (`getProduct2Overview`): four projection tables filtered by transport mode
- * plus cover ratio series. Session-scoped (`X-Harbor-Session` added by the client).
+ * plus cover ratio series. Session-scoped (`X-Harbor-Session` via `sessionHeader()`).
  * @docs P2-001
  */
 export function useProduct2Overview(transportMode?: TransportMode) {
@@ -14,7 +14,11 @@ export function useProduct2Overview(transportMode?: TransportMode) {
   return useQuery<Product2Overview>({
     queryKey: ['session', sessionId, 'product2', 'overview', transportMode ?? 'all'],
     queryFn: async () =>
-      unwrap(await api.GET('/session/product2/overview', { params: { query: transportMode ? { transportMode } : {} } })) as Product2Overview,
+      unwrap(
+        await api.GET('/session/product2/overview', {
+          params: { header: sessionHeader(), query: transportMode ? { transportMode } : {} },
+        }),
+      ),
     enabled: Boolean(sessionId),
   });
 }
@@ -25,9 +29,9 @@ export function useProduct2Overview(transportMode?: TransportMode) {
  */
 export function useProduct2Projection() {
   const sessionId = useSessionStore((s) => s.sessionId);
-  return useQuery<ProjectionTablesDto>({
+  return useQuery<Projection>({
     queryKey: ['session', sessionId, 'product2', 'projection'],
-    queryFn: async () => unwrap(await api.GET('/session/product2/projection')),
+    queryFn: async () => unwrap(await api.GET('/session/product2/projection', { params: { header: sessionHeader() } })),
     enabled: Boolean(sessionId),
   });
 }

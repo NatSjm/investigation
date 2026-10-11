@@ -49,7 +49,7 @@ $prefixes = @($contexts.Values | ForEach-Object { $c = $_; $_.Be | ForEach-Objec
 function Context-Of([string]$cls) { foreach ($p in $prefixes) { if ($cls.StartsWith($p.Prefix, [StringComparison]::Ordinal)) { return $p.Ctx } }; return 'shared' }
 function Context-OfSpecId([string]$id) { $pfx = ($id -split '-')[0]; foreach ($c in $contexts.Values) { if ($c.Spec -eq $pfx) { return $c.Name } }; return '' }
 
-$selected = if ($Scope -eq 'all') { @($contexts.Keys) } else { @($Scope -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $contexts.Contains($_) }) }
+$selected = @(if ($Scope -eq 'all') { $contexts.Keys } else { $Scope -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $contexts.Contains($_) } })
 if ($selected.Count -eq 0) { throw "Unknown context '$Scope'. Known: $($contexts.Keys -join ', ')" }
 
 # ---------- specs ----------

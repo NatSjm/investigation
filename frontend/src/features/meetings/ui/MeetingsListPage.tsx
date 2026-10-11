@@ -30,13 +30,23 @@ const columns: Column<Session>[] = [
   },
 ];
 
-/** `/meetings` - list of sessions with filters; closed sessions expose the report PDF download. */
-export function MeetingsListPage() {
+export interface MeetingsListPageProps {
+  /** Fixed session kind of the page (`ClientMeetingsPage`, `PreparationSessionsPage`); the kind filter is hidden then. */
+  kind?: SessionKind;
+  title?: string;
+}
+
+/**
+ * Shared session list with filters; closed sessions expose the report PDF download.
+ * Rendered by `/meetings/client` (kind CLIENT) and `/meetings/preparation` (kind PREPARATION).
+ * @docs MTG-001
+ */
+export function MeetingsListPage({ kind, title = 'Meetings' }: MeetingsListPageProps) {
   const [params, setParams] = useSearchParams();
   const filter: SessionFilter = {
     clientId: params.get('clientId') ?? undefined,
     status: (params.get('status') as SessionStatus | null) ?? undefined,
-    kind: (params.get('kind') as SessionKind | null) ?? undefined,
+    kind: kind ?? (params.get('kind') as SessionKind | null) ?? undefined,
   };
   const { data, isLoading, error } = useSessions(filter);
 
@@ -49,7 +59,7 @@ export function MeetingsListPage() {
 
   return (
     <section className="page meetings">
-      <h1>Meetings</h1>
+      <h1>{title}</h1>
       <form className="filters" onSubmit={(e) => e.preventDefault()}>
         <label>
           Status
@@ -59,14 +69,16 @@ export function MeetingsListPage() {
             <option value="CLOSED">Closed</option>
           </select>
         </label>
-        <label>
-          Kind
-          <select value={filter.kind ?? ''} onChange={(e) => update('kind', e.target.value)}>
-            <option value="">All</option>
-            <option value="CLIENT">Client meeting</option>
-            <option value="PREPARATION">Preparation</option>
-          </select>
-        </label>
+        {!kind && (
+          <label>
+            Kind
+            <select value={filter.kind ?? ''} onChange={(e) => update('kind', e.target.value)}>
+              <option value="">All</option>
+              <option value="CLIENT">Client meeting</option>
+              <option value="PREPARATION">Preparation</option>
+            </select>
+          </label>
+        )}
         {filter.clientId && (
           <button type="button" onClick={() => update('clientId', '')}>
             Clear client filter

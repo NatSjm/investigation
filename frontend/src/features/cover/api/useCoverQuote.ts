@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api, unwrap } from '@/api/client';
+import { api, sessionHeader, unwrap } from '@/api/client';
 import { useSessionStore } from '@/api/sessionStore';
 import type { CoverQuote, CoverQuoteRequest } from '../cover.types';
 
@@ -12,7 +12,7 @@ export function useCoverQuote() {
   const sessionId = useSessionStore((s) => s.sessionId);
   const queryClient = useQueryClient();
   return useMutation<CoverQuote, Error, CoverQuoteRequest>({
-    mutationFn: async (body) => unwrap(await api.POST('/session/cover/quotes', { body })),
+    mutationFn: async (body) => unwrap(await api.POST('/session/cover/quotes', { params: { header: sessionHeader() }, body })),
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: ['session', sessionId, 'cover'] }),
   });
 }

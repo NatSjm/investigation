@@ -4,6 +4,8 @@
  * @docs MTG-001
  */
 export { MeetingsListPage } from './ui/MeetingsListPage';
+export { ClientMeetingsPage } from './ui/ClientMeetingsPage';
+export { PreparationSessionsPage } from './ui/PreparationSessionsPage';
 export { SessionSummaryPage } from './ui/SessionSummaryPage';
 export { RoleOverrideDialog } from './ui/RoleOverrideDialog';
 export { useSessions } from './api/useSessions';

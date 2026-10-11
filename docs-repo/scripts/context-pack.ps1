@@ -143,7 +143,12 @@ if (Test-Path $graphJson) {
     if ($gout -match 'no node matches' -and $file) {
         # a spec without @docs tags: fall back to its context community
         $ctx = Get-Val $fm 'context'
-        if ($ctx) { $gout = "(``$node`` not in graph - no ``@docs`` tag in code; neighbourhood of ``context:$ctx`` instead)`n" + (& $q -Graph $graphJson -Node "context:$ctx" -Depth $Depth -MaxLines 80 2>&1 | Out-String) }
+        if ($ctx) {
+            # BE contexts have a `context:` node (located at the manager); FE-only contexts (e.g. presentation) only a `feature:` node
+            $ctxNode = "context:$ctx"
+            if (((Read-File $graphJson) -notmatch ('"id"\s*:\s*"' + [regex]::Escape($ctxNode) + '"'))) { $ctxNode = "feature:$ctx" }
+            $gout = "(``$node`` not in graph - no ``@docs`` tag in code; neighbourhood of ``$ctxNode`` instead)`n" + (& $q -Graph $graphJson -Node $ctxNode -Depth $Depth -MaxLines 80 2>&1 | Out-String)
+        }
     }
     $sources.Add('generated/graph/graph.json')
     $gout = $gout -replace '(?m)^#', '###'   # demote the query's headings under this section

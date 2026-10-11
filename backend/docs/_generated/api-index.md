@@ -1,10 +1,10 @@
 ---
 type: Document
-title: REST API index (BE)
-description: Generated map: REST API index (BE), derived from core/src/main/resources/openapi/harbor-api.yaml (contract) + override fun <operationId> lookup in @RestController classes; read instead of source files.
+title: "REST API index (BE)"
+description: "Generated map: REST API index (BE), derived from core/src/main/resources/openapi/harbor-api.yaml (contract) + override fun <operationId> lookup in @RestController classes; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-09
+  at: 2026-10-11
 status: stable
 ---
 # REST API index (BE)

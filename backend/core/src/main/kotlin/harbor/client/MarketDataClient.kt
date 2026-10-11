@@ -27,14 +27,14 @@ class MarketDataClient(
 
     fun prices(productGroup: ProductGroup, from: YearMonth, to: YearMonth): Curve =
         api.getPrices(
-            productGroup = productGroup.wireValue,
+            productGroup = PricesApi.ProductGroupGetPrices.valueOf(productGroup.wireValue),
             corridor = productGroup.corridor,
             from = from.toString(),
             to = to.toString(),
         ).toCurve()
 
     fun transportPrices(productGroup: ProductGroup): Curve =
-        api.getTransportPrices(productGroup = productGroup.wireValue, corridor = productGroup.corridor).toCurve()
+        api.getTransportPrices(productGroup = PricesApi.ProductGroupGetTransportPrices.valueOf(productGroup.wireValue), corridor = productGroup.corridor).toCurve()
 
     private fun PriceCurve.toCurve() = Curve(
         asOf = asOf.toInstant(),

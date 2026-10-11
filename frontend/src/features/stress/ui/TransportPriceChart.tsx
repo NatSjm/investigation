@@ -10,7 +10,11 @@ export interface TransportPriceChartProps {
   height?: number;
 }
 
-/** Transport price over time, one line per scenario (plus the dashed baseline when provided). */
+/**
+ * Transport price over time, one line per scenario (plus the dashed baseline when provided).
+ * The scenario path is read from `StressTestRow.scenarioTransportPrice`, which is the same for every
+ * dimension value of a month; rows without it are skipped.
+ */
 export function TransportPriceChart({ scenarios, baseline, height = 260 }: TransportPriceChartProps) {
   const { data, series } = useMemo(() => {
     const rows = new Map<string, Record<string, number | string>>();
@@ -20,7 +24,11 @@ export function TransportPriceChart({ scenarios, baseline, height = 260 }: Trans
       rows.set(period, row);
     };
     for (const p of baseline ?? []) put('baseline', p.period, p.value);
-    for (const s of scenarios) for (const p of s.transportPricePath) put(s.scenarioId, p.period, p.value);
+    for (const s of scenarios) {
+      for (const r of s.rows) {
+        if (r.scenarioTransportPrice !== undefined) put(s.scenarioId, r.period, r.scenarioTransportPrice);
+      }
+    }
     const lines = scenarios.map((s) => ({ key: s.scenarioId, label: s.scenarioName }));
     if (baseline?.length) lines.unshift({ key: 'baseline', label: 'Baseline' });
     return {

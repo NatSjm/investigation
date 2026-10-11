@@ -16,14 +16,17 @@ export function formatQty(quantity: number | null | undefined): string {
   return qtyFormatter.format(quantity);
 }
 
-/** Monetary values with the price basis suffix; `formatValue(1234.5, 'VLD')` -> `'1,234.50 VLD'`. */
-export function formatValue(value: number | null | undefined, priceBasis: PriceBasis | string): string {
+/**
+ * Monetary values with the price basis suffix; `formatValue(1234.5, 'VLD')` -> `'1,234.50 VLD'`.
+ * The contract does not yet carry a price basis on any response, so callers may omit it: `formatValue(1234.5)` -> `'1,234.50'`.
+ */
+export function formatValue(value: number | null | undefined, priceBasis?: PriceBasis | string): string {
   if (value === null || value === undefined || Number.isNaN(value)) return '-';
-  return `${valueFormatter.format(value)} ${priceBasis}`;
+  return priceBasis ? `${valueFormatter.format(value)} ${priceBasis}` : valueFormatter.format(value);
 }
 
 /** Signed variant used for deltas and exposure: `+1,200.00 VLD` / `-300.00 VLD`. */
-export function formatSignedValue(value: number | null | undefined, priceBasis: PriceBasis | string): string {
+export function formatSignedValue(value: number | null | undefined, priceBasis?: PriceBasis | string): string {
   if (value === null || value === undefined || Number.isNaN(value)) return '-';
   const sign = value > 0 ? '+' : '';
   return `${sign}${formatValue(value, priceBasis)}`;

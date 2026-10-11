@@ -1,7 +1,7 @@
 {
   "generated": {
     "by": "process:gen-graph",
-    "at": "2026-10-09"
+    "at": "2026-10-11"
   },
   "communities": [
     {
@@ -22,7 +22,7 @@
     {
       "id": "fe-app",
       "repo": "fe",
-      "nodes": 11
+      "nodes": 9
     },
     {
       "id": "imports",
@@ -37,7 +37,12 @@
     {
       "id": "meetings",
       "repo": "be+fe",
-      "nodes": 30
+      "nodes": 31
+    },
+    {
+      "id": "presentation",
+      "repo": "fe",
+      "nodes": 2
     },
     {
       "id": "product1",
@@ -60,6 +65,11 @@
       "nodes": 2
     },
     {
+      "id": "shared-ui",
+      "repo": "fe",
+      "nodes": 4
+    },
+    {
       "id": "stress",
       "repo": "be+fe",
       "nodes": 17
@@ -67,88 +77,16 @@
   ],
   "nodes": [
     {
-      "id": "class:CoverQuoteService",
+      "id": "class:MeetingManager",
       "kind": "class",
-      "label": "CoverQuoteService",
-      "community": "cover",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/CoverQuoteService.kt:23",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 4.14,
-      "degree": 5
-    },
-    {
-      "id": "context:cover",
-      "kind": "context",
-      "label": "cover",
-      "community": "cover",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/CoverManager.kt",
-      "note": "entry point CoverManager (manager)",
-      "component": 1,
-      "rank": 10.48,
-      "degree": 13
-    },
-    {
-      "id": "class:BaselinePriceService",
-      "kind": "class",
-      "label": "BaselinePriceService",
-      "community": "market",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/BaselinePriceService.kt:23",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 5.84,
-      "degree": 7
-    },
-    {
-      "id": "context:market",
-      "kind": "context",
-      "label": "market",
-      "community": "market",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/MarketManager.kt",
-      "note": "entry point MarketManager (manager)",
-      "component": 1,
-      "rank": 13.95,
-      "degree": 17
-    },
-    {
-      "id": "class:DailyMovementImportJob",
-      "kind": "class",
-      "label": "DailyMovementImportJob",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/job/DailyMovementImportJob.kt:12",
-      "note": "job; Component, Scheduled",
-      "component": 1,
-      "rank": 2.85,
-      "degree": 3
-    },
-    {
-      "id": "context:imports",
-      "kind": "context",
-      "label": "imports",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/ImportManager.kt",
-      "note": "entry point ImportManager (manager)",
-      "component": 1,
-      "rank": 14.42,
-      "degree": 17
-    },
-    {
-      "id": "class:SessionScopeService",
-      "kind": "class",
-      "label": "SessionScopeService",
+      "label": "MeetingManager",
       "community": "meetings",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/SessionScopeService.kt:17",
-      "note": "service; Service",
+      "location": "core/src/main/kotlin/harbor/manager/MeetingManager.kt:37",
+      "note": "manager; Service",
       "component": 1,
-      "rank": 4.53,
-      "degree": 6
+      "rank": 6.61,
+      "degree": 9
     },
     {
       "id": "context:meetings",
@@ -159,224 +97,44 @@
       "location": "core/src/main/kotlin/harbor/manager/MeetingManager.kt",
       "note": "entry point MeetingManager (manager)",
       "component": 1,
-      "rank": 12.55,
+      "rank": 12.23,
       "degree": 17
     },
     {
-      "id": "class:ReportManager",
+      "id": "class:ProjectionInputAssembler",
       "kind": "class",
-      "label": "ReportManager",
-      "community": "reports",
+      "label": "ProjectionInputAssembler",
+      "community": "product1",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/ReportManager.kt:26",
-      "note": "manager; Service",
+      "location": "core/src/main/kotlin/harbor/service/ProjectionInputAssembler.kt:30",
+      "note": "service; Component",
       "component": 1,
-      "rank": 8.46,
-      "degree": 10
+      "rank": 6.15,
+      "degree": 9
     },
     {
-      "id": "context:reports",
+      "id": "context:product1",
       "kind": "context",
-      "label": "reports",
-      "community": "reports",
+      "label": "product1",
+      "community": "product1",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/ReportManager.kt",
-      "note": "entry point ReportManager (manager)",
+      "location": "core/src/main/kotlin/harbor/manager/Product1Manager.kt",
+      "note": "entry point Product1Manager (manager)",
       "component": 1,
-      "rank": 9.53,
-      "degree": 11
+      "rank": 16.03,
+      "degree": 22
     },
     {
-      "id": "class:ClientProfileService",
+      "id": "class:SessionHeaderFilter",
       "kind": "class",
-      "label": "ClientProfileService",
-      "community": "clients",
+      "label": "SessionHeaderFilter",
+      "community": "meetings",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/ClientProfileService.kt:16",
-      "note": "service; Service",
+      "location": "core/src/main/kotlin/harbor/component/SessionHeaderFilter.kt:31",
+      "note": "component; Component",
       "component": 1,
-      "rank": 5.98,
-      "degree": 8
-    },
-    {
-      "id": "context:clients",
-      "kind": "context",
-      "label": "clients",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/ClientManager.kt",
-      "note": "entry point ClientManager (manager)",
-      "component": 1,
-      "rank": 12.34,
-      "degree": 16
-    },
-    {
-      "id": "class:CoverRatioCalculator",
-      "kind": "class",
-      "label": "CoverRatioCalculator",
-      "community": "cover",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/utils/CoverRatioCalculator.kt:23",
-      "note": "utils; object",
-      "component": 1,
-      "rank": 2.74,
-      "degree": 2
-    },
-    {
-      "id": "class:ClientRoleSessionClosedListener",
-      "kind": "class",
-      "label": "ClientRoleSessionClosedListener",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/event/ClientRoleSessionClosedListener.kt:18",
-      "note": "event; Component, KafkaListener",
-      "component": 1,
-      "rank": 2.65,
+      "rank": 2.4,
       "degree": 3
-    },
-    {
-      "id": "class:ClientProfileDao",
-      "kind": "class",
-      "label": "ClientProfileDao",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/ClientProfileDao.kt:10",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 2.53,
-      "degree": 3
-    },
-    {
-      "id": "class:FileExchangeClient",
-      "kind": "class",
-      "label": "FileExchangeClient",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/client/FileExchangeClient.kt:17",
-      "note": "client; Component",
-      "component": 1,
-      "rank": 1.97,
-      "degree": 2
-    },
-    {
-      "id": "class:CoverProviderClient",
-      "kind": "class",
-      "label": "CoverProviderClient",
-      "community": "cover",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/client/CoverProviderClient.kt:19",
-      "note": "client; Component",
-      "component": 1,
-      "rank": 1.96,
-      "degree": 2
-    },
-    {
-      "id": "class:CoverPolicyDao",
-      "kind": "class",
-      "label": "CoverPolicyDao",
-      "community": "cover",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/CoverPolicyDao.kt:10",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 3.26,
-      "degree": 4
-    },
-    {
-      "id": "class:ClientRegistryClient",
-      "kind": "class",
-      "label": "ClientRegistryClient",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/client/ClientRegistryClient.kt:16",
-      "note": "client; Component",
-      "component": 1,
-      "rank": 1.87,
-      "degree": 2
-    },
-    {
-      "id": "class:MovementsLoadedPublisher",
-      "kind": "class",
-      "label": "MovementsLoadedPublisher",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/event/MovementsLoadedPublisher.kt:15",
-      "note": "event; Component, KafkaProducer",
-      "component": 1,
-      "rank": 3.43,
-      "degree": 4
-    },
-    {
-      "id": "class:BaselinePriceDao",
-      "kind": "class",
-      "label": "BaselinePriceDao",
-      "community": "market",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/BaselinePriceDao.kt:10",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 2.87,
-      "degree": 3
-    },
-    {
-      "id": "class:XlsWorkbookOpener",
-      "kind": "class",
-      "label": "XlsWorkbookOpener",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/component/XlsWorkbookOpener.kt:8",
-      "note": "component; interface",
-      "component": 1,
-      "rank": 2.11,
-      "degree": 2
-    },
-    {
-      "id": "class:StressTestResultDao",
-      "kind": "class",
-      "label": "StressTestResultDao",
-      "community": "stress",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/StressTestResultDao.kt:10",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 3.33,
-      "degree": 4
-    },
-    {
-      "id": "context:stress",
-      "kind": "context",
-      "label": "stress",
-      "community": "stress",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/StressManager.kt",
-      "note": "entry point StressManager (manager)",
-      "component": 1,
-      "rank": 6.89,
-      "degree": 8
-    },
-    {
-      "id": "class:ClientRoleDao",
-      "kind": "class",
-      "label": "ClientRoleDao",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/ClientRoleDao.kt:10",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 3.21,
-      "degree": 4
-    },
-    {
-      "id": "class:MovementMonthlyDao",
-      "kind": "class",
-      "label": "MovementMonthlyDao",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/MovementMonthlyDao.kt:13",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 5.72,
-      "degree": 8
     },
     {
       "id": "class:Product2ProjectionRefreshListener",
@@ -387,7 +145,7 @@
       "location": "core/src/main/kotlin/harbor/event/Product2ProjectionRefreshListener.kt:17",
       "note": "event; Component, KafkaListener",
       "component": 1,
-      "rank": 3.26,
+      "rank": 3.16,
       "degree": 4
     },
     {
@@ -399,163 +157,7 @@
       "location": "core/src/main/kotlin/harbor/manager/Product2Manager.kt",
       "note": "entry point Product2Manager (manager)",
       "component": 1,
-      "rank": 5.65,
-      "degree": 7
-    },
-    {
-      "id": "class:PeerSimulationService",
-      "kind": "class",
-      "label": "PeerSimulationService",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/PeerSimulationService.kt:24",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 4.43,
-      "degree": 6
-    },
-    {
-      "id": "context:product1",
-      "kind": "context",
-      "label": "product1",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/Product1Manager.kt",
-      "note": "entry point Product1Manager (manager)",
-      "component": 1,
-      "rank": 16.5,
-      "degree": 22
-    },
-    {
-      "id": "class:ParameterDao",
-      "kind": "class",
-      "label": "ParameterDao",
-      "community": "admin",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/ParameterDao.kt:12",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 2.78,
-      "degree": 3
-    },
-    {
-      "id": "context:admin",
-      "kind": "context",
-      "label": "admin",
-      "community": "admin",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/AdminManager.kt",
-      "note": "entry point AdminManager (manager)",
-      "component": 1,
-      "rank": 8.21,
-      "degree": 10
-    },
-    {
-      "id": "class:ClientRoleService",
-      "kind": "class",
-      "label": "ClientRoleService",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/ClientRoleService.kt:28",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 7.09,
-      "degree": 10
-    },
-    {
-      "id": "class:ProjectionDao",
-      "kind": "class",
-      "label": "ProjectionDao",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/ProjectionDao.kt:23",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 5.24,
-      "degree": 7
-    },
-    {
-      "id": "class:ClientOverviewService",
-      "kind": "class",
-      "label": "ClientOverviewService",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/ClientOverviewService.kt:23",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 4.32,
-      "degree": 6
-    },
-    {
-      "id": "class:SessionHeaderFilter",
-      "kind": "class",
-      "label": "SessionHeaderFilter",
-      "community": "meetings",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/component/SessionHeaderFilter.kt:31",
-      "note": "component; Component",
-      "component": 1,
-      "rank": 2.46,
-      "degree": 3
-    },
-    {
-      "id": "class:SessionMovementInputDao",
-      "kind": "class",
-      "label": "SessionMovementInputDao",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/SessionMovementInputDao.kt:10",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 3.11,
-      "degree": 4
-    },
-    {
-      "id": "class:MarketPricesListener",
-      "kind": "class",
-      "label": "MarketPricesListener",
-      "community": "market",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/event/MarketPricesListener.kt:18",
-      "note": "event; Component, KafkaListener",
-      "component": 1,
-      "rank": 3.25,
-      "degree": 3
-    },
-    {
-      "id": "class:Product1ProjectionRefreshListener",
-      "kind": "class",
-      "label": "Product1ProjectionRefreshListener",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/event/Product1ProjectionRefreshListener.kt:17",
-      "note": "event; Component, KafkaListener",
-      "component": 1,
-      "rank": 3.21,
-      "degree": 4
-    },
-    {
-      "id": "class:ProjectionInputAssembler",
-      "kind": "class",
-      "label": "ProjectionInputAssembler",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/ProjectionInputAssembler.kt:30",
-      "note": "service; Component",
-      "component": 1,
-      "rank": 6.33,
-      "degree": 9
-    },
-    {
-      "id": "class:ClientManager",
-      "kind": "class",
-      "label": "ClientManager",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/ClientManager.kt:25",
-      "note": "manager; Service",
-      "component": 1,
-      "rank": 5.33,
+      "rank": 5.38,
       "degree": 7
     },
     {
@@ -567,55 +169,55 @@
       "location": "core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:16",
       "note": "validator; Component",
       "component": 1,
-      "rank": 2.46,
+      "rank": 2.39,
       "degree": 3
     },
     {
-      "id": "class:AdminController",
+      "id": "class:WorkbookReaderFactory",
       "kind": "class",
-      "label": "AdminController",
-      "community": "admin",
+      "label": "WorkbookReaderFactory",
+      "community": "imports",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/api/AdminController.kt:17",
-      "note": "api; RestController",
+      "location": "core/src/main/kotlin/harbor/component/WorkbookReaderFactory.kt:11",
+      "note": "component; Component",
       "component": 1,
-      "rank": 5.05,
-      "degree": 6
+      "rank": 2.8,
+      "degree": 3
     },
     {
-      "id": "class:MeetingSessionDao",
-      "kind": "class",
-      "label": "MeetingSessionDao",
-      "community": "meetings",
+      "id": "context:imports",
+      "kind": "context",
+      "label": "imports",
+      "community": "imports",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/MeetingSessionDao.kt:13",
-      "note": "dao; Repository",
+      "location": "core/src/main/kotlin/harbor/manager/ImportManager.kt",
+      "note": "entry point ImportManager (manager)",
       "component": 1,
-      "rank": 5.77,
-      "degree": 8
+      "rank": 14.09,
+      "degree": 17
     },
     {
-      "id": "class:RoleOverrideValidator",
+      "id": "class:StressTestCalculator",
       "kind": "class",
-      "label": "RoleOverrideValidator",
-      "community": "meetings",
+      "label": "StressTestCalculator",
+      "community": "stress",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/validator/RoleOverrideValidator.kt:15",
-      "note": "validator; Component",
+      "location": "core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23",
+      "note": "utils; object",
       "component": 1,
-      "rank": 1.84,
+      "rank": 2.73,
       "degree": 2
     },
     {
-      "id": "class:CoverManager",
-      "kind": "class",
-      "label": "CoverManager",
-      "community": "cover",
+      "id": "context:stress",
+      "kind": "context",
+      "label": "stress",
+      "community": "stress",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/CoverManager.kt:25",
-      "note": "manager; Service",
+      "location": "core/src/main/kotlin/harbor/manager/StressManager.kt",
+      "note": "entry point StressManager (manager)",
       "component": 1,
-      "rank": 6.05,
+      "rank": 6.63,
       "degree": 8
     },
     {
@@ -627,212 +229,20 @@
       "location": "core/src/main/kotlin/harbor/service/ReportPayloadService.kt:22",
       "note": "service; Service",
       "component": 1,
-      "rank": 5.96,
+      "rank": 5.81,
       "degree": 8
     },
     {
-      "id": "class:ReportTemplateLoader",
-      "kind": "class",
-      "label": "ReportTemplateLoader",
+      "id": "context:reports",
+      "kind": "context",
+      "label": "reports",
       "community": "reports",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/component/ReportTemplateLoader.kt:15",
-      "note": "component; Component",
+      "location": "core/src/main/kotlin/harbor/manager/ReportManager.kt",
+      "note": "entry point ReportManager (manager)",
       "component": 1,
-      "rank": 2.21,
-      "degree": 2
-    },
-    {
-      "id": "class:ImportManager",
-      "kind": "class",
-      "label": "ImportManager",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/ImportManager.kt:18",
-      "note": "manager; Service",
-      "component": 1,
-      "rank": 4.88,
-      "degree": 5
-    },
-    {
-      "id": "class:SessionClientConfigDao",
-      "kind": "class",
-      "label": "SessionClientConfigDao",
-      "community": "meetings",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/SessionClientConfigDao.kt:9",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 3.82,
-      "degree": 5
-    },
-    {
-      "id": "class:ScenarioService",
-      "kind": "class",
-      "label": "ScenarioService",
-      "community": "market",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/ScenarioService.kt:20",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 3.55,
-      "degree": 4
-    },
-    {
-      "id": "class:SessionController",
-      "kind": "class",
-      "label": "SessionController",
-      "community": "meetings",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/api/SessionController.kt:22",
-      "note": "api; RestController",
-      "component": 1,
-      "rank": 5.56,
-      "degree": 7
-    },
-    {
-      "id": "class:MonthGrid",
-      "kind": "class",
-      "label": "MonthGrid",
-      "community": "shared",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/utils/MonthGrid.kt:13",
-      "note": "utils; class",
-      "component": 2,
-      "rank": 0.57,
-      "degree": 0
-    },
-    {
-      "id": "class:RoleClassifier",
-      "kind": "class",
-      "label": "RoleClassifier",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24",
-      "note": "utils; object",
-      "component": 1,
-      "rank": 2.69,
-      "degree": 2
-    },
-    {
-      "id": "class:MonthlySnapshotJob",
-      "kind": "class",
-      "label": "MonthlySnapshotJob",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/job/MonthlySnapshotJob.kt:14",
-      "note": "job; Component, Scheduled",
-      "component": 1,
-      "rank": 2.13,
-      "degree": 2
-    },
-    {
-      "id": "class:SessionPeerSimulationDao",
-      "kind": "class",
-      "label": "SessionPeerSimulationDao",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/SessionPeerSimulationDao.kt:9",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 2.57,
-      "degree": 3
-    },
-    {
-      "id": "class:GoodsMovementDao",
-      "kind": "class",
-      "label": "GoodsMovementDao",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/GoodsMovementDao.kt:12",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 4.12,
-      "degree": 5
-    },
-    {
-      "id": "class:ClientController",
-      "kind": "class",
-      "label": "ClientController",
-      "community": "clients",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/api/ClientController.kt:20",
-      "note": "api; RestController",
-      "component": 1,
-      "rank": 4.97,
-      "degree": 6
-    },
-    {
-      "id": "class:WorkbookReaderFactory",
-      "kind": "class",
-      "label": "WorkbookReaderFactory",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/component/WorkbookReaderFactory.kt:11",
-      "note": "component; Component",
-      "component": 1,
-      "rank": 2.87,
-      "degree": 3
-    },
-    {
-      "id": "class:ParameterService",
-      "kind": "class",
-      "label": "ParameterService",
-      "community": "admin",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/ParameterService.kt:23",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 5.94,
-      "degree": 8
-    },
-    {
-      "id": "class:MeetingManager",
-      "kind": "class",
-      "label": "MeetingManager",
-      "community": "meetings",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/MeetingManager.kt:37",
-      "note": "manager; Service",
-      "component": 1,
-      "rank": 6.78,
-      "degree": 9
-    },
-    {
-      "id": "class:MovementImportService",
-      "kind": "class",
-      "label": "MovementImportService",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/MovementImportService.kt:30",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 8.79,
+      "rank": 9.31,
       "degree": 11
-    },
-    {
-      "id": "class:CoverController",
-      "kind": "class",
-      "label": "CoverController",
-      "community": "cover",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/api/CoverController.kt:20",
-      "note": "api; RestController",
-      "component": 1,
-      "rank": 4.18,
-      "degree": 5
-    },
-    {
-      "id": "class:MarketDataClient",
-      "kind": "class",
-      "label": "MarketDataClient",
-      "community": "market",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/client/MarketDataClient.kt:19",
-      "note": "client; Component",
-      "component": 1,
-      "rank": 1.98,
-      "degree": 2
     },
     {
       "id": "class:ReportController",
@@ -843,224 +253,8 @@
       "location": "core/src/main/kotlin/harbor/api/ReportController.kt:21",
       "note": "api; RestController",
       "component": 1,
-      "rank": 4.43,
+      "rank": 4.33,
       "degree": 5
-    },
-    {
-      "id": "class:MeetingReportDao",
-      "kind": "class",
-      "label": "MeetingReportDao",
-      "community": "meetings",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/MeetingReportDao.kt:9",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 2.65,
-      "degree": 3
-    },
-    {
-      "id": "class:ProjectionAggregator",
-      "kind": "class",
-      "label": "ProjectionAggregator",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:32",
-      "note": "utils; object",
-      "component": 1,
-      "rank": 2.66,
-      "degree": 2
-    },
-    {
-      "id": "class:DocumentServiceClient",
-      "kind": "class",
-      "label": "DocumentServiceClient",
-      "community": "reports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/client/DocumentServiceClient.kt:17",
-      "note": "client; Component",
-      "component": 1,
-      "rank": 2.03,
-      "degree": 2
-    },
-    {
-      "id": "class:ProjectionService",
-      "kind": "class",
-      "label": "ProjectionService",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/ProjectionService.kt:27",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 6.99,
-      "degree": 10
-    },
-    {
-      "id": "class:Product2Manager",
-      "kind": "class",
-      "label": "Product2Manager",
-      "community": "product2",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/Product2Manager.kt:26",
-      "note": "manager; Service",
-      "component": 1,
-      "rank": 5.92,
-      "degree": 8
-    },
-    {
-      "id": "class:WorkbookReader",
-      "kind": "class",
-      "label": "WorkbookReader",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/component/WorkbookReader.kt:9",
-      "note": "component; interface",
-      "component": 1,
-      "rank": 1.3,
-      "degree": 1
-    },
-    {
-      "id": "class:XlsMovementParser",
-      "kind": "class",
-      "label": "XlsMovementParser",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/component/XlsMovementParser.kt:32",
-      "note": "component; Component",
-      "component": 1,
-      "rank": 1.97,
-      "degree": 2
-    },
-    {
-      "id": "class:ReportRenderRequester",
-      "kind": "class",
-      "label": "ReportRenderRequester",
-      "community": "reports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/event/ReportRenderRequester.kt:16",
-      "note": "event; Component, KafkaProducer",
-      "component": 1,
-      "rank": 4.22,
-      "degree": 4
-    },
-    {
-      "id": "class:CoverQuoteDao",
-      "kind": "class",
-      "label": "CoverQuoteDao",
-      "community": "cover",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/CoverQuoteDao.kt:9",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 2.72,
-      "degree": 3
-    },
-    {
-      "id": "class:Product2Controller",
-      "kind": "class",
-      "label": "Product2Controller",
-      "community": "product2",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/api/Product2Controller.kt:22",
-      "note": "api; RestController",
-      "component": 1,
-      "rank": 4.94,
-      "degree": 6
-    },
-    {
-      "id": "class:StressTestController",
-      "kind": "class",
-      "label": "StressTestController",
-      "community": "stress",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/api/StressTestController.kt:18",
-      "note": "api; RestController",
-      "component": 1,
-      "rank": 3.58,
-      "degree": 4
-    },
-    {
-      "id": "class:Product1Manager",
-      "kind": "class",
-      "label": "Product1Manager",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/Product1Manager.kt:26",
-      "note": "manager; Service",
-      "component": 1,
-      "rank": 5.82,
-      "degree": 8
-    },
-    {
-      "id": "class:StressTestService",
-      "kind": "class",
-      "label": "StressTestService",
-      "community": "stress",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/service/StressTestService.kt:26",
-      "note": "service; Service",
-      "component": 1,
-      "rank": 3.91,
-      "degree": 5
-    },
-    {
-      "id": "class:ReportRenderedListener",
-      "kind": "class",
-      "label": "ReportRenderedListener",
-      "community": "reports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/event/ReportRenderedListener.kt:10",
-      "note": "event; Component, KafkaListener",
-      "component": 1,
-      "rank": 3.32,
-      "degree": 3
-    },
-    {
-      "id": "class:ScenarioPricePath",
-      "kind": "class",
-      "label": "ScenarioPricePath",
-      "community": "market",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19",
-      "note": "utils; object",
-      "component": 1,
-      "rank": 2.76,
-      "degree": 2
-    },
-    {
-      "id": "class:Product1Controller",
-      "kind": "class",
-      "label": "Product1Controller",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/api/Product1Controller.kt:21",
-      "note": "api; RestController",
-      "component": 1,
-      "rank": 4.74,
-      "degree": 6
-    },
-    {
-      "id": "class:ImportBatchDao",
-      "kind": "class",
-      "label": "ImportBatchDao",
-      "community": "imports",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/dao/ImportBatchDao.kt:9",
-      "note": "dao; Repository",
-      "component": 1,
-      "rank": 2.77,
-      "degree": 3
-    },
-    {
-      "id": "class:PeerBenchmark",
-      "kind": "class",
-      "label": "PeerBenchmark",
-      "community": "product1",
-      "repo": "be",
-      "location": "core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19",
-      "note": "utils; object",
-      "component": 1,
-      "rank": 2.66,
-      "degree": 2
     },
     {
       "id": "class:ScenarioController",
@@ -1071,20 +265,212 @@
       "location": "core/src/main/kotlin/harbor/api/ScenarioController.kt:20",
       "note": "api; RestController",
       "component": 1,
-      "rank": 5.62,
+      "rank": 5.47,
       "degree": 7
     },
     {
-      "id": "class:AdminManager",
-      "kind": "class",
-      "label": "AdminManager",
-      "community": "admin",
+      "id": "context:market",
+      "kind": "context",
+      "label": "market",
+      "community": "market",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/AdminManager.kt:24",
-      "note": "manager; Service",
+      "location": "core/src/main/kotlin/harbor/manager/MarketManager.kt",
+      "note": "entry point MarketManager (manager)",
       "component": 1,
-      "rank": 5.02,
+      "rank": 13.59,
+      "degree": 17
+    },
+    {
+      "id": "class:ClientRoleDao",
+      "kind": "class",
+      "label": "ClientRoleDao",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/ClientRoleDao.kt:10",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 3.12,
+      "degree": 4
+    },
+    {
+      "id": "context:clients",
+      "kind": "context",
+      "label": "clients",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/ClientManager.kt",
+      "note": "entry point ClientManager (manager)",
+      "component": 1,
+      "rank": 11.96,
+      "degree": 16
+    },
+    {
+      "id": "class:ProjectionAggregator",
+      "kind": "class",
+      "label": "ProjectionAggregator",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:32",
+      "note": "utils; object",
+      "component": 1,
+      "rank": 2.6,
+      "degree": 2
+    },
+    {
+      "id": "class:SessionClientConfigDao",
+      "kind": "class",
+      "label": "SessionClientConfigDao",
+      "community": "meetings",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/SessionClientConfigDao.kt:9",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 3.73,
+      "degree": 5
+    },
+    {
+      "id": "class:CoverController",
+      "kind": "class",
+      "label": "CoverController",
+      "community": "cover",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/api/CoverController.kt:20",
+      "note": "api; RestController",
+      "component": 1,
+      "rank": 4.08,
+      "degree": 5
+    },
+    {
+      "id": "context:cover",
+      "kind": "context",
+      "label": "cover",
+      "community": "cover",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/CoverManager.kt",
+      "note": "entry point CoverManager (manager)",
+      "component": 1,
+      "rank": 10.23,
+      "degree": 13
+    },
+    {
+      "id": "class:ScenarioPricePath",
+      "kind": "class",
+      "label": "ScenarioPricePath",
+      "community": "market",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19",
+      "note": "utils; object",
+      "component": 1,
+      "rank": 2.69,
+      "degree": 2
+    },
+    {
+      "id": "class:MovementsLoadedPublisher",
+      "kind": "class",
+      "label": "MovementsLoadedPublisher",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/event/MovementsLoadedPublisher.kt:15",
+      "note": "event; Component, KafkaProducer",
+      "component": 1,
+      "rank": 3.35,
+      "degree": 4
+    },
+    {
+      "id": "class:ReportRenderedListener",
+      "kind": "class",
+      "label": "ReportRenderedListener",
+      "community": "reports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/event/ReportRenderedListener.kt:10",
+      "note": "event; Component, KafkaListener",
+      "component": 1,
+      "rank": 3.24,
+      "degree": 3
+    },
+    {
+      "id": "class:CoverQuoteDao",
+      "kind": "class",
+      "label": "CoverQuoteDao",
+      "community": "cover",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/CoverQuoteDao.kt:9",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 2.65,
+      "degree": 3
+    },
+    {
+      "id": "class:BaselinePriceDao",
+      "kind": "class",
+      "label": "BaselinePriceDao",
+      "community": "market",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/BaselinePriceDao.kt:10",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 2.8,
+      "degree": 3
+    },
+    {
+      "id": "class:ClientOverviewService",
+      "kind": "class",
+      "label": "ClientOverviewService",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/ClientOverviewService.kt:23",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 4.2,
       "degree": 6
+    },
+    {
+      "id": "class:StressTestService",
+      "kind": "class",
+      "label": "StressTestService",
+      "community": "stress",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/StressTestService.kt:26",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 3.8,
+      "degree": 5
+    },
+    {
+      "id": "class:ClientRoleService",
+      "kind": "class",
+      "label": "ClientRoleService",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/ClientRoleService.kt:28",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 6.88,
+      "degree": 10
+    },
+    {
+      "id": "class:Product1Controller",
+      "kind": "class",
+      "label": "Product1Controller",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/api/Product1Controller.kt:21",
+      "note": "api; RestController",
+      "component": 1,
+      "rank": 4.58,
+      "degree": 6
+    },
+    {
+      "id": "class:CoverProviderClient",
+      "kind": "class",
+      "label": "CoverProviderClient",
+      "community": "cover",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/client/CoverProviderClient.kt:19",
+      "note": "client; Component",
+      "component": 1,
+      "rank": 1.92,
+      "degree": 2
     },
     {
       "id": "class:Rounding",
@@ -1094,32 +480,92 @@
       "repo": "be",
       "location": "core/src/main/kotlin/harbor/utils/Rounding.kt:16",
       "note": "utils; object",
-      "component": 3,
-      "rank": 0.57,
+      "component": 2,
+      "rank": 0.56,
       "degree": 0
     },
     {
-      "id": "class:StressManager",
+      "id": "class:CoverQuoteService",
       "kind": "class",
-      "label": "StressManager",
-      "community": "stress",
+      "label": "CoverQuoteService",
+      "community": "cover",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/manager/StressManager.kt:30",
-      "note": "manager; Service",
+      "location": "core/src/main/kotlin/harbor/service/CoverQuoteService.kt:23",
+      "note": "service; Service",
       "component": 1,
-      "rank": 5.61,
-      "degree": 7
+      "rank": 4.04,
+      "degree": 5
     },
     {
-      "id": "class:ScenarioValidator",
+      "id": "class:Product2Controller",
       "kind": "class",
-      "label": "ScenarioValidator",
-      "community": "market",
+      "label": "Product2Controller",
+      "community": "product2",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/validator/ScenarioValidator.kt:15",
-      "note": "validator; Component",
+      "location": "core/src/main/kotlin/harbor/api/Product2Controller.kt:22",
+      "note": "api; RestController",
       "component": 1,
-      "rank": 2.03,
+      "rank": 4.7,
+      "degree": 6
+    },
+    {
+      "id": "class:Product1ProjectionRefreshListener",
+      "kind": "class",
+      "label": "Product1ProjectionRefreshListener",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/event/Product1ProjectionRefreshListener.kt:17",
+      "note": "event; Component, KafkaListener",
+      "component": 1,
+      "rank": 3.12,
+      "degree": 4
+    },
+    {
+      "id": "class:StressTestController",
+      "kind": "class",
+      "label": "StressTestController",
+      "community": "stress",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/api/StressTestController.kt:18",
+      "note": "api; RestController",
+      "component": 1,
+      "rank": 3.43,
+      "degree": 4
+    },
+    {
+      "id": "class:XlsWorkbookOpener",
+      "kind": "class",
+      "label": "XlsWorkbookOpener",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/component/XlsWorkbookOpener.kt:8",
+      "note": "component; interface",
+      "component": 1,
+      "rank": 2.06,
+      "degree": 2
+    },
+    {
+      "id": "class:CoverRatioCalculator",
+      "kind": "class",
+      "label": "CoverRatioCalculator",
+      "community": "cover",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/utils/CoverRatioCalculator.kt:23",
+      "note": "utils; object",
+      "component": 1,
+      "rank": 2.67,
+      "degree": 2
+    },
+    {
+      "id": "class:ClientRegistryClient",
+      "kind": "class",
+      "label": "ClientRegistryClient",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/client/ClientRegistryClient.kt:16",
+      "note": "client; Component",
+      "component": 1,
+      "rank": 1.82,
       "degree": 2
     },
     {
@@ -1131,20 +577,116 @@
       "location": "core/src/main/kotlin/harbor/dao/MarketScenarioDao.kt:9",
       "note": "dao; Repository",
       "component": 1,
-      "rank": 4.04,
+      "rank": 3.93,
       "degree": 5
     },
     {
-      "id": "class:ParameterValidator",
+      "id": "class:StressTestResultDao",
       "kind": "class",
-      "label": "ParameterValidator",
-      "community": "admin",
+      "label": "StressTestResultDao",
+      "community": "stress",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/validator/ParameterValidator.kt:16",
+      "location": "core/src/main/kotlin/harbor/dao/StressTestResultDao.kt:10",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 3.23,
+      "degree": 4
+    },
+    {
+      "id": "class:MovementMonthlyDao",
+      "kind": "class",
+      "label": "MovementMonthlyDao",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/MovementMonthlyDao.kt:13",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 5.58,
+      "degree": 8
+    },
+    {
+      "id": "class:ScenarioValidator",
+      "kind": "class",
+      "label": "ScenarioValidator",
+      "community": "market",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/validator/ScenarioValidator.kt:15",
       "note": "validator; Component",
       "component": 1,
       "rank": 1.98,
       "degree": 2
+    },
+    {
+      "id": "class:ReportTemplateLoader",
+      "kind": "class",
+      "label": "ReportTemplateLoader",
+      "community": "reports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/component/ReportTemplateLoader.kt:15",
+      "note": "component; Component",
+      "component": 1,
+      "rank": 2.16,
+      "degree": 2
+    },
+    {
+      "id": "class:MovementImportService",
+      "kind": "class",
+      "label": "MovementImportService",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/MovementImportService.kt:30",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 8.58,
+      "degree": 11
+    },
+    {
+      "id": "class:Product2Manager",
+      "kind": "class",
+      "label": "Product2Manager",
+      "community": "product2",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/Product2Manager.kt:26",
+      "note": "manager; Service",
+      "component": 1,
+      "rank": 5.71,
+      "degree": 8
+    },
+    {
+      "id": "class:ReportRenderRequester",
+      "kind": "class",
+      "label": "ReportRenderRequester",
+      "community": "reports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/event/ReportRenderRequester.kt:16",
+      "note": "event; Component, KafkaProducer",
+      "component": 1,
+      "rank": 4.12,
+      "degree": 4
+    },
+    {
+      "id": "class:AdminManager",
+      "kind": "class",
+      "label": "AdminManager",
+      "community": "admin",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/AdminManager.kt:24",
+      "note": "manager; Service",
+      "component": 1,
+      "rank": 4.88,
+      "degree": 6
+    },
+    {
+      "id": "context:admin",
+      "kind": "context",
+      "label": "admin",
+      "community": "admin",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/AdminManager.kt",
+      "note": "entry point AdminManager (manager)",
+      "component": 1,
+      "rank": 7.97,
+      "degree": 10
     },
     {
       "id": "class:SessionEventsPublisher",
@@ -1155,8 +697,296 @@
       "location": "core/src/main/kotlin/harbor/event/SessionEventsPublisher.kt:14",
       "note": "event; Component, KafkaProducer",
       "component": 1,
-      "rank": 2.66,
+      "rank": 2.6,
       "degree": 3
+    },
+    {
+      "id": "class:XlsMovementParser",
+      "kind": "class",
+      "label": "XlsMovementParser",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/component/XlsMovementParser.kt:32",
+      "note": "component; Component",
+      "component": 1,
+      "rank": 1.93,
+      "degree": 2
+    },
+    {
+      "id": "class:SessionScopeService",
+      "kind": "class",
+      "label": "SessionScopeService",
+      "community": "meetings",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/SessionScopeService.kt:17",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 4.42,
+      "degree": 6
+    },
+    {
+      "id": "class:ClientProfileService",
+      "kind": "class",
+      "label": "ClientProfileService",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/ClientProfileService.kt:16",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 5.82,
+      "degree": 8
+    },
+    {
+      "id": "class:SessionMovementInputDao",
+      "kind": "class",
+      "label": "SessionMovementInputDao",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/SessionMovementInputDao.kt:10",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 3.03,
+      "degree": 4
+    },
+    {
+      "id": "class:Product1Manager",
+      "kind": "class",
+      "label": "Product1Manager",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/Product1Manager.kt:26",
+      "note": "manager; Service",
+      "component": 1,
+      "rank": 5.65,
+      "degree": 8
+    },
+    {
+      "id": "class:CoverManager",
+      "kind": "class",
+      "label": "CoverManager",
+      "community": "cover",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/CoverManager.kt:25",
+      "note": "manager; Service",
+      "component": 1,
+      "rank": 5.9,
+      "degree": 8
+    },
+    {
+      "id": "class:ClientRoleSessionClosedListener",
+      "kind": "class",
+      "label": "ClientRoleSessionClosedListener",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/event/ClientRoleSessionClosedListener.kt:18",
+      "note": "event; Component, KafkaListener",
+      "component": 1,
+      "rank": 2.58,
+      "degree": 3
+    },
+    {
+      "id": "class:StressManager",
+      "kind": "class",
+      "label": "StressManager",
+      "community": "stress",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/StressManager.kt:30",
+      "note": "manager; Service",
+      "component": 1,
+      "rank": 5.41,
+      "degree": 7
+    },
+    {
+      "id": "class:DocumentServiceClient",
+      "kind": "class",
+      "label": "DocumentServiceClient",
+      "community": "reports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/client/DocumentServiceClient.kt:17",
+      "note": "client; Component",
+      "component": 1,
+      "rank": 1.98,
+      "degree": 2
+    },
+    {
+      "id": "class:CoverPolicyDao",
+      "kind": "class",
+      "label": "CoverPolicyDao",
+      "community": "cover",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/CoverPolicyDao.kt:10",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 3.18,
+      "degree": 4
+    },
+    {
+      "id": "class:MonthlySnapshotJob",
+      "kind": "class",
+      "label": "MonthlySnapshotJob",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/job/MonthlySnapshotJob.kt:14",
+      "note": "job; Component, Scheduled",
+      "component": 1,
+      "rank": 2.08,
+      "degree": 2
+    },
+    {
+      "id": "class:PeerBenchmark",
+      "kind": "class",
+      "label": "PeerBenchmark",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19",
+      "note": "utils; object",
+      "component": 1,
+      "rank": 2.6,
+      "degree": 2
+    },
+    {
+      "id": "class:ParameterValidator",
+      "kind": "class",
+      "label": "ParameterValidator",
+      "community": "admin",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/validator/ParameterValidator.kt:16",
+      "note": "validator; Component",
+      "component": 1,
+      "rank": 1.93,
+      "degree": 2
+    },
+    {
+      "id": "class:ReportManager",
+      "kind": "class",
+      "label": "ReportManager",
+      "community": "reports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/ReportManager.kt:26",
+      "note": "manager; Service",
+      "component": 1,
+      "rank": 8.26,
+      "degree": 10
+    },
+    {
+      "id": "class:ClientProfileDao",
+      "kind": "class",
+      "label": "ClientProfileDao",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/ClientProfileDao.kt:10",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 2.46,
+      "degree": 3
+    },
+    {
+      "id": "class:RoleOverrideValidator",
+      "kind": "class",
+      "label": "RoleOverrideValidator",
+      "community": "meetings",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/validator/RoleOverrideValidator.kt:15",
+      "note": "validator; Component",
+      "component": 1,
+      "rank": 1.8,
+      "degree": 2
+    },
+    {
+      "id": "class:SessionPeerSimulationDao",
+      "kind": "class",
+      "label": "SessionPeerSimulationDao",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/SessionPeerSimulationDao.kt:9",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 2.5,
+      "degree": 3
+    },
+    {
+      "id": "class:AdminController",
+      "kind": "class",
+      "label": "AdminController",
+      "community": "admin",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/api/AdminController.kt:17",
+      "note": "api; RestController",
+      "component": 1,
+      "rank": 4.9,
+      "degree": 6
+    },
+    {
+      "id": "class:MarketDataClient",
+      "kind": "class",
+      "label": "MarketDataClient",
+      "community": "market",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/client/MarketDataClient.kt:19",
+      "note": "client; Component",
+      "component": 1,
+      "rank": 1.93,
+      "degree": 2
+    },
+    {
+      "id": "class:SessionController",
+      "kind": "class",
+      "label": "SessionController",
+      "community": "meetings",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/api/SessionController.kt:22",
+      "note": "api; RestController",
+      "component": 1,
+      "rank": 5.41,
+      "degree": 7
+    },
+    {
+      "id": "class:ImportManager",
+      "kind": "class",
+      "label": "ImportManager",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/ImportManager.kt:18",
+      "note": "manager; Service",
+      "component": 1,
+      "rank": 4.77,
+      "degree": 5
+    },
+    {
+      "id": "class:MeetingSessionDao",
+      "kind": "class",
+      "label": "MeetingSessionDao",
+      "community": "meetings",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/MeetingSessionDao.kt:13",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 5.63,
+      "degree": 8
+    },
+    {
+      "id": "class:ProjectionDao",
+      "kind": "class",
+      "label": "ProjectionDao",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/ProjectionDao.kt:23",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 5.11,
+      "degree": 7
+    },
+    {
+      "id": "class:PeerSimulationService",
+      "kind": "class",
+      "label": "PeerSimulationService",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/PeerSimulationService.kt:24",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 4.3,
+      "degree": 6
     },
     {
       "id": "class:CoverRatioService",
@@ -1167,20 +997,56 @@
       "location": "core/src/main/kotlin/harbor/service/CoverRatioService.kt:26",
       "note": "service; Service",
       "component": 1,
-      "rank": 5.07,
+      "rank": 4.94,
       "degree": 7
     },
     {
-      "id": "class:WorkbookDelimitedReader",
+      "id": "class:RoleClassifier",
       "kind": "class",
-      "label": "WorkbookDelimitedReader",
+      "label": "RoleClassifier",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24",
+      "note": "utils; object",
+      "component": 1,
+      "rank": 2.62,
+      "degree": 2
+    },
+    {
+      "id": "class:MeetingReportDao",
+      "kind": "class",
+      "label": "MeetingReportDao",
+      "community": "meetings",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/MeetingReportDao.kt:9",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 2.59,
+      "degree": 3
+    },
+    {
+      "id": "class:FileExchangeClient",
+      "kind": "class",
+      "label": "FileExchangeClient",
       "community": "imports",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/component/WorkbookDelimitedReader.kt:7",
-      "note": "component; class",
+      "location": "core/src/main/kotlin/harbor/client/FileExchangeClient.kt:17",
+      "note": "client; Component",
       "component": 1,
-      "rank": 1.3,
-      "degree": 1
+      "rank": 1.93,
+      "degree": 2
+    },
+    {
+      "id": "class:MonthGrid",
+      "kind": "class",
+      "label": "MonthGrid",
+      "community": "shared",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/utils/MonthGrid.kt:13",
+      "note": "utils; class",
+      "component": 3,
+      "rank": 0.56,
+      "degree": 0
     },
     {
       "id": "class:ReportSessionClosedListener",
@@ -1191,7 +1057,79 @@
       "location": "core/src/main/kotlin/harbor/event/ReportSessionClosedListener.kt:14",
       "note": "event; Component, KafkaListener",
       "component": 1,
-      "rank": 2.85,
+      "rank": 2.78,
+      "degree": 3
+    },
+    {
+      "id": "class:ClientManager",
+      "kind": "class",
+      "label": "ClientManager",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/manager/ClientManager.kt:25",
+      "note": "manager; Service",
+      "component": 1,
+      "rank": 5.16,
+      "degree": 7
+    },
+    {
+      "id": "class:ProjectionService",
+      "kind": "class",
+      "label": "ProjectionService",
+      "community": "product1",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/ProjectionService.kt:27",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 6.79,
+      "degree": 10
+    },
+    {
+      "id": "class:BaselinePriceService",
+      "kind": "class",
+      "label": "BaselinePriceService",
+      "community": "market",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/BaselinePriceService.kt:23",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 5.69,
+      "degree": 7
+    },
+    {
+      "id": "class:ImportBatchDao",
+      "kind": "class",
+      "label": "ImportBatchDao",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/ImportBatchDao.kt:9",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 2.71,
+      "degree": 3
+    },
+    {
+      "id": "class:ClientController",
+      "kind": "class",
+      "label": "ClientController",
+      "community": "clients",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/api/ClientController.kt:20",
+      "note": "api; RestController",
+      "component": 1,
+      "rank": 4.78,
+      "degree": 6
+    },
+    {
+      "id": "class:DailyMovementImportJob",
+      "kind": "class",
+      "label": "DailyMovementImportJob",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/job/DailyMovementImportJob.kt:12",
+      "note": "job; Component, Scheduled",
+      "component": 1,
+      "rank": 2.78,
       "degree": 3
     },
     {
@@ -1203,20 +1141,92 @@
       "location": "core/src/main/kotlin/harbor/manager/MarketManager.kt:21",
       "note": "manager; Service",
       "component": 1,
-      "rank": 4.27,
+      "rank": 4.16,
       "degree": 5
     },
     {
-      "id": "class:StressTestCalculator",
+      "id": "class:WorkbookDelimitedReader",
       "kind": "class",
-      "label": "StressTestCalculator",
-      "community": "stress",
+      "label": "WorkbookDelimitedReader",
+      "community": "imports",
       "repo": "be",
-      "location": "core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23",
-      "note": "utils; object",
+      "location": "core/src/main/kotlin/harbor/component/WorkbookDelimitedReader.kt:7",
+      "note": "component; class",
       "component": 1,
-      "rank": 2.81,
-      "degree": 2
+      "rank": 1.27,
+      "degree": 1
+    },
+    {
+      "id": "class:ParameterService",
+      "kind": "class",
+      "label": "ParameterService",
+      "community": "admin",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/ParameterService.kt:23",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 5.78,
+      "degree": 8
+    },
+    {
+      "id": "class:ScenarioService",
+      "kind": "class",
+      "label": "ScenarioService",
+      "community": "market",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/service/ScenarioService.kt:20",
+      "note": "service; Service",
+      "component": 1,
+      "rank": 3.46,
+      "degree": 4
+    },
+    {
+      "id": "class:WorkbookReader",
+      "kind": "class",
+      "label": "WorkbookReader",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/component/WorkbookReader.kt:9",
+      "note": "component; interface",
+      "component": 1,
+      "rank": 1.27,
+      "degree": 1
+    },
+    {
+      "id": "class:GoodsMovementDao",
+      "kind": "class",
+      "label": "GoodsMovementDao",
+      "community": "imports",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/GoodsMovementDao.kt:12",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 4.03,
+      "degree": 5
+    },
+    {
+      "id": "class:MarketPricesListener",
+      "kind": "class",
+      "label": "MarketPricesListener",
+      "community": "market",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/event/MarketPricesListener.kt:18",
+      "note": "event; Component, KafkaListener",
+      "component": 1,
+      "rank": 3.17,
+      "degree": 3
+    },
+    {
+      "id": "class:ParameterDao",
+      "kind": "class",
+      "label": "ParameterDao",
+      "community": "admin",
+      "repo": "be",
+      "location": "core/src/main/kotlin/harbor/dao/ParameterDao.kt:12",
+      "note": "dao; Repository",
+      "component": 1,
+      "rank": 2.71,
+      "degree": 3
     },
     {
       "id": "endpoint:GET /api/v1/admin/imports",
@@ -1227,7 +1237,7 @@
       "location": "core/src/main/kotlin/harbor/api/AdminController.kt:26",
       "note": "operationId listImportBatches; handler AdminController.listImportBatches; params ",
       "component": 1,
-      "rank": 3.61,
+      "rank": 3.49,
       "degree": 4
     },
     {
@@ -1239,7 +1249,7 @@
       "location": "core/src/main/kotlin/harbor/api/AdminController.kt:29",
       "note": "operationId triggerImport; handler AdminController.triggerImport; params ",
       "component": 1,
-      "rank": 3.61,
+      "rank": 3.49,
       "degree": 4
     },
     {
@@ -1251,7 +1261,7 @@
       "location": "core/src/main/kotlin/harbor/api/AdminController.kt:20",
       "note": "operationId listParameters; handler AdminController.listParameters; params ",
       "component": 1,
-      "rank": 3.61,
+      "rank": 3.49,
       "degree": 4
     },
     {
@@ -1263,7 +1273,7 @@
       "location": "core/src/main/kotlin/harbor/api/AdminController.kt:23",
       "note": "operationId upsertParameter; handler AdminController.upsertParameter; params key",
       "component": 1,
-      "rank": 3.61,
+      "rank": 3.49,
       "degree": 4
     },
     {
@@ -1275,7 +1285,7 @@
       "location": "core/src/main/kotlin/harbor/api/ClientController.kt:23",
       "note": "operationId searchClients; handler ClientController.searchClients; params ",
       "component": 1,
-      "rank": 3.62,
+      "rank": 3.47,
       "degree": 4
     },
     {
@@ -1287,7 +1297,7 @@
       "location": "core/src/main/kotlin/harbor/api/ClientController.kt:26",
       "note": "operationId getClient; handler ClientController.getClient; params clientId",
       "component": 1,
-      "rank": 3.66,
+      "rank": 3.5,
       "degree": 4
     },
     {
@@ -1299,7 +1309,7 @@
       "location": "core/src/main/kotlin/harbor/api/CoverController.kt:31",
       "note": "operationId listCoverPolicies; handler CoverController.listCoverPolicies; params clientId",
       "component": 1,
-      "rank": 3.61,
+      "rank": 3.53,
       "degree": 4
     },
     {
@@ -1311,7 +1321,7 @@
       "location": "core/src/main/kotlin/harbor/api/ClientController.kt:29",
       "note": "operationId getClientOverview; handler ClientController.getClientOverview; params clientId",
       "component": 1,
-      "rank": 3.6,
+      "rank": 3.45,
       "degree": 4
     },
     {
@@ -1323,7 +1333,7 @@
       "location": "core/src/main/kotlin/harbor/api/ClientController.kt:32",
       "note": "operationId getClientRole; handler ClientController.getClientRole; params clientId",
       "component": 1,
-      "rank": 3.66,
+      "rank": 3.5,
       "degree": 4
     },
     {
@@ -1335,7 +1345,7 @@
       "location": "core/src/main/kotlin/harbor/api/SessionController.kt:25",
       "note": "operationId createSession; handler SessionController.createSession; params clientId",
       "component": 1,
-      "rank": 3.52,
+      "rank": 3.43,
       "degree": 4
     },
     {
@@ -1347,7 +1357,7 @@
       "location": "core/src/main/kotlin/harbor/api/CoverController.kt:26",
       "note": "operationId requestCoverQuote; handler CoverController.requestCoverQuote; params ",
       "component": 1,
-      "rank": 3.55,
+      "rank": 3.47,
       "degree": 4
     },
     {
@@ -1359,7 +1369,7 @@
       "location": "core/src/main/kotlin/harbor/api/CoverController.kt:23",
       "note": "operationId getCoverSummary; handler CoverController.getCoverSummary; params ",
       "component": 1,
-      "rank": 3.55,
+      "rank": 3.47,
       "degree": 4
     },
     {
@@ -1371,7 +1381,7 @@
       "location": "core/src/main/kotlin/harbor/api/ScenarioController.kt:41",
       "note": "operationId getBaselinePrices; handler ScenarioController.getBaselinePrices; params ",
       "component": 1,
-      "rank": 3.45,
+      "rank": 3.36,
       "degree": 4
     },
     {
@@ -1383,7 +1393,7 @@
       "location": "core/src/main/kotlin/harbor/api/Product1Controller.kt:29",
       "note": "operationId putProduct1Movements; handler Product1Controller.putProduct1Movements; params ",
       "component": 1,
-      "rank": 3.4,
+      "rank": 3.28,
       "degree": 4
     },
     {
@@ -1395,7 +1405,7 @@
       "location": "core/src/main/kotlin/harbor/api/Product1Controller.kt:24",
       "note": "operationId getProduct1Overview; handler Product1Controller.getProduct1Overview; params ",
       "component": 1,
-      "rank": 3.4,
+      "rank": 3.28,
       "degree": 4
     },
     {
@@ -1407,7 +1417,7 @@
       "location": "core/src/main/kotlin/harbor/api/Product1Controller.kt:35",
       "note": "operationId postProduct1PeerSimulation; handler Product1Controller.postProduct1PeerSimulation; params ",
       "component": 1,
-      "rank": 3.4,
+      "rank": 3.28,
       "degree": 4
     },
     {
@@ -1419,7 +1429,7 @@
       "location": "core/src/main/kotlin/harbor/api/Product1Controller.kt:41",
       "note": "operationId getProduct1Projection; handler Product1Controller.getProduct1Projection; params ",
       "component": 1,
-      "rank": 3.48,
+      "rank": 3.35,
       "degree": 4
     },
     {
@@ -1431,7 +1441,7 @@
       "location": "core/src/main/kotlin/harbor/api/Product2Controller.kt:31",
       "note": "operationId putProduct2Movements; handler Product2Controller.putProduct2Movements; params ",
       "component": 1,
-      "rank": 3.57,
+      "rank": 3.36,
       "degree": 4
     },
     {
@@ -1443,7 +1453,7 @@
       "location": "core/src/main/kotlin/harbor/api/Product2Controller.kt:25",
       "note": "operationId getProduct2Overview; handler Product2Controller.getProduct2Overview; params ",
       "component": 1,
-      "rank": 3.57,
+      "rank": 3.36,
       "degree": 4
     },
     {
@@ -1455,7 +1465,7 @@
       "location": "core/src/main/kotlin/harbor/api/Product2Controller.kt:37",
       "note": "operationId postProduct2PeerSimulation; handler Product2Controller.postProduct2PeerSimulation; params ",
       "component": 1,
-      "rank": 3.57,
+      "rank": 3.36,
       "degree": 4
     },
     {
@@ -1467,7 +1477,7 @@
       "location": "core/src/main/kotlin/harbor/api/Product2Controller.kt:43",
       "note": "operationId getProduct2Projection; handler Product2Controller.getProduct2Projection; params ",
       "component": 1,
-      "rank": 3.65,
+      "rank": 3.44,
       "degree": 4
     },
     {
@@ -1479,7 +1489,7 @@
       "location": "core/src/main/kotlin/harbor/api/ScenarioController.kt:23",
       "note": "operationId listScenarios; handler ScenarioController.listScenarios; params ",
       "component": 1,
-      "rank": 3.45,
+      "rank": 3.36,
       "degree": 4
     },
     {
@@ -1491,7 +1501,7 @@
       "location": "core/src/main/kotlin/harbor/api/ScenarioController.kt:26",
       "note": "operationId createScenario; handler ScenarioController.createScenario; params ",
       "component": 1,
-      "rank": 3.38,
+      "rank": 3.29,
       "degree": 4
     },
     {
@@ -1503,7 +1513,7 @@
       "location": "core/src/main/kotlin/harbor/api/ScenarioController.kt:36",
       "note": "operationId deleteScenario; handler ScenarioController.deleteScenario; params scenarioId",
       "component": 1,
-      "rank": 3.38,
+      "rank": 3.29,
       "degree": 4
     },
     {
@@ -1515,7 +1525,7 @@
       "location": "core/src/main/kotlin/harbor/api/ScenarioController.kt:31",
       "note": "operationId updateScenario; handler ScenarioController.updateScenario; params scenarioId",
       "component": 1,
-      "rank": 3.38,
+      "rank": 3.29,
       "degree": 4
     },
     {
@@ -1527,7 +1537,7 @@
       "location": "core/src/main/kotlin/harbor/api/StressTestController.kt:24",
       "note": "operationId getStressTest; handler StressTestController.getStressTest; params ",
       "component": 1,
-      "rank": 3.75,
+      "rank": 3.54,
       "degree": 4
     },
     {
@@ -1539,7 +1549,7 @@
       "location": "core/src/main/kotlin/harbor/api/StressTestController.kt:21",
       "note": "operationId runStressTest; handler StressTestController.runStressTest; params ",
       "component": 1,
-      "rank": 3.75,
+      "rank": 3.54,
       "degree": 4
     },
     {
@@ -1551,7 +1561,7 @@
       "location": "core/src/main/kotlin/harbor/api/SessionController.kt:35",
       "note": "operationId listSessions; handler SessionController.listSessions; params ",
       "component": 1,
-      "rank": 3.49,
+      "rank": 3.4,
       "degree": 4
     },
     {
@@ -1563,7 +1573,7 @@
       "location": "core/src/main/kotlin/harbor/api/SessionController.kt:38",
       "note": "operationId getSession; handler SessionController.getSession; params sessionId",
       "component": 1,
-      "rank": 3.52,
+      "rank": 3.43,
       "degree": 4
     },
     {
@@ -1575,7 +1585,7 @@
       "location": "core/src/main/kotlin/harbor/api/SessionController.kt:41",
       "note": "operationId closeSession; handler SessionController.closeSession; params sessionId",
       "component": 1,
-      "rank": 3.47,
+      "rank": 3.37,
       "degree": 4
     },
     {
@@ -1587,7 +1597,7 @@
       "location": "core/src/main/kotlin/harbor/api/ReportController.kt:24",
       "note": "operationId getReport; handler ReportController.getReport; params sessionId",
       "component": 1,
-      "rank": 3.8,
+      "rank": 3.71,
       "degree": 4
     },
     {
@@ -1599,7 +1609,7 @@
       "location": "core/src/main/kotlin/harbor/api/ReportController.kt:27",
       "note": "operationId regenerateReport; handler ReportController.regenerateReport; params sessionId",
       "component": 1,
-      "rank": 3.76,
+      "rank": 3.67,
       "degree": 4
     },
     {
@@ -1611,7 +1621,7 @@
       "location": "core/src/main/kotlin/harbor/api/ReportController.kt:30",
       "note": "operationId downloadReportPdf; handler ReportController.downloadReportPdf; params sessionId",
       "component": 1,
-      "rank": 3.76,
+      "rank": 3.67,
       "degree": 4
     },
     {
@@ -1623,7 +1633,7 @@
       "location": "core/src/main/kotlin/harbor/api/SessionController.kt:44",
       "note": "operationId setRoleOverride; handler SessionController.setRoleOverride; params sessionId",
       "component": 1,
-      "rank": 3.47,
+      "rank": 3.37,
       "degree": 4
     },
     {
@@ -1635,7 +1645,7 @@
       "location": "",
       "note": "",
       "component": 1,
-      "rank": 2.68,
+      "rank": 2.61,
       "degree": 3
     },
     {
@@ -1647,7 +1657,7 @@
       "location": "",
       "note": "produced outside this repo",
       "component": 1,
-      "rank": 1.5,
+      "rank": 1.46,
       "degree": 1
     },
     {
@@ -1659,7 +1669,7 @@
       "location": "",
       "note": "",
       "component": 1,
-      "rank": 2.89,
+      "rank": 2.82,
       "degree": 3
     },
     {
@@ -1671,7 +1681,7 @@
       "location": "",
       "note": "consumed outside this repo",
       "component": 1,
-      "rank": 1.47,
+      "rank": 1.44,
       "degree": 1
     },
     {
@@ -1683,7 +1693,7 @@
       "location": "",
       "note": "produced outside this repo",
       "component": 1,
-      "rank": 1.51,
+      "rank": 1.48,
       "degree": 1
     },
     {
@@ -1695,7 +1705,7 @@
       "location": "core/src/main/resources/db/migration/V1__clients.sql",
       "note": "6 columns: id, external_ref, name, country, segment, created_at",
       "component": 1,
-      "rank": 5.46,
+      "rank": 5.32,
       "degree": 7
     },
     {
@@ -1707,7 +1717,7 @@
       "location": "core/src/main/resources/db/migration/V1__clients.sql",
       "note": "7 columns: id, client_id, product_group, role, source, reason, decided_at",
       "component": 1,
-      "rank": 2.58,
+      "rank": 2.51,
       "degree": 3
     },
     {
@@ -1719,7 +1729,7 @@
       "location": "core/src/main/resources/db/migration/V2__meetings.sql",
       "note": "12 columns: id, client_id, product_group, kind, representative_id, status, started_at, closed_at, role_override, role_override_reason, parameter_snapshot, report_requested_at",
       "component": 1,
-      "rank": 10.32,
+      "rank": 10.05,
       "degree": 14
     },
     {
@@ -1731,7 +1741,7 @@
       "location": "core/src/main/resources/db/migration/V2__meetings.sql",
       "note": "4 columns: session_id, horizon_months, price_basis, cover_preference",
       "component": 1,
-      "rank": 2.48,
+      "rank": 2.42,
       "degree": 3
     },
     {
@@ -1743,7 +1753,7 @@
       "location": "core/src/main/resources/db/migration/V3__movements.sql",
       "note": "6 columns: id, source_file, received_at, rows_total, rows_rejected, status",
       "component": 1,
-      "rank": 2.81,
+      "rank": 2.74,
       "degree": 3
     },
     {
@@ -1755,7 +1765,7 @@
       "location": "core/src/main/resources/db/migration/V3__movements.sql",
       "note": "12 columns: id, client_id, batch_id, product_group, sub_product, city, transport_mode, direction, period, quantity, unit_price, price_basis",
       "component": 1,
-      "rank": 4.26,
+      "rank": 4.16,
       "degree": 5
     },
     {
@@ -1767,7 +1777,7 @@
       "location": "core/src/main/resources/db/migration/V3__movements.sql",
       "note": "10 columns: id, client_id, product_group, sub_product, city, transport_mode, direction, period, quantity, value",
       "component": 1,
-      "rank": 3.27,
+      "rank": 3.19,
       "degree": 4
     },
     {
@@ -1779,7 +1789,7 @@
       "location": "core/src/main/resources/db/migration/V4__session_inputs.sql",
       "note": "9 columns: id, session_id, period, sub_product, city, transport_mode, direction, quantity, unit_price",
       "component": 1,
-      "rank": 2.5,
+      "rank": 2.44,
       "degree": 3
     },
     {
@@ -1791,7 +1801,7 @@
       "location": "core/src/main/resources/db/migration/V4__session_inputs.sql",
       "note": "5 columns: id, session_id, peer_segment, scaling_factor, generated_at",
       "component": 1,
-      "rank": 2.57,
+      "rank": 2.5,
       "degree": 3
     },
     {
@@ -1803,7 +1813,7 @@
       "location": "core/src/main/resources/db/migration/V5__projection.sql",
       "note": "8 columns: id, session_id, period, sub_product, quantity, value, landed_cost, cumulative_value",
       "component": 1,
-      "rank": 2.48,
+      "rank": 2.41,
       "degree": 3
     },
     {
@@ -1815,7 +1825,7 @@
       "location": "core/src/main/resources/db/migration/V5__projection.sql",
       "note": "9 columns: id, session_id, period, dimension_kind, dimension_value, quantity, value, landed_cost, cumulative_value",
       "component": 1,
-      "rank": 2.48,
+      "rank": 2.41,
       "degree": 3
     },
     {
@@ -1827,7 +1837,7 @@
       "location": "core/src/main/resources/db/migration/V5__projection.sql",
       "note": "8 columns: id, session_id, period, direction, quantity, value, landed_cost, cumulative_value",
       "component": 1,
-      "rank": 2.48,
+      "rank": 2.41,
       "degree": 3
     },
     {
@@ -1839,7 +1849,7 @@
       "location": "core/src/main/resources/db/migration/V5__projection.sql",
       "note": "8 columns: id, session_id, period, total_quantity, total_value, total_landed_cost, cover_ratio, cumulative_value",
       "component": 1,
-      "rank": 2.48,
+      "rank": 2.41,
       "degree": 3
     },
     {
@@ -1851,7 +1861,7 @@
       "location": "core/src/main/resources/db/migration/V6__cover.sql",
       "note": "8 columns: id, client_id, product_group, sub_product, covered_share, premium_rate, valid_from, valid_to",
       "component": 1,
-      "rank": 2.62,
+      "rank": 2.55,
       "degree": 3
     },
     {
@@ -1863,7 +1873,7 @@
       "location": "core/src/main/resources/db/migration/V6__cover.sql",
       "note": "6 columns: id, session_id, requested_at, uncovered_value, premium, provider_ref",
       "component": 1,
-      "rank": 2.66,
+      "rank": 2.59,
       "degree": 3
     },
     {
@@ -1875,7 +1885,7 @@
       "location": "core/src/main/resources/db/migration/V7__market_stress.sql",
       "note": "7 columns: id, session_id, name, kind, shocks, created_by, created_at",
       "component": 1,
-      "rank": 3.3,
+      "rank": 3.21,
       "degree": 4
     },
     {
@@ -1887,7 +1897,7 @@
       "location": "core/src/main/resources/db/migration/V7__market_stress.sql",
       "note": "7 columns: id, product_group, corridor, period, price, transport_price, as_of",
       "component": 1,
-      "rank": 2.08,
+      "rank": 2.03,
       "degree": 2
     },
     {
@@ -1899,7 +1909,7 @@
       "location": "core/src/main/resources/db/migration/V7__market_stress.sql",
       "note": "8 columns: id, session_id, scenario_id, period, dimension_value, exposure, transport_cost_delta, cumulative_exposure",
       "component": 1,
-      "rank": 3.34,
+      "rank": 3.25,
       "degree": 4
     },
     {
@@ -1911,7 +1921,7 @@
       "location": "core/src/main/resources/db/migration/V8__reports.sql",
       "note": "5 columns: session_id, payload, pdf_path, status, rendered_at",
       "component": 1,
-      "rank": 2.58,
+      "rank": 2.52,
       "degree": 3
     },
     {
@@ -1923,7 +1933,7 @@
       "location": "core/src/main/resources/db/migration/V9__parameters.sql",
       "note": "9 columns: id, key, scope_product_group, scope_country, scope_value, value, valid_from, updated_by, updated_at",
       "component": 1,
-      "rank": 2.06,
+      "rank": 2.01,
       "degree": 2
     },
     {
@@ -1935,8 +1945,8 @@
       "location": "src/features/admin/index.ts",
       "note": "Administration outside meetings: parameter sets with inline editing and the daily import batch monitor.",
       "component": 1,
-      "rank": 12.83,
-      "degree": 14
+      "rank": 13.12,
+      "degree": 15
     },
     {
       "id": "feature:clients",
@@ -1947,8 +1957,8 @@
       "location": "src/features/clients/index.ts",
       "note": "Client search, client overview with product group cards (key indicators, sparklines, Start meeting / Prepare) and role classification.",
       "component": 1,
-      "rank": 14.22,
-      "degree": 15
+      "rank": 15.05,
+      "degree": 17
     },
     {
       "id": "feature:cover",
@@ -1959,7 +1969,7 @@
       "location": "src/features/cover/index.ts",
       "note": "Cover position of a session: cover ratio per month and sub-product, and quotes for the uncovered part.",
       "component": 1,
-      "rank": 7.09,
+      "rank": 6.93,
       "degree": 8
     },
     {
@@ -1971,8 +1981,8 @@
       "location": "src/features/market/index.ts",
       "note": "Market scenarios of a session: price and transport price shocks on top of the baseline curve, with live path preview.",
       "component": 1,
-      "rank": 10.92,
-      "degree": 13
+      "rank": 11.35,
+      "degree": 14
     },
     {
       "id": "feature:meetings",
@@ -1983,8 +1993,32 @@
       "location": "src/features/meetings/index.ts",
       "note": "Meeting session lifecycle: create CLIENT or PREPARATION sessions, list and close them, override the client role, show the session summary.",
       "component": 1,
-      "rank": 14.32,
-      "degree": 16
+      "rank": 17.33,
+      "degree": 20
+    },
+    {
+      "id": "channel:harbor.session.{*}",
+      "kind": "channel",
+      "label": "harbor.session.{*}",
+      "community": "presentation",
+      "repo": "fe",
+      "location": "src/features/presentation/channel.ts",
+      "note": "BroadcastChannel",
+      "component": 1,
+      "rank": 6.08,
+      "degree": 7
+    },
+    {
+      "id": "feature:presentation",
+      "kind": "feature",
+      "label": "presentation",
+      "community": "presentation",
+      "repo": "fe",
+      "location": "src/features/presentation/index.ts",
+      "note": "Second-screen view of a CLIENT session (`/present/:sessionId`): follows the representative's route and filters without any internal controls.",
+      "component": 1,
+      "rank": 4.04,
+      "degree": 4
     },
     {
       "id": "feature:product1",
@@ -1995,8 +2029,8 @@
       "location": "src/features/product1/index.ts",
       "note": "Product 1 overview per city hub: the four cumulative projection tables, cover ratio chart, movement input and peer simulation modals.",
       "component": 1,
-      "rank": 14.58,
-      "degree": 17
+      "rank": 17.01,
+      "degree": 21
     },
     {
       "id": "feature:product2",
@@ -2007,8 +2041,8 @@
       "location": "src/features/product2/index.ts",
       "note": "Product 2 overview per transport mode, reusing the projection tables, cover chart and modals of product1.",
       "component": 1,
-      "rank": 12.87,
-      "degree": 14
+      "rank": 12.47,
+      "degree": 15
     },
     {
       "id": "feature:reports",
@@ -2019,7 +2053,7 @@
       "location": "src/features/reports/index.ts",
       "note": "Meeting report of a closed session: payload preview, PDF download and regeneration.",
       "component": 1,
-      "rank": 8.51,
+      "rank": 8.31,
       "degree": 9
     },
     {
@@ -2031,8 +2065,68 @@
       "location": "src/features/stress/index.ts",
       "note": "Stress test per scenario: monthly exposure table by city or transport mode plus the transport price chart.",
       "component": 1,
-      "rank": 9.67,
-      "degree": 10
+      "rank": 11.27,
+      "degree": 13
+    },
+    {
+      "id": "feature:fe-app",
+      "kind": "feature",
+      "label": "fe-app",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "src/app/App.tsx",
+      "note": "app shell: router, layouts, providers",
+      "component": 1,
+      "rank": 16.49,
+      "degree": 15
+    },
+    {
+      "id": "component:LineChart",
+      "kind": "component",
+      "label": "LineChart",
+      "community": "shared-ui",
+      "repo": "fe",
+      "location": "src/shared/charts/LineChart.tsx:33",
+      "note": "library/charts; Thin recharts wrapper: multi-series line chart over a month axis.",
+      "component": 1,
+      "rank": 4.36,
+      "degree": 5
+    },
+    {
+      "id": "component:StackedBars",
+      "kind": "component",
+      "label": "StackedBars",
+      "community": "shared-ui",
+      "repo": "fe",
+      "location": "src/shared/charts/StackedBars.tsx:22",
+      "note": "library/charts; Thin recharts wrapper: stacked bars per month (one stack segment per series).",
+      "component": 1,
+      "rank": 1.49,
+      "degree": 1
+    },
+    {
+      "id": "component:DataTable",
+      "kind": "component",
+      "label": "DataTable",
+      "community": "shared-ui",
+      "repo": "fe",
+      "location": "src/shared/ui/DataTable.tsx:24",
+      "note": "library/ui; Plain semantic table used for projection tables, stress rows, parameter lists and import batches.",
+      "component": 1,
+      "rank": 5.15,
+      "degree": 6
+    },
+    {
+      "id": "component:Modal",
+      "kind": "component",
+      "label": "Modal",
+      "community": "shared-ui",
+      "repo": "fe",
+      "location": "src/shared/ui/Modal.tsx:14",
+      "note": "library/ui; Minimal accessible dialog: closes on Escape and backdrop click, traps nothing fancy.",
+      "component": 1,
+      "rank": 2.92,
+      "degree": 3
     },
     {
       "id": "route:/",
@@ -2040,10 +2134,10 @@
       "label": "/",
       "community": "fe-app",
       "repo": "fe",
-      "location": "src/app/routes.tsx:21",
+      "location": "src/app/routes.tsx:24",
       "note": "renders Navigate",
       "component": 1,
-      "rank": 1.97,
+      "rank": 1.49,
       "degree": 1
     },
     {
@@ -2055,7 +2149,7 @@
       "location": "src/app/AdminRoutes.tsx:10",
       "note": "renders ImportsPage",
       "component": 1,
-      "rank": 1.35,
+      "rank": 1.31,
       "degree": 1
     },
     {
@@ -2067,7 +2161,7 @@
       "location": "src/app/AdminRoutes.tsx:9",
       "note": "renders ParametersPage",
       "component": 1,
-      "rank": 1.35,
+      "rank": 1.31,
       "degree": 1
     },
     {
@@ -2076,10 +2170,10 @@
       "label": "/clients",
       "community": "clients",
       "repo": "fe",
-      "location": "src/app/routes.tsx:22",
+      "location": "src/app/routes.tsx:25",
       "note": "renders ClientSearchPage",
       "component": 1,
-      "rank": 1.38,
+      "rank": 1.31,
       "degree": 1
     },
     {
@@ -2088,23 +2182,59 @@
       "label": "/clients/:clientId",
       "community": "clients",
       "repo": "fe",
-      "location": "src/app/routes.tsx:23",
+      "location": "src/app/routes.tsx:26",
       "note": "renders ClientOverviewPage",
       "component": 1,
-      "rank": 1.38,
+      "rank": 1.31,
       "degree": 1
     },
     {
       "id": "route:/meetings",
       "kind": "route",
       "label": "/meetings",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "src/app/routes.tsx:27",
+      "note": "renders Navigate",
+      "component": 1,
+      "rank": 1.49,
+      "degree": 1
+    },
+    {
+      "id": "route:/meetings/client",
+      "kind": "route",
+      "label": "/meetings/client",
       "community": "meetings",
       "repo": "fe",
-      "location": "src/app/routes.tsx:24",
-      "note": "renders MeetingsListPage",
+      "location": "src/app/routes.tsx:28",
+      "note": "renders ClientMeetingsPage",
       "component": 1,
-      "rank": 1.34,
+      "rank": 1.3,
       "degree": 1
+    },
+    {
+      "id": "route:/meetings/preparation",
+      "kind": "route",
+      "label": "/meetings/preparation",
+      "community": "meetings",
+      "repo": "fe",
+      "location": "src/app/routes.tsx:29",
+      "note": "renders PreparationSessionsPage",
+      "component": 1,
+      "rank": 1.3,
+      "degree": 1
+    },
+    {
+      "id": "route:/present/:sessionId",
+      "kind": "route",
+      "label": "/present/:sessionId",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "src/app/routes.tsx:45",
+      "note": "renders PresentationLayout",
+      "component": 1,
+      "rank": 2.35,
+      "degree": 2
     },
     {
       "id": "route:/session/:sessionId",
@@ -2112,10 +2242,10 @@
       "label": "/session/:sessionId",
       "community": "fe-app",
       "repo": "fe",
-      "location": "src/app/routes.tsx:26",
+      "location": "src/app/routes.tsx:31",
       "note": "renders SessionLayout",
       "component": 1,
-      "rank": 1.97,
+      "rank": 1.49,
       "degree": 1
     },
     {
@@ -2124,10 +2254,10 @@
       "label": "/session/:sessionId/product1",
       "community": "product1",
       "repo": "fe",
-      "location": "src/app/routes.tsx:29",
+      "location": "src/app/routes.tsx:34",
       "note": "renders Product1OverviewPage",
       "component": 1,
-      "rank": 1.3,
+      "rank": 1.25,
       "degree": 1
     },
     {
@@ -2136,10 +2266,10 @@
       "label": "/session/:sessionId/product2",
       "community": "product2",
       "repo": "fe",
-      "location": "src/app/routes.tsx:30",
+      "location": "src/app/routes.tsx:35",
       "note": "renders Product2OverviewPage",
       "component": 1,
-      "rank": 1.36,
+      "rank": 1.27,
       "degree": 1
     },
     {
@@ -2148,10 +2278,10 @@
       "label": "/session/:sessionId/scenarios",
       "community": "market",
       "repo": "fe",
-      "location": "src/app/routes.tsx:31",
+      "location": "src/app/routes.tsx:36",
       "note": "renders ScenariosPage",
       "component": 1,
-      "rank": 1.29,
+      "rank": 1.25,
       "degree": 1
     },
     {
@@ -2160,10 +2290,10 @@
       "label": "/session/:sessionId/stress-test",
       "community": "stress",
       "repo": "fe",
-      "location": "src/app/routes.tsx:32",
+      "location": "src/app/routes.tsx:37",
       "note": "renders StressTestPage",
       "component": 1,
-      "rank": 1.4,
+      "rank": 1.3,
       "degree": 1
     },
     {
@@ -2172,10 +2302,10 @@
       "label": "/session/:sessionId/summary",
       "community": "meetings",
       "repo": "fe",
-      "location": "src/app/routes.tsx:33",
+      "location": "src/app/routes.tsx:38",
       "note": "renders SessionSummaryPage",
       "component": 1,
-      "rank": 1.34,
+      "rank": 1.3,
       "degree": 1
     },
     {
@@ -2187,7 +2317,7 @@
       "location": "",
       "note": "be core/src/main/kotlin/harbor/manager/AdminManager.kt:25; fe src/features/admin/admin.types.ts:11; fe src/features/admin/api/useImportBatches.ts:10; fe src/features/admin/api/useImportBatches.ts:22; fe src/features/admin/api/useParameters.ts:20; fe src/features/admin/api/useParameters.ts:9; fe src/features/admin/index.ts:6",
       "component": 1,
-      "rank": 2.06,
+      "rank": 2.0,
       "degree": 2
     },
     {
@@ -2197,9 +2327,9 @@
       "community": "docs",
       "repo": "docs",
       "location": "features/clients/CLI-001.md",
-      "note": "status stable; be core/src/main/kotlin/harbor/manager/ClientManager.kt:26; fe src/features/clients/api/useClientOverview.ts:10; fe src/features/clients/api/useClientRole.ts:10; fe src/features/clients/api/useClientSearch.ts:10; fe src/features/clients/api/useClientSearch.ts:24; fe src/features/clients/clients.types.ts:56; fe src/features/clients/index.ts:6",
+      "note": "status stable; be core/src/main/kotlin/harbor/manager/ClientManager.kt:26; fe src/features/clients/api/useClientOverview.ts:10; fe src/features/clients/api/useClientRole.ts:10; fe src/features/clients/api/useClientSearch.ts:10; fe src/features/clients/api/useClientSearch.ts:24; fe src/features/clients/clients.types.ts:17; fe src/features/clients/index.ts:6",
       "component": 1,
-      "rank": 2.03,
+      "rank": 1.94,
       "degree": 2
     },
     {
@@ -2211,7 +2341,7 @@
       "location": "domain/calculations/client_role_classification.md",
       "note": "status stable; be core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24",
       "component": 1,
-      "rank": 1.72,
+      "rank": 1.68,
       "degree": 1
     },
     {
@@ -2223,7 +2353,7 @@
       "location": "",
       "note": "be core/src/main/kotlin/harbor/manager/CoverManager.kt:26; fe src/features/cover/api/useCoverQuote.ts:11; fe src/features/cover/api/useCoverSummary.ts:10; fe src/features/cover/api/useCoverSummary.ts:23; fe src/features/cover/cover.types.ts:13; fe src/features/cover/index.ts:6",
       "component": 1,
-      "rank": 1.97,
+      "rank": 1.92,
       "degree": 2
     },
     {
@@ -2235,7 +2365,7 @@
       "location": "domain/calculations/cover_ratio.md",
       "note": "status draft; be core/src/main/kotlin/harbor/utils/CoverRatioCalculator.kt:23",
       "component": 1,
-      "rank": 1.74,
+      "rank": 1.7,
       "degree": 1
     },
     {
@@ -2247,7 +2377,7 @@
       "location": "",
       "note": "be core/src/main/kotlin/harbor/manager/ImportManager.kt:19",
       "component": 1,
-      "rank": 1.4,
+      "rank": 1.37,
       "degree": 1
     },
     {
@@ -2257,9 +2387,9 @@
       "community": "docs",
       "repo": "docs",
       "location": "features/market/MKT-001.md",
-      "note": "status draft; be core/src/main/kotlin/harbor/manager/MarketManager.kt:22; fe src/features/market/api/useBaselinePrices.ts:11; fe src/features/market/api/useScenarios.ts:10; fe src/features/market/api/useScenarios.ts:24; fe src/features/market/index.ts:6; fe src/features/market/market.types.ts:13",
+      "note": "status draft; be core/src/main/kotlin/harbor/manager/MarketManager.kt:22; fe src/features/market/api/useBaselinePrices.ts:11; fe src/features/market/api/useScenarios.ts:10; fe src/features/market/api/useScenarios.ts:24; fe src/features/market/index.ts:6; fe src/features/market/market.types.ts:11",
       "component": 1,
-      "rank": 2.02,
+      "rank": 1.96,
       "degree": 2
     },
     {
@@ -2271,7 +2401,7 @@
       "location": "domain/calculations/monthly_projection.md",
       "note": "status stable; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:32",
       "component": 1,
-      "rank": 1.71,
+      "rank": 1.67,
       "degree": 1
     },
     {
@@ -2281,9 +2411,9 @@
       "community": "docs",
       "repo": "docs",
       "location": "features/meetings/MTG-001.md",
-      "note": "status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:10; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:47",
+      "note": "status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7",
       "component": 1,
-      "rank": 1.98,
+      "rank": 1.92,
       "degree": 2
     },
     {
@@ -2293,9 +2423,9 @@
       "community": "docs",
       "repo": "docs",
       "location": "features/product1/P1-001.md",
-      "note": "status stable; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11; fe src/features/product1/api/useProduct1Movements.ts:11; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:25; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:17",
+      "note": "status stable; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11; fe src/features/product1/api/useProduct1Movements.ts:11; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18",
       "component": 1,
-      "rank": 1.92,
+      "rank": 1.85,
       "degree": 2
     },
     {
@@ -2305,9 +2435,9 @@
       "community": "docs",
       "repo": "docs",
       "location": "",
-      "note": "be core/src/main/kotlin/harbor/manager/Product2Manager.kt:27; fe src/features/product2/api/usePeerSimulation2.ts:10; fe src/features/product2/api/useProduct2Movements.ts:11; fe src/features/product2/api/useProduct2Overview.ts:12; fe src/features/product2/api/useProduct2Overview.ts:26; fe src/features/product2/index.ts:6; fe src/features/product2/product2.types.ts:12",
+      "note": "be core/src/main/kotlin/harbor/manager/Product2Manager.kt:27; fe src/features/product2/api/usePeerSimulation2.ts:10; fe src/features/product2/api/useProduct2Movements.ts:11; fe src/features/product2/api/useProduct2Overview.ts:12; fe src/features/product2/api/useProduct2Overview.ts:30; fe src/features/product2/index.ts:6; fe src/features/product2/product2.types.ts:15",
       "component": 1,
-      "rank": 1.99,
+      "rank": 1.87,
       "degree": 2
     },
     {
@@ -2319,7 +2449,7 @@
       "location": "",
       "note": "be core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19",
       "component": 1,
-      "rank": 1.71,
+      "rank": 1.67,
       "degree": 1
     },
     {
@@ -2329,9 +2459,9 @@
       "community": "docs",
       "repo": "docs",
       "location": "features/reports/RPT-001.md",
-      "note": "status draft; be core/src/main/kotlin/harbor/manager/ReportManager.kt:27; fe src/features/reports/api/useDownloadReportPdf.ts:10; fe src/features/reports/api/useReport.ts:22; fe src/features/reports/api/useReport.ts:9; fe src/features/reports/index.ts:6; fe src/features/reports/reports.types.ts:7",
+      "note": "status draft; be core/src/main/kotlin/harbor/manager/ReportManager.kt:27; fe src/features/reports/api/useDownloadReportPdf.ts:10; fe src/features/reports/api/useReport.ts:12; fe src/features/reports/api/useReport.ts:28; fe src/features/reports/index.ts:6; fe src/features/reports/reports.types.ts:9",
       "component": 1,
-      "rank": 2.1,
+      "rank": 2.05,
       "degree": 2
     },
     {
@@ -2343,7 +2473,7 @@
       "location": "domain/calculations/scenario_price_path.md",
       "note": "status draft; be core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19",
       "component": 1,
-      "rank": 1.75,
+      "rank": 1.71,
       "degree": 1
     },
     {
@@ -2355,7 +2485,7 @@
       "location": "features/stress/STR-001.md",
       "note": "status draft; be core/src/main/kotlin/harbor/manager/StressManager.kt:31; fe src/features/stress/api/useRunStressTest.ts:11; fe src/features/stress/api/useStressTest.ts:11; fe src/features/stress/index.ts:6; fe src/features/stress/stress.types.ts:11",
       "component": 1,
-      "rank": 2.08,
+      "rank": 1.96,
       "degree": 2
     },
     {
@@ -2367,20 +2497,20 @@
       "location": "domain/calculations/stress_test_monthly.md",
       "note": "status stable; be core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23",
       "component": 1,
-      "rank": 1.77,
+      "rank": 1.72,
       "degree": 1
     },
     {
-      "id": "feature:fe-app",
-      "kind": "feature",
-      "label": "fe-app",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "",
-      "note": "",
+      "id": "spec:PRS-001",
+      "kind": "spec",
+      "label": "PRS-001",
+      "community": "docs",
+      "repo": "docs",
+      "location": "features/presentation/PRS-001.md",
+      "note": "status draft; fe src/app/PresentationLayout.tsx:13; fe src/features/presentation/channel.ts:16; fe src/features/presentation/channel.ts:55; fe src/features/presentation/channel.ts:95; fe src/features/presentation/index.ts:6; fe src/features/presentation/presentation.types.ts:9; fe src/features/presentation/ui/PresentationPage.tsx:20; fe src/features/presentation/ui/ProductMirror.tsx:21; fe src/features/presentation/ui/ScenariosMirror.tsx:9; fe src/features/presentation/ui/StressMirror.tsx:14",
       "component": 1,
-      "rank": 18.3,
-      "degree": 11
+      "rank": 2.35,
+      "degree": 2
     },
     {
       "id": "hook:useSessionStore",
@@ -2391,7 +2521,7 @@
       "location": "src/api/sessionStore.ts:20",
       "note": "",
       "component": 1,
-      "rank": 1.97,
+      "rank": 1.49,
       "degree": 1
     },
     {
@@ -2403,7 +2533,7 @@
       "location": "src/app/RootLayout.tsx:12",
       "note": "",
       "component": 1,
-      "rank": 1.97,
+      "rank": 1.49,
       "degree": 1
     },
     {
@@ -2415,7 +2545,7 @@
       "location": "src/app/SessionLayout.tsx:11",
       "note": "",
       "component": 1,
-      "rank": 1.97,
+      "rank": 1.49,
       "degree": 1
     },
     {
@@ -2427,7 +2557,7 @@
       "location": "src/app/App.tsx:5",
       "note": "",
       "component": 1,
-      "rank": 1.97,
+      "rank": 1.49,
       "degree": 1
     },
     {
@@ -2439,7 +2569,7 @@
       "location": "src/features/admin/api/useImportBatches.ts:10",
       "note": "",
       "component": 1,
-      "rank": 2.98,
+      "rank": 2.88,
       "degree": 3
     },
     {
@@ -2451,7 +2581,7 @@
       "location": "src/features/admin/api/useImportBatches.ts:22",
       "note": "",
       "component": 1,
-      "rank": 2.98,
+      "rank": 2.88,
       "degree": 3
     },
     {
@@ -2463,7 +2593,7 @@
       "location": "src/features/admin/api/useParameters.ts:9",
       "note": "",
       "component": 1,
-      "rank": 2.96,
+      "rank": 2.86,
       "degree": 3
     },
     {
@@ -2475,7 +2605,7 @@
       "location": "src/features/admin/api/useParameters.ts:20",
       "note": "",
       "component": 1,
-      "rank": 2.96,
+      "rank": 2.86,
       "degree": 3
     },
     {
@@ -2487,7 +2617,7 @@
       "location": "src/features/admin/ui/ParameterRow.tsx:14",
       "note": "",
       "component": 1,
-      "rank": 2.2,
+      "rank": 2.12,
       "degree": 2
     },
     {
@@ -2499,7 +2629,7 @@
       "location": "src/features/admin/ui/ParametersPage.tsx:7",
       "note": "",
       "component": 1,
-      "rank": 3.97,
+      "rank": 3.83,
       "degree": 4
     },
     {
@@ -2511,7 +2641,7 @@
       "location": "src/features/admin/ui/ImportsPage.tsx:20",
       "note": "",
       "component": 1,
-      "rank": 3.04,
+      "rank": 2.94,
       "degree": 3
     },
     {
@@ -2523,7 +2653,7 @@
       "location": "src/features/clients/api/useClientOverview.ts:10",
       "note": "",
       "component": 1,
-      "rank": 3.03,
+      "rank": 2.89,
       "degree": 3
     },
     {
@@ -2535,7 +2665,7 @@
       "location": "src/features/clients/api/useClientRole.ts:10",
       "note": "",
       "component": 1,
-      "rank": 2.16,
+      "rank": 2.06,
       "degree": 2
     },
     {
@@ -2547,7 +2677,7 @@
       "location": "src/features/clients/api/useClientSearch.ts:10",
       "note": "",
       "component": 1,
-      "rank": 3.11,
+      "rank": 2.97,
       "degree": 3
     },
     {
@@ -2559,7 +2689,7 @@
       "location": "src/features/clients/api/useClientSearch.ts:24",
       "note": "",
       "component": 1,
-      "rank": 2.16,
+      "rank": 2.06,
       "degree": 2
     },
     {
@@ -2571,7 +2701,7 @@
       "location": "src/features/clients/ui/ClientSearchPage.tsx:15",
       "note": "",
       "component": 1,
-      "rank": 2.26,
+      "rank": 2.16,
       "degree": 2
     },
     {
@@ -2583,7 +2713,7 @@
       "location": "src/features/clients/ui/ProductGroupCard.tsx:20",
       "note": "",
       "component": 1,
-      "rank": 2.27,
+      "rank": 2.16,
       "degree": 2
     },
     {
@@ -2595,7 +2725,7 @@
       "location": "src/features/clients/ui/ClientInfoPanel.tsx:11",
       "note": "",
       "component": 1,
-      "rank": 2.27,
+      "rank": 2.16,
       "degree": 2
     },
     {
@@ -2607,7 +2737,7 @@
       "location": "src/features/clients/ui/ClientOverviewPage.tsx:16",
       "note": "",
       "component": 1,
-      "rank": 4.16,
+      "rank": 3.97,
       "degree": 4
     },
     {
@@ -2619,7 +2749,7 @@
       "location": "src/features/cover/api/useCoverQuote.ts:11",
       "note": "",
       "component": 1,
-      "rank": 2.93,
+      "rank": 2.86,
       "degree": 3
     },
     {
@@ -2631,7 +2761,7 @@
       "location": "src/features/cover/api/useCoverSummary.ts:10",
       "note": "",
       "component": 1,
-      "rank": 2.93,
+      "rank": 2.86,
       "degree": 3
     },
     {
@@ -2643,7 +2773,7 @@
       "location": "src/features/cover/api/useCoverSummary.ts:23",
       "note": "",
       "component": 1,
-      "rank": 2.1,
+      "rank": 2.05,
       "degree": 2
     },
     {
@@ -2655,7 +2785,7 @@
       "location": "src/features/cover/ui/CoverQuotePanel.tsx:16",
       "note": "",
       "component": 1,
-      "rank": 2.99,
+      "rank": 2.92,
       "degree": 3
     },
     {
@@ -2667,7 +2797,7 @@
       "location": "src/features/market/api/useBaselinePrices.ts:11",
       "note": "",
       "component": 1,
-      "rank": 2.77,
+      "rank": 2.69,
       "degree": 3
     },
     {
@@ -2679,7 +2809,7 @@
       "location": "src/features/market/api/useScenarios.ts:10",
       "note": "",
       "component": 1,
-      "rank": 2.77,
+      "rank": 2.69,
       "degree": 3
     },
     {
@@ -2691,7 +2821,7 @@
       "location": "src/features/market/api/useScenarios.ts:24",
       "note": "",
       "component": 1,
-      "rank": 4.19,
+      "rank": 4.07,
       "degree": 5
     },
     {
@@ -2703,7 +2833,7 @@
       "location": "src/features/market/ui/ShockRow.tsx:12",
       "note": "",
       "component": 1,
-      "rank": 2.12,
+      "rank": 2.06,
       "degree": 2
     },
     {
@@ -2715,7 +2845,7 @@
       "location": "src/features/market/ui/ScenarioEditor.tsx:20",
       "note": "",
       "component": 1,
-      "rank": 2.94,
+      "rank": 2.85,
       "degree": 3
     },
     {
@@ -2727,7 +2857,7 @@
       "location": "src/features/market/ui/ScenariosPage.tsx:16",
       "note": "",
       "component": 1,
-      "rank": 4.4,
+      "rank": 4.28,
       "degree": 5
     },
     {
@@ -2739,7 +2869,7 @@
       "location": "src/features/meetings/api/useCloseSession.ts:10",
       "note": "",
       "component": 1,
-      "rank": 2.93,
+      "rank": 2.85,
       "degree": 3
     },
     {
@@ -2751,7 +2881,7 @@
       "location": "src/features/meetings/api/useCreateSession.ts:11",
       "note": "",
       "component": 1,
-      "rank": 2.08,
+      "rank": 2.03,
       "degree": 2
     },
     {
@@ -2763,7 +2893,7 @@
       "location": "src/features/meetings/api/useRoleOverride.ts:10",
       "note": "",
       "component": 1,
-      "rank": 2.93,
+      "rank": 2.85,
       "degree": 3
     },
     {
@@ -2775,7 +2905,7 @@
       "location": "src/features/meetings/api/useSessions.ts:9",
       "note": "",
       "component": 1,
-      "rank": 3.01,
+      "rank": 2.92,
       "degree": 3
     },
     {
@@ -2787,7 +2917,7 @@
       "location": "src/features/meetings/api/useSessions.ts:20",
       "note": "",
       "component": 1,
-      "rank": 2.08,
+      "rank": 2.03,
       "degree": 2
     },
     {
@@ -2799,7 +2929,7 @@
       "location": "src/features/meetings/ui/MeetingsListPage.tsx:34",
       "note": "",
       "component": 1,
-      "rank": 2.19,
+      "rank": 2.13,
       "degree": 2
     },
     {
@@ -2811,7 +2941,7 @@
       "location": "src/features/meetings/ui/RoleOverrideDialog.tsx:20",
       "note": "",
       "component": 1,
-      "rank": 3.02,
+      "rank": 2.94,
       "degree": 3
     },
     {
@@ -2823,7 +2953,7 @@
       "location": "src/features/meetings/ui/SessionSummaryPage.tsx:13",
       "note": "",
       "component": 1,
-      "rank": 3.02,
+      "rank": 2.94,
       "degree": 3
     },
     {
@@ -2835,7 +2965,7 @@
       "location": "src/features/product1/api/usePeerSimulation1.ts:11",
       "note": "",
       "component": 1,
-      "rank": 2.79,
+      "rank": 2.68,
       "degree": 3
     },
     {
@@ -2847,7 +2977,7 @@
       "location": "src/features/product1/api/useProduct1Movements.ts:11",
       "note": "",
       "component": 1,
-      "rank": 2.79,
+      "rank": 2.68,
       "degree": 3
     },
     {
@@ -2859,7 +2989,7 @@
       "location": "src/features/product1/api/useProduct1Overview.ts:11",
       "note": "",
       "component": 1,
-      "rank": 2.79,
+      "rank": 2.68,
       "degree": 3
     },
     {
@@ -2871,7 +3001,7 @@
       "location": "src/features/product1/api/useProduct1Overview.ts:25",
       "note": "",
       "component": 1,
-      "rank": 2.04,
+      "rank": 1.96,
       "degree": 2
     },
     {
@@ -2883,7 +3013,7 @@
       "location": "src/features/product1/ui/ProjectionTables.tsx:41",
       "note": "",
       "component": 1,
-      "rank": 2.06,
+      "rank": 1.98,
       "degree": 2
     },
     {
@@ -2895,7 +3025,7 @@
       "location": "src/features/product1/ui/CoverRatioChart.tsx:16",
       "note": "",
       "component": 1,
-      "rank": 2.06,
+      "rank": 1.98,
       "degree": 2
     },
     {
@@ -2907,7 +3037,7 @@
       "location": "src/features/product1/ui/MovementInputModal.tsx:28",
       "note": "",
       "component": 1,
-      "rank": 2.06,
+      "rank": 1.98,
       "degree": 2
     },
     {
@@ -2919,7 +3049,7 @@
       "location": "src/features/product1/ui/PeerSimulationModal.tsx:21",
       "note": "",
       "component": 1,
-      "rank": 2.06,
+      "rank": 1.98,
       "degree": 2
     },
     {
@@ -2931,7 +3061,7 @@
       "location": "src/features/product1/ui/CitySelector.tsx:8",
       "note": "",
       "component": 1,
-      "rank": 2.06,
+      "rank": 1.98,
       "degree": 2
     },
     {
@@ -2943,7 +3073,7 @@
       "location": "src/features/product1/ui/Product1OverviewPage.tsx:22",
       "note": "",
       "component": 1,
-      "rank": 8.06,
+      "rank": 7.74,
       "degree": 9
     },
     {
@@ -2955,7 +3085,7 @@
       "location": "src/features/product2/api/usePeerSimulation2.ts:10",
       "note": "",
       "component": 1,
-      "rank": 2.93,
+      "rank": 2.74,
       "degree": 3
     },
     {
@@ -2967,7 +3097,7 @@
       "location": "src/features/product2/api/useProduct2Movements.ts:11",
       "note": "",
       "component": 1,
-      "rank": 2.93,
+      "rank": 2.74,
       "degree": 3
     },
     {
@@ -2979,7 +3109,7 @@
       "location": "src/features/product2/api/useProduct2Overview.ts:12",
       "note": "",
       "component": 1,
-      "rank": 2.93,
+      "rank": 2.74,
       "degree": 3
     },
     {
@@ -2991,7 +3121,7 @@
       "location": "src/features/product2/api/useProduct2Overview.ts:26",
       "note": "",
       "component": 1,
-      "rank": 2.13,
+      "rank": 2.0,
       "degree": 2
     },
     {
@@ -3003,7 +3133,7 @@
       "location": "src/features/product2/ui/TransportModeSelector.tsx:10",
       "note": "",
       "component": 1,
-      "rank": 2.17,
+      "rank": 2.03,
       "degree": 2
     },
     {
@@ -3015,7 +3145,7 @@
       "location": "src/features/product2/ui/Product2OverviewPage.tsx:20",
       "note": "",
       "component": 1,
-      "rank": 4.77,
+      "rank": 4.46,
       "degree": 5
     },
     {
@@ -3027,7 +3157,7 @@
       "location": "src/features/reports/api/useDownloadReportPdf.ts:10",
       "note": "",
       "component": 1,
-      "rank": 3.14,
+      "rank": 3.07,
       "degree": 3
     },
     {
@@ -3039,7 +3169,7 @@
       "location": "src/features/reports/api/useReport.ts:9",
       "note": "",
       "component": 1,
-      "rank": 2.19,
+      "rank": 2.14,
       "degree": 2
     },
     {
@@ -3051,7 +3181,7 @@
       "location": "src/features/reports/api/useReport.ts:22",
       "note": "",
       "component": 1,
-      "rank": 3.14,
+      "rank": 3.07,
       "degree": 3
     },
     {
@@ -3063,7 +3193,7 @@
       "location": "src/features/reports/ui/DownloadPdfButton.tsx:10",
       "note": "",
       "component": 1,
-      "rank": 2.27,
+      "rank": 2.22,
       "degree": 2
     },
     {
@@ -3075,7 +3205,7 @@
       "location": "src/features/reports/ui/ReportPreview.tsx:16",
       "note": "",
       "component": 1,
-      "rank": 2.27,
+      "rank": 2.22,
       "degree": 2
     },
     {
@@ -3087,7 +3217,7 @@
       "location": "src/features/stress/api/useRunStressTest.ts:11",
       "note": "",
       "component": 1,
-      "rank": 3.04,
+      "rank": 2.84,
       "degree": 3
     },
     {
@@ -3099,7 +3229,7 @@
       "location": "src/features/stress/api/useStressTest.ts:11",
       "note": "",
       "component": 1,
-      "rank": 3.04,
+      "rank": 2.84,
       "degree": 3
     },
     {
@@ -3111,7 +3241,7 @@
       "location": "src/features/stress/ui/StressTable.tsx:16",
       "note": "",
       "component": 1,
-      "rank": 2.24,
+      "rank": 2.09,
       "degree": 2
     },
     {
@@ -3123,7 +3253,7 @@
       "location": "src/features/stress/ui/TransportPriceChart.tsx:14",
       "note": "",
       "component": 1,
-      "rank": 2.24,
+      "rank": 2.09,
       "degree": 2
     },
     {
@@ -3135,7 +3265,7 @@
       "location": "src/features/stress/ui/DimensionToggle.tsx:12",
       "note": "",
       "component": 1,
-      "rank": 2.24,
+      "rank": 2.09,
       "degree": 2
     },
     {
@@ -3147,56 +3277,8 @@
       "location": "src/features/stress/ui/StressTestPage.tsx:19",
       "note": "",
       "component": 1,
-      "rank": 5.98,
+      "rank": 5.57,
       "degree": 6
-    },
-    {
-      "id": "component:LineChart",
-      "kind": "component",
-      "label": "LineChart",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "src/shared/charts/LineChart.tsx:33",
-      "note": "",
-      "component": 1,
-      "rank": 1.97,
-      "degree": 1
-    },
-    {
-      "id": "component:StackedBars",
-      "kind": "component",
-      "label": "StackedBars",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "src/shared/charts/StackedBars.tsx:22",
-      "note": "",
-      "component": 1,
-      "rank": 1.97,
-      "degree": 1
-    },
-    {
-      "id": "component:DataTable",
-      "kind": "component",
-      "label": "DataTable",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "src/shared/ui/DataTable.tsx:24",
-      "note": "",
-      "component": 1,
-      "rank": 1.97,
-      "degree": 1
-    },
-    {
-      "id": "component:Modal",
-      "kind": "component",
-      "label": "Modal",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "src/shared/ui/Modal.tsx:14",
-      "note": "",
-      "component": 1,
-      "rank": 1.97,
-      "degree": 1
     }
   ],
   "edges": [
@@ -5361,6 +5443,12 @@
       "source": "export"
     },
     {
+      "from": "feature:admin",
+      "to": "component:DataTable",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
       "from": "feature:clients",
       "to": "endpoint:GET /api/v1/clients",
       "rel": "calls",
@@ -5431,6 +5519,18 @@
       "to": "hook:useClientSearch",
       "rel": "contains",
       "source": "export"
+    },
+    {
+      "from": "feature:clients",
+      "to": "component:DataTable",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:clients",
+      "to": "component:LineChart",
+      "rel": "renders",
+      "source": "regex-map"
     },
     {
       "from": "feature:cover",
@@ -5523,6 +5623,12 @@
       "source": "export"
     },
     {
+      "from": "feature:fe-app",
+      "to": "channel:harbor.session.{*}",
+      "rel": "produces",
+      "source": "regex-map"
+    },
+    {
       "from": "feature:market",
       "to": "endpoint:DELETE /api/v1/session/scenarios/{scenarioId}",
       "rel": "calls",
@@ -5587,6 +5693,12 @@
       "to": "hook:useScenarios",
       "rel": "contains",
       "source": "export"
+    },
+    {
+      "from": "feature:market",
+      "to": "component:LineChart",
+      "rel": "renders",
+      "source": "regex-map"
     },
     {
       "from": "feature:meetings",
@@ -5665,6 +5777,30 @@
       "to": "hook:useSessions",
       "rel": "contains",
       "source": "export"
+    },
+    {
+      "from": "feature:meetings",
+      "to": "channel:harbor.session.{*}",
+      "rel": "produces",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:meetings",
+      "to": "component:DataTable",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:meetings",
+      "to": "component:Modal",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:presentation",
+      "to": "channel:harbor.session.{*}",
+      "rel": "defines",
+      "source": "regex-map"
     },
     {
       "from": "feature:product1",
@@ -5751,6 +5887,30 @@
       "source": "export"
     },
     {
+      "from": "feature:product1",
+      "to": "channel:harbor.session.{*}",
+      "rel": "produces",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:product1",
+      "to": "component:DataTable",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:product1",
+      "to": "component:LineChart",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:product1",
+      "to": "component:Modal",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
       "from": "feature:product2",
       "to": "endpoint:GET /api/v1/session/product2/overview",
       "rel": "calls",
@@ -5821,6 +5981,12 @@
       "to": "feature:product1",
       "rel": "depends-on",
       "source": "export"
+    },
+    {
+      "from": "feature:product2",
+      "to": "channel:harbor.session.{*}",
+      "rel": "produces",
+      "source": "regex-map"
     },
     {
       "from": "feature:reports",
@@ -5917,6 +6083,24 @@
       "to": "hook:useStressTest",
       "rel": "contains",
       "source": "export"
+    },
+    {
+      "from": "feature:stress",
+      "to": "channel:harbor.session.{*}",
+      "rel": "produces",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:stress",
+      "to": "component:DataTable",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "feature:stress",
+      "to": "component:LineChart",
+      "rel": "renders",
+      "source": "regex-map"
     },
     {
       "from": "hook:useBaselinePrices",
@@ -6123,6 +6307,12 @@
       "source": "export"
     },
     {
+      "from": "channel:harbor.session.{*}",
+      "to": "feature:presentation",
+      "rel": "consumed-by",
+      "source": "regex-map"
+    },
+    {
       "from": "route:/",
       "to": "feature:fe-app",
       "rel": "renders",
@@ -6154,7 +6344,31 @@
     },
     {
       "from": "route:/meetings",
+      "to": "feature:fe-app",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "route:/meetings/client",
       "to": "feature:meetings",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "route:/meetings/preparation",
+      "to": "feature:meetings",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "route:/present/:sessionId",
+      "to": "feature:fe-app",
+      "rel": "renders",
+      "source": "regex-map"
+    },
+    {
+      "from": "route:/present/:sessionId",
+      "to": "feature:presentation",
       "rel": "renders",
       "source": "regex-map"
     },
@@ -6305,6 +6519,18 @@
     {
       "from": "spec:peer_benchmark_simulation",
       "to": "class:PeerBenchmark",
+      "rel": "implemented-by",
+      "source": "regex-map"
+    },
+    {
+      "from": "spec:PRS-001",
+      "to": "feature:fe-app",
+      "rel": "implemented-by",
+      "source": "regex-map"
+    },
+    {
+      "from": "spec:PRS-001",
+      "to": "feature:presentation",
       "rel": "implemented-by",
       "source": "regex-map"
     },

@@ -4,8 +4,8 @@ export type ProductGroup = 'product1' | 'product2';
 
 /**
  * Current meeting session as selected on the client overview page.
- * The `api` client middleware reads `sessionId` and sends it as `X-Harbor-Session`
- * on every `/session/**` request; `SessionLayout` keeps it in sync with the URL.
+ * `sessionHeader()` in `client.ts` reads `sessionId` and every `/session/**` hook passes it as the
+ * required `X-Harbor-Session` header param; `SessionLayout` keeps the store in sync with the URL.
  */
 export interface SessionState {
   sessionId: string | null;
@@ -23,5 +23,5 @@ export const useSessionStore = create<SessionState>()((set) => ({
   clear: () => set({ ...initial }),
 }));
 
-/** Non-hook accessor for use outside React (middleware, download helpers). */
+/** Non-hook accessor for use outside React (`sessionHeader()`, download helpers). */
 export const getSessionId = (): string | null => useSessionStore.getState().sessionId;

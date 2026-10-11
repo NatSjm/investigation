@@ -1,6 +1,6 @@
 /**
- * View-model types for the stress test. Mirror `StressTestResult`, `StressRow` from the contract
- * (`stress` module, `StressTestController`; calculation `stress_test_monthly`).
+ * View-model types for the stress test. Aliases of `StressTestResult`, `StressTestScenarioResult`, `StressTestRow`
+ * from the contract (`stress` module, `StressTestController`; calculation `stress_test_monthly`).
  * @docs STR-001
  */
 import type { components } from '@/api/generated/schema';
@@ -8,35 +8,14 @@ import type { components } from '@/api/generated/schema';
 export type ProductGroup = components['schemas']['ProductGroup'];
 
 /** Breakdown dimension of the stress table: `CITY` for Product 1, `TRANSPORT_MODE` for Product 2. */
-export type Dimension = 'CITY' | 'TRANSPORT_MODE';
+export type Dimension = components['schemas']['DimensionKind'];
 
-export interface SeriesPoint {
-  period: string;
-  value: number;
-}
+/** One month x dimension value of one scenario; `scenarioTransportPrice` feeds `TransportPriceChart`. */
+export type StressRow = components['schemas']['StressTestRow'];
 
-/** One month x dimension value of one scenario. */
-export interface StressRow {
-  period: string;
-  dimensionValue: string;
-  exposure: number;
-  transportCostDelta: number;
-  cumulativeExposure: number;
-}
+export type StressScenarioResult = components['schemas']['StressTestScenarioResult'];
 
-export interface StressScenarioResult {
-  scenarioId: string;
-  scenarioName: string;
-  rows: StressRow[];
-  /** Scenario transport price per month (`scenario_price_path`), drawn in `TransportPriceChart`. */
-  transportPricePath: SeriesPoint[];
-}
-
-export interface StressTestResult {
-  dimension: Dimension;
-  computedAt: string;
-  scenarios: StressScenarioResult[];
-}
+export type StressTestResult = components['schemas']['StressTestResult'];
 
 export const DIMENSION_LABEL: Record<Dimension, string> = {
   CITY: 'By city',

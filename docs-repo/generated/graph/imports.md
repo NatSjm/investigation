@@ -1,10 +1,10 @@
 ---
 type: Document
-title: Graph: imports (be)
-description: entry point ImportManager (manager)
+title: "Graph: imports (be)"
+description: "entry point ImportManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-09
+  at: 2026-10-11
 status: stable
 ---
 # Graph: imports (be)

@@ -20,7 +20,7 @@ export function SessionSummaryPage() {
   const close = async () => {
     if (!window.confirm('Close this session? The report payload will be stored and rendered.')) return;
     await closeSession.mutateAsync();
-    navigate('/meetings');
+    navigate(session.kind === 'PREPARATION' ? '/meetings/preparation' : '/meetings/client');
   };
 
   return (
@@ -33,8 +33,6 @@ export function SessionSummaryPage() {
         <dd>{formatDateTime(session.startedAt)}</dd>
         <dt>Horizon</dt>
         <dd>{session.horizonMonths} months</dd>
-        <dt>Price basis</dt>
-        <dd>{session.priceBasis}</dd>
         <dt>Role override</dt>
         <dd>
           {session.roleOverride ? `${session.roleOverride} - ${session.roleOverrideReason ?? ''}` : 'none (algorithm result applies)'}

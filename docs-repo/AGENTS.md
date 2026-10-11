@@ -38,7 +38,7 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
 ## Hard rules
 
 - Never hand-edit `generated/**`; it is published by the code repositories' CI. Fix the generator or the code.
-- Every concept under `architecture/`, `domain/`, `features/`, `generated/` has frontmatter with `type`; folders use
+- Every concept under `architecture/`, `domain/`, `features/`, `flows/` (cross-context behaviour, `type: Flow`), `generated/` has frontmatter with `type`; folders use
   `index.md` (built by `scripts/build-index.ps1`), never `README.md`.
 - Provenance: set `generated: { by: copilot/<agent>, at: <ISO> }` on anything you write; cite `sources[]` with
   `[^id]`; never write `verified.by: human:<id>` yourself; `status: draft` until a person verifies.

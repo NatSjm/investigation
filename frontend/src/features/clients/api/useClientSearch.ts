@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api, unwrap } from '@/api/client';
-import type { ClientSummary } from '../clients.types';
+import type { Client, ClientSummary } from '../clients.types';
 
 /**
  * Client search (`searchClients`): proxies the client registry and merges the local profile.
@@ -22,7 +22,7 @@ export function useClientSearch(q: string) {
  * @docs CLI-001
  */
 export function useClient(clientId: string) {
-  return useQuery<ClientSummary>({
+  return useQuery<Client>({
     queryKey: ['clients', clientId],
     queryFn: async () => unwrap(await api.GET('/clients/{clientId}', { params: { path: { clientId } } })),
     enabled: Boolean(clientId),

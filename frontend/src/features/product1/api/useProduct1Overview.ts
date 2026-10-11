@@ -1,18 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, unwrap } from '@/api/client';
+import { api, sessionHeader, unwrap } from '@/api/client';
 import { useSessionStore } from '@/api/sessionStore';
-import type { ProductOverview, ProjectionTables } from '../product1.types';
+import type { ProductOverview, Projection } from '../product1.types';
 
 /**
  * Product 1 overview (`getProduct1Overview`): the four projection tables filtered by city hub
- * plus the cover ratio chart series. Session-scoped (`X-Harbor-Session` added by the client).
+ * plus the cover ratio chart series. Session-scoped (`X-Harbor-Session` via `sessionHeader()`).
  * @docs P1-001
  */
 export function useProduct1Overview(city?: string) {
   const sessionId = useSessionStore((s) => s.sessionId);
   return useQuery<ProductOverview>({
     queryKey: ['session', sessionId, 'product1', 'overview', city ?? 'all'],
-    queryFn: async () => unwrap(await api.GET('/session/product1/overview', { params: { query: city ? { city } : {} } })),
+    queryFn: async () =>
+      unwrap(await api.GET('/session/product1/overview', { params: { header: sessionHeader(), query: city ? { city } : {} } })),
     enabled: Boolean(sessionId),
   });
 }
@@ -24,9 +25,9 @@ export function useProduct1Overview(city?: string) {
  */
 export function useProduct1Projection() {
   const sessionId = useSessionStore((s) => s.sessionId);
-  return useQuery<ProjectionTables>({
+  return useQuery<Projection>({
     queryKey: ['session', sessionId, 'product1', 'projection'],
-    queryFn: async () => unwrap(await api.GET('/session/product1/projection')),
+    queryFn: async () => unwrap(await api.GET('/session/product1/projection', { params: { header: sessionHeader() } })),
     enabled: Boolean(sessionId),
   });
 }

@@ -8,7 +8,7 @@ import java.util.UUID
 
 /**
  * The meeting session a request is scoped to. Built by `SessionScopeService` and bound to [SessionContext]
- * by `SessionHeaderFilter` from the `X-Harbor-Session` header for every `/api/v1/session/**` request.
+ * by `SessionHeaderFilter` from the `X-Harbor-Session` header for every `/api/v1/session` sub-path request.
  */
 data class SessionScope(
     val sessionId: UUID,

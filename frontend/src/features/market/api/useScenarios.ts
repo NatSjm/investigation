@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, ensureOk, unwrap } from '@/api/client';
+import { api, ensureOk, sessionHeader, unwrap } from '@/api/client';
 import { useSessionStore } from '@/api/sessionStore';
 import type { Scenario, ScenarioRequest } from '../market.types';
 
@@ -11,7 +11,7 @@ export function useScenarios() {
   const sessionId = useSessionStore((s) => s.sessionId);
   return useQuery<Scenario[]>({
     queryKey: ['session', sessionId, 'scenarios'],
-    queryFn: async () => unwrap(await api.GET('/session/scenarios')),
+    queryFn: async () => unwrap(await api.GET('/session/scenarios', { params: { header: sessionHeader() } })),
     enabled: Boolean(sessionId),
   });
 }
@@ -30,19 +30,19 @@ export function useScenarioMutations() {
   };
 
   const create = useMutation<Scenario, Error, ScenarioRequest>({
-    mutationFn: async (body) => unwrap(await api.POST('/session/scenarios', { body })),
+    mutationFn: async (body) => unwrap(await api.POST('/session/scenarios', { params: { header: sessionHeader() }, body })),
     onSuccess: invalidate,
   });
 
   const update = useMutation<Scenario, Error, { scenarioId: string; body: ScenarioRequest }>({
     mutationFn: async ({ scenarioId, body }) =>
-      unwrap(await api.PUT('/session/scenarios/{scenarioId}', { params: { path: { scenarioId } }, body })),
+      unwrap(await api.PUT('/session/scenarios/{scenarioId}', { params: { header: sessionHeader(), path: { scenarioId } }, body })),
     onSuccess: invalidate,
   });
 
   const remove = useMutation<void, Error, string>({
     mutationFn: async (scenarioId) =>
-      ensureOk(await api.DELETE('/session/scenarios/{scenarioId}', { params: { path: { scenarioId } } })),
+      ensureOk(await api.DELETE('/session/scenarios/{scenarioId}', { params: { header: sessionHeader(), path: { scenarioId } } })),
     onSuccess: invalidate,
   });
 

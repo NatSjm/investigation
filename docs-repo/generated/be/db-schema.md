@@ -1,10 +1,10 @@
 ---
 type: Document
-title: DB schema (approximate, from migrations)
-description: Generated map: DB schema (approximate, from migrations), derived from Flyway V*.sql; read instead of source files.
+title: "DB schema (approximate, from migrations)"
+description: "Generated map: DB schema (approximate, from migrations), derived from Flyway V*.sql; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-09
+  at: 2026-10-11
 status: stable
 ---
 # DB schema (approximate, from migrations)

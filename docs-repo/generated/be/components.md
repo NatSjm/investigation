@@ -1,10 +1,10 @@
 ---
 type: Document
-title: Components (BE)
-description: One row per class: layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix.
+title: "Components (BE)"
+description: "One row per class: layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix."
 generated:
   by: process:gen-docs
-  at: 2026-10-09
+  at: 2026-10-11
 status: stable
 ---
 # Components (BE)
@@ -18,7 +18,7 @@ status: stable
 | `HarborKafkaClient` | (root) | kafka_client | object |  |  |  | `kafka_client/src/main/kotlin/harbor/kafka/HarborKafkaClient.kt:22` |
 | `JsonSerde` | (root) | kafka_client | class |  |  |  | `kafka_client/src/main/kotlin/harbor/kafka/JsonSerde.kt:16` |
 | `Topics` | (root) | kafka_client | object |  |  |  | `kafka_client/src/main/kotlin/harbor/kafka/Topics.kt:8` |
-| `GlobalExceptionAdvice` | advice | core | RestControllerAdvice |  |  |  | `core/src/main/kotlin/harbor/advice/GlobalExceptionAdvice.kt:26` |
+| `GlobalExceptionAdvice` | advice | core | RestControllerAdvice |  |  |  | `core/src/main/kotlin/harbor/advice/GlobalExceptionAdvice.kt:32` |
 | `AdminController` | api | core | RestController | `AdminManager` |  |  | `core/src/main/kotlin/harbor/api/AdminController.kt:17` |
 | `ClientController` | api | core | RestController | `ClientManager` |  |  | `core/src/main/kotlin/harbor/api/ClientController.kt:20` |
 | `CoverController` | api | core | RestController | `CoverManager` |  |  | `core/src/main/kotlin/harbor/api/CoverController.kt:20` |
@@ -108,7 +108,7 @@ status: stable
 | `CoverManager` | manager | core | Service | `CoverPolicyDao`, `ProjectionService`, `CoverRatioService`, `CoverQuoteService`, `ClientProfileService` |  | `COV-001` | `core/src/main/kotlin/harbor/manager/CoverManager.kt:25` |
 | `ImportManager` | manager | core | Service | `MovementImportService` |  |  | `core/src/main/kotlin/harbor/manager/ImportManager.kt:18` |
 | `MarketManager` | manager | core | Service | `ScenarioService`, `BaselinePriceService` |  | `MKT-001` | `core/src/main/kotlin/harbor/manager/MarketManager.kt:21` |
-| `MeetingManager` | manager | core | Service | `MeetingSessionDao`, `SessionClientConfigDao`, `ClientProfileService`, `ParameterService`, `RoleOverrideValidator`, `SessionEventsPublisher`, `CurrentUser` |  | `MTG-001` | `core/src/main/kotlin/harbor/manager/MeetingManager.kt:37` |
+| `MeetingManager` | manager | core | Service | `MeetingSessionDao`, `SessionClientConfigDao`, `ClientProfileService`, `ParameterService`, `RoleOverrideValidator`, `SessionEventsPublisher`, `CurrentUser` |  |  | `core/src/main/kotlin/harbor/manager/MeetingManager.kt:37` |
 | `Product1Manager` | manager | core | Service | `ProjectionService`, `ProjectionInputAssembler`, `PeerSimulationService`, `ClientRoleService`, `MovementInputValidator` |  |  | `core/src/main/kotlin/harbor/manager/Product1Manager.kt:26` |
 | `Product2Manager` | manager | core | Service | `ProjectionService`, `ProjectionInputAssembler`, `PeerSimulationService`, `ClientRoleService`, `MovementInputValidator` |  | `P2-001` | `core/src/main/kotlin/harbor/manager/Product2Manager.kt:26` |
 | `ReportManager` | manager | core | Service | `MeetingReportDao`, `MeetingSessionDao`, `ReportPayloadService`, `ReportRenderRequester`, `DocumentServiceClient` |  |  | `core/src/main/kotlin/harbor/manager/ReportManager.kt:26` |

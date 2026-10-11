@@ -1,10 +1,10 @@
 ---
 type: Document
-title: Codebase map (BE)
-description: Backend modules, technical layers with their classes and resource folders; read the manager of a context first.
+title: "Codebase map (BE)"
+description: "Backend modules, technical layers with their classes and resource folders; read the manager of a context first."
 generated:
   by: process:gen-docs
-  at: 2026-10-09
+  at: 2026-10-11
 status: stable
 ---
 # Codebase map (BE)

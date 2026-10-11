@@ -31,6 +31,7 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
 | stress | `STR` | `Stress` | `manager/StressManager.kt` | `stress`: `/session/:sessionId/stress-test` | [STR-001](/features/stress/STR-001.md) (draft) |
 | reports | `RPT` | `Report` | `manager/ReportManager.kt` | `reports`: Download PDF on the Meetings page | [RPT-001](/features/reports/RPT-001.md) (skeleton) |
 | admin | `ADM` | `Admin`, `Parameter` | `manager/AdminManager.kt` | `admin`: `/admin/parameters`, `/admin/imports` | missing (`ADM-001` backlog) |
+| presentation | `PRS` | — (FE-only) | — | `presentation`: `/present/:sessionId` (second window, BroadcastChannel `harbor.session.<id>`) | [PRS-001](/features/presentation/PRS-001.md) (draft), flow [client-presentation](/flows/client-presentation.md) |
 
 Classes matching no prefix are `shared` and are not a bounded context: configuration (`WebConfig`, `KafkaConfig`, ...),
 `enums`, the `utils` helpers (`MonthGrid`, `Rounding`), unprefixed `client/` wrappers (`DocumentServiceClient`,

@@ -30,7 +30,7 @@ import java.util.UUID
  *
  * Creating a session freezes a snapshot of the relevant `parameter_set` values; closing it emits
  * `harbor.meetings.session-closed`, which triggers the report and the role override propagation.
- * Session-scoped endpoints (`/session/**`) rely on `SessionHeaderFilter` and `SessionContext`, not on this manager.
+ * Session-scoped endpoints (`/session` sub-paths) rely on `SessionHeaderFilter` and `SessionContext`, not on this manager.
  *
  * @docs MTG-001
  */

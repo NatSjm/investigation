@@ -13,18 +13,20 @@ export interface ScenarioEditorProps {
   onCancel: () => void;
 }
 
-const KINDS: ScenarioKind[] = ['BASE', 'ADVERSE', 'CUSTOM'];
+/** Contract vocabulary: who authored the scenario (the representative is the default author in this workspace). */
+const KINDS: ScenarioKind[] = ['REPRESENTATIVE', 'CLIENT'];
+const DEFAULT_KIND: ScenarioKind = 'REPRESENTATIVE';
 const emptyShock: Shock = { fromMonth: 1, priceChangePct: 0, transportChangePct: 0 };
 
 /** Form for one scenario (name, kind, shocks) with a live preview of the resulting price paths. */
 export function ScenarioEditor({ scenario, baseline, horizonMonths, pending, onSave, onCancel }: ScenarioEditorProps) {
   const [name, setName] = useState(scenario?.name ?? '');
-  const [kind, setKind] = useState<ScenarioKind>(scenario?.kind ?? 'CUSTOM');
+  const [kind, setKind] = useState<ScenarioKind>(scenario?.kind ?? DEFAULT_KIND);
   const [shocks, setShocks] = useState<Shock[]>(scenario?.shocks ?? [{ ...emptyShock }]);
 
   useEffect(() => {
     setName(scenario?.name ?? '');
-    setKind(scenario?.kind ?? 'CUSTOM');
+    setKind(scenario?.kind ?? DEFAULT_KIND);
     setShocks(scenario?.shocks ?? [{ ...emptyShock }]);
   }, [scenario]);
 

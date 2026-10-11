@@ -1,49 +1,27 @@
 /**
- * View-model types for market scenarios. Mirror `Scenario`, `Shock` and `BaselinePrices`
- * from the contract (`market` module, `ScenarioController`).
+ * View-model types for market scenarios. Aliases of `Scenario`, `ScenarioInput`, `Shock` and `BaselinePrices`
+ * from the contract (`market` module, `ScenarioController`); `scenarioPricePath` is the FE preview.
  * @docs MKT-001
  */
 import type { components } from '@/api/generated/schema';
 
 export type ProductGroup = components['schemas']['ProductGroup'];
 
-export type ScenarioKind = 'BASE' | 'ADVERSE' | 'CUSTOM';
-
 /** A shock applies from month index `fromMonth` (1-based within the horizon) onwards; changes are fractions. */
-export interface Shock {
-  fromMonth: number;
-  priceChangePct: number;
-  transportChangePct: number;
-}
+export type Shock = components['schemas']['Shock'];
 
-export interface Scenario {
-  scenarioId: string;
-  name: string;
-  kind: ScenarioKind;
-  shocks: Shock[];
-  createdBy: string;
-  createdAt: string;
-}
+/** Scenario payload sent on create / update (`ScenarioInput`). */
+export type ScenarioRequest = components['schemas']['ScenarioInput'];
 
-export interface ScenarioRequest {
-  name: string;
-  kind: ScenarioKind;
-  shocks: Shock[];
-}
+/** Who authored the scenario: the representative or the client (contract enum on `ScenarioInput.kind`). */
+export type ScenarioKind = ScenarioRequest['kind'];
 
-export interface BaselinePoint {
-  period: string;
-  price: number;
-  transportPrice: number;
-}
+export type Scenario = components['schemas']['Scenario'];
+
+export type BaselinePoint = components['schemas']['BaselinePricePoint'];
 
 /** Baseline curve for the session's product group and corridor (fed by the market-data service). */
-export interface BaselinePrices {
-  productGroup: ProductGroup;
-  corridor: string;
-  asOf: string;
-  points: BaselinePoint[];
-}
+export type BaselinePrices = components['schemas']['BaselinePrices'];
 
 export interface ScenarioPathPoint extends BaselinePoint {
   scenarioPrice: number;

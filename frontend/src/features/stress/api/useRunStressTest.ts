@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api, unwrap } from '@/api/client';
+import { api, sessionHeader, unwrap } from '@/api/client';
 import { useSessionStore } from '@/api/sessionStore';
 import type { StressTestResult } from '../stress.types';
 
@@ -12,7 +12,7 @@ export function useRunStressTest() {
   const sessionId = useSessionStore((s) => s.sessionId);
   const queryClient = useQueryClient();
   return useMutation<StressTestResult, Error, void>({
-    mutationFn: async () => unwrap(await api.POST('/session/stress-test')),
+    mutationFn: async () => unwrap(await api.POST('/session/stress-test', { params: { header: sessionHeader() } })),
     onSuccess: (result) => {
       queryClient.setQueryData(['session', sessionId, 'stress-test', result.dimension], result);
       void queryClient.invalidateQueries({ queryKey: ['session', sessionId, 'stress-test'] });

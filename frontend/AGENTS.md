@@ -8,6 +8,8 @@ Web client of the Harbor platform. Account representatives search clients, start
 product overview pages (projection tables, cover charts, movement and peer-simulation modals), market scenarios and the
 stress test, and download the meeting report. One feature folder per bounded context, named like the context in the docs repo `contexts.yml` (BE classes carry the matching name prefix):
 `clients`, `meetings`, `product1`, `product2`, `cover`, `market`, `stress`, `reports`, `admin`.
+`presentation` (FE-only, `PRS-001`) is the client-facing window `/present/:sessionId`; all cross-window sync goes through
+the single `BroadcastChannel` module `src/features/presentation/channel.ts` (`route` / `view` / `session-closed` messages).
 
 ## Read in this order (cheapest first) - never walk `src/`
 1. `docs/_generated/index.md`, then the map that answers the question: `codebase-map.md` (features, exports, API calls),
@@ -21,8 +23,9 @@ stress test, and download the meeting report. One feature folder per bounded con
   (`npm run generate:api`); never edit it by hand. `src/api/client.ts` exports the typed `api` client (base URL `/api/v1`).
 - Hooks call `api.GET('/clients/{clientId}/overview', { params: { path: { clientId } } })` with the literal contract path -
   the maps and the graph join on that string, so never build paths with template literals.
-- Every `/session/**` call needs the header `X-Harbor-Session`. A middleware in `src/api/client.ts` adds it from
-  `sessionStore`; components and hooks never set the header themselves.
+- Every `/session/**` call needs the header `X-Harbor-Session`; the contract declares it required, so the generated types
+  demand it. Hooks pass `params: { header: sessionHeader(), ... }` with `sessionHeader()` from `src/api/client.ts`, which
+  reads the id from `sessionStore`. Components never set the header; there is no middleware.
 
 ## Conventions the generators rely on
 - Feature folder: `src/features/<name>/{index.ts, <name>.types.ts, api/use*.ts, ui/*.tsx}`; cross-feature imports only via the barrel.

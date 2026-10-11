@@ -5,25 +5,29 @@ import { formatPeriod } from '@/shared/utils/months';
 import type { CoverSeries } from '../product1.types';
 
 export interface CoverRatioChartProps {
-  series: CoverSeries[];
+  /** Flat `CoverSeriesPoint[]` from the overview (one point per period x sub-product). */
+  series: CoverSeries;
   height?: number;
 }
 
 /**
  * Cover ratio per month, one line per sub-product (calculation `cover_ratio`).
- * Series are pivoted into one row per period so recharts can draw them on a shared axis.
+ * Points are pivoted into one row per period so recharts can draw them on a shared axis.
  */
 export function CoverRatioChart({ series, height = 240 }: CoverRatioChartProps) {
-  const data = useMemo(() => {
+  const { data, subProducts } = useMemo(() => {
     const byPeriod = new Map<string, Record<string, number | string>>();
-    for (const s of series) {
-      for (const p of s.points) {
-        const row = byPeriod.get(p.period) ?? { period: p.period };
-        row[s.subProduct] = p.value;
-        byPeriod.set(p.period, row);
-      }
+    const subProducts: string[] = [];
+    for (const p of series) {
+      const row = byPeriod.get(p.period) ?? { period: p.period };
+      row[p.subProduct] = p.coverRatio;
+      byPeriod.set(p.period, row);
+      if (!subProducts.includes(p.subProduct)) subProducts.push(p.subProduct);
     }
-    return [...byPeriod.values()].sort((a, b) => String(a.period).localeCompare(String(b.period)));
+    return {
+      data: [...byPeriod.values()].sort((a, b) => String(a.period).localeCompare(String(b.period))),
+      subProducts,
+    };
   }, [series]);
 
   if (series.length === 0) return <p className="hint">No cover policies for this product group.</p>;
@@ -33,7 +37,7 @@ export function CoverRatioChart({ series, height = 240 }: CoverRatioChartProps) 
       <figcaption>Cover ratio per sub-product</figcaption>
       <LineChart
         data={data}
-        series={series.map((s) => ({ key: s.subProduct, label: s.subProduct }))}
+        series={subProducts.map((s) => ({ key: s, label: s }))}
         height={height}
         yFormatter={formatRatio}
         xFormatter={(p) => formatPeriod(p, 'short')}
