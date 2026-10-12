@@ -37,20 +37,20 @@ status: stable
 ## classes
 - `class:ClientRoleService` - `core/src/main/kotlin/harbor/service/ClientRoleService.kt:28` - service; Service
 - `class:ClientProfileService` - `core/src/main/kotlin/harbor/service/ClientProfileService.kt:16` - service; Service
-- `class:ClientManager` - `core/src/main/kotlin/harbor/manager/ClientManager.kt:25` - manager; Service
 - `class:ClientController` - `core/src/main/kotlin/harbor/api/ClientController.kt:20` - api; RestController
+- `class:ClientManager` - `core/src/main/kotlin/harbor/manager/ClientManager.kt:25` - manager; Service
 - `class:ClientOverviewService` - `core/src/main/kotlin/harbor/service/ClientOverviewService.kt:23` - service; Service
 - `class:ClientRoleDao` - `core/src/main/kotlin/harbor/dao/ClientRoleDao.kt:10` - dao; Repository
-- `class:RoleClassifier` - `core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24` - utils; object
 - `class:ClientRoleSessionClosedListener` - `core/src/main/kotlin/harbor/event/ClientRoleSessionClosedListener.kt:18` - event; Component, KafkaListener
 - `class:ClientProfileDao` - `core/src/main/kotlin/harbor/dao/ClientProfileDao.kt:10` - dao; Repository
+- `class:RoleClassifier` - `core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24` - utils; object
 - `class:ClientRegistryClient` - `core/src/main/kotlin/harbor/client/ClientRegistryClient.kt:16` - client; Component
 
 ## components
 - `component:ClientOverviewPage` - `src/features/clients/ui/ClientOverviewPage.tsx:16`
 - `component:ClientInfoPanel` - `src/features/clients/ui/ClientInfoPanel.tsx:11`
-- `component:ClientSearchPage` - `src/features/clients/ui/ClientSearchPage.tsx:15`
 - `component:ProductGroupCard` - `src/features/clients/ui/ProductGroupCard.tsx:20`
+- `component:ClientSearchPage` - `src/features/clients/ui/ClientSearchPage.tsx:15`
 
 ## tables
 - `table:client_profile` - `core/src/main/resources/db/migration/V1__clients.sql` - 6 columns: id, external_ref, name, country, segment, created_at
@@ -119,7 +119,15 @@ status: stable
 - `endpoint:GET /api/v1/clients/{clientId}` -handled-by-> `class:ClientController`
 - `endpoint:GET /api/v1/clients/{clientId}/overview` -handled-by-> `class:ClientController`
 - `endpoint:GET /api/v1/clients/{clientId}/role` -handled-by-> `class:ClientController`
+- `spec:CLI-001` -implemented-by-> `class:ClientController` (-> docs)
 - `spec:CLI-001` -implemented-by-> `class:ClientManager` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientOverviewService` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientProfileDao` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientProfileService` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientRegistryClient` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientRoleDao` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientRoleService` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientRoleSessionClosedListener` (-> docs)
 - `spec:CLI-001` -implemented-by-> `feature:clients` (-> docs)
 - `spec:client_role_classification` -implemented-by-> `class:RoleClassifier` (-> docs)
 - `context:clients` -owns-> `table:client_profile`

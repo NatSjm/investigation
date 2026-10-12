@@ -1,13 +1,14 @@
 # Lives in each code repo as .github/workflows/docs-maps.yml (apply-kit.ps1 copies it there).
+# PR-time freshness check ONLY. Publication into the docs repository is done by the docs repo's single collector
+# (harbor-docs/.github/workflows/collect-evidence.yml -> scripts/collect-evidence.ps1): one owner of publication, no
+# docs-repo credentials in the code repos. Optional precise graph exports (be/templates/GraphExportTest.kt,
+# fe scripts/docs/gen-graph-fe.ts) can be published as build artifacts for the collector to download.
 # Lib-free: PowerShell 7 is preinstalled on GitHub-hosted runners (also fine on self-hosted with pwsh).
 # REPO_KIND is `be` for harbor-backend and `fe` for harbor-frontend; set it in the repo variables.
 name: docs-maps
 on:
   pull_request:
     paths: ["**/src/**", "**/pom.xml", "scripts/docs/**"]                 # contracts live under core/src/main/resources
-  push:
-    branches: [main]
-    paths: ["**/src/**", "**/pom.xml"]
 
 env:
   REPO_KIND: ${{ vars.REPO_KIND || 'be' }}        # be | fe
@@ -26,44 +27,3 @@ jobs:
         shell: pwsh
         run: ./scripts/check-file-size.ps1 -Root . -MaxLines $env:MAX_LINES -Baseline .filesize-baseline.txt
 
-  publish-to-docs-repo:
-    if: github.event_name == 'push'
-    needs: freshness
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Regenerate
-        shell: pwsh
-        run: ./scripts/docs/gen-all.ps1 -Root .
-      # Optional precise graph export (adds no library):
-      #   BE: mvn -pl core -am -Dtest=GraphExportTest -Ddocs.graph=true test   -> docs/_generated/graph-export-be.json  (be/templates/GraphExportTest.kt)
-      #   FE: npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json
-      # Both files are picked up by the docs repo scripts/gen-graph.ps1 and override the regex edges.
-      - name: Open PR in docs repo with generated/<repo>/* and the contracts
-        env: { GIT_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }}, GH_TOKEN: ${{ secrets.DOCS_REPO_TOKEN }} }
-        run: |
-          set -e
-          git clone --depth 1 "https://x:${GIT_TOKEN}@git.example.com/harbor/harbor-docs" docs
-          mkdir -p "docs/generated/${REPO_KIND}"
-          rsync -a --delete docs/_generated/ "docs/generated/${REPO_KIND}/"
-          # Contracts (backend repo only): the docs repo keeps a copy of every OpenAPI/AsyncAPI document it links to.
-          C=core/src/main/resources
-          if [ -f "$C/openapi/harbor-api.yaml" ]; then
-            mkdir -p docs/generated/openapi/external docs/generated/asyncapi
-            cp "$C/openapi/harbor-api.yaml" docs/generated/openapi/backend.yaml
-            [ -f "$C/openapi/harbor-events.yaml" ] && cp "$C/openapi/harbor-events.yaml" docs/generated/asyncapi/backend.yaml
-            [ -d "$C/api" ] && cp "$C"/api/*.yaml docs/generated/openapi/external/
-          fi
-          cd docs
-          # docs repo convention: generated/* carries OKF frontmatter generated.by: process:<pipeline>
-          sed -i "s/^  by: process:gen-docs$/  by: process:harbor-${REPO_KIND}-docs-maps/" "generated/${REPO_KIND}"/*.md
-          # Rebuild the architectural graph (BE + FE maps + @docs tags) so REPO_MAP / graph.json / #impact stay current.
-          pwsh ./scripts/gen-graph.ps1
-          git checkout -b "gen/${REPO_KIND}-${GITHUB_SHA::7}"
-          git add generated
-          git -c user.name=ci -c user.email=ci@harbor.example.com commit -m "chore(generated): ${REPO_KIND} maps and contracts from ${GITHUB_SHA::7}
-
-          Changed source paths:
-          $(git -C .. diff --name-only HEAD~1 HEAD | sed 's/^/- /')" || exit 0
-          git push -u origin HEAD
-          gh pr create --fill --label generated --body "Run agent doc-sync on this PR."

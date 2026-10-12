@@ -89,7 +89,13 @@ status: stable
 - `endpoint:GET /api/v1/sessions/{sessionId}/report` -handled-by-> `class:ReportController`
 - `endpoint:GET /api/v1/sessions/{sessionId}/report.pdf` -handled-by-> `class:ReportController`
 - `endpoint:POST /api/v1/sessions/{sessionId}/report` -handled-by-> `class:ReportController`
+- `spec:RPT-001` -implemented-by-> `class:ReportController` (-> docs)
 - `spec:RPT-001` -implemented-by-> `class:ReportManager` (-> docs)
+- `spec:RPT-001` -implemented-by-> `class:ReportPayloadService` (-> docs)
+- `spec:RPT-001` -implemented-by-> `class:ReportRenderedListener` (-> docs)
+- `spec:RPT-001` -implemented-by-> `class:ReportRenderRequester` (-> docs)
+- `spec:RPT-001` -implemented-by-> `class:ReportSessionClosedListener` (-> docs)
+- `spec:RPT-001` -implemented-by-> `class:ReportTemplateLoader` (-> docs)
 - `spec:RPT-001` -implemented-by-> `feature:reports` (-> docs)
 - `class:ReportRenderRequester` -produces-> `topic:harbor.reports.render-requested`
 - `component:DownloadPdfButton` -uses-> `hook:useDownloadReportPdf` (exact)

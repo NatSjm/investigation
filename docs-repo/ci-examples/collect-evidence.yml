@@ -1,0 +1,77 @@
+# Lives in the DOCS repository as .github/workflows/collect-evidence.yml.
+# One collector, one owner of publication: the docs repo pulls the generated maps and the contracts from the code
+# repositories and opens ONE pull request per snapshot. The code repositories keep only the PR-time freshness check
+# (code-repo-kit/ci/docs-maps.yml); they no longer need credentials for, or knowledge of, the docs repository.
+#
+# Needs: a GitHub App or bot token with READ on harbor-backend / harbor-frontend and contents+pull-requests WRITE on
+# this repository (secret SOURCE_READ_TOKEN). PowerShell 7 is preinstalled on GitHub-hosted runners.
+# Start manual + nightly; add repository_dispatch from the code repos only when lower latency is needed.
+name: collect-evidence
+on:
+  workflow_dispatch:
+    inputs:
+      backend_ref:  { description: "harbor-backend ref",  default: main, required: false }
+      frontend_ref: { description: "harbor-frontend ref", default: main, required: false }
+  schedule:
+    - cron: "0 2 * * 1-5"          # nightly on weekdays, 02:00 UTC
+
+concurrency: { group: collect-evidence, cancel-in-progress: false }   # serialise snapshots: one publication branch at a time
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    permissions: { contents: write, pull-requests: write }
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: docs }
+      - uses: actions/checkout@v4
+        with: { repository: harbor/harbor-backend,  ref: ${{ inputs.backend_ref  || 'main' }}, path: backend,  token: ${{ secrets.SOURCE_READ_TOKEN }} }
+      - uses: actions/checkout@v4
+        with: { repository: harbor/harbor-frontend, ref: ${{ inputs.frontend_ref || 'main' }}, path: frontend, token: ${{ secrets.SOURCE_READ_TOKEN }} }
+
+      # The generators understand their own code bases and stay in the code repos; the collector only runs them.
+      # If a map needs the application's build (e.g. the precise Spring-context graph export), let the code repo's own
+      # CI publish that file as an artifact and download it here instead of building the application in this job.
+      - name: Collect one snapshot (regenerate maps, validate, replace generated/, manifest, graph, indexes)
+        shell: pwsh
+        working-directory: docs
+        run: ./scripts/collect-evidence.ps1 -Backend ../backend -Frontend ../frontend -Generate -Graph
+
+      - name: Affected specs (from the manifest diff -> docs-map.yml)
+        id: affected
+        shell: pwsh
+        working-directory: docs
+        run: |
+          $changed = git diff --name-only -- generated | Where-Object { $_ -like 'generated/be/*' -or $_ -like 'generated/fe/*' -or $_ -like 'generated/openapi/*' -or $_ -like 'generated/asyncapi/*' }
+          if (-not $changed) { "changed=false" >> $env:GITHUB_OUTPUT; exit 0 }
+          "changed=true" >> $env:GITHUB_OUTPUT
+          # source paths that changed between the previous and the new manifest commits, mapped to specs
+          $prev = (git show HEAD:generated/manifest.yml 2>$null | Select-String 'backend:.*commit: (\w+)').Matches.Groups[1].Value
+          $new  = (Get-Content generated/manifest.yml | Select-String 'backend:.*commit: (\w+)').Matches.Groups[1].Value
+          $paths = @()
+          if ($prev -and $new -and $prev -ne $new) { $paths += git -C ../backend diff --name-only $prev $new | ForEach-Object { "be/$_" } }
+          $prevF = (git show HEAD:generated/manifest.yml 2>$null | Select-String 'frontend:.*commit: (\w+)').Matches.Groups[1].Value
+          $newF  = (Get-Content generated/manifest.yml | Select-String 'frontend:.*commit: (\w+)').Matches.Groups[1].Value
+          if ($prevF -and $newF -and $prevF -ne $newF) { $paths += git -C ../frontend diff --name-only $prevF $newF | ForEach-Object { "fe/$_" } }
+          $report = if ($paths) { $paths | ./scripts/map-paths.ps1 | ForEach-Object { "- $($_.Path) -> $($_.Specs -join ', ')" } } else { @('- (no source commit change recorded; maps or contracts regenerated)') }
+          $body = "Evidence snapshot from backend $new / frontend $newF.`n`n### Changed source paths -> specs to review`n" + ($report -join "`n") + "`n`nRun agent doc-sync on this PR; a person reviews and merges."
+          Set-Content -Path body.md -Value $body
+
+      - name: Validate the bundle with the new snapshot
+        if: steps.affected.outputs.changed == 'true'
+        shell: pwsh
+        working-directory: docs
+        run: ./scripts/okf-validate.ps1 -Strict; ./scripts/gen-graph.ps1 -Check; ./scripts/build-index.ps1 -Check
+
+      - name: Open ONE pull request
+        if: steps.affected.outputs.changed == 'true'
+        working-directory: docs
+        env: { GH_TOKEN: ${{ github.token }} }
+        run: |
+          set -e
+          B="gen/evidence-$(date -u +%Y%m%d-%H%M)"
+          git checkout -b "$B"
+          git add generated
+          git -c user.name=collector -c user.email=collector@harbor.example.com commit -m "chore(generated): evidence snapshot $(date -u +%F)"
+          git push -u origin "$B"
+          gh pr create --title "Evidence snapshot $(date -u +%F)" --label generated --body-file body.md

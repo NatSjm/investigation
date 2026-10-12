@@ -268,6 +268,43 @@ foreach ($f in $specFiles) {
     if ($status) { $n.note = (("status $status", $n.note) | Where-Object { $_ }) -join '; ' }
 }
 
+# ---------- docs-map.yml: explicit code path -> spec mappings (makes @docs tags optional) ----------
+# A row `paths: [be/..., fe/...] -> specs: [features/x/ID.md]` adds the same `implemented-by` edges an `@docs ID` tag
+# would, so a repository can start documenting before anyone touches application source. Spec globs
+# (`domain/calculations/**`) are skipped: they map paths to a folder, not to one concept.
+$docsMap = Join-Path $Root 'docs-map.yml'
+if (Test-Path $docsMap) {
+    function Test-MapGlob([string]$glob, [string]$path) {
+        $rx = '^' + [regex]::Escape($glob).Replace('\*\*/', '(.*/)?').Replace('\*\*', '.*').Replace('\*', '[^/]*') + '$'
+        return $path -match $rx
+    }
+    $mapRows = @(); $cur = $null; $section = ''
+    foreach ($l in (Get-Content $docsMap)) {
+        if ($l -match '^\s*#' -or $l.Trim() -eq '') { continue }
+        if ($l -match '^mappings:') { $section = 'map'; continue }
+        if ($l -match '^ignore:') { $section = 'ignore'; continue }
+        if ($section -eq 'map' -and $l -match '^\s*-\s*paths:\s*\[(.*)\]') { $cur = [pscustomobject]@{ Paths = @(($Matches[1] -split ',') | ForEach-Object { $_.Trim().Trim('"') } | Where-Object { $_ }); Specs = @() }; $mapRows += $cur; continue }
+        if ($section -eq 'map' -and $l -match '^\s*specs:\s*\[(.*?)\]' -and $cur) { $cur.Specs = @(($Matches[1] -split ',') | ForEach-Object { $_.Trim().Trim('"') } | Where-Object { $_ }) }
+    }
+    $beClasses = @($nodes.Values | Where-Object { $_.kind -eq 'class' -and $_.repo -eq 'be' -and $_.location })
+    $feFeatures = @($nodes.Values | Where-Object { $_.kind -eq 'feature' -and $_.location })
+    $mapEdges = 0
+    foreach ($row in $mapRows) {
+        $ids = @($row.Specs | Where-Object { $_ -notmatch '\*' -and $_ -match '^(features/[^/]+/|domain/calculations/)[^/]+\.md$' } | ForEach-Object { [IO.Path]::GetFileNameWithoutExtension($_) })
+        if (-not $ids.Count) { continue }
+        foreach ($g in $row.Paths) {
+            $targets = @()
+            if ($g -like 'be/*')     { $targets = @($beClasses  | Where-Object { Test-MapGlob $g ('be/' + (File-Of $_.location)) } | ForEach-Object { $_.id }) }
+            elseif ($g -like 'fe/*') { $targets = @($feFeatures | Where-Object { Test-MapGlob $g ('fe/' + (File-Of $_.location)) } | ForEach-Object { $_.id }) }
+            foreach ($id in $ids) {
+                if (-not $nodes.Contains("spec:$id")) { continue }
+                foreach ($t in $targets) { if (-not $edges.ContainsKey("spec:$id|implemented-by|$t")) { Add-Edge "spec:$id" $t 'implemented-by' 'docs-map'; $mapEdges++ } }
+            }
+        }
+    }
+    Write-Host "docs-map: $mapEdges implemented-by edge(s) added from docs-map.yml"
+}
+
 # ---------- precise exports (optional) ----------
 foreach ($x in @(@{ f = 'graph-export-be.json'; d = $BeMaps }, @{ f = 'graph-export-fe.json'; d = $FeMaps })) {
     $p = Join-Path $x.d $x.f
@@ -406,7 +443,7 @@ $specNodes = @($nodeObjs | Where-Object { $_.kind -in 'spec', 'calculation' } | 
 $impl = @($edges.Values | Where-Object { $_.rel -eq 'implemented-by' } | ForEach-Object { $_.from } | Sort-Object -Unique)
 foreach ($s in $specNodes) {
     $hasFile = [bool]$s.location; $hasCode = $impl -contains $s.id
-    $state = if ($hasFile -and $hasCode) { 'spec + code' } elseif ($hasFile) { 'spec only - no @docs tag in code' } else { 'code only - no spec file in docs repo' }
+    $state = if ($hasFile -and $hasCode) { 'spec + code' } elseif ($hasFile) { 'spec only - no @docs tag and no docs-map.yml path in code' } else { 'code only - no spec file in docs repo' }
     [void]$sb.AppendLine("- ``$($s.id)``: $state" + $(if ($s.note) { " ($($s.note))" } else { '' }))
 }
 $files['REPO_MAP.md'] = $sb.ToString()

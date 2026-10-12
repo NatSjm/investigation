@@ -77,6 +77,10 @@ status: stable
 - `endpoint:GET /api/v1/session/stress-test` -handled-by-> `class:StressTestController`
 - `endpoint:POST /api/v1/session/stress-test` -handled-by-> `class:StressTestController`
 - `spec:STR-001` -implemented-by-> `class:StressManager` (-> docs)
+- `spec:STR-001` -implemented-by-> `class:StressTestCalculator` (-> docs)
+- `spec:STR-001` -implemented-by-> `class:StressTestController` (-> docs)
+- `spec:STR-001` -implemented-by-> `class:StressTestResultDao` (-> docs)
+- `spec:STR-001` -implemented-by-> `class:StressTestService` (-> docs)
 - `spec:STR-001` -implemented-by-> `feature:stress` (-> docs)
 - `spec:stress_test_monthly` -implemented-by-> `class:StressTestCalculator` (-> docs)
 - `context:stress` -owns-> `table:stress_test_result`

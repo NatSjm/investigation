@@ -39,12 +39,12 @@ status: stable
 
 ## classes
 - `class:MeetingManager` - `core/src/main/kotlin/harbor/manager/MeetingManager.kt:37` - manager; Service
-- `class:MeetingSessionDao` - `core/src/main/kotlin/harbor/dao/MeetingSessionDao.kt:13` - dao; Repository
 - `class:SessionController` - `core/src/main/kotlin/harbor/api/SessionController.kt:22` - api; RestController
+- `class:MeetingSessionDao` - `core/src/main/kotlin/harbor/dao/MeetingSessionDao.kt:13` - dao; Repository
 - `class:SessionScopeService` - `core/src/main/kotlin/harbor/service/SessionScopeService.kt:17` - service; Service
 - `class:SessionClientConfigDao` - `core/src/main/kotlin/harbor/dao/SessionClientConfigDao.kt:9` - dao; Repository
-- `class:SessionEventsPublisher` - `core/src/main/kotlin/harbor/event/SessionEventsPublisher.kt:14` - event; Component, KafkaProducer
 - `class:MeetingReportDao` - `core/src/main/kotlin/harbor/dao/MeetingReportDao.kt:9` - dao; Repository
+- `class:SessionEventsPublisher` - `core/src/main/kotlin/harbor/event/SessionEventsPublisher.kt:14` - event; Component, KafkaProducer
 - `class:SessionHeaderFilter` - `core/src/main/kotlin/harbor/component/SessionHeaderFilter.kt:31` - component; Component
 - `class:RoleOverrideValidator` - `core/src/main/kotlin/harbor/validator/RoleOverrideValidator.kt:15` - validator; Component
 
@@ -132,6 +132,14 @@ status: stable
 - `endpoint:POST /api/v1/sessions/{sessionId}/close` -handled-by-> `class:SessionController`
 - `endpoint:PUT /api/v1/sessions/{sessionId}/role` -handled-by-> `class:SessionController`
 - `spec:MTG-001` -implemented-by-> `class:MeetingManager` (-> docs)
+- `spec:MTG-001` -implemented-by-> `class:MeetingReportDao` (-> docs)
+- `spec:MTG-001` -implemented-by-> `class:MeetingSessionDao` (-> docs)
+- `spec:MTG-001` -implemented-by-> `class:RoleOverrideValidator` (-> docs)
+- `spec:MTG-001` -implemented-by-> `class:SessionClientConfigDao` (-> docs)
+- `spec:MTG-001` -implemented-by-> `class:SessionController` (-> docs)
+- `spec:MTG-001` -implemented-by-> `class:SessionEventsPublisher` (-> docs)
+- `spec:MTG-001` -implemented-by-> `class:SessionHeaderFilter` (-> docs)
+- `spec:MTG-001` -implemented-by-> `class:SessionScopeService` (-> docs)
 - `spec:MTG-001` -implemented-by-> `feature:meetings` (-> docs)
 - `context:meetings` -owns-> `table:meeting_report`
 - `context:meetings` -owns-> `table:meeting_session`

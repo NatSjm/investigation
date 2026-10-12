@@ -16,7 +16,8 @@ modules; external systems are reached with plain REST calls and tokens from envi
 | `migration-status.ps1` | migration plan: per context the lifecycle runs still due (skeleton, legacy merge, calculation audit, owner decision) with their commands, pending legacy pages, unaudited calculations -> `migration/<scope>.md` (`-Scope all|<ctx>`, `-Print`) | - |
 | `map-paths.ps1` | changed code paths -> affected specs (uses `docs-map.yml`) | - |
 | `check-freshness.ps1` | CI gate in the code repos: mapped code changed but `last_verified` not bumped | - |
-| `publish-local.ps1` | local stand-in for the code repos' CI publish job: copies maps + contracts from `../backend`, `../frontend` into `generated/` | - |
+| `collect-evidence.ps1 [-Generate] [-Graph] [-DryRun]` | the single evidence collector: stages maps + contracts from `../backend`, `../frontend`, validates the candidate, replaces the collector-owned sets under `generated/` (deletions included), writes `generated/manifest.yml` (source commits, hashes); idempotent when nothing changed; `-Graph` also rebuilds graph + indexes. CI: `ci-examples/collect-evidence.yml` opens one PR per snapshot | - |
+| `publish-local.ps1` | deprecated name of `collect-evidence.ps1` (kept as a wrapper) | - |
 | `hooks/guard-generated.ps1` | Copilot `preToolUse` hook: denies edits under `generated/**` and of `index.md` files | - |
 | `jira-push.ps1` | create/update epic/stories/subtasks via Jira REST v3, write back keys | `JIRA_URL`, `JIRA_USER`, `JIRA_TOKEN` |
 | `confluence-export.ps1` | Confluence REST -> Markdown into `confluence-import/` | `CONFLUENCE_URL`, `CONFLUENCE_TOKEN` |
@@ -33,6 +34,6 @@ Typical local loop:
 ```powershell
 ..\code-repo-kit\be\scripts\docs\gen-all.ps1 -Root ..\backend
 ..\code-repo-kit\fe\scripts\docs\gen-all.ps1 -Root ..\frontend
-.\publish-local.ps1; .\gen-graph.ps1; .\build-index.ps1; .\okf-validate.ps1 -Strict; .\coverage-matrix.ps1
+.\collect-evidence.ps1 -Graph; .\okf-validate.ps1 -Strict; .\coverage-matrix.ps1
 .\context-pack.ps1 -Task P1-001 -Print
 ```

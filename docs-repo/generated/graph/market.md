@@ -34,11 +34,11 @@ status: stable
 - `route:/session/:sessionId/scenarios` - `src/app/routes.tsx:36` - renders ScenariosPage
 
 ## classes
-- `class:BaselinePriceService` - `core/src/main/kotlin/harbor/service/BaselinePriceService.kt:23` - service; Service
 - `class:ScenarioController` - `core/src/main/kotlin/harbor/api/ScenarioController.kt:20` - api; RestController
-- `class:MarketManager` - `core/src/main/kotlin/harbor/manager/MarketManager.kt:21` - manager; Service
+- `class:BaselinePriceService` - `core/src/main/kotlin/harbor/service/BaselinePriceService.kt:23` - service; Service
 - `class:MarketScenarioDao` - `core/src/main/kotlin/harbor/dao/MarketScenarioDao.kt:9` - dao; Repository
 - `class:ScenarioService` - `core/src/main/kotlin/harbor/service/ScenarioService.kt:20` - service; Service
+- `class:MarketManager` - `core/src/main/kotlin/harbor/manager/MarketManager.kt:21` - manager; Service
 - `class:MarketPricesListener` - `core/src/main/kotlin/harbor/event/MarketPricesListener.kt:18` - event; Component, KafkaListener
 - `class:BaselinePriceDao` - `core/src/main/kotlin/harbor/dao/BaselinePriceDao.kt:10` - dao; Repository
 - `class:ScenarioPricePath` - `core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19` - utils; object
@@ -109,7 +109,16 @@ status: stable
 - `endpoint:GET /api/v1/session/scenarios` -handled-by-> `class:ScenarioController`
 - `endpoint:POST /api/v1/session/scenarios` -handled-by-> `class:ScenarioController`
 - `endpoint:PUT /api/v1/session/scenarios/{scenarioId}` -handled-by-> `class:ScenarioController`
+- `spec:MKT-001` -implemented-by-> `class:BaselinePriceDao` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:BaselinePriceService` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:MarketDataClient` (-> docs)
 - `spec:MKT-001` -implemented-by-> `class:MarketManager` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:MarketPricesListener` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:MarketScenarioDao` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:ScenarioController` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:ScenarioPricePath` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:ScenarioService` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:ScenarioValidator` (-> docs)
 - `spec:MKT-001` -implemented-by-> `feature:market` (-> docs)
 - `spec:scenario_price_path` -implemented-by-> `class:ScenarioPricePath` (-> docs)
 - `context:market` -owns-> `table:baseline_price`
