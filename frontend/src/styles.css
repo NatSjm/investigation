@@ -92,8 +92,12 @@ dd { margin: 0; font-weight: 600; }
 .session-steps a.active { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
 .product-overview, .scenarios, .stress-test, .session-summary, .meetings, .report { display: grid; gap: 14px; }
 .projection-tables { display: grid; gap: 12px; }
+.totals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; align-items: start; }
+.totals-grid table { margin: 0; }
 .dimension-selector, .dimension-toggle { display: inline-flex; gap: 6px; align-items: center; }
-.movement-grid { display: grid; grid-template-columns: repeat(7, minmax(90px, 1fr)); gap: 8px; align-items: end; }
+.modal-controls { margin-bottom: 12px; }
+.movement-grid th[scope="row"] { text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--ink); }
+.movement-grid input { width: 120px; }
 .scenario-list { display: grid; gap: 8px; }
 .shocks, .shock-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
 .shock-summary { font-family: var(--mono); font-size: 12px; color: var(--muted); }

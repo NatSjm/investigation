@@ -4,7 +4,7 @@ title: "Codebase map (FE)"
 description: "Generated map: Codebase map (FE), derived from src/features/* + index.ts barrels; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Codebase map (FE)

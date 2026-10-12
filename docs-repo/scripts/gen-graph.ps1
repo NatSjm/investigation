@@ -302,7 +302,7 @@ foreach ($e in $edges.Values) {
     $adj[$e.from].Add($e.to); $adj[$e.to].Add($e.from)
 }
 $component = @{}; $cid = 0
-foreach ($id in $nodes.Keys) {
+foreach ($id in ($nodes.Keys | Sort-Object)) {   # sorted so component ids are deterministic across processes
     if ($component.ContainsKey($id)) { continue }
     $cid++; $q = New-Object System.Collections.Generic.Queue[string]; $q.Enqueue($id); $component[$id] = $cid
     while ($q.Count) { $c = $q.Dequeue(); foreach ($n in $adj[$c]) { if (-not $component.ContainsKey($n)) { $component[$n] = $cid; $q.Enqueue($n) } } }
@@ -320,7 +320,7 @@ for ($it = 0; $it -lt 25; $it++) {
 foreach ($id in $nodes.Keys) { $nodes[$id].component = $component[$id]; $nodes[$id].rank = [math]::Round($pr[$id] * 1000, 2); $nodes[$id].degree = $adj[$id].Count }
 
 # ---------- render ----------
-$nodeObjs = @($nodes.Values | ForEach-Object { [pscustomobject]$_ })
+$nodeObjs = @($nodes.Values | Sort-Object { $_["id"] } | ForEach-Object { [pscustomobject]$_ })   # sorted: hashtable order differs per process (randomised string hashing)
 $edgeObjs = @($edges.Values | ForEach-Object { [pscustomobject]$_ })
 $communities = @($nodeObjs | Where-Object { $_.community -notin 'docs', 'external' } | Group-Object -Property community | Sort-Object Name)
 function Header([string]$Title, [string]$Desc) {
@@ -393,9 +393,9 @@ foreach ($n in ($ranked | Select-Object -First $left)) { [void]$sb.AppendLine("-
 [void]$sb.AppendLine()
 [void]$sb.AppendLine('## Cross-repo flows (route -> feature -> endpoint -> class -> topic/table)')
 foreach ($e in @($edgeObjs | Where-Object { $_.rel -eq 'calls' -and $_.to -like 'endpoint:*' } | Sort-Object from, to)) {
-    $ep = $nodes[$e.to]; $cls = @($edges.Values | Where-Object { $_.from -eq $ep.id -and $_.rel -eq 'handled-by' } | ForEach-Object { $_.to })
-    $down = @($edges.Values | Where-Object { $cls -contains $_.from -and $_.rel -in 'produces', 'persists-to' } | ForEach-Object { $_.to })
-    $routes = @($edges.Values | Where-Object { $_.to -eq $e.from -and $_.rel -eq 'renders' } | ForEach-Object { $_.from })
+    $ep = $nodes[$e.to]; $cls = @($edges.Values | Where-Object { $_.from -eq $ep.id -and $_.rel -eq 'handled-by' } | ForEach-Object { $_.to } | Sort-Object)
+    $down = @($edges.Values | Where-Object { $cls -contains $_.from -and $_.rel -in 'produces', 'persists-to' } | ForEach-Object { $_.to } | Sort-Object)
+    $routes = @($edges.Values | Where-Object { $_.to -eq $e.from -and $_.rel -eq 'renders' } | ForEach-Object { $_.from } | Sort-Object)
     $line = '- ' + (Ticks ($routes + @($e.from))) + ' -> ' + (Ticks @($ep.id)) + ' -> ' + (Ticks $cls)
     if ($down.Count) { $line += ' -> ' + (Ticks $down) }
     [void]$sb.AppendLine($line)
@@ -415,7 +415,7 @@ $files['REPO_MAP.md'] = $sb.ToString()
 $json = [ordered]@{
     generated = [ordered]@{ by = 'process:gen-graph'; at = $date }
     communities = @($communities | ForEach-Object { [ordered]@{ id = $_.Name; repo = ((@($_.Group | ForEach-Object { $_.repo } | Sort-Object -Unique)) -join '+'); nodes = $_.Count } })
-    nodes = @($nodes.Values)
+    nodes = @($nodes.Values | Sort-Object { $_["id"] })
     edges = @($edgeObjs | Sort-Object from, rel, to)
 }
 $files['graph.json'] = ($json | ConvertTo-Json -Depth 6) + "`n"

@@ -75,6 +75,34 @@ class ProjectionAggregatorTest {
     }
 
     @Test
+    fun `horizon totals sum the monthly tables per key and share the overall value`() {
+        // calculation horizon_totals: P1-STD = 1300.00 + 1325.00 = 2625.00 (landed 1565.00 + 1591.25 = 3156.25);
+        // P1-PRM out of Carrow in month 2: value 1325.00, landed 1325.00 * 1.05 + 100 * 1.20 = 1511.25; overall 3950.00
+        val prm = row(m2).copy(subProduct = "P1-PRM", city = "Carrow", direction = Direction.OUT)
+        val totals = ProjectionAggregator.aggregate(listOf(row(m1), row(m2), prm), grid, DimensionKind.CITY, context).totals
+
+        val std = totals.bySubProduct.first { it.key == "P1-STD" }
+        assertEquals(bd("200.00"), std.quantity)
+        assertEquals(bd("2625.00"), std.value)
+        assertEquals(bd("3156.25"), std.landedCost)
+        assertEquals(bd("0.6646"), std.shareOfValue) // 2625.00 / 3950.00
+        assertEquals(bd("1511.25"), totals.bySubProduct.first { it.key == "P1-PRM" }.landedCost)
+        assertEquals(bd("1325.00"), totals.byDimension.first { it.key == "Carrow" }.value)
+        assertEquals(bd("1325.00"), totals.byDirection.first { it.key == "OUT" }.value)
+        assertEquals(bd("3950.00"), totals.overall.value)
+        assertEquals(bd("1.0000"), totals.overall.shareOfValue)
+        assertEquals(totals.overall.value, totals.bySubProduct.map { it.value }.sumMoney())
+    }
+
+    @Test
+    fun `horizon totals of an empty projection are zero`() {
+        val totals = ProjectionAggregator.aggregate(emptyList(), grid, DimensionKind.CITY, context).totals
+        assertEquals(bd("0.00"), totals.overall.value)
+        assertEquals(bd("0.0000"), totals.overall.shareOfValue)
+        assertEquals(emptyList<ProjectionAggregator.Total>(), totals.bySubProduct)
+    }
+
+    @Test
     fun `rounding is HALF_EVEN at scale 2`() {
         val unit = Context({ BigDecimal.ONE }, { BigDecimal.ZERO }, { BigDecimal.ZERO }, { BigDecimal.ZERO })
         assertEquals(bd("1.00"), ProjectionAggregator.valueRow(row(m1, qty = "1", unitPrice = "1.005"), unit).value)

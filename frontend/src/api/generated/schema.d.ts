@@ -732,6 +732,23 @@ export interface components {
             byDimension: components["schemas"]["ProjectionLine"][];
             byDirection: components["schemas"]["ProjectionLine"][];
             summary: components["schemas"]["SummaryLine"][];
+            totals: components["schemas"]["ProjectionTotals"];
+        };
+        /** @description One key of a monthly table summed over the whole horizon; shareOfValue is its value divided by the overall value */
+        ProjectionTotal: {
+            /** @description Sub-product, dimension value, direction or ALL */
+            key: string;
+            quantity: components["schemas"]["Money"];
+            value: components["schemas"]["Money"];
+            landedCost: components["schemas"]["Money"];
+            shareOfValue: components["schemas"]["Ratio"];
+        };
+        /** @description Horizon totals (calculation horizon_totals) of the four monthly tables, per key, plus the overall line */
+        ProjectionTotals: {
+            bySubProduct: components["schemas"]["ProjectionTotal"][];
+            byDimension: components["schemas"]["ProjectionTotal"][];
+            byDirection: components["schemas"]["ProjectionTotal"][];
+            overall: components["schemas"]["ProjectionTotal"];
         };
         CoverSeriesPoint: {
             period: components["schemas"]["Period"];

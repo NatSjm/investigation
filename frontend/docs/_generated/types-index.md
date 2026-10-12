@@ -4,7 +4,7 @@ title: "Types index (FE)"
 description: "Generated map: Types index (FE), derived from *.types.ts; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Types index (FE)
@@ -95,6 +95,7 @@ export type Direction = components['schemas']['Direction'];
 export type TransportMode = components['schemas']['TransportMode'];
 export type ProjectionRow = components['schemas']['ProjectionLine'];
 export type ProjectionSummaryRow = components['schemas']['SummaryLine'];
+export type ProjectionTotalRow = components['schemas']['ProjectionTotal'];
 export type ProjectionTables = components['schemas']['ProjectionTables'];
 export type Projection = components['schemas']['Projection'];
 export type SeriesPoint = components['schemas']['SparklinePoint'];

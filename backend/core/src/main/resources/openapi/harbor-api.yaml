@@ -536,13 +536,33 @@ components:
         cumulativeValue: { $ref: '#/components/schemas/Money' }
     ProjectionTables:
       type: object
-      required: [bySubProduct, byDimension, byDirection, summary]
+      required: [bySubProduct, byDimension, byDirection, summary, totals]
       properties:
         dimensionKind: { $ref: '#/components/schemas/DimensionKind' }
         bySubProduct: { type: array, items: { $ref: '#/components/schemas/ProjectionLine' } }
         byDimension: { type: array, items: { $ref: '#/components/schemas/ProjectionLine' } }
         byDirection: { type: array, items: { $ref: '#/components/schemas/ProjectionLine' } }
         summary: { type: array, items: { $ref: '#/components/schemas/SummaryLine' } }
+        totals: { $ref: '#/components/schemas/ProjectionTotals' }
+    ProjectionTotal:
+      type: object
+      description: "One key of a monthly table summed over the whole horizon; shareOfValue is its value divided by the overall value"
+      required: [key, quantity, value, landedCost, shareOfValue]
+      properties:
+        key: { type: string, description: "Sub-product, dimension value, direction or ALL" }
+        quantity: { $ref: '#/components/schemas/Money' }
+        value: { $ref: '#/components/schemas/Money' }
+        landedCost: { $ref: '#/components/schemas/Money' }
+        shareOfValue: { $ref: '#/components/schemas/Ratio' }
+    ProjectionTotals:
+      type: object
+      description: "Horizon totals (calculation horizon_totals) of the four monthly tables, per key, plus the overall line"
+      required: [bySubProduct, byDimension, byDirection, overall]
+      properties:
+        bySubProduct: { type: array, items: { $ref: '#/components/schemas/ProjectionTotal' } }
+        byDimension: { type: array, items: { $ref: '#/components/schemas/ProjectionTotal' } }
+        byDirection: { type: array, items: { $ref: '#/components/schemas/ProjectionTotal' } }
+        overall: { $ref: '#/components/schemas/ProjectionTotal' }
     CoverSeriesPoint:
       type: object
       required: [period, subProduct, coverRatio]

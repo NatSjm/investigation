@@ -15,7 +15,7 @@ okf_version: "0.2"
 
 # Sections
 * [architecture](architecture/) - 6 concept(s)
-* [domain](domain/) - 7 concept(s)
+* [domain](domain/) - 8 concept(s)
 * [features](features/) - 8 concept(s)
 * [flows](flows/) - 1 concept(s)
 * [generated](generated/) - 28 concept(s)

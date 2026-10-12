@@ -25,7 +25,7 @@ refers to the real application or its industry.
   rolled up monthly into `movement_monthly`) or **modelled** (entered per month in a modal during the meeting, `session_movement_input`).
   A second modal models movements of **similar products at peer firms** (`session_peer_simulation`).
 - Per session the backend computes the **monthly projection** (calculation `monthly_projection`) over a planning horizon
-  (12-60 months) into **four cumulative tables**: by sub-product, by dimension (city / transport mode), by direction, and the **summary**.
+  (12-60 months) into **four cumulative tables**: by sub-product, by dimension (city / transport mode), by direction, and the **summary**. Their **horizon totals** (`horizon_totals`: the same breakdowns summed over the horizon with share of value, derived, not persisted) travel with them as `tables.totals`.
   Grouping is done in Kotlin (`core/.../harbor/utils`), not in SQL, because the same aggregation is reused by cover, stress test and reports.
 - **Cover**: policies (`cover_policy`) cover a share of value; the overview page shows **cover ratio** charts (`cover_ratio`);
   a quote for the uncovered part can be requested from the external `cover-provider`.

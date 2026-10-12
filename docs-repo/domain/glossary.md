@@ -41,7 +41,7 @@ and are quoted verbatim.
 | Preparation session | A dry run of a meeting by the representative alone (`kind = PREPARATION`); never changes the client role | dry run, prep session | MTG-001, CLI-001 |
 | Price basis | The country whose price applies to a product group's values: `VLD` or `NRL` for Product 1, `CST` or `MRD` for Product 2 (`PriceBasis`) | pricing country | P1-001, MTG-001 |
 | Product group | One of the two traded groups: `product1` (grades `P1-STD`, `P1-PRM`, `P1-ECO`) and `product2` (variants `P2-S`, `P2-M`, `P2-L`) (`ProductGroup`) | product line | all specs |
-| Projection | Monthly figures (quantity, value, landed cost, cumulative value) over the session horizon in four cumulative tables: by sub-product, by dimension, by direction, summary | forecast, projection tables | `monthly_projection`, P1-001, P2-001 |
+| Projection | Monthly figures (quantity, value, landed cost, cumulative value) over the session horizon in four cumulative tables: by sub-product, by dimension, by direction, summary, plus the horizon totals of each table per key with share of value | forecast, projection tables, totals | `monthly_projection`, `horizon_totals`, P1-001, P2-001 |
 | Report payload | JSON snapshot of a closed session stored in `meeting_report.payload` and rendered to PDF by `document-service` | meeting report, report JSON | RPT-001 |
 | Representative | Employee who runs meetings and preparation sessions for clients (`meeting_session.representative_id`) | account representative, rep | MTG-001, CLI-001 |
 | Role override | Manual replacement of the computed client role during a session (`meeting_session.role_override` + reason); applied to `client_role` when a `CLIENT` session closes | manual role | MTG-001, CLI-001 |

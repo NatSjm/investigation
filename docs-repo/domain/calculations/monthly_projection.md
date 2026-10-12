@@ -146,6 +146,7 @@ per session.
 | Date | Change | Ref |
 |---|---|---|
 | 2026-10-09 | Rebuilt for the Harbor bundle; examples re-copied from `ProjectionAggregatorTest` | — |
+| 2026-10-12 | Horizon totals (each table summed per key over the horizon, overall line, share of value) split out as [horizon_totals](horizon_totals.md); derived from these tables, never persisted | — |
 
 [^impl]: ProjectionAggregator.kt (harbor-backend, `core`, layer `utils`)
 [^rounding]: Rounding.kt (harbor-backend, `core`, layer `utils`)

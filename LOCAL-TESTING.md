@@ -82,11 +82,15 @@ four steps as links: **1. Overview, 2. Scenarios, 3. Stress test, 4. Summary**. 
 header `X-Harbor-Session`; without it the backend answers 428.
 
 **Overview (Product 1)**: city hub selector (All, Aldmoor, Brightwater, Carrow, Dunmere); two buttons:
-- **Model movements** opens a modal to enter modelled monthly movements (period, sub-product, city, direction,
-  quantity, unit price); **Save and recompute** stores them for the session and recomputes the projection.
+- **Model movements** opens a modal with one row per month of the projection (it starts with next month, the
+  current month is not a projection month) and IN / OUT quantity and unit price for the chosen sub-product and city;
+  **Save and recompute** stores them for the session and recomputes the projection. A rejected save keeps the modal
+  open and shows the backend reason (for example a sub-product of the wrong product group).
 - **Peer simulation** opens a modal that models the movements of similar clients (peer segment, scaling factor).
 Then the four cumulative tables: by sub-product, by city, by direction, and the summary (quantity, value, landed
-cost, cover ratio, cumulative value per month over the horizon), the cover ratio chart and the **Cover** panel
+cost, cover ratio, cumulative value per month over the horizon), then **Totals over the horizon**: the same three
+breakdowns summed over the whole horizon without months, with the share of value and an *All* line (calculation
+`horizon_totals`), then the cover ratio chart and the **Cover** panel
 with **Request quote for uncovered part** (goes to the cover-provider stub).
 With no movements the tables are empty and the summary shows zeros; after the import or after modelling movements
 they fill.
@@ -109,7 +113,7 @@ works for closed sessions.
 ### Client screen (`/present/:sessionId`)
 Opened by **Open client screen** in a second window. No sidebar, no step links, no buttons. It shows the client
 name and product group and mirrors what the representative is on: the four tables and cover chart for the product
-step, the scenario list, or the stress tables and chart for the chosen dimension. Before any navigation it says
+step (monthly tables and totals), the scenario list, or the stress tables and chart for the chosen dimension. Before any navigation it says
 "Waiting for the representative"; after the session is closed, "Session closed". Try: put both windows side by
 side, switch steps and change the city selector in the main window, watch the client window follow. Open the
 client window late and it still catches up (the `hello` replay).
@@ -128,7 +132,7 @@ transport costs, role thresholds), editable inline per product group; seeded by 
 
 1. Search `al`, open Aldmoor Trading Co: two product group cards (Product 1 shows volume 140 and value 1,850.00 after the import, role UNDETERMINED with its reason), Client information, open sessions.
 2. **Start meeting** on Product 1. The URL is `/session/<id>/product1`; the summary table has numbers.
-3. **Model movements**: add a row (next month, P1-STD, Aldmoor, IN, 100, 12.50), **Save and recompute**; the tables change.
+3. **Model movements**: in the first row (next month) enter IN quantity 100 and unit price 12.50 for P1-STD / Aldmoor, **Save and recompute**; the monthly tables and the totals change.
 4. **Open client screen**; arrange the windows; change the city selector; the client window follows.
 5. Scenarios: **Create scenario** "Transport +15% from month 6", kind REPRESENTATIVE.
 6. Stress test: **Run stress test**; one table per scenario; toggle the dimension; the client window shows the same.

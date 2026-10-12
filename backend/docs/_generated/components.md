@@ -117,7 +117,7 @@ status: stable
 | `CoverMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/CoverMapper.kt:18` |
 | `ImportBatchMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/ImportBatchMapper.kt:8` |
 | `ParameterMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/ParameterMapper.kt:12` |
-| `ProjectionMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/ProjectionMapper.kt:29` |
+| `ProjectionMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/ProjectionMapper.kt:31` |
 | `ReportMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/ReportMapper.kt:9` |
 | `ScenarioMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/ScenarioMapper.kt:18` |
 | `SessionMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/SessionMapper.kt:17` |
@@ -159,7 +159,7 @@ status: stable
 | `CoverRatioCalculator` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/CoverRatioCalculator.kt:23` |
 | `MonthGrid` | utils | core | class |  |  |  | `core/src/main/kotlin/harbor/utils/MonthGrid.kt:13` |
 | `PeerBenchmark` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19` |
-| `ProjectionAggregator` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:32` |
+| `ProjectionAggregator` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36` |
 | `RoleClassifier` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24` |
 | `Rounding` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/Rounding.kt:16` |
 | `ScenarioPricePath` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19` |

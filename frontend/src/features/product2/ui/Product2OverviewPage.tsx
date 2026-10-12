@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { currentPeriod, monthGrid } from '@/shared/utils/months';
+import { projectionGrid } from '@/shared/utils/months';
 import { CoverQuotePanel } from '@/features/cover';
 import type { Session } from '@/features/meetings';
 import { usePresentationPublisher } from '@/features/presentation';
@@ -38,7 +38,7 @@ export function Product2OverviewPage() {
   if (isLoading) return <p>Computing projection...</p>;
   if (error || !data) return <p role="alert">The Product 2 overview could not be loaded.</p>;
 
-  const periods = monthGrid(currentPeriod(), session.horizonMonths);
+  const periods = projectionGrid(session.horizonMonths);
 
   return (
     <section className="page product-overview product2">

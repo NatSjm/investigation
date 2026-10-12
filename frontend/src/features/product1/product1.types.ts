@@ -20,7 +20,10 @@ export type ProjectionRow = components['schemas']['ProjectionLine'];
 /** Row of the summary table (`SummaryLine`: totals per month + cover ratio). */
 export type ProjectionSummaryRow = components['schemas']['SummaryLine'];
 
-/** The four cumulative tables computed by `monthly_projection`. */
+/** One line of the horizon totals (`ProjectionTotal`): a key summed over the whole horizon with its share of the overall value. */
+export type ProjectionTotalRow = components['schemas']['ProjectionTotal'];
+
+/** The four cumulative tables computed by `monthly_projection` plus their horizon totals (`horizon_totals`). */
 export type ProjectionTables = components['schemas']['ProjectionTables'];
 
 /** Projection envelope returned by the movements PUT and the `/projection` GET: tables plus horizon and `computedAt`. */

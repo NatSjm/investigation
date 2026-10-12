@@ -25,9 +25,13 @@ import java.time.YearMonth
  * value and month) and the report payload; one implementation keeps the four tables and these consumers
  * consistent.
  *
+ * The horizon totals ([totals], calculation `horizon_totals`) are derived from the four tables: every table is summed over
+ * the whole horizon per key and an overall line is added, so the overview can show the breakdown without months.
+ *
  * Worked examples: see `ProjectionAggregatorTest`.
  *
  * @docs monthly_projection
+ * @docs horizon_totals
  */
 object ProjectionAggregator {
 
@@ -72,6 +76,23 @@ object ProjectionAggregator {
         val cumulativeValue: BigDecimal,
     )
 
+    /** One key of a monthly table summed over the whole horizon; `shareOfValue` = key value / overall value (scale 4). */
+    data class Total(
+        val key: String,
+        val quantity: BigDecimal,
+        val value: BigDecimal,
+        val landedCost: BigDecimal,
+        val shareOfValue: BigDecimal,
+    )
+
+    /** Horizon totals of the three breakdown tables plus the overall line (key [ALL]); calculation `horizon_totals`. */
+    data class Totals(
+        val bySubProduct: List<Total>,
+        val byDimension: List<Total>,
+        val byDirection: List<Total>,
+        val overall: Total,
+    )
+
     data class Tables(
         val dimensionKind: DimensionKind,
         val bySubProduct: List<Line>,
@@ -79,6 +100,9 @@ object ProjectionAggregator {
         val byDirection: List<Line>,
         val summary: List<SummaryLine>,
     ) {
+        /** Derived, never persisted: the totals are recomputed from the monthly lines wherever the tables are loaded. */
+        val totals: Totals get() = totals(this)
+
         fun withCoverRatio(ratioByPeriod: Map<YearMonth, BigDecimal>): Tables =
             copy(summary = summary.map { it.copy(coverRatio = ratioByPeriod[it.period] ?: Rounding.ZERO_RATIO) })
     }
@@ -131,6 +155,44 @@ object ProjectionAggregator {
         }
     }
 
+    /**
+     * Horizon totals: each monthly table summed over the whole horizon per key, plus the overall line from the summary
+     * table. The sums add the already rounded monthly figures (no second rounding, no drift); `shareOfValue` is the
+     * key's value divided by the overall value, scale 4 HALF_EVEN, `0.0000` when the overall value is zero. The keys
+     * of each breakdown add up to the overall line by construction.
+     *
+     * @docs horizon_totals
+     */
+    fun totals(tables: Tables): Totals {
+        val overallValue = tables.summary.map { it.totalValue }.sumMoney()
+        val overall = Total(
+            key = ALL,
+            quantity = tables.summary.map { it.totalQuantity }.sumMoney(),
+            value = overallValue,
+            landedCost = tables.summary.map { it.totalLandedCost }.sumMoney(),
+            shareOfValue = if (overallValue.signum() == 0) Rounding.ZERO_RATIO else BigDecimal.ONE.ratio(),
+        )
+        return Totals(
+            bySubProduct = totalsOf(tables.bySubProduct, overallValue),
+            byDimension = totalsOf(tables.byDimension, overallValue),
+            byDirection = totalsOf(tables.byDirection, overallValue),
+            overall = overall,
+        )
+    }
+
+    /** One total per key, keys sorted as in the monthly tables. */
+    fun totalsOf(lines: List<Line>, overallValue: BigDecimal): List<Total> =
+        lines.groupBy { it.key }.toSortedMap().map { (key, perMonth) ->
+            val value = perMonth.map { it.value }.sumMoney()
+            Total(
+                key = key,
+                quantity = perMonth.map { it.quantity }.sumMoney(),
+                value = value,
+                landedCost = perMonth.map { it.landedCost }.sumMoney(),
+                shareOfValue = Rounding.divideAsRatio(value, overallValue),
+            )
+        }
+
     private fun summarize(valued: List<ValuedRow>, grid: MonthGrid): List<SummaryLine> {
         val byPeriod = valued.groupBy { it.row.period }
         var cumulative = BigDecimal.ZERO
@@ -150,4 +212,5 @@ object ProjectionAggregator {
     }
 
     const val UNKNOWN = "UNKNOWN"
+    const val ALL = "ALL"
 }

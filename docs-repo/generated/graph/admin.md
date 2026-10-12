@@ -26,8 +26,8 @@ status: stable
 
 ## endpoints
 - `endpoint:GET /api/v1/admin/imports` - `core/src/main/kotlin/harbor/api/AdminController.kt:26` - operationId listImportBatches; handler AdminController.listImportBatches; params 
-- `endpoint:GET /api/v1/admin/parameters` - `core/src/main/kotlin/harbor/api/AdminController.kt:20` - operationId listParameters; handler AdminController.listParameters; params 
 - `endpoint:POST /api/v1/admin/imports/run` - `core/src/main/kotlin/harbor/api/AdminController.kt:29` - operationId triggerImport; handler AdminController.triggerImport; params 
+- `endpoint:GET /api/v1/admin/parameters` - `core/src/main/kotlin/harbor/api/AdminController.kt:20` - operationId listParameters; handler AdminController.listParameters; params 
 - `endpoint:PUT /api/v1/admin/parameters/{key}` - `core/src/main/kotlin/harbor/api/AdminController.kt:23` - operationId upsertParameter; handler AdminController.upsertParameter; params key
 
 ## routes

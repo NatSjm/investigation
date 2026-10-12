@@ -40,10 +40,10 @@ status: stable
 - `class:ProjectionDao` - `core/src/main/kotlin/harbor/dao/ProjectionDao.kt:23` - dao; Repository
 - `class:Product1Controller` - `core/src/main/kotlin/harbor/api/Product1Controller.kt:21` - api; RestController
 - `class:PeerSimulationService` - `core/src/main/kotlin/harbor/service/PeerSimulationService.kt:24` - service; Service
+- `class:ProjectionAggregator` - `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36` - utils; object
 - `class:Product1ProjectionRefreshListener` - `core/src/main/kotlin/harbor/event/Product1ProjectionRefreshListener.kt:17` - event; Component, KafkaListener
 - `class:SessionMovementInputDao` - `core/src/main/kotlin/harbor/dao/SessionMovementInputDao.kt:10` - dao; Repository
 - `class:PeerBenchmark` - `core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19` - utils; object
-- `class:ProjectionAggregator` - `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:32` - utils; object
 - `class:SessionPeerSimulationDao` - `core/src/main/kotlin/harbor/dao/SessionPeerSimulationDao.kt:9` - dao; Repository
 - `class:MovementInputValidator` - `core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:16` - validator; Component
 
@@ -137,6 +137,7 @@ status: stable
 - `endpoint:GET /api/v1/session/product1/projection` -handled-by-> `class:Product1Controller`
 - `endpoint:POST /api/v1/session/product1/peer-simulation` -handled-by-> `class:Product1Controller`
 - `endpoint:PUT /api/v1/session/product1/movements` -handled-by-> `class:Product1Controller`
+- `spec:horizon_totals` -implemented-by-> `class:ProjectionAggregator` (-> docs)
 - `spec:monthly_projection` -implemented-by-> `class:ProjectionAggregator` (-> docs)
 - `spec:P1-001` -implemented-by-> `class:Product1Manager` (-> docs)
 - `spec:P1-001` -implemented-by-> `feature:product1` (-> docs)
@@ -168,6 +169,7 @@ status: stable
 - `component:Product1OverviewPage` -uses-> `hook:useProduct1Overview` (exact)
 
 ## Specs touching this community
-- `spec:monthly_projection` - `domain/calculations/monthly_projection.md` - status stable; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:32
+- `spec:horizon_totals` - `domain/calculations/horizon_totals.md` - status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:166; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
+- `spec:monthly_projection` - `domain/calculations/monthly_projection.md` - status stable; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
 - `spec:P1-001` - `features/product1/P1-001.md` - status stable; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11; fe src/features/product1/api/useProduct1Movements.ts:11; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18
 - `spec:peer_benchmark_simulation` - be core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19

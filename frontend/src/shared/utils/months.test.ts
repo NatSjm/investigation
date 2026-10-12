@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { addMonths, byPeriod, formatPeriod, isPeriod, monthGrid, monthsBetween, parsePeriod } from './months';
+import { addMonths, byPeriod, formatPeriod, isPeriod, monthGrid, monthsBetween, parsePeriod, projectionGrid } from './months';
+
+describe('projectionGrid', () => {
+  it('starts with the month after today and spans the horizon, like the backend MonthGrid', () => {
+    expect(projectionGrid(3, new Date(2026, 9, 12))).toEqual(['2026-11', '2026-12', '2027-01']);
+  });
+});
 
 describe('monthGrid', () => {
   it('produces consecutive periods across a year boundary', () => {

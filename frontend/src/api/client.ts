@@ -28,6 +28,15 @@ export class ApiError extends Error {
   }
 }
 
+/** Human-readable text of a failed call: the Problem `detail` (or `title`) sent by the backend, else the status line. */
+export function errorMessage(err: unknown): string {
+  if (err instanceof ApiError) {
+    const problem = err.detail as { detail?: string; title?: string } | undefined;
+    return problem?.detail ?? problem?.title ?? err.message;
+  }
+  return err instanceof Error ? err.message : String(err);
+}
+
 interface FetchResult<T> {
   data?: T;
   error?: unknown;

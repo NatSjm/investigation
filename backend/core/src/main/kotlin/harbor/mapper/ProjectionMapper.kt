@@ -7,6 +7,8 @@ import harbor.api.generated.model.ProductOverview
 import harbor.api.generated.model.Projection
 import harbor.api.generated.model.ProjectionLine
 import harbor.api.generated.model.ProjectionTables
+import harbor.api.generated.model.ProjectionTotal
+import harbor.api.generated.model.ProjectionTotals
 import harbor.api.generated.model.SparklinePoint
 import harbor.api.generated.model.SummaryLine
 import harbor.context.SessionScope
@@ -38,12 +40,24 @@ object ProjectionMapper {
         totalLandedCost = s.totalLandedCost, coverRatio = s.coverRatio, cumulativeValue = s.cumulativeValue,
     )
 
+    fun total(t: ProjectionAggregator.Total) = ProjectionTotal(
+        key = t.key, quantity = t.quantity, value = t.value, landedCost = t.landedCost, shareOfValue = t.shareOfValue,
+    )
+
+    fun totals(t: ProjectionAggregator.Totals) = ProjectionTotals(
+        bySubProduct = t.bySubProduct.map(::total),
+        byDimension = t.byDimension.map(::total),
+        byDirection = t.byDirection.map(::total),
+        overall = total(t.overall),
+    )
+
     fun tables(t: Tables) = ProjectionTables(
         dimensionKind = ApiDimensionKind.valueOf(t.dimensionKind.name),
         bySubProduct = t.bySubProduct.map(::line),
         byDimension = t.byDimension.map(::line),
         byDirection = t.byDirection.map(::line),
         summary = t.summary.map(::summary),
+        totals = totals(t.totals),
     )
 
     fun projection(scope: SessionScope, t: Tables) = Projection(

@@ -41,6 +41,15 @@ export function monthGrid(from: Period, horizon: number): Period[] {
   return Array.from({ length: horizon }, (_, i) => addMonths(from, i));
 }
 
+/**
+ * The projection grid of a session exactly as the backend builds it (`MonthGrid.startingAfter`): it starts with
+ * the month after the current one (the current month is not a full actual month yet) and spans `horizon` months.
+ * Movements entered for a month outside this grid are rejected by the backend with 400.
+ */
+export function projectionGrid(horizon: number, today: Date = new Date()): Period[] {
+  return monthGrid(addMonths(currentPeriod(today), 1), horizon);
+}
+
 /** Whole months between two periods (`to - from`), negative when `to` is earlier. */
 export function monthsBetween(from: Period, to: Period): number {
   const a = parsePeriod(from);

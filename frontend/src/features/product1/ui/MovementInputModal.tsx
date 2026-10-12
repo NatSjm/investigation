@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { errorMessage } from '@/api/client';
 import { Modal } from '@/shared/ui/Modal';
 import { formatPeriod } from '@/shared/utils/months';
 import type { Direction, MovementDimension, MovementInput } from '../product1.types';
@@ -6,7 +7,7 @@ import type { Direction, MovementDimension, MovementInput } from '../product1.ty
 export interface MovementInputModalProps {
   open: boolean;
   onClose: () => void;
-  /** Month grid of the planning horizon (`monthGrid(from, horizon)`). */
+  /** Projection grid of the session (`projectionGrid(horizon)`): the months the backend accepts. */
   periods: string[];
   subProducts: readonly string[];
   /** `city` for Product 1, `transportMode` for Product 2. */
@@ -28,6 +29,7 @@ const draftKey = (period: string, direction: Direction) => `${period}|${directio
 export function MovementInputModal({ open, onClose, periods, subProducts, dimension, dimensionValues, initial = [], pending, onSubmit }: MovementInputModalProps) {
   const [subProduct, setSubProduct] = useState<string>(subProducts[0] ?? '');
   const [dimensionValue, setDimensionValue] = useState<string>(dimensionValues[0] ?? '');
+  const [error, setError] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, Draft>>(() => {
     const seed: Record<string, Draft> = {};
     for (const m of initial) seed[draftKey(m.period, m.direction)] = { quantity: String(m.quantity), unitPrice: String(m.unitPrice) };
@@ -48,8 +50,13 @@ export function MovementInputModal({ open, onClose, periods, subProducts, dimens
     });
 
   const submit = async () => {
-    await onSubmit(toMovements());
-    onClose();
+    setError(null);
+    try {
+      await onSubmit(toMovements());
+      onClose();
+    } catch (e) {
+      setError(errorMessage(e));
+    }
   };
 
   const cell = (period: string, direction: Direction, field: keyof Draft) => (
@@ -90,6 +97,7 @@ export function MovementInputModal({ open, onClose, periods, subProducts, dimens
           </select>
         </label>
       </div>
+      {error && <p role="alert">{error}</p>}
       <table className="data-table dense movement-grid">
         <thead>
           <tr>
