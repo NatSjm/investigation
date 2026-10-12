@@ -19,7 +19,8 @@ class FileExchangeClient(
     restClientBuilder: RestClient.Builder,
     @Value("\${harbor.external.file-exchange.base-url}") baseUrl: String,
 ) {
-    private val api = FilesApi(restClientBuilder.baseUrl(baseUrl).build())
+    private val client = restClientBuilder.baseUrl(baseUrl).build()
+    private val api = FilesApi(client)
 
     data class ExchangeFileRef(val id: String, val name: String, val receivedAt: Instant, val sizeBytes: Long)
 
@@ -27,7 +28,10 @@ class FileExchangeClient(
         api.listFiles(since = OffsetDateTime.ofInstant(since, ZoneOffset.UTC), channel = channel)
             .map { ExchangeFileRef(it.id, it.name, it.receivedAt.toInstant(), it.sizeBytes) }
 
-    fun content(fileId: String): ByteArray = api.getFileContent(id = fileId).readBytes()
+    /** Raw bytes of a file. The generated `getFileContent` types the binary body as `java.io.File`, which RestClient
+     *  cannot deserialise from `application/octet-stream`, so the download bypasses the generated method. */
+    fun content(fileId: String): ByteArray =
+        client.get().uri("/files/{id}/content", fileId).retrieve().body(ByteArray::class.java) ?: ByteArray(0)
 
     companion object {
         const val MOVEMENTS_CHANNEL = "movements"
