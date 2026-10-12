@@ -161,7 +161,7 @@ cd frontend; npm run typecheck; npm test; npm run build                 # 0 erro
 .\backend\scripts\docs\gen-all.ps1 -Root .\backend -Check               # maps match the code
 .\frontend\scripts\docs\gen-all.ps1 -Root .\frontend -Check
 cd docs-repo
-.\scripts\publish-local.ps1; .\scripts\gen-graph.ps1; .\scripts\build-index.ps1
+.\scripts\collect-evidence.ps1 -Graph                                    # collect maps + contracts, manifest, then graph + indexes; run twice: "no change"
 .\scripts\okf-validate.ps1 -Strict; .\scripts\validate-frontmatter.ps1; .\scripts\gen-graph.ps1 -Check
 .\scripts\context-pack.ps1 -Task PRS-001 -Print                          # the pack of the presentation spec
 .\scripts\graph-query.ps1 -Node "channel:harbor.session.{*}" -Depth 1    # who publishes / subscribes

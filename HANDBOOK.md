@@ -20,7 +20,8 @@ files, synthetic data only.
 The idea has four parts:
 
 1. **The code repositories describe themselves.** Small scripts generate maps of the code (classes, endpoints,
-   topics, tables, jobs, routes, types, documentation tags) on every merge and publish them to the docs repo.
+   topics, tables, jobs, routes, types, documentation tags); the docs repo collects them and the contracts as one
+   validated snapshot with a manifest of source commits (one collector, one pull request, no publishers in the code repos).
 2. **The docs repository is the single source of truth** for functional knowledge: specs, calculations, glossary,
    architecture decisions. Confluence becomes a publish target. Every document carries metadata that says who wrote
    it, when it was verified, and when it goes stale.
@@ -147,7 +148,7 @@ docs-repo/
   flows/                      cross-context behaviour (`type: Flow`): trigger, participants, steps with file:line, invariants, source map
     _template.md, client-presentation.md
   confluence-import/          quarantine for exported legacy pages; README with rules + inventory; <SPACE>/_done/
-  generated/                  published by the code repos' CI; never edited by hand
+  generated/                  collected from the code repos by scripts/collect-evidence.ps1 (manifest.yml names the source commits); never edited by hand
     be/, fe/                  the maps; openapi/, asyncapi/ the contracts; graph/ the graph; analytics/ the coverage matrix
   migration/                  migration board(s) written by migration-status.ps1 / migration-lead
   work-items/                 analyst output: <ID>.yml per feature, _schema.yml, README
@@ -170,7 +171,7 @@ Key files worth reading once: `AGENTS.md` (the contract between people and agent
 |---|---|---|---|---|
 | `context-pack.ps1 -Task <x> [-Budget N] [-Print]` | builds the task-scoped pack (2.6) | spec ID, calculation, graph node or free text | `.context/<task>.md` | start of every agent task |
 | `graph-query.ps1 -Node <id> -Depth n` / `-Files <paths>` / `-Find <text>` | queries the graph: neighbourhood, impacted specs for changed files, text search | `generated/graph/graph.json` | text (or `-Json`) | impact questions, CI PR comment, IntelliJ users |
-| `gen-graph.ps1 [-Check]` | joins BE/FE maps + `@docs` tags (+ precise exports) into the graph | `generated/be`, `generated/fe`, `contexts.yml` | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json`; prunes orphan community files | after publish; `-Check` in CI |
+| `gen-graph.ps1 [-Check]` | joins BE/FE maps + `@docs` tags + `docs-map.yml` rows (+ precise exports) into the graph; a mapping row gives the same `implemented-by` edges as a tag, so tags are optional at the start | `generated/be`, `generated/fe`, `contexts.yml` | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json`; prunes orphan community files | after publish; `-Check` in CI |
 | `build-index.ps1 [-Check]` | regenerates every `index.md` with trust badges | frontmatter of all concepts | `index.md` per folder | after any edit; hook; CI |
 | `okf-validate.ps1 [-Strict]` | OKF conformance: frontmatter, types, actors, staleness, provenance warnings | the bundle | errors/warnings | hook; CI; before commit |
 | `validate-frontmatter.ps1` | repo-specific keys: ID format, BR numbering, calculation links on specs and calculations | `features/`, `domain/calculations/` | OK / errors | hook; CI |
@@ -178,7 +179,8 @@ Key files worth reading once: `AGENTS.md` (the contract between people and agent
 | `coverage-matrix.ps1` | BR -> story -> scenario coverage, badges, calculation audits | specs, work items, feature files | `generated/analytics/coverage-matrix.md|json` | analytics questions; CI check |
 | `map-paths.ps1` | changed code paths -> affected specs | stdin paths + `docs-map.yml` | spec list | doc-sync, CI |
 | `check-freshness.ps1` | CI gate in the code repos: mapped path changed but `last_verified` not bumped and no `docs-not-affected` label | PR diff, specs | pass/fail | code-repo PRs |
-| `publish-local.ps1` | local stand-in for the CI publish: copies maps + contracts from `../backend`, `../frontend` | the code repos' `docs/_generated` and contracts | `generated/**` | local loop |
+| `collect-evidence.ps1 [-Generate] [-Graph] [-DryRun]` | the single evidence collector: stages maps + contracts from the code checkouts, validates the candidate (frontmatter, OpenAPI/AsyncAPI headers, unresolved `$ref`), replaces the collector-owned sets under `generated/` (deletions included), writes `generated/manifest.yml` (source commits, dirty flag, sha256 per file); no-op when nothing changed | the code repos' `docs/_generated` and contracts | `generated/be|fe|openapi|asyncapi/**`, `manifest.yml` | local loop; CI `ci-examples/collect-evidence.yml` (manual + nightly, one PR per snapshot) |
+| `publish-local.ps1` | deprecated name of `collect-evidence.ps1`, forwards to it | - | - | - |
 | `migration-status.ps1 -Scope <ctx|all>` | which lifecycle runs are still due per context, with commands | `contexts.yml`, specs, calculations, docs-tags, REPO_MAP, pending pages | `migration/<scope>.md` | planning; migration-lead |
 | `hooks/guard-generated.ps1` | Copilot `preToolUse` hook: denies edits under `generated/**` and of `index.md` | hook payload | permission decision | every agent edit |
 | `confluence-export.ps1`, `confluence-publish.ps1`, `jira-push.ps1`, `push-to-tests-repo.ps1` | **stubs** describing the intended integrations (export/import of legacy pages, publish back, Jira REST, tests repo PR) | - | - | to be implemented per environment |
@@ -283,7 +285,7 @@ truth; existing files are overwritten.
 | `scripts/docs/gen-*.ps1`, `gen-all.ps1` | codebase-map (modules, layers), components (one row per class), api-index (contract-first), events, db-schema, jobs, docs-tags | codebase-map (features + Channels column for `BroadcastChannel`s), components (shared library: props, used by), routes, types-index, docs-tags, `gen-graph-fe.ts` | the maps (2.2) |
 | `templates/GraphExportTest.kt` | precise graph export from the Spring context (test scope) | - | optional precision over regex |
 | `shared/` | `check-file-size.ps1` (line cap with baseline), `copilot-content-exclusion.yml`, `workspaces/product1.code-workspace` (per-context multi-root workspace), `ide-setup.md` | same | token hygiene, less noise |
-| `ci/docs-maps.yml` | PR: maps fresh + size budget; main: regenerate, open a PR in the docs repo with `generated/<be|fe>/*` and the contracts, rebuild the graph | same | the publish step that feeds the docs repo |
+| `ci/docs-maps.yml` | PR: maps fresh + size budget, nothing else | same | the code repo keeps describing itself; publication belongs to the docs repo's collector, so no docs-repo credentials here |
 | `vscode-extension/` | `#docsLookup`, `#codeMap`, `#specToCode`, `#impact`, chat participant `@docs` | same | retrieval tools without MCP |
 
 ---
@@ -294,8 +296,11 @@ truth; existing files are overwritten.
 1. Developer changes `ProjectionService.kt`, opens a PR. CI runs `gen-all.ps1 -Check` (maps must be regenerated in
    the PR) and the file-size gate. `check-freshness.ps1` (when enabled) requires `last_verified` of P1-001 to be
    bumped or the label `docs-not-affected`.
-2. On merge, CI regenerates the maps, copies maps and contracts into the docs repo, rebuilds the graph and opens a PR
-   labelled `generated` with the changed source paths in the body.
+2. Nightly, or on demand, the docs repo's collector (`collect-evidence.yml` -> `collect-evidence.ps1`) checks out
+   backend and frontend read-only, runs their generators, validates the snapshot, replaces `generated/`, records the
+   source commits in `generated/manifest.yml`, rebuilds the graph and opens ONE PR labelled `generated`; the body lists
+   the source paths changed since the previous manifest, mapped to specs through `docs-map.yml`. A second run against
+   unchanged sources opens nothing. Lower latency, when needed, is a `repository_dispatch` from the code repos' CI.
 3. In the docs repo, `doc-sync` runs on that PR: `map-paths` and `graph-query -Files` name the specs in the blast
    radius; it compares their API/Events/Data sections with the new contracts and maps, updates them, appends a
    change-log row, sets `last_verified`, flags calculations for `calc-auditor` if `utils/` changed, and stubs any
@@ -370,7 +375,8 @@ identifiers or contract values may ever be in them.
 It stays the reading surface, rendered from Git with a banner.
 
 **Why a separate docs repository instead of docs in each code repo?** Specs span both repositories, the analyst must
-not need the code checkouts, access can differ, and the code repos' CI can publish into it without coupling.
+not need the code checkouts, access can differ, and one collector in it can pull from every code repo with a
+read token, instead of every code repo needing write access to it.
 
 ---
 

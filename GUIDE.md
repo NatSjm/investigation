@@ -23,7 +23,8 @@ repositories and a kit:
 Both applications also run locally (Step 0 below); the documentation pipeline (Steps 1-9) needs neither to be running.
 
 The idea in three sentences. The code repositories generate small maps of themselves (classes, endpoints, topics,
-tables, routes) and publish them to the docs repo. The docs repo joins the maps into an architectural graph and holds
+tables, routes); the docs repo collects them, together with the contracts, as one versioned snapshot (one collector,
+one pull request, a manifest of source commits). The docs repo joins the maps into an architectural graph and holds
 the human-owned specs, calculations and glossary with trust metadata. For any task a script builds a **context pack**
 (the spec, its calculations, the graph neighbourhood, the contracts, the tables) and the analyst agent reads only that.
 
@@ -63,12 +64,17 @@ dependencies and tables), `api-index.md` (34 operations from the contract joined
 ```
 Look at `frontend\docs\_generated\`: features, routes, types, tags.
 
-**Step 3 - Publish into the docs repo** (locally; in reality the code repos' CI does this on merge to main):
+**Step 3 - Collect into the docs repo** (locally against the sibling checkouts; in reality the docs repo's own
+workflow `collect-evidence.yml` does this nightly or on demand and opens one pull request per snapshot):
 
 ```powershell
-.\docs-repo\scripts\publish-local.ps1
+.\docs-repo\scripts\collect-evidence.ps1          # add -Generate to run both gen-all first, -Graph to rebuild graph + indexes
 ```
-Look at `docs-repo\generated\be`, `fe`, `openapi\backend.yaml`, `openapi\external\`, `asyncapi\backend.yaml`.
+Look at `docs-repo\generated\be`, `fe`, `openapi\backend.yaml`, `openapi\external\`, `asyncapi\backend.yaml`, and
+`generated\manifest.yml`: which backend and frontend commits the snapshot describes, with a hash per file. The collector
+validates the candidate before writing (frontmatter on every map, OpenAPI/AsyncAPI headers, no unresolved external
+`$ref`), deletes files the code no longer produces, and writes nothing when nothing changed. Run it twice: the second
+run reports "no change". `publish-local.ps1` is the old name and still works.
 
 **Step 4 - Build the architectural graph**:
 
@@ -172,7 +178,7 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 ### Scripts (`docs-repo/scripts/`, PowerShell 7, no modules)
 
 `context-pack`, `graph-query`, `gen-graph`, `build-index`, `okf-validate`, `validate-frontmatter`,
-`validate-work-items`, `coverage-matrix`, `map-paths`, `check-freshness`, `publish-local`, `migration-status`,
+`validate-work-items`, `coverage-matrix`, `map-paths`, `check-freshness`, `collect-evidence` (`publish-local` is its old name), `migration-status`,
 `hooks/guard-generated`. Stubs that describe the intended integration: `jira-push`, `confluence-export`,
 `confluence-publish`, `push-to-tests-repo`. Table with purposes: `docs-repo/scripts/README.md`.
 
@@ -181,8 +187,8 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 `AGENTS.md` (read order: map -> manager or barrel -> one range), `.github/instructions/*.instructions.md`
 (path-scoped rules: contract-first API, calculations, Kafka, migrations, tests, layers), agents `code-reader` and
 `impact-analyst`, prompts `/explain-module`, `/find-spec-code`, `/add-endpoint`, the generators under
-`scripts/docs/`, an `agentStop` hook that runs `gen-all.ps1 -Check`, CI `docs-maps.yml` (freshness gate on PR,
-publish on main), `copilot-setup-steps.yml` for the cloud coding agent.
+`scripts/docs/`, an `agentStop` hook that runs `gen-all.ps1 -Check`, CI `docs-maps.yml` (freshness gate on PR
+only; publication is the docs repo's collector), `copilot-setup-steps.yml` for the cloud coding agent.
 
 ---
 
@@ -193,7 +199,8 @@ publish on main), `copilot-setup-steps.yml` for the cloud coding agent.
 1. `apply-kit.ps1 -Flavour be -Target <repo>` (and `fe`).
 2. Add `@docs <SPEC-ID>` to every manager KDoc and `@docs <calculation_name>` to every calculation in `utils/`.
 3. Run `gen-all.ps1`; read the maps; fix the generator where the real code differs from the simulated one.
-4. Enable the CI workflow: on PR, `gen-all.ps1 -Check` + file-size cap; on main, publish maps and contracts to the docs repo.
+4. Enable the CI workflow: on PR, `gen-all.ps1 -Check` + file-size cap. Nothing on main: the docs repo pulls the maps and
+   contracts with its collector, so the code repo needs no docs-repo credentials.
 5. Content exclusion in the GitHub repo settings from `shared/copilot-content-exclusion.yml`.
 
 ### 4.2 Writing documentation (per spec, run by run)
@@ -265,12 +272,14 @@ The full plan with risks is [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md); th
    `_not implemented_` row that is actually implemented, `db-schema.md` has every table.
 3. Add `@docs <SPEC-ID>` to every manager and `@docs <calculation_name>` to every calculation. Use the prefixes from
    `contexts.yml`; the IDs do not need a spec yet.
-4. Enable `docs-maps.yml` in CI as warn-only; switch to blocking after two sprints. Enable the publish job to the docs
-   repo (it opens a PR there). Until then use `publish-local.ps1` with the paths of your checkouts.
+4. Enable `docs-maps.yml` in CI as warn-only; switch to blocking after two sprints. There is no publish job in the code
+   repos: the docs repo's `collect-evidence.yml` (one read token for the code repos) pulls maps and contracts and opens
+   one PR per snapshot. Until it runs, use `collect-evidence.ps1 -Backend <path> -Frontend <path>` from the docs repo.
 5. Content exclusion in GitHub settings; `check-file-size.ps1 -WriteBaseline`.
 
 ### Day 4 - First graph (half a day)
-1. In the docs repo: `publish-local.ps1` (or merge the first CI PR), `gen-graph.ps1`, `build-index.ps1`.
+1. In the docs repo: `collect-evidence.ps1 -Generate -Graph` (or merge the first collector PR); it runs the generators,
+   validates the snapshot, writes `generated/manifest.yml`, then `gen-graph.ps1` and `build-index.ps1`.
 2. Read `generated/graph/REPO_MAP.md`. Iterate `contexts.yml` until the `shared` community holds only true helpers
    and every context has a manager as entry point. Every community is a future spec; `code only` is your backlog.
 3. Seed `domain/glossary.md` with the vocabulary of the contracts and entities; leave the Aliases column for the
