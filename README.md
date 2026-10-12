@@ -47,7 +47,7 @@ flowchart LR
 .\code-repo-kit\fe\scripts\docs\gen-all.ps1 -Root .\frontend
 
 # 2. publish them into the docs repo the way CI would, then build the graph and indexes
-.\docs-repo\scripts\publish-local.ps1          # copies maps + contracts into docs-repo/generated
+.\docs-repo\scripts\collect-evidence.ps1       # single collector: maps + contracts -> docs-repo/generated, with manifest.yml (source commits, hashes)
 .\docs-repo\scripts\gen-graph.ps1
 .\docs-repo\scripts\build-index.ps1
 .\docs-repo\scripts\okf-validate.ps1 -Strict

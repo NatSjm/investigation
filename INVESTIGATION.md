@@ -60,8 +60,10 @@ flowchart LR
 - **`docs-map.yml`** - code path globs -> specs; drives PR-to-spec mapping and the freshness gate.
 
 ### 3.2 Keeping docs and code in sync
-1. FE/BE CI (on merge to main) regenerates maps, copies the contracts and opens a PR in the docs repo labelled `generated`
-   (`code-repo-kit/ci/docs-maps.yml`; locally `scripts/publish-local.ps1`).
+1. The docs repo's collector (nightly or on demand) checks out FE/BE read-only, regenerates the maps, validates the snapshot,
+   replaces `generated/` with a manifest of source commits and opens ONE PR labelled `generated`
+   (`docs-repo/ci-examples/collect-evidence.yml` -> `scripts/collect-evidence.ps1`; the code repos' `docs-maps.yml` is the PR
+   freshness check only).
 2. The `doc-sync` agent (or a human) processes that PR: `map-paths.ps1` changed paths -> specs, diffs against contracts,
    updates specs, bumps `last_verified`, flags tests to review.
 3. FE/BE PRs run a **freshness gate** (`ci-examples/code-repo-freshness-gate.yml` -> `scripts/check-freshness.ps1`):
@@ -309,12 +311,12 @@ names, values or identifiers. Everything is PowerShell 7; nothing to install.
 | Legacy pages | `confluence-import/HARBOR/stress-test-calculation.md` **deliberately outdated** (threshold, missing transport delta); two partly correct pages |
 | Worked examples | `work-items/P1-001.yml`, `test-design/features/STR-001.feature` + fixture; `generated/analytics/coverage-matrix.md` |
 | Customisation | `AGENTS.md`, short `copilot-instructions.md`, 6 scoped instructions, 8 agents (`analyst`, `spec-writer`, `doc-sync`, `calc-auditor`, `test-designer`, `architect`, `impact-analyst`, `confluence-migrator`), 12 prompts, 11 skills (`write-feature-spec`, `calculation-spec`, `jira-work-items`, `gherkin-test-design`, `code-graph`, `task-context`, `legacy-page-audit`, `docs-analytics`, `okf`, `okf-validate`, `okf-visualize`), hooks `docs-quality.json`, `copilot-setup-steps.yml`, CI `docs-quality.yml` |
-| Scripts | `context-pack`, `graph-query`, `gen-graph`, `coverage-matrix`, `build-index`, `okf-validate`, `validate-frontmatter`, `validate-work-items`, `map-paths`, `check-freshness`, `publish-local`, `hooks/guard-generated`; stubs `jira-push`, `confluence-export`, `confluence-publish`, `push-to-tests-repo` |
+| Scripts | `context-pack`, `graph-query`, `gen-graph`, `coverage-matrix`, `build-index`, `okf-validate`, `validate-frontmatter`, `validate-work-items`, `map-paths`, `check-freshness`, `collect-evidence` (`publish-local` deprecated), `hooks/guard-generated`; stubs `jira-push`, `confluence-export`, `confluence-publish`, `push-to-tests-repo` |
 
 ### 8.3 How to verify locally (nothing here is claimed as run)
 ```powershell
 .\code-repo-kit\be\scripts\docs\gen-all.ps1 -Root .\backend;  .\code-repo-kit\fe\scripts\docs\gen-all.ps1 -Root .\frontend
-.\docs-repo\scripts\publish-local.ps1; .\docs-repo\scripts\gen-graph.ps1; .\docs-repo\scripts\build-index.ps1
+.\docs-repo\scripts\collect-evidence.ps1 -Graph     # collect + manifest, then gen-graph.ps1 and build-index.ps1
 .\docs-repo\scripts\okf-validate.ps1 -Strict; .\docs-repo\scripts\validate-frontmatter.ps1; .\docs-repo\scripts\validate-work-items.ps1
 .\docs-repo\scripts\context-pack.ps1 -Task P1-001 -Print;  .\docs-repo\scripts\graph-query.ps1 -Node spec:STR-001 -Depth 2
 .\docs-repo\scripts\coverage-matrix.ps1;  .\code-repo-kit\apply-kit.ps1 -Flavour be -Target .\backend -WhatIf

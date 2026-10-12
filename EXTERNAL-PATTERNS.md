@@ -16,7 +16,7 @@ format (`SKILL.md`, agentskills.io) is the same one Copilot reads, so procedures
 
 ## 2. What we already have (no action)
 
-- Shared docs repo fed by several code repos: yes (`docs-repo/` + `publish-local.ps1` / CI publish job), with
+- Shared docs repo fed by several code repos: yes (`docs-repo/` + the single collector `collect-evidence.ps1` / `collect-evidence.yml`), with
   code maps and a graph the others do not have.
 - Typed documents with frontmatter and quality rules: yes (OKF concepts: Feature Spec, Attested Computation,
   Decision, HLD, Glossary; ADR template with alternatives).

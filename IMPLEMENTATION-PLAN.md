@@ -100,7 +100,7 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.ps1 -Check` at the end of a 
    `.../openapi/harbor-events.yaml` -> `generated/asyncapi/backend.yaml`, `.../resources/api/*.yaml` -> `generated/openapi/external/`)
    as a PR into the docs repo.
 5. In the docs repo the PRs land in `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi`; agent
-   `doc-sync` reviews them (`map-paths.ps1` -> affected specs). Until CI exists, `scripts/publish-local.ps1` does the copy.
+   `doc-sync` reviews them (`map-paths.ps1` -> affected specs). The docs repo's collector (`scripts/collect-evidence.ps1`, CI `ci-examples/collect-evidence.yml`) does the copy, validation and manifest; the code repos keep only the PR freshness check.
 
 **Done when:** a PR that adds an operation to `harbor-api.yaml` without regenerating fails CI; `generated/be/api-index.md` and
 `generated/openapi/backend.yaml` exist in the docs repo; `jobs.md` lists the import jobs.
@@ -117,7 +117,7 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.ps1 -Check` at the end of a 
 2. BE precise export (if 0.3 true): copy `code-repo-kit/be/templates/GraphExportTest.kt` into `core/src/test/kotlin/harbor/docs/`;
    create a `graph-export` Spring profile with embedded/mocked infra (or `init_docker_compose`). Run
    `mvn -pl core -am -Dtest=GraphExportTest -Ddocs.graph=true test` -> `docs/_generated/graph-export-be.json`; add the
-   command to the publish job (comment block in `docs-maps.yml`).
+   command to the code repo's CI as an artifact-producing step; the docs repo's collector downloads the artifact (comment block in `docs-maps.yml` / `collect-evidence.yml`).
 3. FE precise export (if 0.4 true): `npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js src
    docs/_generated/graph-export-fe.json`; adjust the client-wrapper regex in `gen-graph-fe.ts`.
 4. Re-run `gen-graph.ps1`; edges from the exports show `(exact)`. The CI step "Architectural graph is up to date" is in
@@ -218,7 +218,7 @@ Jira subtasks produced in < 10 minutes per story with no source files read, ever
 | skill | `skills/okf`, `okf-validate`, `okf-visualize` | OKF bundle rules, vendored checkers (MIT) |
 | prompt | `prompts/context-pack`, `spec-skeleton-from-graph`, `spec-from-code`, `audit-calculation`, `jira-from-spec`, `tests-from-spec`, `hld-from-spec`, `impact-from-graph`, `coverage-report`, `translate-for-publish`, `okf-produce`, `okf-validate` | one-click flows (`agent`, `argument-hint`) |
 | hooks | `.github/hooks/docs-quality.json` + `scripts/hooks/guard-generated.ps1` | `preToolUse` guard on `generated/**`, `agentStop` validators |
-| scripts | `context-pack.ps1`, `graph-query.ps1`, `gen-graph.ps1`, `coverage-matrix.ps1`, `build-index.ps1`, `okf-validate.ps1`, `validate-frontmatter.ps1`, `validate-work-items.ps1`, `map-paths.ps1`, `check-freshness.ps1`, `publish-local.ps1` | generation + gates (lib-free) |
+| scripts | `context-pack.ps1`, `graph-query.ps1`, `gen-graph.ps1`, `coverage-matrix.ps1`, `build-index.ps1`, `okf-validate.ps1`, `validate-frontmatter.ps1`, `validate-work-items.ps1`, `map-paths.ps1`, `check-freshness.ps1`, `collect-evidence.ps1` (`publish-local.ps1` deprecated wrapper) | generation + gates (lib-free) |
 | scripts (stubs) | `jira-push.ps1`, `confluence-export.ps1`, `confluence-publish.ps1`, `push-to-tests-repo.ps1` | fill in REST calls for your platform |
 | CI | `.github/workflows/docs-quality.yml`, `copilot-setup-steps.yml` | all gates + impacted-specs output; coding-agent environment |
 | templates | `features/_template.md`, `domain/calculations/_template.md`, `architecture/adr/template.md`, `work-items/_schema.yml` | content shape |

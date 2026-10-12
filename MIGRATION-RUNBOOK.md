@@ -20,7 +20,7 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
 | `domain/glossary.md`, `domain/context-map.md` | terminology (with `Aliases` for legacy / source-language terms), bounded contexts | humans + `confluence-migrator` |
 | `architecture/` | overview, integration map, ADRs, HLDs | `architect` |
 | `confluence-import/<SPACE>/` | raw exported pages (quarantine); `_done/` after migration | `scripts/confluence-export.ps1` |
-| `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi` | code maps and contracts published by the code repos' CI; never edited by hand | CI (`publish-local.ps1` locally) |
+| `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi` | code maps and contracts collected from the code repos as one validated snapshot (`generated/manifest.yml` names the source commits); never edited by hand | the docs repo's collector `scripts/collect-evidence.ps1` (CI: `ci-examples/collect-evidence.yml`, one PR per snapshot) |
 | `generated/graph/` | architectural graph: `REPO_MAP.md`, one `<context>.md` per bounded context, `graph.json` | `scripts/gen-graph.ps1` |
 | `generated/analytics/` | coverage matrix (BR -> story -> scenario) | `scripts/coverage-matrix.ps1` |
 | `work-items/`, `test-design/` | outputs of the analyst and test-designer agents (after the migration) | `analyst`, `test-designer` |
@@ -42,7 +42,7 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
 
 1. Fill `contexts.yml`: one line per bounded context with spec prefix, FE feature folder and BE class-name prefixes.
    Unmatched classes show up as `shared` in the graph; iterate until `shared` holds only true helpers.
-2. `./scripts/publish-local.ps1` (or wait for the CI PR), `./scripts/gen-graph.ps1`, `./scripts/build-index.ps1`.
+2. `./scripts/collect-evidence.ps1 -Generate -Graph` (or merge the collector's PR): runs both generators, validates the snapshot, writes `generated/manifest.yml`, then `gen-graph.ps1` and `build-index.ps1`.
 3. Read `generated/graph/REPO_MAP.md`: every community is a future spec; the "code only" list is the backlog.
 4. Seed `domain/glossary.md` with the terms that appear in the contracts and the entity names (code vocabulary),
    leaving the `Aliases` column for the Confluence wording.
