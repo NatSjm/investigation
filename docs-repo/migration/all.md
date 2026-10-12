@@ -13,14 +13,14 @@ generated: { by: process:migration-status, at: 2026-10-12T00:00:00Z }
 
 ## Summary
 
-Runs due: skeleton 4, legacy merge 3, calculation 6, owner decision 4. Contexts ready for the analyst: 0 of 11.
+Runs due: skeleton 4, legacy merge 2, calculation 4, owner decision 8. Contexts ready for the analyst: 0 of 11.
 
 | Context | Spec prefix | Specs | Calculations | Legacy pages pending | State |
 |---|---|---|---|---|---|
 | clients | CLI | `CLI-001` (stable, verified) | `client_role_classification` (stable, unaudited) | 0 | 1 run(s) due |
 | meetings | MTG | `MTG-001` (stable, verified) | none | 1 | 1 run(s) due |
 | imports | IMP | none | none | 0 | 1 run(s) due |
-| product1 | P1 | `P1-001` (stable, verified) | `monthly_projection` (stable, unaudited), `peer_benchmark_simulation` (code only); uses `cover_ratio` | 1 | 3 run(s) due |
+| product1 | P1 | `P1-001` (draft) | `horizon_totals` (draft), `monthly_projection` (draft), `peer_benchmark_simulation` (draft); uses `cover_ratio` | 0 | 4 run(s) due |
 | product2 | P2 | none | none; uses `cover_ratio`, `monthly_projection` | 0 | 1 run(s) due |
 | cover | COV | none | `cover_ratio` (draft, unaudited); uses `monthly_projection` | 0 | 2 run(s) due |
 | market | MKT | `MKT-001` (draft) | `scenario_price_path` (draft, unaudited) | 0 | 2 run(s) due |
@@ -35,7 +35,7 @@ Order of work: Run 1 for every context without a spec first (code is the truth, 
 
 Spec prefix `CLI`; BE class prefixes `Client`, `Role`; FE feature `src/features/clients`. Graph: `generated/graph/clients.md`.
 
-- [ ] **Run 3 - calculation audit** `client_role_classification` (no audit table): `/audit-calculation client_role_classification`
+- [ ] **Run 3 - calculation audit** `client_role_classification` (no audit table, status stable): `/audit-calculation client_role_classification`
 
 ## meetings
 
@@ -53,9 +53,10 @@ Spec prefix `IMP`; BE class prefixes `Import`, `FileExchange`, `Movement`, `Move
 
 Spec prefix `P1`; BE class prefixes `Product1`, `Projection`, `Peer`, `MovementInput`, `SessionMovementInput`, `SessionPeerSimulation`; FE feature `src/features/product1`. Graph: `generated/graph/product1.md`.
 
-- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/product1-overview-tables.md` (last_modified 2025-07-21, status imported): `@confluence-migrator confluence-import/HARBOR/product1-overview-tables.md`
-- [ ] **Run 3 - calculation audit** `monthly_projection` (no audit table): `/audit-calculation monthly_projection`
-- [ ] **Run 3 - calculation concept** `peer_benchmark_simulation` (code only, core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19): `/audit-calculation peer_benchmark_simulation` creates `domain/calculations/peer_benchmark_simulation.md` from `domain/calculations/_template.md` with worked examples from the unit test
+- [ ] **Run 4 - owner decision** `horizon_totals` (audited, status draft): decide the open questions in `domain/calculations/horizon_totals.md`, set `status: stable` and `verified: { by: human:<id>, at }`
+- [ ] **Run 4 - owner decision** `monthly_projection` (audited, status draft): decide the open questions in `domain/calculations/monthly_projection.md`, set `status: stable` and `verified: { by: human:<id>, at }`
+- [ ] **Run 4 - owner decision** `peer_benchmark_simulation` (audited, status draft): decide the open questions in `domain/calculations/peer_benchmark_simulation.md`, set `status: stable` and `verified: { by: human:<id>, at }`
+- [ ] **Run 4 - owner decision** `P1-001` (4 open question(s), status draft, no verified.by): decide the open questions in `features/product1/P1-001.md`, record them in the Change log, add `verified: { by: human:<id>, at }` and `stale_after`
 
 ## product2
 
@@ -82,7 +83,7 @@ Spec prefix `MKT`; BE class prefixes `Market`, `Scenario`, `BaselinePrice`; FE f
 Spec prefix `STR`; BE class prefixes `Stress`; FE feature `src/features/stress`. Graph: `generated/graph/stress.md`.
 
 - [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/stress-test-calculation.md` (last_modified 2025-06-14, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/stress-test-calculation.md` (agent `calc-auditor`)
-- [ ] **Run 3 - calculation audit** `stress_test_monthly` (no audit table): `/audit-calculation stress_test_monthly`
+- [ ] **Run 3 - calculation audit** `stress_test_monthly` (no audit table, status stable): `/audit-calculation stress_test_monthly`
 - [ ] **Run 4 - owner decision** `STR-001` (2 open question(s), status draft, no verified.by): decide the open questions in `features/stress/STR-001.md`, record them in the Change log, add `verified: { by: human:<id>, at }` and `stale_after`
 
 ## reports

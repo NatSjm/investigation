@@ -27,4 +27,4 @@ pandoc). Structure: `<SPACE>/<page-title>.md` with a header block `source`, `las
 |---|---|---|
 | `HARBOR/stress-test-calculation.md` | 2025-06-14 | **outdated** — threshold and formula differ from the code (see STR-001 open questions) |
 | `HARBOR/meeting-flow.md` | 2025-09-02 | mostly correct — mentions a removed "export to spreadsheet" step |
-| `HARBOR/product1-overview-tables.md` | 2025-07-21 | partly correct — lists three tables, misses the summary table |
+| `HARBOR/_done/product1-overview-tables.md` | 2025-07-21 | **migrated** 2026-10-12 into P1-001 — three tables (summary and totals missing), 2 conflicts recorded as open questions |

@@ -159,10 +159,13 @@ foreach ($ctxName in $selected) {
         if (-not $k.Concept) {
             $totals.run3++
             $runs.Add("- [ ] **Run 3 - calculation concept** " + (Code $k.Name) + " (code only, $($k.Location)): " + (Code "/audit-calculation $($k.Name)") + ' creates ' + (Code "domain/calculations/$($k.Name).md") + ' from ' + (Code 'domain/calculations/_template.md') + ' with worked examples from the unit test')
-        } elseif (-not $k.Audited -or $k.Status -ne 'stable') {
+        } elseif (-not $k.Audited) {
             $totals.run3++
-            $why = @(); if (-not $k.Audited) { $why += 'no audit table' }; if ($k.Status -ne 'stable') { $why += "status $($k.Status)" }
-            $runs.Add("- [ ] **Run 3 - calculation audit** " + (Code $k.Name) + " ($($why -join ', ')): " + (Code "/audit-calculation $($k.Name)"))
+            $runs.Add("- [ ] **Run 3 - calculation audit** " + (Code $k.Name) + " (no audit table, status $($k.Status)): " + (Code "/audit-calculation $($k.Name)"))
+        } elseif ($k.Status -ne 'stable') {
+            # audited but not stable: the auditor found drift or the concept is new - the owner decides, not the auditor again
+            $totals.run4++
+            $runs.Add("- [ ] **Run 4 - owner decision** " + (Code $k.Name) + " (audited, status $($k.Status)): decide the open questions in " + (Code $k.Concept) + ", set " + (Code "status: stable") + " and " + (Code "verified: { by: human:<id>, at }"))
         }
     }
     foreach ($s in $ctxSpecs) {

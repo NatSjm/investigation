@@ -21,7 +21,7 @@ and are quoted verbatim.
 | Actual movement | A goods movement parsed from a daily XLS file delivered by `file-exchange` into `goods_movement`, rolled up monthly into `movement_monthly` | real movement, imported movement | IMP-001, P1-001, `client_role_classification` |
 | Baseline curve | Monthly price and transport price per product group and corridor delivered by `market-data` into `baseline_price`; the reference every scenario shocks | baseline, market curve | MKT-001, `scenario_price_path`, `stress_test_monthly` |
 | Client | A company that moves goods on one or both product groups; identified by `client_profile.id`, linked to `client-registry` by `external_ref` | customer, account | CLI-001, MTG-001 |
-| Corridor | The pair of countries a product group moves between: `VLD <-> NRL` for Product 1, `CST <-> MRD` for Product 2 | route, lane | P1-001, MKT-001 |
+| Corridor | The pair of countries a product group moves between: `VLD <-> NRL` for Product 1, `CST <-> MRD` for Product 2 | route, lane, Veldora - Norland (VLD <-> NRL) | P1-001, MKT-001 |
 | Cover | A policy (`cover_policy`) that covers a share of the value of movements of a sub-product for a validity period | policy, protection | COV-001, `cover_ratio` |
 | Presentation window | The client-facing second browser window of a CLIENT session (`/present/<sessionId>`): mirrors the representative's current step and filters over the BroadcastChannel `harbor.session.<sessionId>`, without navigation or controls | client screen, second screen, mirror window | PRS-001, MTG-001 |
 | Cover ratio | Covered value divided by total value per month (scale 4); shown as charts on the overview pages | coverage | `cover_ratio`, P1-001, COV-001 |

@@ -170,6 +170,6 @@ status: stable
 
 ## Specs touching this community
 - `spec:horizon_totals` - `domain/calculations/horizon_totals.md` - status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:166; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
-- `spec:monthly_projection` - `domain/calculations/monthly_projection.md` - status stable; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
-- `spec:P1-001` - `features/product1/P1-001.md` - status stable; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11; fe src/features/product1/api/useProduct1Movements.ts:11; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18
-- `spec:peer_benchmark_simulation` - be core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19
+- `spec:monthly_projection` - `domain/calculations/monthly_projection.md` - status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
+- `spec:P1-001` - `features/product1/P1-001.md` - status draft; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11; fe src/features/product1/api/useProduct1Movements.ts:11; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18
+- `spec:peer_benchmark_simulation` - `domain/calculations/peer_benchmark_simulation.md` - status draft; be core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19

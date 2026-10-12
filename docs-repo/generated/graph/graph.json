@@ -2879,7 +2879,7 @@
       "community": "docs",
       "repo": "docs",
       "location": "domain/calculations/monthly_projection.md",
-      "note": "status stable; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36",
+      "note": "status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36",
       "component": 1,
       "rank": 1.73,
       "degree": 1
@@ -2903,7 +2903,7 @@
       "community": "docs",
       "repo": "docs",
       "location": "features/product1/P1-001.md",
-      "note": "status stable; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11; fe src/features/product1/api/useProduct1Movements.ts:11; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18",
+      "note": "status draft; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11; fe src/features/product1/api/useProduct1Movements.ts:11; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18",
       "component": 1,
       "rank": 1.84,
       "degree": 2
@@ -2926,8 +2926,8 @@
       "label": "peer_benchmark_simulation",
       "community": "docs",
       "repo": "docs",
-      "location": "",
-      "note": "be core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19",
+      "location": "domain/calculations/peer_benchmark_simulation.md",
+      "note": "status draft; be core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19",
       "component": 1,
       "rank": 1.66,
       "degree": 1

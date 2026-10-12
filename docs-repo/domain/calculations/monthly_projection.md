@@ -3,7 +3,7 @@ type: Attested Computation
 title: Monthly projection (value, landed cost, cumulative value)
 description: Per session and month computes value and landed cost of every movement row and groups them into the four cumulative projection tables (by sub-product, by dimension, by direction, summary).
 tags: [calculation, product1, product2, projection]
-status: stable
+status: draft
 runtime: kotlin
 parameters:
   - { name: quantity, type: Decimal, required: true }
@@ -17,8 +17,8 @@ executor:
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.ps1
-generated: { by: copilot/doc-sync, at: 2026-10-09T08:00:00Z }
-verified: { by: human:example-reviewer, at: 2026-10-08T15:00:00Z }
+generated: { by: copilot/calc-auditor, at: 2026-10-12T12:00:00Z }
+# verified: re-verification (Run 4) due after the audit of 2026-10-12; previous: human:example-reviewer 2026-10-08
 stale_after: 2027-01-06T00:00:00Z
 sources:
   - id: impl
@@ -37,7 +37,7 @@ code_refs:
   - backend/core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt
   - backend/core/src/main/kotlin/harbor/utils/Rounding.kt
   - backend/core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt
-last_verified: 2026-10-08
+last_verified: null
 ---
 
 # Monthly projection (value, landed cost, cumulative value)
@@ -55,7 +55,7 @@ stress test and reports see identical figures.
 |---|---|---|---|---|
 | quantity | Decimal | units | movement row (`quantity`) | ≥ 0 |
 | unitPrice | Decimal | price basis currency / unit | movement row (`unit_price`) | ≥ 0 |
-| priceIndex(m) | Decimal | ratio | `baseline_price.price(m) / baseline_price.price(m0)` for the corridor | > 0; 1.00 when no baseline |
+| priceIndex(m) | Decimal | ratio | `baseline_price.price(m) / baseline_price.price(m0)` for the corridor, `m0` = first month of the grid | > 0, scale 4; `1` when `m0` has no price |
 | tariffRate(productGroup, country) | Decimal | ratio | parameter `tariff.rate` | ≥ 0 |
 | handlingCost(city) | Decimal | price basis currency / unit | parameter `handling.cost` | ≥ 0 |
 | transportCost(mode) | Decimal | price basis currency / unit | parameter `transport.cost` | ≥ 0 |
@@ -79,7 +79,7 @@ Values are read from `meeting_session.parameter_snapshot`, never live from `para
 | value | Decimal | price basis currency | scale 2, HALF_EVEN, per row |
 | landed_cost | Decimal | price basis currency | scale 2, HALF_EVEN, per row |
 | cumulative_value | Decimal | price basis currency | running sum of rounded group `value` over months |
-| quantity (grouped) | Decimal | units | sum, no rounding |
+| quantity (grouped) | Decimal | units | sum, scale 2 (`sumMoney`) |
 
 ## Formula
 $$ value_m = qty \cdot unitPrice \cdot priceIndex(m) $$
@@ -137,6 +137,40 @@ Copied from the executor test.[^tests] Parameters: `tariffRate = 0.05`, `handlin
 Derivation of example 1: `100 × 12.50 × 1.04 = 1300.00`;
 `1300.00 × 1.05 + 100 × 0.80 + 100 × 1.20 = 1365.00 + 80.00 + 120.00 = 1565.00`.
 
+## Audit 2026-10-12
+Auditor: copilot/calc-auditor (Run 3). Files opened: `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt`
+(L36-L230) and `core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt` (L1-L130); parameter defaults from
+`V9__parameters.sql` as listed in the pack. Items 8-11 concern the row assembly in `ProjectionInputAssembler.kt`,
+which the pack names as a code reference of P1-001; they were observed there, outside the two audited files, and
+need an owner decision rather than a documentation edit.
+
+| # | Item | Documentation says | Code/test says | Severity | Action |
+|---|---|---|---|---|---|
+| 1 | value formula | `qty × unitPrice × priceIndex(m)`, scale 2 HALF_EVEN | `valueRow`: identical; test `value and landed cost of one row` → 1300.00 | MATCH | — |
+| 2 | landed cost formula | `value × (1 + tariffRate) + qty × handlingCost(city) + qty × transportCost(mode)` from the rounded value | identical; same test → 1565.00 | MATCH | — |
+| 3 | cumulative value | running sum of rounded group values per key | `group`: `cumulative += value` per key over the grid; test `second month with price index 1_06 and cumulative value` → 2625.00 | MATCH | — |
+| 4 | rounding | HALF_EVEN scale 2 per row | `Rounding.money`; test `rounding is HALF_EVEN at scale 2` (1.005 → 1.00, 1.015 → 1.02) | MATCH | — |
+| 5 | parameter defaults | tariff 0.05 (product1/VLD), handling Aldmoor 0.80, transport ROAD 1.20 | `V9__parameters.sql` L39, L46, L53: same values | MATCH | — |
+| 6 | worked examples 1-3 | 1300.00 / 1565.00; 1325.00 / 1591.25 / 2625.00; 1.00 / 1.02 | same values in the three test methods | MATCH | — |
+| 7 | grouped quantity | "sum, no rounding" | `sumMoney()` sets scale 2 on quantities too (`100.00`) | DOC-STALE | Outputs corrected (scale 2) |
+| 8 | price index | "`price(m) / price(m0)`, 1.00 when no baseline" | `BaselinePriceService.priceIndex`: `price(m) / price(grid.start)` at scale 4, `1` when the first month has no price | DOC-STALE | Inputs corrected (scale 4, `m0` = grid start) |
+| 9 | month grid start | "calendar months from the session start month" | `MonthGrid.startingAfter(today)`: the month after the current month, i.e. it moves while a session stays open across a month end | DOC-STALE | open question Q1 |
+| 10 | actual rows | "actual `movement_monthly` merged with modelled rows" | months without modelled input carry the actual rows of the same calendar month one year earlier forward (last 12 full months repeat) | UNDOCUMENTED | open question Q2; add to Conventions once decided |
+| 11 | replacement rule | "a modelled row replaces the actual row with the same grouping key" (also BR-P1-001-3) | any modelled input for a month discards **all** actual rows of that month; no test covers either behaviour | CODE-SUSPECT | open question Q2; add test case |
+
+Findings: 6 MATCH, 3 DOC-STALE, 1 UNDOCUMENTED, 1 CODE-SUSPECT. The formulas and worked examples hold; the drift is
+in how the input rows are assembled. `used_by` specs P1-001, P2-001, COV-001, STR-001 and RPT-001 inherit Q1 and Q2.
+
+## Open questions
+- [ ] Q1 (owner: harbor-platform-team) — Grid start: this concept and P1-001 say the grid starts at the session
+  start month; the code starts at the month after today, so an open session's grid shifts at a month end. Which is
+  intended? If the code is right, change the Conventions line and BR-P1-001-1; if the doc is right, pin the grid to
+  `meeting_session.started_at`.
+- [ ] Q2 (owner: harbor-platform-team) — Replacement granularity and carry-forward: BR-P1-001-3 says a modelled row
+  replaces the actual row with the same `(period, sub_product, city, direction)`; the code replaces the whole month
+  and, for months without modelled input, repeats the actual month one year earlier. Confirm the rule, then add a
+  test case to `ProjectionAggregatorTest` or a service test for the assembler.
+
 ## Performance notes
 Rows ≤ 60 months × ≤ 3 sub-products × ≤ 4 dimension values × 2 directions = 1 440 rows per session; computed in
 memory on `getProduct1Projection` / `getProduct2Projection` and on `movements-loaded` refresh; result persisted
@@ -147,6 +181,7 @@ per session.
 |---|---|---|
 | 2026-10-09 | Rebuilt for the Harbor bundle; examples re-copied from `ProjectionAggregatorTest` | — |
 | 2026-10-12 | Horizon totals (each table summed per key over the horizon, overall line, share of value) split out as [horizon_totals](horizon_totals.md); derived from these tables, never persisted | — |
+| 2026-10-12 | Run 3 audit: 6 MATCH, 3 DOC-STALE (corrected), 1 UNDOCUMENTED, 1 CODE-SUSPECT → status draft, open questions Q1-Q2 for the owner | — |
 
 [^impl]: ProjectionAggregator.kt (harbor-backend, `core`, layer `utils`)
 [^rounding]: Rounding.kt (harbor-backend, `core`, layer `utils`)

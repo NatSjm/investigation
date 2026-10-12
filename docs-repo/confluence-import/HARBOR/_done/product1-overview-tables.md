@@ -4,6 +4,9 @@ last_modified: 2025-07-21
 author: legacy
 confluence_id: 48103588
 url: https://confluence.example.com/display/HARBOR/Product+1+overview+tables
+status: migrated
+migrated: 2026-10-12
+superseded_by: /features/product1/P1-001.md
 ---
 
 # Product 1 overview tables

@@ -14,7 +14,7 @@ executor:
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.ps1
-generated: { by: copilot/doc-sync, at: 2026-10-12T10:00:00Z }
+generated: { by: copilot/calc-auditor, at: 2026-10-12T12:00:00Z }
 stale_after: 2027-01-10T00:00:00Z
 sources:
   - id: impl
@@ -123,6 +123,21 @@ transport ROAD 1.20, price index 1.04 in month 1 and 1.06 in month 2).
 | 4 | empty projection | no rows | overall value **0.00**, shareOfValue **0.0000**, no keys |
 
 Derivation of example 1: `2625.00 / 3950.00 = 0.66455...` → `0.6646` (HALF_EVEN at scale 4).
+
+## Audit 2026-10-12
+Auditor: copilot/calc-auditor (Run 3). Files opened: `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt`
+(L100-L200, `totals` / `totalsOf`) and `core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt` (L75-L110).
+
+| # | Item | Documentation says | Code/test says | Severity | Action |
+|---|---|---|---|---|---|
+| 1 | per-key sums | sum of the rounded monthly lines per key, scale 2 | `totalsOf`: `groupBy key`, `sumMoney` on quantity / value / landedCost; test `horizon totals sum the monthly tables per key and share the overall value` → 200.00 / 2625.00 / 3156.25 | MATCH | — |
+| 2 | overall line | sums of the summary table, key `ALL`, share 1.0000 | `totals`: identical; same test → 3950.00 / 1.0000 | MATCH | — |
+| 3 | share of value | `value_k / overall.value`, scale 4 HALF_EVEN, 0.0000 on zero | `Rounding.divideAsRatio`; same test → 0.6646 | MATCH | — |
+| 4 | key order | as in the monthly tables | `toSortedMap()`; monthly keys are `sorted()` too | MATCH | — |
+| 5 | empty projection | overall 0.00 / 0.0000, no keys | test `horizon totals of an empty projection are zero` | MATCH | — |
+| 6 | derived, not persisted | recomputed from the loaded lines | `Tables.totals` is a computed property; `ProjectionDao` loads the four tables only | MATCH | — |
+
+Findings: 6 MATCH, no drift. Status stays `draft` until the owner's decision (Run 4).
 
 ## Performance notes
 Input is at most 60 months × (3 sub-products + 4 dimension values + 2 directions) = 540 lines per session; the totals

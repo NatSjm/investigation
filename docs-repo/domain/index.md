@@ -1,7 +1,7 @@
 # domain
 
 # Sections
-* [calculations](calculations/) - 6 concept(s)
+* [calculations](calculations/) - 7 concept(s)
 
 # Concepts
 * [Domain context map](context-map.md) - The ten bounded contexts of Harbor (clients, meetings, imports, product1, product2, cover, market, stress, reports, admin), their spec ID prefixes and the relationships between them. · unverified
