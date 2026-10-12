@@ -8,7 +8,7 @@ epic:
     (by sub-product, by city, by direction, summary) with cover ratio charts, plus two modals
     for modelled movements and peer simulation. Projections refresh on movements-loaded.
     Spec: features/product1/P1-001.md
-  labels: [product1, docs-generated]
+  labels: [product1, docs-generated, needs-spec-review]
 stories:
   - id: S1
     jira_key: null
@@ -178,6 +178,84 @@ stories:
         estimate_hours: 3
       - summary: "[TEST] consumer contract test with synthetic MovementsLoadedEvent"
         estimate_hours: 3
+  - id: S6
+    jira_key: null
+    summary: "Show horizon totals under the monthly projection tables"
+    component: vertical
+    description: |
+      Every response carrying tables also carries tables.totals (calculation horizon_totals): each breakdown
+      table summed over the whole horizon per key (quantity, value, landed cost, share of value) plus the
+      overall line ALL. Derived from the persisted monthly lines, never stored. The page shows them as three
+      separate tables below the monthly ones; the client screen (PRS-001) mirrors them through the same component.
+    acceptance_criteria:
+      - rule: BR-P1-001-11
+        gherkin: |
+          Given an open product1 session "S-1" for client "ACME-SYN" with horizon 24 months
+          And modelled movements 2026-11 P1-STD Aldmoor IN quantity 100 unit price 12.50 and 2026-12 P1-PRM Carrow OUT quantity 40 unit price 20.00
+          When the representative requests the Product 1 overview
+          Then "tables.totals.bySubProduct" has one line per sub-product with quantity, value, landedCost and shareOfValue
+          And "tables.totals.overall" has key "ALL" and shareOfValue 1.0000
+          And the values of "tables.totals.bySubProduct" sum to "tables.totals.overall.value"
+      - rule: BR-P1-001-11
+        gherkin: |
+          Given the Product 1 overview of session "S-1" is displayed
+          Then three tables "Total by sub-product", "Total by city" and "Total by direction" are shown below the summary table
+          And each ends with the line "All"
+      - rule: BR-P1-001-11
+        gherkin: |
+          Given the projection of session "S-1" has no movement rows
+          When the representative requests the Product 1 projection
+          Then "tables.totals.overall" has value 0.00 and shareOfValue 0.0000
+          And the breakdown lists of "tables.totals" are empty
+    estimate: 5
+    labels: [product1, calc, needs-spec-review]
+    depends_on: [S1]
+    subtasks:
+      - summary: "[BE] utils/ProjectionAggregator.totals / totalsOf (calculation horizon_totals) + unit test with the worked examples (ProjectionAggregatorTest)"
+        estimate_hours: 4
+      - summary: "[BE] contract ProjectionTotal / ProjectionTotals as ProjectionTables.totals in harbor-api.yaml; mapper/ProjectionMapper.totals; returned by getProduct1Overview, getProduct1Projection, putProduct1Movements (api/Product1Controller)"
+        estimate_hours: 4
+      - summary: "[FE] ProjectionTables: three totals tables (shared DataTable, footer line All) fed by useProduct1Overview / useProduct1Projection; regenerate src/api/generated/schema.d.ts"
+        estimate_hours: 5
+      - summary: "[FE] presentation ProductMirror shows the totals through the shared ProjectionTables component (channel harbor.session.{*}, PRS-001)"
+        estimate_hours: 2
+      - summary: "[DOC] domain/calculations/horizon_totals.md (Attested Computation) and BR-P1-001-11 in P1-001; audit table"
+        estimate_hours: 2
+      - summary: "[TEST] API scenarios S6 + calculation scenario outline from the horizon_totals worked examples"
+        estimate_hours: 3
+  - id: S7
+    jira_key: null
+    summary: "Reject out-of-horizon months in the movement modal and show the reason"
+    component: fe
+    description: |
+      The movement modal offers exactly the months of the projection grid (first month = the month after the
+      current one, as the backend builds it) and, when the backend rejects the request, keeps the modal open
+      and shows the problem detail instead of failing silently.
+    acceptance_criteria:
+      - rule: BR-P1-001-5
+        gherkin: |
+          Given an open product1 session "S-1" and today is 2026-10-12
+          When the representative opens "Model movements"
+          Then the first month row is "Nov 2026" and the last is the 24th month of the horizon
+      - rule: BR-P1-001-5
+        gherkin: |
+          Given the representative entered a movement with sub-product "P2-S" for a product1 session
+          When the representative clicks "Save and recompute"
+          Then the backend answers 400 with a problem detail
+          And the modal stays open and shows that detail
+    estimate: 2
+    labels: [product1, ui, needs-spec-review]
+    depends_on: [S3]
+    subtasks:
+      - summary: "[FE] shared/utils/months.projectionGrid(horizon) mirroring MonthGrid.startingAfter; used by Product1OverviewPage and Product2OverviewPage"
+        estimate_hours: 2
+      - summary: "[FE] MovementInputModal: catch the mutation error, render role=alert with api/client.errorMessage"
+        estimate_hours: 2
+      - summary: "[TEST] unit test for projectionGrid; UI scenario for the rejected save"
+        estimate_hours: 2
 questions:
   - "Should the peer simulation series be included in the report payload (RPT-001)?"
   - "Is a modelled row with quantity 0 a deletion of the actual row or a zero movement?"
+  - "City filter scope (P1-001 open question): the legacy page says only the city table is filtered, the code filters all four tables and the totals; BR-P1-001-2 is silent on the other three. S2 acceptance criteria assume the code behaviour until decided."
+  - "Replacement granularity and grid start (monthly_projection audit Q1/Q2): BR-P1-001-3 says per key, the code replaces the whole month and starts the grid the month after today. S1 and S3 criteria follow BR-3 as written and will need re-checking."
+  - "Peer benchmark definition (peer_benchmark_simulation Q2): median × factor, quantities only, is the current code, not an approved rule; S4 stays needs-spec-review."

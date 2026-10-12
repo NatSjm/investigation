@@ -94,13 +94,13 @@
   {
     "id": "P1-001",
     "context": "product1",
-    "rules": 10,
-    "rulesWithStory": 10,
+    "rules": 11,
+    "rulesWithStory": 11,
     "rulesWithScenario": 0,
-    "stories": 5,
+    "stories": 7,
     "scenarios": 0,
-    "openQuestions": 1,
-    "badge": "human-reviewed",
+    "openQuestions": 4,
+    "badge": "draft · unverified",
     "staleAfter": "2027-01-06T00:00:00Z",
     "rulesWithoutStory": [],
     "rulesWithoutScenario": [
@@ -113,7 +113,8 @@
       "BR-P1-001-7",
       "BR-P1-001-8",
       "BR-P1-001-9",
-      "BR-P1-001-10"
+      "BR-P1-001-10",
+      "BR-P1-001-11"
     ]
   },
   {
