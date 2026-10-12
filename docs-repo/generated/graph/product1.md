@@ -4,7 +4,7 @@ title: "Graph: product1 (be+fe)"
 description: "Product 1 overview per city hub: the four cumulative projection tables, cover ratio chart, movement input and peer simulation modals."
 generated:
   by: process:gen-graph
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Graph: product1 (be+fe)

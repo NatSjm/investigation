@@ -51,10 +51,11 @@ This pulls `movements_2026-10-08.tsv` from the file-exchange stub (three rows: t
 one for CR-2001 on Product 2), parses it, stores `goods_movement` and publishes `harbor.imports.movements-loaded`.
 The Admin > Imports page shows the batch (3 rows, DONE). Re-running reports "(no new files)".
 
-The client cards (12-month value, role) read `movement_monthly`, which the **monthly snapshot job** fills on the 1st
-of each month at 03:00; there is no manual trigger, so locally the cards stay at zero and the role at UNDETERMINED
-("total volume below role.min_volume"). For numbers in the projection tables use **Model movements** inside a session
-(step 3 of the ten-minute test) or `PUT /session/product1/movements`; both are stored per session and recompute at once.
+The import also rolls the imported months up into `movement_monthly`, which the client cards (12-month volume and
+value, role) read; the monthly snapshot job re-rolls the closed month on the 1st at 03:00. After the import Aldmoor
+Trading Co shows volume 140 and value 1,850.00 on Product 1; the role stays UNDETERMINED because that volume is below
+the `role.min_volume` parameter (Admin > Parameters). For numbers in the projection tables use **Model movements**
+inside a session (step 3 of the ten-minute test) or `PUT /session/product1/movements`; both are per session.
 
 Clients exist in the stub registry: **Aldmoor Trading Co** (CR-1001, Product 1), **Carrow Goods Ltd** (CR-1002),
 **Meridia Freight Works** (CR-2001, Product 2). A client gets a local profile the first time a search returns it.
@@ -125,7 +126,7 @@ transport costs, role thresholds), editable inline per product group; seeded by 
 
 ## 5. A ten-minute end-to-end test
 
-1. Search `al`, open Aldmoor Trading Co: two product group cards (role UNDETERMINED with its reason, zero 12-month figures until the monthly snapshot runs), Client information, open sessions.
+1. Search `al`, open Aldmoor Trading Co: two product group cards (Product 1 shows volume 140 and value 1,850.00 after the import, role UNDETERMINED with its reason), Client information, open sessions.
 2. **Start meeting** on Product 1. The URL is `/session/<id>/product1`; the summary table has numbers.
 3. **Model movements**: add a row (next month, P1-STD, Aldmoor, IN, 100, 12.50), **Save and recompute**; the tables change.
 4. **Open client screen**; arrange the windows; change the city selector; the client window follows.

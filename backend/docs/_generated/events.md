@@ -4,7 +4,7 @@ title: "Kafka events (BE)"
 description: "Generated map: Kafka events (BE), derived from @KafkaListener / KafkaTemplate.send scan; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Kafka events (BE)

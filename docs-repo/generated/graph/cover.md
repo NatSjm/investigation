@@ -4,7 +4,7 @@ title: "Graph: cover (be+fe)"
 description: "entry point CoverManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Graph: cover (be+fe)

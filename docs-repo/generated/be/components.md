@@ -4,7 +4,7 @@ title: "Components (BE)"
 description: "One row per class: layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix."
 generated:
   by: process:gen-docs
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Components (BE)
@@ -147,7 +147,7 @@ status: stable
 | `ClientRoleService` | service | core | Service | `ClientRoleDao`, `MovementMonthlyDao`, `ParameterService` |  |  | `core/src/main/kotlin/harbor/service/ClientRoleService.kt:28` |
 | `CoverQuoteService` | service | core | Service | `CoverQuoteDao`, `CoverProviderClient`, `ParameterService` |  |  | `core/src/main/kotlin/harbor/service/CoverQuoteService.kt:23` |
 | `CoverRatioService` | service | core | Service | `CoverPolicyDao`, `MovementMonthlyDao` |  |  | `core/src/main/kotlin/harbor/service/CoverRatioService.kt:26` |
-| `MovementImportService` | service | core | Service | `ImportBatchDao`, `GoodsMovementDao`, `MovementMonthlyDao`, `FileExchangeClient`, `WorkbookReaderFactory`, `XlsMovementParser`, `MovementsLoadedPublisher`, `ClientProfileService` |  |  | `core/src/main/kotlin/harbor/service/MovementImportService.kt:30` |
+| `MovementImportService` | service | core | Service | `ImportBatchDao`, `GoodsMovementDao`, `MovementMonthlyDao`, `FileExchangeClient`, `WorkbookReaderFactory`, `XlsMovementParser`, `MovementsLoadedPublisher`, `ClientProfileService` |  |  | `core/src/main/kotlin/harbor/service/MovementImportService.kt:31` |
 | `ParameterService` | service | core | Service | `ParameterDao` |  |  | `core/src/main/kotlin/harbor/service/ParameterService.kt:23` |
 | `PeerSimulationService` | service | core | Service | `MovementMonthlyDao`, `SessionPeerSimulationDao`, `ParameterService` |  |  | `core/src/main/kotlin/harbor/service/PeerSimulationService.kt:24` |
 | `ProjectionInputAssembler` | service | core | Component | `MovementMonthlyDao`, `SessionMovementInputDao`, `ParameterService`, `BaselinePriceService` |  |  | `core/src/main/kotlin/harbor/service/ProjectionInputAssembler.kt:30` |

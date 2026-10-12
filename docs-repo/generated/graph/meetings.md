@@ -4,7 +4,7 @@ title: "Graph: meetings (be+fe)"
 description: "Meeting session lifecycle: create CLIENT or PREPARATION sessions, list and close them, override the client role, show the session summary."
 generated:
   by: process:gen-graph
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Graph: meetings (be+fe)

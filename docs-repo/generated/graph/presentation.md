@@ -4,7 +4,7 @@ title: "Graph: presentation (fe)"
 description: "Second-screen view of a CLIENT session (`/present/:sessionId`): follows the representative's route and filters without any internal controls."
 generated:
   by: process:gen-graph
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Graph: presentation (fe)

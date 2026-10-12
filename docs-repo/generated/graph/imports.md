@@ -4,7 +4,7 @@ title: "Graph: imports (be)"
 description: "entry point ImportManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-11
+  at: 2026-10-12
 status: stable
 ---
 # Graph: imports (be)
@@ -16,7 +16,7 @@ status: stable
 - `context:imports` - `core/src/main/kotlin/harbor/manager/ImportManager.kt` - entry point ImportManager (manager)
 
 ## classes
-- `class:MovementImportService` - `core/src/main/kotlin/harbor/service/MovementImportService.kt:30` - service; Service
+- `class:MovementImportService` - `core/src/main/kotlin/harbor/service/MovementImportService.kt:31` - service; Service
 - `class:MovementMonthlyDao` - `core/src/main/kotlin/harbor/dao/MovementMonthlyDao.kt:13` - dao; Repository
 - `class:ImportManager` - `core/src/main/kotlin/harbor/manager/ImportManager.kt:18` - manager; Service
 - `class:GoodsMovementDao` - `core/src/main/kotlin/harbor/dao/GoodsMovementDao.kt:12` - dao; Repository

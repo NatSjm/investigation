@@ -13,6 +13,7 @@ import harbor.utils.toPeriodDate
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionTemplate
 import java.time.Clock
 import java.time.Duration
 import java.time.Instant
@@ -24,7 +25,7 @@ import java.util.UUID
  *
  * [importNewFiles] pulls every file received by file-exchange since the last batch, parses it with
  * [XlsMovementParser] into `goods_movement` (one `import_batch` per file, rejected rows counted, never
- * blocking the batch) and publishes `harbor.imports.movements-loaded`. [snapshotMonth] rolls one month up
+ * blocking the batch), rolls the imported months up into `movement_monthly` and publishes `harbor.imports.movements-loaded`. [snapshotMonth] rolls one month up
  * into `movement_monthly`, the input of the role classification and the projections.
  */
 @Service
@@ -36,6 +37,7 @@ class MovementImportService(
     private val readerFactory: WorkbookReaderFactory,
     private val parser: XlsMovementParser,
     private val publisher: MovementsLoadedPublisher,
+    private val transactionTemplate: TransactionTemplate,
     private val clientProfiles: ClientProfileService,
     private val clock: Clock,
 ) {
@@ -75,6 +77,9 @@ class MovementImportService(
                 )
             }
             movementDao.saveAll(rows)
+            // roll the touched months up at once so indicators and role classification see the new actuals today;
+            // the monthly snapshot job re-rolls the closed month on the 1st (idempotent: delete + re-aggregate per period)
+            transactionTemplate.executeWithoutResult { rows.map { it.period }.distinct().forEach { period -> monthlyDao.deleteAllByPeriod(period); movementDao.rollUpMonth(period) } }
             batch.finish(total = result.total, rejected = result.rejected.size)
             result.rejected.take(MAX_LOGGED_REJECTS).forEach { log.warn("Batch {} row {}/{} rejected: {}", batch.id, it.sheet, it.rowNumber, it.reason) }
             publisher.publish(batch)
