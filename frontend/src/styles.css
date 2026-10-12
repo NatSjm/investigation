@@ -1,0 +1,119 @@
+/* Harbor frontend - one plain stylesheet, no framework. Class names are the ones used by the feature components. */
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --ink: #1f2933;
+  --muted: #627d98;
+  --line: #d9e2ec;
+  --brand: #0b5fa5;
+  --brand-ink: #ffffff;
+  --accent: #e8f1fb;
+  --danger: #b3261e;
+  --ok: #1e7f4f;
+  --radius: 6px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; min-height: 100%; }
+body { font: 14px/1.45 var(--font); color: var(--ink); background: var(--bg); }
+h1 { font-size: 22px; margin: 0 0 12px; }
+h2 { font-size: 17px; margin: 18px 0 8px; }
+h3 { font-size: 14px; margin: 14px 0 6px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+a { color: var(--brand); text-decoration: none; }
+a:hover { text-decoration: underline; }
+p { margin: 6px 0; }
+
+/* app shell */
+.app-shell { min-height: 100vh; display: flex; flex-direction: column; }
+.app-header { display: flex; align-items: center; gap: 24px; padding: 0 20px; height: 52px; background: var(--brand); color: var(--brand-ink); }
+.app-brand { font-size: 17px; letter-spacing: .03em; }
+.app-header nav { display: flex; gap: 4px; }
+.app-header nav a { color: var(--brand-ink); padding: 6px 10px; border-radius: var(--radius); opacity: .85; }
+.app-header nav a:hover { opacity: 1; text-decoration: none; background: rgba(255,255,255,.12); }
+.app-header nav a.active { opacity: 1; background: rgba(255,255,255,.22); font-weight: 600; }
+.session-badge { margin-left: auto; font-family: var(--mono); font-size: 12px; background: rgba(255,255,255,.18); padding: 3px 8px; border-radius: 999px; }
+.app-main { flex: 1; padding: 20px 24px 40px; max-width: 1400px; width: 100%; margin: 0 auto; }
+
+/* generic blocks */
+.page { display: block; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 12px; }
+.toolbar h1, .toolbar h2 { margin: 0; margin-right: auto; }
+.actions, .row-actions, .modal-controls { display: flex; gap: 8px; align-items: center; }
+.filters { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
+.hint { color: var(--muted); font-size: 12px; }
+.error, [role="alert"] { color: var(--danger); }
+.empty { color: var(--muted); text-align: center; }
+.link { background: none; border: 0; padding: 0; color: var(--brand); cursor: pointer; font: inherit; }
+.link:hover { text-decoration: underline; }
+
+/* forms and buttons */
+label { display: inline-flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--muted); }
+label > input, label > select { font-size: 14px; color: var(--ink); }
+input, select, textarea { font: inherit; padding: 5px 8px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); border-color: var(--brand); }
+button { font: inherit; padding: 6px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; color: var(--ink); cursor: pointer; }
+button:hover { background: var(--accent); }
+button:disabled { opacity: .5; cursor: default; }
+button.primary { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+button.primary:hover { filter: brightness(1.08); }
+.radio { display: inline-flex; flex-direction: row; align-items: center; gap: 6px; color: var(--ink); font-size: 14px; }
+
+/* tables */
+table, .data-table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); margin: 8px 0 16px; }
+caption { text-align: left; font-weight: 600; padding: 8px 10px; color: var(--muted); caption-side: top; }
+th, td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+th { background: #eef2f6; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); }
+td.num, th.num, td[style*="right"] { font-variant-numeric: tabular-nums; }
+tbody tr:hover { background: #f8fafc; }
+tfoot td { font-weight: 600; background: #f3f6f9; }
+.data-table.dense th, .data-table.dense td { padding: 4px 8px; font-size: 13px; }
+
+/* cards and grids */
+.product-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+.overview-grid { display: grid; grid-template-columns: minmax(0, 3fr) minmax(320px, 2fr); gap: 16px; align-items: start; }
+.overview-grid > * { min-width: 0; overflow-x: auto; }
+@media (max-width: 1000px) { .overview-grid { grid-template-columns: 1fr; } }
+dl.indicators { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 8px 0; }
+.role { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: var(--brand); }
+.role-importer { background: #e3f6ec; color: var(--ok); } .role-exporter { background: #fdecea; color: var(--danger); }
+.product-card, .cover-quote-panel, .quote-result, .report-preview, .scenario-editor, .session-facts, .presentation-panel, .product-overview > section { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.product-card h2 { margin-top: 0; }
+.product-card dl, .session-facts dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 8px 0; }
+dt { color: var(--muted); }
+dd { margin: 0; font-weight: 600; }
+.sparkline { height: 60px; margin: 8px 0; }
+
+/* session layout */
+.session-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; padding: 10px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.session-header h1 { margin: 0; margin-right: auto; }
+.session-steps { display: flex; gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; }
+.session-steps a { display: inline-block; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
+.session-steps a.active { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.product-overview, .scenarios, .stress-test, .session-summary, .meetings, .report { display: grid; gap: 14px; }
+.projection-tables { display: grid; gap: 12px; }
+.dimension-selector, .dimension-toggle { display: inline-flex; gap: 6px; align-items: center; }
+.movement-grid { display: grid; grid-template-columns: repeat(7, minmax(90px, 1fr)); gap: 8px; align-items: end; }
+.scenario-list { display: grid; gap: 8px; }
+.shocks, .shock-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
+.shock-summary { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.cover-ratio-chart, .transport-price-chart { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; }
+.parameter-row td input { width: 100%; }
+.download-pdf { white-space: nowrap; }
+
+/* modal */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(31, 41, 51, .45); display: flex; align-items: flex-start; justify-content: center; padding-top: 8vh; z-index: 50; }
+.modal { background: var(--panel); border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.25); max-width: 95vw; max-height: 85vh; display: flex; flex-direction: column; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.modal-header h2 { margin: 0; }
+.modal-close { border: 0; background: none; font-size: 20px; line-height: 1; cursor: pointer; }
+.modal-body { padding: 16px; overflow: auto; }
+.modal-footer { padding: 12px 16px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 8px; }
+
+/* client presentation window: no navigation, calmer and larger */
+.presentation { min-height: 100vh; background: #fff; }
+.presentation .app-header { background: #1f2933; }
+.presentation .app-main { max-width: 1600px; font-size: 15px; }
+.presentation .presentation-panel { text-align: center; padding: 60px 20px; color: var(--muted); }
+.presentation .presentation-panel h2 { font-size: 22px; color: var(--ink); }
+.presentation th, .presentation td { padding: 9px 12px; }
