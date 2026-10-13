@@ -96,6 +96,7 @@ domain/context-map.md          rewrite from your context list
 domain/calculations/_template.md
 architecture/overview.md, integrations.md, adr/template.md     rewrite the prose, keep the frontmatter
 flows/_template.md
+contracts/conventions.md, contracts/proposed/_template.openapi.yaml   contracts designed before code (proposals)
 confluence-import/README.md    keep the quarantine rules; empty the inventory table
 generated/                     empty except the folders be/, fe/, openapi/, asyncapi/, graph/, analytics/
 migration/, work-items/_schema.yml, work-items/README.md, test-design/README.md
@@ -209,6 +210,15 @@ Rules: keep the complete document and the files it references; an external `$ref
 `generated/` is rejected by the collector. Record the version and retrieval time of a provider specification in the
 manifest when there is no source commit. The frontend's generated client and the backend's generated interfaces are
 never read by agents; the contract is the single thing to read (`api.instructions.md`, `api-client.instructions.md`).
+
+**Contracts designed before code.** Your analysts design APIs during analysis, so a contract may exist in the docs
+repo before any code. That is a proposal, not evidence, and it has its own folder: `contracts/proposed/<SPEC-ID>.openapi.yaml`
+(or `.asyncapi.yaml`), started from `_template.openapi.yaml`, with `x-spec`, `x-status: proposed` and `x-generated-by`
+in the `info` block. The spec's API table links to it and says **proposed**; stories cite its `operationId`s and carry
+`needs-contract`. The handover is a copy into the code repository that will generate code from it; the collector then
+brings the implemented version back under `generated/`, and `doc-sync` switches the spec's links and closes the
+proposal. Nothing is ever copied from `contracts/proposed/` into `generated/` by hand. Rules: `contracts/conventions.md`,
+`.github/instructions/contracts.instructions.md`; CI lints both folders with the same linters.
 
 The API index generator (`gen-api-index.ps1`) is contract-first: it lists every operation of the OpenAPI document
 and finds the handler method by `operationId`. If your controllers are not generated from the contract, adapt the

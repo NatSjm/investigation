@@ -20,7 +20,10 @@ One of:
    `generated/be/db-schema.md`, `generated/be/api-index.md`, `generated/fe/routes.md`.
 3. Only if behaviour (not just signatures) changed and is not inferable from the contract diff, open the specific
    `file:line` from the graph node (handler, manager) - a narrow range, never the whole file.
-4. Update the spec: business rules, API, data, edge cases; append a **Change log** row
+4. If an operation of a `contracts/proposed/*.yaml` file now appears in `generated/openapi|asyncapi/**`, switch the spec's
+   API / Events row from the proposal link to the `generated/` anchor, drop the **proposed** marker and the `needs-contract`
+   label in `work-items/<ID>.yml`, and delete the proposal (or set `x-status: implemented`, `x-implemented-in`).
+   Update the spec: business rules, API, data, edge cases; append a **Change log** row
    (`YYYY-MM-DD - <what> - <PR/commit>`); set `last_verified`.
 5. If a `core/src/main/kotlin/harbor/utils/**` path changed, do not edit the formula yourself: set the calculation concept to
    `status: draft`, add an open question and hand over to `calc-auditor` (chat summary).

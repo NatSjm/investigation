@@ -48,6 +48,7 @@ Screens/steps; Mermaid `flowchart` if > 3 steps. Routes from `generated/fe/route
 |---|---|---|---|
 | REST | `GET /…` | | `generated/openapi/backend.yaml#/paths/~1…` |
 | Kafka | `harbor.<context>.<event>` | | `generated/asyncapi/backend.yaml#/channels/harbor.<context>.<event>` |
+| REST | `POST /…` | **proposed** - designed with this spec, not implemented yet | `contracts/proposed/<ID>.openapi.yaml#/paths/~1…` |
 
 ## Data
 Tables/columns touched; see `generated/be/db-schema.md`.

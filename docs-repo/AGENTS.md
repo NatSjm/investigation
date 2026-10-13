@@ -31,7 +31,8 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
    `generated/graph/<context>.md` - architectural graph (`context:`, `class:` nodes, `depends-on` / `persists-to` edges) with `file:line`
 5. `generated/be/*.md`, `generated/fe/*.md` - code maps (BE layers in `codebase-map.md`, one row per class in `components.md`,
    API index with `Tag` = context, events, schema, jobs, routes, types, `@docs` tags)
-6. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` - contracts
+6. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` - contracts the
+   code implements; `contracts/proposed/<ID>.*.yaml` - contracts still being designed (proposals, see `contracts/conventions.md`)
 7. Only then source code in `../backend` / `../frontend`, smallest possible range, located via the graph, `components.md` or
    `docs-tags.md`. The backend is layered (`core/src/main/kotlin/harbor/<layer>/`): start at the context's `manager/<Ctx>Manager.kt`.
 
@@ -46,6 +47,8 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
   `BR-<ID>-<n>`, calculations `snake_case`. Work items and test scenarios cite them.
 - Terminology from `domain/glossary.md`; English only in files (answer in the user's language in chat).
 - Synthetic data only: no real client names, identifiers or contract values in docs, fixtures or examples.
+- A contract designed before code lives under `contracts/proposed/` (`x-status: proposed`), is cited as **proposed**
+  and never as current behaviour; it reaches `generated/` only through a code repository and the collector.
 - Keep outputs in files; chat summaries <= 15 lines. Specs <= 300 lines; diagrams <= 25 nodes.
 
 ## Commands (PowerShell 7, no other dependencies)

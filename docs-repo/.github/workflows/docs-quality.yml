@@ -66,6 +66,9 @@ jobs:
         run: |
           npx @stoplight/spectral-cli lint generated/openapi/backend.yaml generated/openapi/external/*.yaml || true
           npx @asyncapi/cli validate generated/asyncapi/backend.yaml || true
+          # proposals designed in this repo before code (contracts/conventions.md) are linted with the same rules
+          ls contracts/proposed/*.openapi.yaml 2>/dev/null | grep -v _template && npx @stoplight/spectral-cli lint contracts/proposed/[!_]*.openapi.yaml || true
+          ls contracts/proposed/*.asyncapi.yaml 2>/dev/null && npx @asyncapi/cli validate contracts/proposed/*.asyncapi.yaml || true
 
   publish-confluence:
     if: github.ref == 'refs/heads/main'

@@ -1,0 +1,46 @@
+# Template for a PROPOSED contract: an API designed in the docs repo before any code exists.
+# Copy to contracts/proposed/<SPEC-ID>.openapi.yaml. Rules: contracts/conventions.md. This is a proposal, not evidence;
+# the implemented contract arrives under generated/openapi/ through a code repository and the collector.
+openapi: 3.0.3
+info:
+  title: "<Service or feature> API (proposed)"
+  version: 0.1.0-proposed
+  description: "Designed with spec <SPEC-ID>; operations are cited by operationId in work-items/<SPEC-ID>.yml."
+  x-spec: <SPEC-ID>                         # or x-specs: [<ID-1>, <ID-2>] when one service boundary serves several specs
+  x-status: proposed                        # proposed | implemented (then x-implemented-in points at generated/...)
+  x-generated-by: copilot/analyst           # copilot/<agent> | human:<id>
+  x-generated-at: 2026-01-01T00:00:00Z
+paths:
+  /example/{exampleId}:
+    get:
+      operationId: getExample               # every operation has an operationId; stories cite it
+      summary: "<one line, glossary terms>"
+      tags: [<context>]                     # the bounded context from contexts.yml
+      parameters:
+        - { name: exampleId, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          description: Example
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Example" }
+        "404":
+          description: Not found
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/Problem" }
+components:
+  schemas:
+    Example:
+      type: object
+      required: [exampleId, name]
+      properties:
+        exampleId: { type: string, format: uuid }
+        name: { type: string, example: "Synthetic example" }   # synthetic values only
+    Problem:
+      type: object
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }

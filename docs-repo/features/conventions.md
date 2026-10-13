@@ -55,6 +55,9 @@ Open questions → Change log. Keep empty sections with "none".
 - Endpoints: `METHOD /path` exactly as in `generated/openapi/backend.yaml`, contract anchor
   `generated/openapi/backend.yaml#/paths/~1session~1product1~1overview`.
 - Topics: exact names from `generated/asyncapi/backend.yaml#/channels/<topic>`.
+- Operations or topics that exist only as a design: contract column `contracts/proposed/<ID>.openapi.yaml#/paths/...`
+  and the word **proposed** in the Purpose column; switched to the `generated/` anchor by `doc-sync` once implemented
+  (`contracts/conventions.md`).
 - Tables: names from `generated/be/db-schema.md`.
 - Code: `code_refs` relative to the repo roots with prefix `be/` (harbor-backend) or `fe/` (harbor-frontend).
 
