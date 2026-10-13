@@ -1,6 +1,7 @@
 # features
 
 # Sections
+* [admin](admin/) - 1 concept(s)
 * [clients](clients/) - 1 concept(s)
 * [market](market/) - 1 concept(s)
 * [meetings](meetings/) - 1 concept(s)

@@ -11,3 +11,4 @@ Contracts: `core/src/main/resources/openapi/harbor-api.yaml` (REST; FE client an
 - [db-schema.md](db-schema.md): tables and columns from migrations, ER diagram
 - [jobs.md](jobs.md): scheduled jobs with their cron triggers
 - [docs-tags.md](docs-tags.md): spec ID (`@docs`) to code location
+- [parameters.md](parameters.md): admin parameter catalogue - every `ParameterKey` with seeded defaults per scope, readers and validator

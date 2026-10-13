@@ -423,7 +423,7 @@ Docs repository, `scripts/` (PowerShell 7, no modules, no network unless stated)
 | `gen-graph.ps1 [-Check]` | `generated/be|fe/*.md`, `contexts.yml`, `docs-map.yml`, optional precise exports | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json` | yes; `-Check` writes nothing |
 | `build-index.ps1 [-Check]` | frontmatter of every concept | every `index.md` | yes |
 | `okf-validate.ps1 [-Strict]` | the bundle | stdout, exit code | yes |
-| `validate-frontmatter.ps1` | `features/`, `domain/calculations/` | stdout, exit code | yes |
+| `validate-frontmatter.ps1` | `features/`, `domain/calculations/`, `flows/`, `generated/be/parameters.md` | stdout, exit code | yes |
 | `validate-work-items.ps1 [file]` | `work-items/*.yml`, `_schema.yml`, specs (rule IDs) | stdout, exit code | yes |
 | `coverage-matrix.ps1` | specs, work items, feature files | `generated/analytics/coverage-matrix.md|json` | yes |
 | `map-paths.ps1` (stdin paths) | `docs-map.yml` | stdout | yes |
@@ -442,8 +442,7 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 | `gen-api-index.ps1` | every OpenAPI operation with its handler method | - |
 | `gen-events.ps1` | topics with producers, consumers, payload classes | - |
 | `gen-db-schema.ps1` | tables and columns from the migrations | - |
-| `gen-jobs.ps1` | scheduled jobs with cron and class | - |
-| `gen-routes.ps1` | - | routes to screens |
+$1$2| `gen-parameters.ps1` | admin parameter catalogue: key, seeded defaults per scope, readers, validator (cross-checked against the calculations by `validate-frontmatter.ps1`) | - |$2| `gen-routes.ps1` | - | routes to screens |
 | `gen-types-index.ps1` | - | exported types per feature |
 | `gen-docs-tags.ps1` | `@docs <ID>` tags with `file:line` | same |
 | `tag-candidates.ps1` | candidates for tags per context, with proposed IDs | same |

@@ -4,7 +4,7 @@ title: "Graph: shared (be)"
 description: "Neighbourhood of shared"
 generated:
   by: process:gen-graph
-  at: 2026-10-12
+  at: 2026-10-13
 status: stable
 ---
 # Graph: shared (be)

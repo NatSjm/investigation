@@ -58,8 +58,7 @@ dependencies, tables, `@docs`, `file:line`) replaces "open the module folder": a
 | `api-index.md` | **contract-first**: operations from `openapi/harbor-api.yaml` joined to `override fun <operationId>` in controllers (`_not implemented_` when missing); column `Tag` = context; annotation scan as fallback | - | 1 row / operation |
 | `events.md` | `@KafkaListener` + `KafkaTemplate.send` in `event/`, `Topics.<CONST>` resolved from `kafka_client` | - | 1 row / topic |
 | `db-schema.md` | Flyway `V*.sql` (CREATE/ALTER, inline `REFERENCES`), Mermaid ER; "Used in:" lists classes | - | 1 section / table |
-| `jobs.md` | `@Scheduled` methods: trigger (cron / fixedDelay), first KDoc line, `file:line` | - | 1 row / job |
-| `routes.md` | - | react-router object routes (`path:` then `element:`) / `<Route>` | 1 row / route |
+$1$2| `parameters.md` | `ParameterKey` enum constants + `INSERT INTO parameter_set` seeds per scope, readers (`ParameterKey.X` usages), validator (`validator/`) | - | 1 row / key |$2| `routes.md` | - | react-router object routes (`path:` then `element:`) / `<Route>` | 1 row / route |
 | `types-index.md` | - | `export interface/type` from `*.types.ts` verbatim | types only |
 | `docs-tags.md` | `@docs <ID>` in KDoc (`P1-001`, `monthly_projection`) | `@docs <ID>` in JSDoc | 1 row / tag |
 

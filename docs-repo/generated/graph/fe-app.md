@@ -4,7 +4,7 @@ title: "Graph: fe-app (fe)"
 description: "app shell: router, layouts, providers"
 generated:
   by: process:gen-graph
-  at: 2026-10-12
+  at: 2026-10-13
 status: stable
 ---
 # Graph: fe-app (fe)

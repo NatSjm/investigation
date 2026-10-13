@@ -4,7 +4,7 @@ title: "REPO_MAP"
 description: "Ranked architectural map of BE + FE + docs; read first, then one graph/<community>.md"
 generated:
   by: process:gen-graph
-  at: 2026-10-12
+  at: 2026-10-13
 status: stable
 ---
 # REPO_MAP
@@ -159,7 +159,7 @@ status: stable
 - `hook:useUpsertParameter` -> `endpoint:PUT /api/v1/admin/parameters/{key}` -> `class:AdminController`
 
 ## Spec coverage
-- `spec:ADM-001`: code only - no spec file in docs repo (be core/src/main/kotlin/harbor/manager/AdminManager.kt:25; fe src/features/admin/admin.types.ts:11; fe src/features/admin/api/useImportBatches.ts:10; fe src/features/admin/api/useImportBatches.ts:22; fe src/features/admin/api/useParameters.ts:20; fe src/features/admin/api/useParameters.ts:9; fe src/features/admin/index.ts:6)
+- `spec:ADM-001`: spec + code (status draft; be core/src/main/kotlin/harbor/manager/AdminManager.kt:25; fe src/features/admin/admin.types.ts:11; fe src/features/admin/api/useImportBatches.ts:10; fe src/features/admin/api/useImportBatches.ts:22; fe src/features/admin/api/useParameters.ts:20; fe src/features/admin/api/useParameters.ts:9; fe src/features/admin/index.ts:6)
 - `spec:CLI-001`: spec + code (status stable; be core/src/main/kotlin/harbor/manager/ClientManager.kt:26; fe src/features/clients/api/useClientOverview.ts:10; fe src/features/clients/api/useClientRole.ts:10; fe src/features/clients/api/useClientSearch.ts:10; fe src/features/clients/api/useClientSearch.ts:24; fe src/features/clients/clients.types.ts:17; fe src/features/clients/index.ts:6)
 - `spec:client_role_classification`: spec + code (status stable; be core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24)
 - `spec:COV-001`: code only - no spec file in docs repo (be core/src/main/kotlin/harbor/manager/CoverManager.kt:26; fe src/features/cover/api/useCoverQuote.ts:11; fe src/features/cover/api/useCoverSummary.ts:10; fe src/features/cover/api/useCoverSummary.ts:23; fe src/features/cover/cover.types.ts:13; fe src/features/cover/index.ts:6)

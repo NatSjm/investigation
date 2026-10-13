@@ -11,7 +11,7 @@ modules; external systems are reached with plain REST calls and tokens from envi
 | `coverage-matrix.ps1` | analytics: BR -> story -> scenario coverage, badges, calculations' worked examples / audits -> `generated/analytics/coverage-matrix.md|json` | - |
 | `build-index.ps1` | regenerate every `index.md` (reserved OKF file) from concept frontmatter with trust badges; `-Check` for CI | - |
 | `okf-validate.ps1` | OKF v0.2 §11 conformance + provenance/trust warnings for the whole bundle (`-Strict`, `-MaxWarnings N`) | - |
-| `validate-frontmatter.ps1` | repo-specific keys on `Feature Spec` / `Attested Computation` concepts (ID format, BR numbering, calculation links) | - |
+| `validate-frontmatter.ps1` | repo-specific keys on `Feature Spec` / `Attested Computation` concepts (ID format, BR numbering, calculation and flow links both ways, `parameter_set` keys in `## Parameters` tables vs `generated/be/parameters.md` in both directions) | - |
 | `validate-work-items.ps1` | `work-items/*.yml` against `_schema.yml` rules (BR citations exist in the spec, estimates, subtasks <= 8 h) | - |
 | `migration-status.ps1` | migration plan: per context the lifecycle runs still due (skeleton, legacy merge, calculation audit, owner decision) with their commands, pending legacy pages, unaudited calculations -> `migration/<scope>.md` (`-Scope all|<ctx>`, `-Print`) | - |
 | `map-paths.ps1` | changed code paths -> affected specs (uses `docs-map.yml`) | - |

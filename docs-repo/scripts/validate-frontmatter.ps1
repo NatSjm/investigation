@@ -66,5 +66,37 @@ if (Test-Path $flowDir) {
     }
 }
 
+# parameter_set keys: a calculation's `## Parameters` section and a feature spec's `## Parameters` section may name only
+# keys that exist in the generated catalogue, and every catalogue key must be named by a calculation or a feature spec
+# outside the admin context (the admin spec maps keys to owners; it is not itself the owner of a meaning)
+$catalogue = Join-Path $repo 'generated/be/parameters.md'
+if (Test-Path $catalogue) {
+    $ct = [IO.File]::ReadAllText($catalogue, [Text.UTF8Encoding]::new($false))
+    $known = @([regex]::Matches($ct, '(?m)^\| `(?<k>[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+)` \|') | ForEach-Object { $_.Groups['k'].Value })
+    $keyRx = '`(?<k>[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+)`'
+    $explained = @{}
+    $docs = @(Get-ChildItem (Join-Path $repo 'domain\calculations') -Filter '*.md' | Where-Object { $_.Name -notmatch '^(_template|index)\.md$' }) +
+            @(Get-ChildItem (Join-Path $repo 'features') -Recurse -Filter '*.md' | Where-Object { $_.Name -match '^[A-Z][A-Z0-9]+-\d{3}\.md$' })
+    foreach ($d in $docs) {
+        $dt = [IO.File]::ReadAllText($d.FullName, [Text.UTF8Encoding]::new($false))
+        $rel = $d.FullName.Substring($repo.Length + 1).Replace('\', '/')
+        $isAdmin = $dt -match '(?m)^context:\s*admin\s*$'
+        $section = if ($dt -match '(?ms)^## Parameters\s*\r?\n(.*?)(?=^## |\z)') { $Matches[1] } else { '' }
+        # only the first cell of the Parameters table is checked for unknown keys (prose and other cells also use `table.column` tokens)
+        foreach ($line in ($section -split '\r?\n' | Where-Object { $_ -match '^\|' -and $_ -notmatch '^\|\s*(Key\b|-)' })) {
+            $firstCell = ($line.TrimStart('|') -split '\|')[0]
+            foreach ($m in [regex]::Matches($firstCell, $keyRx)) {
+                $k = $m.Groups['k'].Value
+                if ($known -notcontains $k) { $errors += "$rel : parameter ``$k`` is not in generated/be/parameters.md (unknown key or stale catalogue)" }
+            }
+        }
+        if (-not $isAdmin) { foreach ($m in [regex]::Matches($dt, $keyRx)) { $explained[$m.Groups['k'].Value] = $true } }
+    }
+    foreach ($k in $known) {
+        if (-not $explained.ContainsKey($k)) { $errors += "generated/be/parameters.md : ``$k`` is named by no calculation or feature spec - document its meaning (calculation ``## Parameters`` or a business rule)" }
+    }
+} else { Write-Host 'note: generated/be/parameters.md not found - parameter cross-check skipped (run the collector)' }
+
+
 if ($errors) { $errors | ForEach-Object { Write-Host "ERROR $_" -ForegroundColor Red }; exit 1 }
 Write-Host "OK: $($Paths.Count) file(s) valid" -ForegroundColor Green

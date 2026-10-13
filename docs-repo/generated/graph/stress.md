@@ -4,7 +4,7 @@ title: "Graph: stress (be+fe)"
 description: "Stress test per scenario: monthly exposure table by city or transport mode plus the transport price chart."
 generated:
   by: process:gen-graph
-  at: 2026-10-12
+  at: 2026-10-13
 status: stable
 ---
 # Graph: stress (be+fe)

@@ -4,7 +4,7 @@ title: "Graph: clients (be+fe)"
 description: "Client search, client overview with product group cards (key indicators, sparklines, Start meeting / Prepare) and role classification."
 generated:
   by: process:gen-graph
-  at: 2026-10-12
+  at: 2026-10-13
 status: stable
 ---
 # Graph: clients (be+fe)

@@ -4,7 +4,7 @@ title: "Graph: admin (be+fe)"
 description: "Administration outside meetings: parameter sets with inline editing and the daily import batch monitor."
 generated:
   by: process:gen-graph
-  at: 2026-10-12
+  at: 2026-10-13
 status: stable
 ---
 # Graph: admin (be+fe)
@@ -102,4 +102,4 @@ status: stable
 - `component:ParametersPage` -uses-> `hook:useUpsertParameter` (exact)
 
 ## Specs touching this community
-- `spec:ADM-001` - be core/src/main/kotlin/harbor/manager/AdminManager.kt:25; fe src/features/admin/admin.types.ts:11; fe src/features/admin/api/useImportBatches.ts:10; fe src/features/admin/api/useImportBatches.ts:22; fe src/features/admin/api/useParameters.ts:20; fe src/features/admin/api/useParameters.ts:9; fe src/features/admin/index.ts:6
+- `spec:ADM-001` - `features/admin/ADM-001.md` - status draft; be core/src/main/kotlin/harbor/manager/AdminManager.kt:25; fe src/features/admin/admin.types.ts:11; fe src/features/admin/api/useImportBatches.ts:10; fe src/features/admin/api/useImportBatches.ts:22; fe src/features/admin/api/useParameters.ts:20; fe src/features/admin/api/useParameters.ts:9; fe src/features/admin/index.ts:6

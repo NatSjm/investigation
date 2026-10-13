@@ -17,9 +17,9 @@ okf_version: "0.2"
 * [architecture](architecture/) - 6 concept(s)
 * [contracts](contracts/) - 1 concept(s)
 * [domain](domain/) - 9 concept(s)
-* [features](features/) - 8 concept(s)
+* [features](features/) - 9 concept(s)
 * [flows](flows/) - 1 concept(s)
-* [generated](generated/) - 28 concept(s)
+* [generated](generated/) - 29 concept(s)
 * [migration](migration/) - 3 concept(s)
 
 # Concepts

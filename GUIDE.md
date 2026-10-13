@@ -55,7 +55,7 @@ session "Open client screen" opens `/present/<id>`, the client-facing window syn
 ```
 Look at `backend\docs\_generated\`: `codebase-map.md` (modules, layers), `components.md` (one row per class with
 dependencies and tables), `api-index.md` (34 operations from the contract joined to controllers), `events.md`,
-`db-schema.md`, `jobs.md`, `docs-tags.md` (`@docs` tags -> file:line). Add `-Check` to see the CI freshness gate.
+`db-schema.md`, `jobs.md`, `docs-tags.md` (`@docs` tags -> file:line), `parameters.md` (admin parameter catalogue). Add `-Check` to see the CI freshness gate.
 
 **Step 2 - Generate the frontend maps**:
 

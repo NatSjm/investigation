@@ -174,7 +174,7 @@ Key files worth reading once: `AGENTS.md` (the contract between people and agent
 | `gen-graph.ps1 [-Check]` | joins BE/FE maps + `@docs` tags + `docs-map.yml` rows (+ precise exports) into the graph; a mapping row gives the same `implemented-by` edges as a tag, so tags are optional at the start | `generated/be`, `generated/fe`, `contexts.yml` | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json`; prunes orphan community files | after publish; `-Check` in CI |
 | `build-index.ps1 [-Check]` | regenerates every `index.md` with trust badges | frontmatter of all concepts | `index.md` per folder | after any edit; hook; CI |
 | `okf-validate.ps1 [-Strict]` | OKF conformance: frontmatter, types, actors, staleness, provenance warnings | the bundle | errors/warnings | hook; CI; before commit |
-| `validate-frontmatter.ps1` | repo-specific keys: ID format, BR numbering, calculation links on specs and calculations | `features/`, `domain/calculations/` | OK / errors | hook; CI |
+| `validate-frontmatter.ps1` | repo-specific keys: ID format, BR numbering, calculation and flow links on specs and calculations; `parameter_set` keys vs `generated/be/parameters.md` | `features/`, `domain/calculations/` | OK / errors | hook; CI |
 | `validate-work-items.ps1` | work-item YAML against `_schema.yml`: BRs exist, estimates Fibonacci, subtasks <= 8 h | `work-items/*.yml` | OK / errors | after analyst runs; CI |
 | `coverage-matrix.ps1` | BR -> story -> scenario coverage, badges, calculation audits | specs, work items, feature files | `generated/analytics/coverage-matrix.md|json` | analytics questions; CI check |
 | `map-paths.ps1` | changed code paths -> affected specs | stdin paths + `docs-map.yml` | spec list | doc-sync, CI |

@@ -1,7 +1,7 @@
 {
   "generated": {
     "by": "process:gen-graph",
-    "at": "2026-10-12"
+    "at": "2026-10-13"
   },
   "communities": [
     {
@@ -2782,8 +2782,8 @@
       "label": "ADM-001",
       "community": "docs",
       "repo": "docs",
-      "location": "",
-      "note": "be core/src/main/kotlin/harbor/manager/AdminManager.kt:25; fe src/features/admin/admin.types.ts:11; fe src/features/admin/api/useImportBatches.ts:10; fe src/features/admin/api/useImportBatches.ts:22; fe src/features/admin/api/useParameters.ts:20; fe src/features/admin/api/useParameters.ts:9; fe src/features/admin/index.ts:6",
+      "location": "features/admin/ADM-001.md",
+      "note": "status draft; be core/src/main/kotlin/harbor/manager/AdminManager.kt:25; fe src/features/admin/admin.types.ts:11; fe src/features/admin/api/useImportBatches.ts:10; fe src/features/admin/api/useImportBatches.ts:22; fe src/features/admin/api/useParameters.ts:20; fe src/features/admin/api/useParameters.ts:9; fe src/features/admin/index.ts:6",
       "component": 1,
       "rank": 1.97,
       "degree": 2

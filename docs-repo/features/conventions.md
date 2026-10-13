@@ -60,8 +60,7 @@ Open questions → Change log. Keep empty sections with "none".
   (`contracts/conventions.md`).
 - Flows: `flows: [/flows/<name>.md]` lists the cross-context flows the feature takes part in; the flow lists the same
   specs in its `specs:`. `validate-frontmatter.ps1` checks both directions and the context pack includes the flow's
-  Purpose, Trigger, Participants, Steps and Invariants.
-- Tables: names from `generated/be/db-schema.md`.
+$1$2- Parameters: a feature that reads an admin parameter names the key in a business rule (for example `peer.scaling_default`);$2  the calculation that uses it owns the meaning in its `## Parameters` table; `ADM-001` owns scope, versioning and$2  validation and maps keys to owners. Keys must exist in `generated/be/parameters.md` (`validate-frontmatter.ps1`).$2- Tables: names from `generated/be/db-schema.md`.
 - Code: `code_refs` relative to the repo roots with prefix `be/` (harbor-backend) or `fe/` (harbor-frontend).
 
 ## Lifecycle of one spec (run by run)

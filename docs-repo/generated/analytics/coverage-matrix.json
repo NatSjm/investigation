@@ -1,5 +1,43 @@
 [
   {
+    "id": "ADM-001",
+    "context": "admin",
+    "rules": 11,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 4,
+    "badge": "draft · unverified",
+    "staleAfter": "",
+    "rulesWithoutStory": [
+      "BR-ADM-001-1",
+      "BR-ADM-001-2",
+      "BR-ADM-001-3",
+      "BR-ADM-001-4",
+      "BR-ADM-001-5",
+      "BR-ADM-001-6",
+      "BR-ADM-001-7",
+      "BR-ADM-001-8",
+      "BR-ADM-001-9",
+      "BR-ADM-001-10",
+      "BR-ADM-001-11"
+    ],
+    "rulesWithoutScenario": [
+      "BR-ADM-001-1",
+      "BR-ADM-001-2",
+      "BR-ADM-001-3",
+      "BR-ADM-001-4",
+      "BR-ADM-001-5",
+      "BR-ADM-001-6",
+      "BR-ADM-001-7",
+      "BR-ADM-001-8",
+      "BR-ADM-001-9",
+      "BR-ADM-001-10",
+      "BR-ADM-001-11"
+    ]
+  },
+  {
     "id": "CLI-001",
     "context": "clients",
     "rules": 9,

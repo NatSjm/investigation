@@ -4,7 +4,7 @@ title: "Components (BE)"
 description: "One row per class: layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix."
 generated:
   by: process:gen-docs
-  at: 2026-10-12
+  at: 2026-10-13
 status: stable
 ---
 # Components (BE)

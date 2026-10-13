@@ -25,7 +25,4 @@ Baseline curve from `baseline_price` (fed by market-data); shocks `{fromMonth, p
 compound multiplicatively from `fromMonth` onwards; `BASELINE` scenario has no shocks.
 
 ## Parameters
-Keys and defaults live in `parameter_set` (seeded by `V9__parameters.sql`): `role.min_volume`,
-`role.importer_threshold`, `role.exporter_threshold`, `tariff.rate`, `handling.cost`, `transport.cost`,
-`cover.default_premium_rate`, `projection.horizon_months_default`, `stress.rounding_scale`, `peer.scaling_default`.
-Quote the key, not the number, unless the number is in the worked example.
+Keys, seeded defaults per scope, readers and the validator are generated into `generated/be/parameters.md`; cite keys$1exactly as there. The `## Parameters` table of the calculation owns the meaning of a key (unit, bound, formula it feeds);$1the admin spec `ADM-001` owns scope, versioning and validation and maps every key to its owner.$1Quote the key, not the number, unless the number is in the worked example.
