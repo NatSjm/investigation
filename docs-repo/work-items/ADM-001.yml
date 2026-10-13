@@ -1,0 +1,177 @@
+feature: ADM-001
+project: HRB
+epic:
+  jira_key: null
+  summary: "Parameter sets and import monitor"
+  description: |
+    Admin interface for managing system parameters (values, scopes, versions) and monitoring daily movement import batches.
+    See [features/admin/ADM-001.md](/features/admin/ADM-001.md) - **draft · unverified**.
+  labels: [administration, docs-generated, needs-spec-review]
+
+stories:
+  - id: S1
+    jira_key: null
+    summary: "List parameters with product group filter"
+    component: vertical
+    description: |
+      Admin views all parameter_set rows on `/admin/parameters`, filtered by product group.
+      Scope-specific parameters are resolved per BR-1 (global + product-group scope).
+    acceptance_criteria:
+      - rule: BR-ADM-001-1
+        gherkin: |
+          Given the admin is authenticated
+          When they visit /admin/parameters
+          Then all parameter_set rows are displayed ordered by key, scope, valid_from descending
+          
+      - rule: BR-ADM-001-1
+        gherkin: |
+          Given the admin is authenticated with product group "product1"
+          When they select productGroup filter
+          Then only rows with scope_product_group = "product1" or NULL are shown
+          
+      - rule: BR-ADM-001-6
+        gherkin: |
+          Given a parameter with future valid_from
+          When the admin views the parameters list
+          Then the row is displayed but marked as not in force (valid_from > today)
+    estimate: 5
+    labels: []
+    depends_on: []
+    subtasks:
+      - summary: "[BE] GET /api/v1/admin/parameters: implement listParameters in AdminController + ParameterService.listParameters"
+        estimate_hours: 6
+      - summary: "[BE] ParameterService: query parameter_set with product-group and global scope filtering (BR-1)"
+        estimate_hours: 4
+      - summary: "[FE] ParametersPage: fetch and render parameters table with DataTable"
+        estimate_hours: 4
+      - summary: "[FE] useParameters hook: GET /admin/parameters with optional productGroup query param"
+        estimate_hours: 2
+      - summary: "[FE] ParametersPage: add productGroup filter dropdown (BR-1)"
+        estimate_hours: 3
+      - summary: "[TEST] Gherkin: list parameters filtered by product group (BR-1, BR-6)"
+        estimate_hours: 3
+
+  - id: S2
+    jira_key: null
+    summary: "Upsert parameter value with inline validation"
+    component: vertical
+    description: |
+      Admin edits a parameter value or valid_from date on `/admin/parameters`.
+      Changes create a new version (new row) or update existing row on the same valid_from date (BR-4).
+      Validation rejects unknown keys and invalid values per parameter type (BR-2, BR-3).
+    acceptance_criteria:
+      - rule: BR-ADM-001-2
+        gherkin: |
+          Given a ParameterRow with an unknown key "unknown.key"
+          When the admin edits and saves the value
+          Then the request returns 400 "Unknown parameter key"
+          
+      - rule: BR-ADM-001-3
+        gherkin: |
+          Given role.importer_threshold parameter
+          When the admin enters value "1.5" (outside 0..1)
+          Then the save fails with 400 validation error
+          
+      - rule: BR-ADM-001-3
+        gherkin: |
+          Given projection.horizon_months_default parameter
+          When the admin enters value "11" (outside 12..60)
+          Then the save fails with 400 validation error
+          
+      - rule: BR-ADM-001-4
+        gherkin: |
+          Given an existing parameter with key "tariff.rate", scope_product_group="product1", valid_from="2026-10-01"
+          When the admin edits the value to "0.15" and keeps valid_from
+          Then the row is updated in place, not inserted
+          
+      - rule: BR-ADM-001-4
+        gherkin: |
+          Given an existing parameter with valid_from="2026-10-01"
+          When the admin changes valid_from to "2026-11-01"
+          Then a new row is inserted, the old row remains as history
+          
+      - rule: BR-ADM-001-5
+        gherkin: |
+          Given an authenticated admin
+          When they save a parameter edit
+          Then updated_by is set to the authenticated user, not from the request body
+    estimate: 8
+    labels: []
+    depends_on: [S1]
+    subtasks:
+      - summary: "[BE] PUT /api/v1/admin/parameters/{key}: implement upsertParameter in AdminController"
+        estimate_hours: 4
+      - summary: "[BE] ParameterService.upsertParameter: insert new row or update existing (BR-4)"
+        estimate_hours: 5
+      - summary: "[BE] ParameterValidator: validate key constants and per-key range/type rules (BR-2, BR-3)"
+        estimate_hours: 6
+      - summary: "[BE] Ensure updated_by from authentication context, not request (BR-5)"
+        estimate_hours: 2
+      - summary: "[FE] ParameterRow: edit modal for value and valid_from inline editing"
+        estimate_hours: 5
+      - summary: "[FE] useUpsertParameter hook: PUT /admin/parameters/{key} with scope/value payload"
+        estimate_hours: 3
+      - summary: "[FE] ParameterRow: show validation errors on save failure (400 response)"
+        estimate_hours: 2
+      - summary: "[TEST] Gherkin: upsert parameter with validation, version creation, update-in-place (BR-2..5)"
+        estimate_hours: 4
+
+  - id: S3
+    jira_key: null
+    summary: "List import batches and trigger manual run"
+    component: vertical
+    description: |
+      Admin monitors the 50 newest daily movement import batches on `/admin/imports` and can trigger a manual run.
+      Import status (RUNNING, DONE, FAILED) disables the trigger button while running (BR-10, BR-11).
+    acceptance_criteria:
+      - rule: BR-ADM-001-10
+        gherkin: |
+          Given the admin visits /admin/imports
+          When the page loads
+          Then the 50 newest import_batch rows are displayed, sorted by received_at descending
+          
+      - rule: BR-ADM-001-11
+        gherkin: |
+          Given no new files since the last import
+          When the admin clicks "Run import now"
+          Then the response is 202 with a DONE batch and source_file = "(no new files)"
+          
+      - rule: BR-ADM-001-11
+        gherkin: |
+          Given new XLS files are available
+          When the admin clicks "Run import now"
+          Then the response is 202 with a RUNNING batch; the page disables the button
+          
+      - rule: BR-ADM-001-11
+        gherkin: |
+          Given a RUNNING batch
+          When the batch completes (status changes to DONE or FAILED)
+          Then the trigger button re-enables
+    estimate: 5
+    labels: []
+    depends_on: []
+    subtasks:
+      - summary: "[BE] GET /api/v1/admin/imports: implement listImportBatches in AdminController + AdminManager"
+        estimate_hours: 3
+      - summary: "[BE] AdminManager: query import_batch limit 50 order by received_at DESC (BR-10)"
+        estimate_hours: 2
+      - summary: "[BE] POST /api/v1/admin/imports/run: implement triggerImport in AdminController + AdminManager"
+        estimate_hours: 4
+      - summary: "[BE] AdminManager.triggerImport: delegate to MovementImportService, return first batch or DONE status (BR-11)"
+        estimate_hours: 3
+      - summary: "[FE] ImportsPage: render import batches table with status badges (RUNNING/DONE/FAILED)"
+        estimate_hours: 4
+      - summary: "[FE] useImportBatches hook: GET /admin/imports, refresh on interval"
+        estimate_hours: 2
+      - summary: "[FE] useTriggerImport hook: POST /admin/imports/run with retry on transient errors"
+        estimate_hours: 3
+      - summary: "[FE] ImportsPage: disable 'Run import now' button when batch status = RUNNING"
+        estimate_hours: 2
+      - summary: "[TEST] Gherkin: list batches, trigger import with new/no-new-files response (BR-10, BR-11)"
+        estimate_hours: 3
+
+questions:
+  - "Who is allowed to edit parameters? The spec lists this as UNVERIFIED in Open questions."
+  - "Should an edit of a key that an open session has snapshotted warn the administrator (BR-9)?"
+  - "Is deletion of a parameter value a future feature or out of scope?"
+  - "The quote service reads cover.default_premium_rate but has no spec document yet; verify coverage."
