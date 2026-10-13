@@ -16,9 +16,10 @@ The repository rules (read order, contracts, conventions, commands, where busine
 Prefer `#file`, `#sym`, `#selection` over `@workspace` / `#codebase`. Start from `#file:docs/_generated/index.md`.
 
 ## Custom agents and prompts in this repo
-- Agents (`.github/agents/`): `code-reader` (read-only navigator, max 3 files), `impact-analyst` (blast-radius checklist).
+- Agents (`.github/agents/`): `code-reader` (read-only navigator, max 3 files), `impact-analyst` (blast-radius checklist),
+  `docs-tagger` (adds missing `@docs` KDoc tags from `contexts.yml`, comment lines only, one PR per context).
 - Prompts (`.github/prompts/`): `/explain-module` (explains a context: manager + its dependencies; default `product1`), `/find-spec-code` (default `P1-001`),
-  `/add-endpoint` (contract-first checklist).
+  `/add-endpoint` (contract-first checklist), `/tag-docs <context|all>` (inventory from `scripts/docs/tag-candidates.ps1`, then the tags).
 - Hook `.github/hooks/docs-maps.json` runs `gen-all.ps1 -Check` when an agent session stops.
 
 ## Docs-repo tools

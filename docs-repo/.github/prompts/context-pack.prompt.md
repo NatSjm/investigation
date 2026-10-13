@@ -6,7 +6,7 @@ agent: agent
 tools: ['read', 'execute']
 ---
 Task: ${input:task:P1-001}
-Budget (lines): ${input:budget:400}
+Budget (lines): ${input:budget:500}
 
 1. Run `./scripts/context-pack.ps1 -Task "${input:task}" -Budget ${input:budget}`.
 2. Read the produced `.context/*.md` file.

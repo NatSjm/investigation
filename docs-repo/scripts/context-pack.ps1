@@ -11,14 +11,14 @@
   Spec ID (P1-001), calculation name (stress_test_monthly), graph node id (topic:..., context:product2,
   feature:stress, table:...), or free text (matched against title/description/tags/aliases of specs and calculations).
 .PARAMETER Budget
-  Maximum lines in the pack (default 400). Lower-ranked sections are truncated first.
+  Maximum lines in the pack (default 500). Lower-ranked sections are truncated first.
 .EXAMPLE
   .\context-pack.ps1 -Task P1-001
   .\context-pack.ps1 -Task "transport mode toggle on the stress table" -Budget 300 -Print
 #>
 param(
     [Parameter(Mandatory)][string]$Task,
-    [int]$Budget = 400,
+    [int]$Budget = 500,
     [string]$OutDir = '.context',
     [int]$Depth = 2,
     [switch]$Print

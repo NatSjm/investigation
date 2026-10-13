@@ -104,15 +104,15 @@ status: stable
 | `DailyMovementImportJob` | job | core | Component, Scheduled | `ImportManager` | `goods_movement` |  | `core/src/main/kotlin/harbor/job/DailyMovementImportJob.kt:12` |
 | `MonthlySnapshotJob` | job | core | Component, Scheduled | `ImportManager` |  |  | `core/src/main/kotlin/harbor/job/MonthlySnapshotJob.kt:14` |
 | `AdminManager` | manager | core | Service | `ParameterService`, `ParameterValidator`, `MovementImportService`, `CurrentUser` |  | `ADM-001` | `core/src/main/kotlin/harbor/manager/AdminManager.kt:24` |
-| `ClientManager` | manager | core | Service | `ClientProfileService`, `ClientRoleDao`, `ClientRoleService`, `ClientOverviewService` |  |  | `core/src/main/kotlin/harbor/manager/ClientManager.kt:25` |
+| `ClientManager` | manager | core | Service | `ClientProfileService`, `ClientRoleDao`, `ClientRoleService`, `ClientOverviewService` |  | `CLI-001` | `core/src/main/kotlin/harbor/manager/ClientManager.kt:25` |
 | `CoverManager` | manager | core | Service | `CoverPolicyDao`, `ProjectionService`, `CoverRatioService`, `CoverQuoteService`, `ClientProfileService` |  | `COV-001` | `core/src/main/kotlin/harbor/manager/CoverManager.kt:25` |
-| `ImportManager` | manager | core | Service | `MovementImportService` |  |  | `core/src/main/kotlin/harbor/manager/ImportManager.kt:18` |
+| `ImportManager` | manager | core | Service | `MovementImportService` |  | `IMP-001` | `core/src/main/kotlin/harbor/manager/ImportManager.kt:18` |
 | `MarketManager` | manager | core | Service | `ScenarioService`, `BaselinePriceService` |  | `MKT-001` | `core/src/main/kotlin/harbor/manager/MarketManager.kt:21` |
-| `MeetingManager` | manager | core | Service | `MeetingSessionDao`, `SessionClientConfigDao`, `ClientProfileService`, `ParameterService`, `RoleOverrideValidator`, `SessionEventsPublisher`, `CurrentUser` |  |  | `core/src/main/kotlin/harbor/manager/MeetingManager.kt:37` |
-| `Product1Manager` | manager | core | Service | `ProjectionService`, `ProjectionInputAssembler`, `PeerSimulationService`, `ClientRoleService`, `MovementInputValidator` |  |  | `core/src/main/kotlin/harbor/manager/Product1Manager.kt:26` |
+| `MeetingManager` | manager | core | Service | `MeetingSessionDao`, `SessionClientConfigDao`, `ClientProfileService`, `ParameterService`, `RoleOverrideValidator`, `SessionEventsPublisher`, `CurrentUser` |  | `MTG-001` | `core/src/main/kotlin/harbor/manager/MeetingManager.kt:37` |
+| `Product1Manager` | manager | core | Service | `ProjectionService`, `ProjectionInputAssembler`, `PeerSimulationService`, `ClientRoleService`, `MovementInputValidator` |  | `P1-001` | `core/src/main/kotlin/harbor/manager/Product1Manager.kt:26` |
 | `Product2Manager` | manager | core | Service | `ProjectionService`, `ProjectionInputAssembler`, `PeerSimulationService`, `ClientRoleService`, `MovementInputValidator` |  | `P2-001` | `core/src/main/kotlin/harbor/manager/Product2Manager.kt:26` |
-| `ReportManager` | manager | core | Service | `MeetingReportDao`, `MeetingSessionDao`, `ReportPayloadService`, `ReportRenderRequester`, `DocumentServiceClient` |  |  | `core/src/main/kotlin/harbor/manager/ReportManager.kt:26` |
-| `StressManager` | manager | core | Service | `StressTestService`, `StressTestResultDao`, `MarketScenarioDao`, `ClientRoleService` |  |  | `core/src/main/kotlin/harbor/manager/StressManager.kt:30` |
+| `ReportManager` | manager | core | Service | `MeetingReportDao`, `MeetingSessionDao`, `ReportPayloadService`, `ReportRenderRequester`, `DocumentServiceClient` |  | `RPT-001` | `core/src/main/kotlin/harbor/manager/ReportManager.kt:26` |
+| `StressManager` | manager | core | Service | `StressTestService`, `StressTestResultDao`, `MarketScenarioDao`, `ClientRoleService` |  | `STR-001` | `core/src/main/kotlin/harbor/manager/StressManager.kt:30` |
 | `ClientMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/ClientMapper.kt:21` |
 | `CoverMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/CoverMapper.kt:18` |
 | `ImportBatchMapper` | mapper | core | object |  |  |  | `core/src/main/kotlin/harbor/mapper/ImportBatchMapper.kt:8` |
@@ -156,14 +156,14 @@ status: stable
 | `ScenarioService` | service | core | Service | `MarketScenarioDao`, `ScenarioValidator` |  |  | `core/src/main/kotlin/harbor/service/ScenarioService.kt:20` |
 | `SessionScopeService` | service | core | Service | `MeetingSessionDao`, `SessionClientConfigDao` |  |  | `core/src/main/kotlin/harbor/service/SessionScopeService.kt:17` |
 | `StressTestService` | service | core | Service | `ProjectionInputAssembler`, `BaselinePriceService`, `CoverRatioService` |  |  | `core/src/main/kotlin/harbor/service/StressTestService.kt:26` |
-| `CoverRatioCalculator` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/CoverRatioCalculator.kt:23` |
+| `CoverRatioCalculator` | utils | core | object |  |  | `cover_ratio` | `core/src/main/kotlin/harbor/utils/CoverRatioCalculator.kt:23` |
 | `MonthGrid` | utils | core | class |  |  |  | `core/src/main/kotlin/harbor/utils/MonthGrid.kt:13` |
-| `PeerBenchmark` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19` |
-| `ProjectionAggregator` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36` |
-| `RoleClassifier` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24` |
+| `PeerBenchmark` | utils | core | object |  |  | `peer_benchmark_simulation` | `core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19` |
+| `ProjectionAggregator` | utils | core | object |  |  | `monthly_projection`, `horizon_totals` | `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36` |
+| `RoleClassifier` | utils | core | object |  |  | `client_role_classification` | `core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24` |
 | `Rounding` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/Rounding.kt:16` |
-| `ScenarioPricePath` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19` |
-| `StressTestCalculator` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23` |
+| `ScenarioPricePath` | utils | core | object |  |  | `scenario_price_path` | `core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19` |
+| `StressTestCalculator` | utils | core | object |  |  | `stress_test_monthly` | `core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23` |
 | `MovementInputValidator` | validator | core | Component |  |  |  | `core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:16` |
 | `ParameterValidator` | validator | core | Component |  |  |  | `core/src/main/kotlin/harbor/validator/ParameterValidator.kt:16` |
 | `RoleOverrideValidator` | validator | core | Component |  |  |  | `core/src/main/kotlin/harbor/validator/RoleOverrideValidator.kt:15` |

@@ -47,15 +47,19 @@ The tables are empty after the first start. The daily import job also runs on a 
 curl -X POST http://localhost:8080/api/v1/admin/imports/run
 ```
 
-This pulls `movements_2026-10-08.tsv` from the file-exchange stub (three rows: two for client CR-1001 on Product 1,
-one for CR-2001 on Product 2), parses it, stores `goods_movement` and publishes `harbor.imports.movements-loaded`.
-The Admin > Imports page shows the batch (3 rows, DONE). Re-running reports "(no new files)".
+This pulls the two files the file-exchange stub offers (`wiremock/mappings/file-exchange.json`): `movements_2026-10-08.tsv`
+(three rows for one month, the minimal end-to-end case) and `movements_2026-10-11.tsv` (204 rows: twelve months
+2025-10..2026-09 for CR-1001 on Product 1 and a small Product 2 flow, CR-1002 on Product 1, CR-2001 on Product 2, with a
+mild seasonal shape). Each file is parsed, stored in `goods_movement` and announced on `harbor.imports.movements-loaded`.
+The Admin > Imports page shows both batches (3 and 204 rows, DONE). Re-running reports "(no new files)".
 
 The import also rolls the imported months up into `movement_monthly`, which the client cards (12-month volume and
-value, role) read; the monthly snapshot job re-rolls the closed month on the 1st at 03:00. After the import Aldmoor
-Trading Co shows volume 140 and value 1,850.00 on Product 1; the role stays UNDETERMINED because that volume is below
-the `role.min_volume` parameter (Admin > Parameters). For numbers in the projection tables use **Model movements**
-inside a session (step 3 of the ten-minute test) or `PUT /session/product1/movements`; both are per session.
+value, sparkline, role) read; the monthly snapshot job re-rolls the closed month on the 1st at 03:00. After the import
+Aldmoor Trading Co shows about 3,970 volume / 51,238 value on Product 1 with a rising sparkline; Carrow Goods is an
+EXPORTER on Product 1, Meridia an IMPORTER on Product 2. A role shown as UNDETERMINED after a new import is the previous
+stored decision: open the client's role panel (or `GET /clients/{id}/role?productGroup=product1`) to re-run the
+classification. For numbers in the projection tables use **Model movements** inside a session (step 3 of the ten-minute
+test) or `PUT /session/product1/movements`; both are per session.
 
 Clients exist in the stub registry: **Aldmoor Trading Co** (CR-1001, Product 1), **Carrow Goods Ltd** (CR-1002),
 **Meridia Freight Works** (CR-2001, Product 2). A client gets a local profile the first time a search returns it.

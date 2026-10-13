@@ -82,7 +82,7 @@ dl.indicators { display: grid; grid-template-columns: max-content 1fr; gap: 4px 
 .product-card dl, .session-facts dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 8px 0; }
 dt { color: var(--muted); }
 dd { margin: 0; font-weight: 600; }
-.sparkline { height: 60px; margin: 8px 0; }
+.sparkline { height: 80px; margin: 8px 0; }
 
 /* session layout */
 .session-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; padding: 10px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }

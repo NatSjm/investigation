@@ -13,7 +13,9 @@ code-repo-kit/
     .github/instructions/*.instructions.md  applyTo-scoped: api (contract-first), calculations (utils/), kafka, migrations, tests, layers
     .github/agents/code-reader.agent.md     read-only navigator (maps + manager + components.md, max 3 files)
     .github/agents/impact-analyst.agent.md  blast-radius checklist across backend / frontend / docs
-    .github/prompts/*.prompt.md             /explain-module (a context), /find-spec-code, /add-endpoint
+    .github/agents/docs-tagger.agent.md     adds missing @docs tags from contexts.yml (comment lines only, one PR per context)
+    .github/prompts/*.prompt.md             /explain-module (a context), /find-spec-code, /add-endpoint, /tag-docs
+    scripts/docs/tag-candidates.ps1         inventory for docs-tagger: manager / calculation -> current tag, proposed tag, status
     .github/hooks/docs-maps.json            agentStop hook: gen-all.ps1 -Check
     .github/workflows/copilot-setup-steps.yml  JDK 21 + mvn -pl core -am generate-sources for the coding agent
     scripts/docs/gen-*.ps1, gen-all.ps1     generators -> docs/_generated/*.md (+ -Check gate)
@@ -21,6 +23,7 @@ code-repo-kit/
   fe/                     -> harbor-frontend (React / TypeScript / openapi-fetch)
     AGENTS.md, .github/...                  same pattern for feature folders (+ api-client instructions, Node 24 setup steps)
     scripts/docs/gen-*.ps1                  codebase-map (features), routes, types-index, docs-tags
+    scripts/docs/tag-candidates.ps1         inventory for docs-tagger: barrel / types / hooks -> current tag, proposed tag, status
     scripts/docs/gen-graph-fe.ts            precise graph export via the TypeScript compiler API (existing devDependency)
   shared/
     check-file-size.ps1                     line-cap gate with baseline (token hygiene)

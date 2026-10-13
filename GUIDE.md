@@ -101,7 +101,7 @@ Look at `docs-repo\index.md` and `docs-repo\features\index.md`: one line per con
 .\docs-repo\scripts\context-pack.ps1 -Task P1-001
 code .\docs-repo\.context\p1-001.md
 ```
-400 lines: subject and badge, the spec body, its calculations with worked examples, the graph neighbourhood with
+Up to 500 lines: subject and badge, the spec body, its calculations with worked examples, the graph neighbourhood with
 `file:line`, the contract operations, the tables, related work items and tests, legacy pages. Try a free-text task:
 `-Task "transport mode toggle on the stress table"`.
 
@@ -185,9 +185,9 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 ### Code repositories (`code-repo-kit/be`, `fe`)
 
 `AGENTS.md` (read order: map -> manager or barrel -> one range), `.github/instructions/*.instructions.md`
-(path-scoped rules: contract-first API, calculations, Kafka, migrations, tests, layers), agents `code-reader` and
-`impact-analyst`, prompts `/explain-module`, `/find-spec-code`, `/add-endpoint`, the generators under
-`scripts/docs/`, an `agentStop` hook that runs `gen-all.ps1 -Check`, CI `docs-maps.yml` (freshness gate on PR
+(path-scoped rules: contract-first API, calculations, Kafka, migrations, tests, layers), agents `code-reader`,
+`impact-analyst` and `docs-tagger`, prompts `/explain-module`, `/find-spec-code`, `/add-endpoint`, `/tag-docs`, the generators
+and `tag-candidates.ps1` under `scripts/docs/`, an `agentStop` hook that runs `gen-all.ps1 -Check`, CI `docs-maps.yml` (freshness gate on PR
 only; publication is the docs repo's collector), `copilot-setup-steps.yml` for the cloud coding agent.
 
 ---
@@ -197,7 +197,11 @@ only; publication is the docs repo's collector), `copilot-setup-steps.yml` for t
 ### 4.1 Preparing a code repository (once)
 
 1. `apply-kit.ps1 -Flavour be -Target <repo>` (and `fe`).
-2. Add `@docs <SPEC-ID>` to every manager KDoc and `@docs <calculation_name>` to every calculation in `utils/`.
+2. Add `@docs <SPEC-ID>` to every manager KDoc and `@docs <calculation_name>` to every calculation in `utils/` (FE: `@module` +
+   `@docs` on the barrel, types file and hooks). By hand, or with the `docs-tagger` agent: `scripts/docs/tag-candidates.ps1`
+   lists every candidate with its current tag, the proposed ID from `contexts.yml` and a status (`tagged / PROPOSE / REVIEW /
+   BLOCKED`); `/tag-docs <context|all>` then writes the comment lines, one PR per context, and a person reviews the table.
+   Only `contexts.yml` must exist first; the spec files come later.
 3. Run `gen-all.ps1`; read the maps; fix the generator where the real code differs from the simulated one.
 4. Enable the CI workflow: on PR, `gen-all.ps1 -Check` + file-size cap. Nothing on main: the docs repo pulls the maps and
    contracts with its collector, so the code repo needs no docs-repo credentials.

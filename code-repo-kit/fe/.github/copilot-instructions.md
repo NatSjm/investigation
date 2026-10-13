@@ -18,8 +18,9 @@ Prefer `#file`, `#sym`, `#selection` over `@workspace` / `#codebase`. Start from
 for backend endpoints use the backend `docs/_generated/api-index.md` or `#codeMap`, not backend source.
 
 ## Custom agents and prompts in this repo
-- Agent (`.github/agents/`): `code-reader` (read-only navigator, max 3 files).
-- Prompt (`.github/prompts/`): `/explain-feature` (default `stress`).
+- Agents (`.github/agents/`): `code-reader` (read-only navigator, max 3 files), `docs-tagger` (adds missing `@module` / `@docs`
+  JSDoc tags from `contexts.yml`, comment lines only, one PR per feature).
+- Prompts (`.github/prompts/`): `/explain-feature` (default `stress`), `/tag-docs <feature|all>` (inventory from `scripts/docs/tag-candidates.ps1`, then the tags).
 - Hook `.github/hooks/docs-maps.json` runs `gen-all.ps1 -Check` when an agent session stops.
 
 ## Docs-repo tools

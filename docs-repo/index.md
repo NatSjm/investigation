@@ -19,7 +19,7 @@ okf_version: "0.2"
 * [features](features/) - 8 concept(s)
 * [flows](flows/) - 1 concept(s)
 * [generated](generated/) - 28 concept(s)
-* [migration](migration/) - 2 concept(s)
+* [migration](migration/) - 3 concept(s)
 
 # Concepts
 * [Harbor documentation repository](README.md) - Entry point for humans — what this repo is, how Copilot agents use it, and where things live; agents start at index.md instead. · unverified

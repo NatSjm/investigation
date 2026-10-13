@@ -43,7 +43,7 @@ See `references/pack-anatomy.md` for the exact section markers the agents rely o
 - If the pack has no graph section, the graph is missing or stale: run `./scripts/gen-graph.ps1` or say so.
 
 ## When the pack is not enough (escalate in this order, stop at the first step that answers)
-1. Rebuild wider: `./scripts/context-pack.ps1 -Task <x> -Budget 800` - truncated sections come back.
+1. Rebuild wider: `./scripts/context-pack.ps1 -Task <x> -Budget 1000` - truncated sections come back.
 2. Follow the pointer of the truncated or thin section: open that one file under `generated/` (schema, contract, map).
 3. Go deeper in the graph: `./scripts/graph-query.ps1 -Node <id> -Depth 3`, or start from the table / topic / class
    node in question - no files opened.

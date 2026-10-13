@@ -89,7 +89,7 @@ which agents never see (the pack strips it) and people can fold. Our repository-
 `code_refs`, `api`, `events`, `tables`, `calculations`, `jira`, `tests`) are allowed extensions.
 
 ### 2.6 Context packs
-`scripts/context-pack.ps1 -Task <x>` writes `.context/<task>.md`: a ranked, budgeted (default 400 lines) selection
+`scripts/context-pack.ps1 -Task <x>` writes `.context/<task>.md`: a ranked, budgeted (default 500 lines) selection
 for one task. Sections in priority order: subject and badge, spec body, calculations, graph neighbourhood,
 contracts, tables, related work items and tests, legacy pages, and a footer naming what was truncated. Lower
 sections are cut first. The pack is deterministic, attachable to a PR, and cheap: one read instead of twenty tool

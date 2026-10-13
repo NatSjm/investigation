@@ -106,7 +106,7 @@ pattern and the file discipline but do not adopt its CLI (no third-party tooling
 | Spec size cap (~300 lines) and diagram cap (<= 25 nodes) | keeps any single read bounded |
 
 ### 3.5 Task-scoped context packs (lever a)
-`scripts/context-pack.ps1 -Task <spec ID | calculation | graph node | free text> [-Budget 400] [-Print]` writes
+`scripts/context-pack.ps1 -Task <spec ID | calculation | graph node | free text> [-Budget 500] [-Print]` writes
 `.context/<task>.md` (git-ignored). Sections in priority order, lower ones truncated when over budget: header with trust
 badge (`human-reviewed | machine-confirmed | unverified`, `STALE`), spec body or its key sections, linked calculations
 (formula + worked examples, never the Kotlin), depth-2 graph neighbourhood with `file:line`, the OpenAPI `paths` of the

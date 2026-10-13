@@ -47,9 +47,15 @@ foreach ($f in $files) {
     foreach ($d in [regex]::Matches($code, $declRx)) {
         $name = $d.Groups[2].Value
         $start = $d.Index
-        # annotations right before the declaration (same text block above it)
-        $before = $t.Substring([Math]::Max(0, $start - 400), [Math]::Min(400, $start))
-        $annBlock = ($before -split '\*/')[-1]
+        # annotations directly above the declaration, then the KDoc block directly above those (any length)
+        $prefix = $t.Substring(0, $start)
+        $annBlock = [regex]::Match($prefix, '(?:@[\w.]+(?:\([^)]*\))?\s*)*$').Value
+        $kdocBlock = ''
+        $beforeAnns = $prefix.Substring(0, $prefix.Length - $annBlock.Length).TrimEnd()
+        if ($beforeAnns.EndsWith('*/')) {
+            $kdOpen = $beforeAnns.LastIndexOf('/**')
+            if ($kdOpen -ge 0) { $kdocBlock = $beforeAnns.Substring($kdOpen + 3, $beforeAnns.Length - $kdOpen - 5) }
+        }
         $anns = @([regex]::Matches($annBlock + $d.Value, '@(RestControllerAdvice|RestController|Service|Component|Configuration|Repository|Entity|SpringBootApplication)\b') | ForEach-Object { $_.Groups[1].Value } | Select-Object -Unique)
         $kind = @($anns)
         if ($code -match '@KafkaListener') { $kind += 'KafkaListener' }
@@ -74,9 +80,7 @@ foreach ($f in $files) {
         $tm = [regex]::Match($annBlock + $d.Value, '@Table\(\s*name\s*=\s*"(\w+)"')
         if ($tm.Success) { $tbl.Add($tm.Groups[1].Value.ToLower()) }
         foreach ($sq in [regex]::Matches($t, '(?i)\b(?:from|into|update|join)\s+(\w+)')) { $x = $sq.Groups[1].Value.ToLower(); if ($tables.Contains($x) -and -not $tbl.Contains($x)) { $tbl.Add($x) } }
-        $docs = @()
-        $kd = [regex]::Match($before, '(?s)/\*\*((?:(?!\*/).)*)\*/\s*(?:@[\w.]+(?:\([^)]*\))?\s*)*$')
-        if ($kd.Success) { $docs = @([regex]::Matches($kd.Groups[1].Value, '@docs\s+([\w.-]+)') | ForEach-Object { $_.Groups[1].Value }) }
+        $docs = @([regex]::Matches($kdocBlock, '@docs\s+([\w.-]+)') | ForEach-Object { $_.Groups[1].Value })
         $rows.Add([pscustomobject]@{ Name = $name; Layer = $layer; Module = $mod; Kind = ($kind | Select-Object -Unique) -join ', '; Deps = $deps; Super = $super; Tables = $tbl; Docs = $docs; Loc = "$rel`:$(Get-LineNumber $t $start)" })
     }
 }

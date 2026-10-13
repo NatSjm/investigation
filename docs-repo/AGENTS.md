@@ -52,7 +52,7 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
 
 | Purpose | Command |
 |---|---|
-| Task context pack | `./scripts/context-pack.ps1 -Task <ID|name|text> [-Budget 400]` |
+| Task context pack | `./scripts/context-pack.ps1 -Task <ID|name|text> [-Budget 500]` |
 | Validate bundle | `./scripts/okf-validate.ps1 -Strict`; `./scripts/validate-frontmatter.ps1`; `./scripts/validate-work-items.ps1` |
 | Rebuild indexes | `./scripts/build-index.ps1` (`-Check` in CI) |
 | Graph | `./scripts/gen-graph.ps1 [-Check]`; `./scripts/graph-query.ps1 -Node spec:P1-001 -Depth 2` / `-Files <paths>` / `-Find <text>` |
