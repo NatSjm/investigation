@@ -17,7 +17,7 @@ For any task about a feature, calculation, change or ticket:
 ```
 
 It writes `.context/<task>.md` (git-ignored, ~300-500 lines): the spec with its trust badge, linked calculations
-(formula + worked examples), the depth-2 graph neighbourhood (endpoints, classes, tables, topics, FE routes with
+(formula + worked examples), the flows it takes part in, the depth-2 graph neighbourhood (endpoints, classes, tables, topics, FE routes with
 `file:line`), the OpenAPI operations and tables involved, existing work items / tests, and legacy pages that mention
 the subject. **Read the pack, not the repository.** Open anything else only to answer a question the pack leaves
 open, and then only the `file:line` it names. Skill: `.github/skills/task-context/SKILL.md`.

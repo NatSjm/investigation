@@ -14,7 +14,7 @@ if (-not $Paths) {
         Where-Object { $_.Name -notmatch '^(_template|README|INDEX)\.md$' } | ForEach-Object FullName
 }
 
-$requiredFeature = 'id','title','context','status','owners','last_verified','code_refs','api','events','tables','calculations','jira','tests'
+$requiredFeature = 'id','title','context','status','owners','last_verified','code_refs','api','events','tables','calculations','flows','jira','tests'
 $requiredCalc    = 'name','title','used_by','code_refs','last_verified'
 $errors = @()
 
@@ -43,9 +43,26 @@ foreach ($p in $Paths) {
         if ($fm -match '(?m)^status:\s*(\w+)' -and $Matches[1] -notin 'draft','stable','deprecated') { $errors += "$p : bad status (OKF §5.4: draft|stable|deprecated)" }
     }
 
-    # referenced calculation files must exist
+    # referenced calculation and flow files must exist
     [regex]::Matches($fm, 'domain/calculations/[\w\-]+\.md') | ForEach-Object {
         if (-not (Test-Path (Join-Path $repo $_.Value))) { $errors += "$p : missing $($_.Value)" }
+    }
+    [regex]::Matches($fm, 'flows/[\w\-]+\.md') | ForEach-Object {
+        if (-not (Test-Path (Join-Path $repo $_.Value))) { $errors += "$p : missing $($_.Value)" }
+    }
+}
+
+# flows: every spec a flow names in `specs:` must exist (the other direction of the spec's `flows:` key)
+$specIds = @(Get-ChildItem (Join-Path $repo 'features') -Recurse -Filter '*.md' | Where-Object { $_.Name -match '^[A-Z][A-Z0-9]+-\d{3}\.md$' } | ForEach-Object { $_.BaseName })
+$flowDir = Join-Path $repo 'flows'
+if (Test-Path $flowDir) {
+    foreach ($ff in Get-ChildItem $flowDir -Filter '*.md' | Where-Object { $_.Name -notmatch '^(_template|index)\.md$' }) {
+        $ft = [IO.File]::ReadAllText($ff.FullName, [Text.UTF8Encoding]::new($false))
+        if ($ft -match '(?m)^specs:\s*\[(.*?)\]') {
+            foreach ($sid in ($Matches[1] -split ',' | ForEach-Object { $_.Trim().Trim('"') } | Where-Object { $_ })) {
+                if ($specIds -notcontains $sid) { $errors += "flows/$($ff.Name) : specs[] names $sid, no features/*/$sid.md" }
+            }
+        } else { $errors += "flows/$($ff.Name) : no specs[] list (a flow must name the specs it composes)" }
     }
 }
 

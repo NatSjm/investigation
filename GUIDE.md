@@ -101,7 +101,7 @@ Look at `docs-repo\index.md` and `docs-repo\features\index.md`: one line per con
 .\docs-repo\scripts\context-pack.ps1 -Task P1-001
 code .\docs-repo\.context\p1-001.md
 ```
-Up to 500 lines: subject and badge, the spec body, its calculations with worked examples, the graph neighbourhood with
+Up to 500 lines: subject and badge, the spec body, its calculations with worked examples, the flows it takes part in, the graph neighbourhood with
 `file:line`, the contract operations, the tables, related work items and tests, legacy pages. Try a free-text task:
 `-Task "transport mode toggle on the stress table"`.
 

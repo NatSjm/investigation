@@ -90,7 +90,7 @@ which agents never see (the pack strips it) and people can fold. Our repository-
 
 ### 2.6 Context packs
 `scripts/context-pack.ps1 -Task <x>` writes `.context/<task>.md`: a ranked, budgeted (default 500 lines) selection
-for one task. Sections in priority order: subject and badge, spec body, calculations, graph neighbourhood,
+for one task. Sections in priority order: subject and badge, spec body, calculations, flows, graph neighbourhood,
 contracts, tables, related work items and tests, legacy pages, and a footer naming what was truncated. Lower
 sections are cut first. The pack is deterministic, attachable to a PR, and cheap: one read instead of twenty tool
 calls. When it is not enough, the escalation order is fixed (wider budget, follow the pointer, deeper graph, a second

@@ -23,6 +23,7 @@ api: []                        # e.g. "GET /session/product1/overview"
 events: []                     # Kafka topics, e.g. harbor.imports.movements-loaded
 tables: []                     # DB tables
 calculations: []               # /domain/calculations/<name>.md
+flows: []                      # /flows/<name>.md this feature takes part in; the flow lists its specs in specs[] (both checked)
 jira: { epic: null }
 tests: []                      # test-design/features/<ID>.feature
 ---

@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Builds a task-scoped, budgeted context pack for an agent (analyst, spec-writer, test-designer, calc-auditor):
-  spec + trust badge, linked calculations (formula + worked examples), depth-2 graph neighbourhood, contract
+  spec + trust badge, linked calculations (formula + worked examples), the flows the spec takes part in, depth-2 graph neighbourhood, contract
   operations, tables, related work items / tests and legacy pages that mention the subject. No libraries.
 
   The pack is the only thing an agent should read for a task; everything else is reachable through the
@@ -133,6 +133,29 @@ if ($kind -eq 'spec' -and $file) {
     Add-Section 'Calculations' ($parts -join "`n`n") 2 'domain/calculations/'
 }
 
+# Flows this spec takes part in: listed in the spec (`flows:`) or naming the spec in their own `specs:` (both directions)
+if ($kind -eq 'spec' -and $file) {
+    $specId = [IO.Path]::GetFileNameWithoutExtension($file.Name)
+    $flowRefs = @(Get-List $fm 'flows' | ForEach-Object { ($_ -replace '^/', '') })
+    $flowDir = Join-Path $repo 'flows'
+    if (Test-Path $flowDir) {
+        foreach ($ff in Get-ChildItem $flowDir -Filter '*.md' | Where-Object { $_.Name -notmatch '^(_template|index)\.md$' }) {
+            if (@(Get-List (Get-Fm (Read-File $ff.FullName)) 'specs') -contains $specId) { $flowRefs += Rel $ff.FullName }
+        }
+    }
+    $flowRefs = @($flowRefs | Select-Object -Unique)
+    if ($flowRefs.Count) {
+        $parts = foreach ($f in $flowRefs) {
+            $fp = Join-Path $repo $f
+            if (-not (Test-Path $fp)) { "### $f`n_(missing file)_"; continue }
+            $ft = Read-File $fp; $ffm = Get-Fm $ft; $sources.Add($f)
+            $pieces = foreach ($h in 'Purpose', 'Trigger', 'Participants', 'Steps', 'Invariants and assumptions') { $s = Get-Section $ft $h; if ($s) { "**$h**`n$s" } }
+            "### $(Get-Val $ffm 'title') (``$f``) - badge: $(Get-Badge $ffm) - specs: $(@(Get-List $ffm 'specs') -join ', ')`n" + ($pieces -join "`n`n")
+        }
+        Add-Section 'Flows' ($parts -join "`n`n") 3 'flows/'
+    }
+}
+
 # Graph neighbourhood
 $graphJson = Join-Path $repo 'generated/graph/graph.json'
 if (Test-Path $graphJson) {
@@ -227,7 +250,7 @@ foreach ($s in $sections | Sort-Object Rank) {
     $s.Content = ((@($s.Content -split "`r?`n") | Select-Object -First $allow) -join "`n") + "`n... (truncated: see ``$(if ($s.See) { $s.See } else { 'the files listed under Sources' })``)"
     $truncated += $s.Title; $budgetLeft = 0
 }
-$order = 'Subject', 'Spec', 'Calculation', 'Calculations', 'Graph neighbourhood', 'Contracts', 'Data', 'Related work items and tests', 'Legacy pages'
+$order = 'Subject', 'Spec', 'Calculation', 'Calculations', 'Flows', 'Graph neighbourhood', 'Contracts', 'Data', 'Related work items and tests', 'Legacy pages'
 $out = New-Object System.Text.StringBuilder
 [void]$out.AppendLine($header)
 foreach ($t in $order) { $s = $sections | Where-Object { $_.Title -eq $t }; if ($s) { [void]$out.AppendLine("## $t"); [void]$out.AppendLine($s.Content); [void]$out.AppendLine() } }

@@ -1,6 +1,6 @@
 ---
 name: task-context
-description: Build and consume a task-scoped context pack (scripts/context-pack.ps1) so that an analyst, writer or tester agent reads only what the current task needs - spec, calculations, graph neighbourhood, contracts, tables, related work items and legacy pages - instead of the repository or the code. Use at the start of every feature, calculation, change or ticket task.
+description: Build and consume a task-scoped context pack (scripts/context-pack.ps1) so that an analyst, writer or tester agent reads only what the current task needs - spec, calculations, flows, graph neighbourhood, contracts, tables, related work items and legacy pages - instead of the repository or the code. Use at the start of every feature, calculation, change or ticket task.
 ---
 
 # Task-scoped context packs
@@ -23,14 +23,16 @@ Output: `.context/<slug>.md` (git-ignored). Attach it with `#file` (VS Code) or 
    (`status`, `human-reviewed | machine-confirmed | unverified`, `STALE`), `last_verified`, `stale_after`.
 2. **Spec** - whole body when <= 200 lines, otherwise Summary, Business rules, API / Events, Data, Open questions.
 3. **Calculations** linked from the spec - Purpose, Formula, Conventions, Worked examples (never the Kotlin block).
-4. **Graph neighbourhood** - `graph-query.ps1 -Node spec:<ID> -Depth 2`: nodes by kind with `file:line`, edges,
+4. **Flows** the spec takes part in (`flows:` in the spec or `specs:` in the flow) - Purpose, Trigger, Participants, Steps,
+   Invariants and assumptions; the cross-context behaviour the single spec does not show.
+5. **Graph neighbourhood** - `graph-query.ps1 -Node spec:<ID> -Depth 2`: nodes by kind with `file:line`, edges,
    cross-community edges, heuristic marks.
-5. **Contracts** - the `paths` blocks of `generated/openapi/backend.yaml` for the spec's `api[]` entries; channel
+6. **Contracts** - the `paths` blocks of `generated/openapi/backend.yaml` for the spec's `api[]` entries; channel
    names from `asyncapi/backend.yaml` for `events[]`.
-6. **Data** - the `db-schema.md` sections for `tables[]`.
-7. **Related** - `work-items/<ID>.yml` story summaries, `test-design/features/<ID>.feature` scenario names.
-8. **Legacy** - `confluence-import/**` pages mentioning the ID or title keywords (listed, first lines only, marked unverified).
-9. **Footer** - sources used, sections truncated, and the rule: *open nothing else unless a question below is
+7. **Data** - the `db-schema.md` sections for `tables[]`.
+8. **Related** - `work-items/<ID>.yml` story summaries, `test-design/features/<ID>.feature` scenario names.
+9. **Legacy** - `confluence-import/**` pages mentioning the ID or title keywords (listed, first lines only, marked unverified).
+10. **Footer** - sources used, sections truncated, and the rule: *open nothing else unless a question below is
    unanswered; then only the `file:line` named above*.
 
 See `references/pack-anatomy.md` for the exact section markers the agents rely on.

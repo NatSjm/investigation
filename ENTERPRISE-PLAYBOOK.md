@@ -372,8 +372,8 @@ source-language wording so searches still find the concept.
 
 ## 12. The analyst
 
-What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: build the pack, read it top to bottom,
-check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
+What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: build the pack, read it top to bottom (spec, calculations, flows,
+graph, contracts, tables, related work), check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
 per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when blocking, into the
 spec's Open questions. Never read source; only when the pack leaves a question and names a `file:line`, open that
 range and record the fact as an open question.

@@ -58,6 +58,9 @@ Open questions → Change log. Keep empty sections with "none".
 - Operations or topics that exist only as a design: contract column `contracts/proposed/<ID>.openapi.yaml#/paths/...`
   and the word **proposed** in the Purpose column; switched to the `generated/` anchor by `doc-sync` once implemented
   (`contracts/conventions.md`).
+- Flows: `flows: [/flows/<name>.md]` lists the cross-context flows the feature takes part in; the flow lists the same
+  specs in its `specs:`. `validate-frontmatter.ps1` checks both directions and the context pack includes the flow's
+  Purpose, Trigger, Participants, Steps and Invariants.
 - Tables: names from `generated/be/db-schema.md`.
 - Code: `code_refs` relative to the repo roots with prefix `be/` (harbor-backend) or `fe/` (harbor-frontend).
 
