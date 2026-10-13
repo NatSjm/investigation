@@ -12,3 +12,4 @@ Contracts: `core/src/main/resources/openapi/harbor-api.yaml` (REST; FE client an
 - [jobs.md](jobs.md): scheduled jobs with their cron triggers
 - [docs-tags.md](docs-tags.md): spec ID (`@docs`) to code location
 - [parameters.md](parameters.md): admin parameter catalogue - every `ParameterKey` with seeded defaults per scope, readers and validator
+- [datasets.md](datasets.md): named synthetic datasets (local seeds, integration-test fixtures) with tables, row counts, loaders and a sample row

@@ -442,7 +442,10 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 | `gen-api-index.ps1` | every OpenAPI operation with its handler method | - |
 | `gen-events.ps1` | topics with producers, consumers, payload classes | - |
 | `gen-db-schema.ps1` | tables and columns from the migrations | - |
-$1$2| `gen-parameters.ps1` | admin parameter catalogue: key, seeded defaults per scope, readers, validator (cross-checked against the calculations by `validate-frontmatter.ps1`) | - |$2| `gen-routes.ps1` | - | routes to screens |
+| `gen-jobs.ps1` | scheduled jobs with cron and class | - |
+| `gen-parameters.ps1` | admin parameter catalogue: key, seeded defaults per scope, readers, validator (cross-checked against the calculations by `validate-frontmatter.ps1`) | - |
+| `gen-datasets.ps1` | named synthetic datasets (seed scripts, integration fixtures): purpose, tables and row counts, loaders, one sample row - analysts cite setups by name instead of describing rows | - |
+| `gen-routes.ps1` | - | routes to screens |
 | `gen-types-index.ps1` | - | exported types per feature |
 | `gen-docs-tags.ps1` | `@docs <ID>` tags with `file:line` | same |
 | `tag-candidates.ps1` | candidates for tags per context, with proposed IDs | same |

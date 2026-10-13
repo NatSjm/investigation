@@ -29,7 +29,7 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
 3. `domain/calculations/<name>.md` - formulas and worked examples (never re-derive from Kotlin)
 4. `contexts.yml` (context -> BE class-name prefixes, FE feature, spec prefix), then `generated/graph/REPO_MAP.md` ->
    `generated/graph/<context>.md` - architectural graph (`context:`, `class:` nodes, `depends-on` / `persists-to` edges) with `file:line`
-$1admin parameters in `parameters.md`, BE layers in `codebase-map.md`, one row per class in `components.md`,
+5. `generated/be/*.md`, `generated/fe/*.md` - code maps (admin parameters in `parameters.md`, named datasets in `datasets.md`, BE layers in `codebase-map.md`, one row per class in `components.md`,
    API index with `Tag` = context, events, schema, jobs, routes, types, `@docs` tags)
 6. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` - contracts the
    code implements; `contracts/proposed/<ID>.*.yaml` - contracts still being designed (proposals, see `contracts/conventions.md`)

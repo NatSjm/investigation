@@ -25,6 +25,7 @@ $rel = if ($Check) { $work } else { $OutDir }
 & (Join-Path $PSScriptRoot 'gen-jobs.ps1')         -Root $Root -Out (Join-Path $rel 'jobs.md')
 & (Join-Path $PSScriptRoot 'gen-docs-tags.ps1')    -Root $Root -Out (Join-Path $rel 'docs-tags.md')
 & (Join-Path $PSScriptRoot 'gen-parameters.ps1')   -Root $Root -Out (Join-Path $rel 'parameters.md')
+& (Join-Path $PSScriptRoot 'gen-datasets.ps1')     -Root $Root -Out (Join-Path $rel 'datasets.md')
 
 $index = @"
 # Generated code maps
@@ -41,6 +42,7 @@ Contracts: ``core/src/main/resources/openapi/harbor-api.yaml`` (REST; FE client 
 - [jobs.md](jobs.md): scheduled jobs with their cron triggers
 - [docs-tags.md](docs-tags.md): spec ID (``@docs``) to code location
 - [parameters.md](parameters.md): admin parameter catalogue - every ``ParameterKey`` with seeded defaults per scope, readers and validator
+- [datasets.md](datasets.md): named synthetic datasets (local seeds, integration-test fixtures) with tables, row counts, loaders and a sample row
 "@
 Write-Text (Join-Path $work 'index.md') $index
 

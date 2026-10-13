@@ -23,7 +23,9 @@ Feature ID or spec path. Optional: `work-items/<ID>.yml` to align scenarios with
    `test-design/features/<ID>.feature` with `@<ID>` on the Feature, `@BR-<ID>-<n>` + one layer tag per scenario, and
    the coverage checklist (`references/coverage-checklist.md`) ticked: happy path, rule boundaries, validation,
    authorisation, session header (`428`/`409`), horizon edges, importer/exporter/MIXED sign, rounding, Kafka idempotency.
-6. Fixtures `test-design/fixtures/<ID>-*.json` - synthetic only, <= 200 lines each.
+6. Setup first from the pack's **Datasets touching these tables** (`generated/be/datasets.md`): `Given dataset "<name>" is loaded`;
+   only the values a scenario asserts on become explicit `Given` rows. Fixtures `test-design/fixtures/<ID>-*.json` -
+   synthetic only, <= 200 lines each, never a copy of a catalogued dataset.
 7. Update the spec frontmatter `tests:` list; `./scripts/okf-validate.ps1 -Strict`; `./scripts/coverage-matrix.ps1`.
 
 ## Output

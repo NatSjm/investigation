@@ -19,7 +19,7 @@ okf_version: "0.2"
 * [domain](domain/) - 9 concept(s)
 * [features](features/) - 9 concept(s)
 * [flows](flows/) - 1 concept(s)
-* [generated](generated/) - 29 concept(s)
+* [generated](generated/) - 30 concept(s)
 * [migration](migration/) - 3 concept(s)
 
 # Concepts

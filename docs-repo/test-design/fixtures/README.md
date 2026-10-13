@@ -18,5 +18,7 @@ tests repo from a small seed described here.
 | Cities / modes | the blueprint values only | `Aldmoor`, `ROAD` |
 | Persons | none — use roles (`representative`, `admin`) | — |
 
+A setup that already exists as a named dataset in `generated/be/datasets.md` is cited by name (`Given dataset "<name>" is loaded`), never copied here; fixtures in this folder are per-scenario deltas and worked-example numbers.
+
 Never copy production or UAT records, even anonymised. Numbers in fixtures that back a `@calc` scenario are the
 worked examples of the corresponding `domain/calculations/*.md`.

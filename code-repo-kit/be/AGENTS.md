@@ -17,7 +17,7 @@ bounded context of a class is its **name prefix** (`Product1*`, `Projection*`, `
 ## Read in this order (cheapest first) - never walk directories
 1. `docs/_generated/index.md`, then `codebase-map.md` (modules -> layers -> classes, resource folders) or the one map
    that answers the question: `api-index.md` (endpoints, `Tag` = context), `events.md` (topics), `db-schema.md` (tables),
-   `jobs.md` (scheduled jobs), `docs-tags.md` (spec ID -> code), `parameters.md` (admin parameter catalogue: key, seeded defaults per scope, readers, validator).
+   `jobs.md` (scheduled jobs), `docs-tags.md` (spec ID -> code), `parameters.md` (admin parameter catalogue: key, seeded defaults per scope, readers, validator), `datasets.md` (named synthetic datasets: seeds and test fixtures with tables, row counts, sample rows).
 2. The context's manager `core/src/main/kotlin/harbor/manager/<Ctx>Manager.kt` (KDoc + `@docs <ID>`).
 3. Its dependencies from `components.md` (one row per class: layer, injected deps, tables, `@docs`, `file:line`).
 4. One file + line range named in a map. Max 3 source files per question.
@@ -43,7 +43,10 @@ bounded context of a class is its **name prefix** (`Product1*`, `Projection*`, `
 - Kafka: topic names only via `Topics.<CONST>` (`kafka_client/src/main/kotlin/harbor/kafka/Topics.kt`, payloads in `kafka/events/`);
   listeners and publishers in `event/`: `@KafkaListener(topics = [Topics.X], groupId = "harbor-<context>")`,
   producers `kafkaTemplate.send(Topics.X, key, payload)`. Literals break `events.md`.
-$1$2- Admin parameters: one constant per key in `enums/ParameterKey.kt`, seeds as `INSERT INTO parameter_set` in the migrations, reads only through `ParameterService` -> `parameters.md`. The meaning of a key is documented in the docs repo (calculation `## Parameters`), not in code.$2- Repositories in `dao/` (`*Dao`), constructor injection only - `components.md` reads dependencies and tables from it.
+- Scheduled work: `@Scheduled(cron = "...")` methods in `job/` with a one-line KDoc -> `jobs.md`.
+- Admin parameters: one constant per key in `enums/ParameterKey.kt`, seeds as `INSERT INTO parameter_set` in the migrations, reads only through `ParameterService` -> `parameters.md`. The meaning of a key is documented in the docs repo (calculation `## Parameters`), not in code.
+- Datasets: every seed in `scripts/db/seed/*.sql` and every fixture in `core/src/test/resources/datasets/*.sql` starts with the header `-- dataset: <name>` / `-- purpose:` / `-- synthetic: yes` (`scripts/db/seed/README.md`) -> `datasets.md`; analysts cite them by name.
+- Repositories in `dao/` (`*Dao`), constructor injection only - `components.md` reads dependencies and tables from it.
 - Calculations: pure Kotlin in `core/src/main/kotlin/harbor/utils/`, KDoc with the formula and `@docs <calculation_id>`
   (e.g. `monthly_projection`), `BigDecimal` + `RoundingMode.HALF_EVEN`, a unit test per calculation in
   `core/src/test/kotlin/harbor/utils/` whose cases are the worked examples.

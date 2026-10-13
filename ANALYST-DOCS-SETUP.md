@@ -222,7 +222,10 @@ assumptions; an empty or wrong map means the generator must be adapted, never th
 | `api-index.md` | contract-first: `operationId` implemented as `override fun <operationId>(` in a `@RestController` | otherwise it falls back to `@*Mapping` annotations; check `_not implemented_` rows |
 | `events.md` | `@KafkaListener` + `KafkaTemplate.send(Topics.X, ...)`, constants in `kafka_client` | adapt `gen-events.ps1` |
 | `db-schema.md` | Flyway `db/migration/V*.sql` | Liquibase -> rewrite `gen-db-schema.ps1` |
-$1$2| `parameters.md` | enum `ParameterKey(val key)` + `INSERT INTO parameter_set` seeds in Flyway migrations | other names via `-EnumName` / `-Table`; otherwise adapt `gen-parameters.ps1` |$2| `routes.md` (FE) | react-router object routes or `<Route>` | adapt `gen-routes.ps1` |
+| `jobs.md` | `@Scheduled` | - |
+| `parameters.md` | enum `ParameterKey(val key)` + `INSERT INTO parameter_set` seeds in Flyway migrations | other names via `-EnumName` / `-Table`; otherwise adapt `gen-parameters.ps1` |
+| `datasets.md` | `-- dataset:` header block on seed and fixture `.sql` files, `INSERT ... VALUES` tuples | add the five header lines to your existing seed scripts; other loaders (CSV, DbUnit XML) need a reader in `gen-datasets.ps1` |
+| `routes.md` (FE) | react-router object routes or `<Route>` | adapt `gen-routes.ps1` |
 
 Commit `scripts/docs/**` and `docs/_generated/**` in each code repo through a normal PR. The generators only read
 source and write `docs/_generated/`.

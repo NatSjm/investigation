@@ -1,14 +1,15 @@
 # Evidence snapshot manifest - written by scripts/collect-evidence.ps1; do not edit.
 # Records which source commits the collector-owned files under generated/ describe (be, fe, openapi, asyncapi).
-collector: { version: '1.0', at: 2026-10-13T19:07:42Z }
+collector: { version: '1.0', at: 2026-10-13T19:56:48Z }
 sources:
-  backend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 6ea8412a6e7e105f3b1b488d09ff02d4464128a9, dirty: true }
-  frontend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 6ea8412a6e7e105f3b1b488d09ff02d4464128a9, dirty: true }
+  backend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 6a387eaa5d6a459ed4d8f1d2d332b5a850f7c5ff, dirty: true }
+  frontend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 6a387eaa5d6a459ed4d8f1d2d332b5a850f7c5ff, dirty: true }
 artifacts:
   - { path: generated/asyncapi/backend.yaml, source: backend, sha256: c52beffd8a28f5ab785252a16afc4a5cf671bc706a5c17af8999d7004dcc961b }
   - { path: generated/be/api-index.md, source: backend, sha256: 64f7dfd911ae8e99bf30d8c0cedc394d911d85f0720f2964887e2cf28b824c2c }
   - { path: generated/be/codebase-map.md, source: backend, sha256: d2ec2a478ad8c30f4d3335c9436025dd655c9d6e7daf609376c7fb51794534c5 }
   - { path: generated/be/components.md, source: backend, sha256: 7af4ab2ba1cc060d03a0fb642a15ed2f0190fa761dbeda34b0acc4c556b2f484 }
+  - { path: generated/be/datasets.md, source: backend, sha256: e5782a65877618e6956b554c82e08c0a2036119a06fa60bc859b78e1801b0b18 }
   - { path: generated/be/db-schema.md, source: backend, sha256: dcf989840fadf439879db4c8f99de4a5cc015409aed49b814130594fae3ecb22 }
   - { path: generated/be/docs-tags.md, source: backend, sha256: 3db56ac3db98b2a78b7ad7e62a02d2d1a5a23ef104a11fe01da2056f6eb74e67 }
   - { path: generated/be/events.md, source: backend, sha256: 8fac4830debcde4845f60a430d03d357fe3bfdac823ebc1f6660cc26ee71400e }

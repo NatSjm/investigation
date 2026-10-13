@@ -3,17 +3,16 @@
     "id": "ADM-001",
     "context": "admin",
     "rules": 11,
-    "rulesWithStory": 8,
+    "rulesWithStory": 9,
     "rulesWithScenario": 0,
-    "stories": 3,
+    "stories": 4,
     "scenarios": 0,
     "openQuestions": 4,
     "badge": "draft · unverified",
     "staleAfter": "",
     "rulesWithoutStory": [
       "BR-ADM-001-7",
-      "BR-ADM-001-8",
-      "BR-ADM-001-9"
+      "BR-ADM-001-8"
     ],
     "rulesWithoutScenario": [
       "BR-ADM-001-1",

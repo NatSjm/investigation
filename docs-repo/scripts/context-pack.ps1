@@ -211,6 +211,17 @@ if ($file) {
             $parts += if ($m.Success) { "### ``$t```n" + $m.Groups[1].Value.Trim() } else { "### ``$t`` - _not in db-schema.md_" }
         }
     }
+    # named datasets (seeds, test fixtures) that touch these tables - cite them by name instead of describing rows
+    $dsFile = Join-Path $repo 'generated/be/datasets.md'
+    if ($tables.Count -and (Test-Path $dsFile)) {
+        $dsRows = foreach ($line in ((Read-File $dsFile) -split '\r?\n' | Where-Object { $_ -match '^\| `[a-z0-9\-]+` \| (seed|fixture) \|' })) {
+            $cells = $line.TrimStart('|') -split '\|'
+            $touched = @([regex]::Matches($cells[3], '`([a-z_]+)`') | ForEach-Object { $_.Groups[1].Value })
+            if ($touched | Where-Object { $tables -contains $_ }) { "- $($cells[0].Trim()) ($($cells[1].Trim())): $($cells[2].Trim()) - tables $($cells[3].Trim())" }
+        }
+        $dsRows = @($dsRows | Select-Object -First 8)
+        if ($dsRows.Count) { $sources.Add('generated/be/datasets.md'); $parts += "### Datasets touching these tables`n(cite by name: ``Given dataset `"<name>`" is loaded``; full list and sample rows in ``generated/be/datasets.md``)`n" + ($dsRows -join "`n") }
+    }
     Add-Section 'Data' ($parts -join "`n`n") 4 'generated/be/db-schema.md'
 }
 

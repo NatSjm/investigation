@@ -11,8 +11,9 @@ Tags: `@<ID>` on the feature, `@BR-<ID>-<n>` on every scenario (one rule per sce
 
 Keep steps generic and data-driven. Add new steps here **before** using them.
 
-### Setup
 - `Given I am logged in as <role>` (`representative`, `admin`, `client-viewer`)
+- `Given dataset "<name>" is loaded` - a named dataset from `generated/be/datasets.md` (seeds and integration fixtures of the
+  backend, synthetic); prefer it over listing rows, then add explicit `Given` rows only for values the scenario asserts on
 - `Given client "<id>" exists with external reference "<ref>"`
 - `Given client "<id>" has role <ROLE> for product group <group>` / `has a manual role override <ROLE>`
 - `Given an open <group> session "<id>" for client "<cid>"` / `a closed <group> session "<id>" for client "<cid>"`

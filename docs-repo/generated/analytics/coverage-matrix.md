@@ -15,7 +15,7 @@ stale_after: 2026-10-27T00:00:00Z
 
 | Spec | Context | BRs | with story | with scenario | open questions | badge | stale_after | BR numbers without story | BR numbers without scenario |
 |---|---|---|---|---|---|---|---|---|---|
-| ADM-001 | admin | 11 | 8 (3 stories) | 0 (0 scenarios) | 4 | draft · unverified |  | 7, 8, 9 | all |
+| ADM-001 | admin | 11 | 9 (4 stories) | 0 (0 scenarios) | 4 | draft · unverified |  | 7, 8 | all |
 | CLI-001 | clients | 9 | 0 (0 stories) | 0 (0 scenarios) | 1 | human-reviewed | 2027-01-06T00:00:00Z | all | all |
 | MKT-001 | market | 3 | 0 (0 stories) | 0 (0 scenarios) | 3 | draft · unverified | 2027-01-07T00:00:00Z | all | all |
 | MTG-001 | meetings | 10 | 0 (0 stories) | 0 (0 scenarios) | 1 | human-reviewed | 2027-01-06T00:00:00Z | all | all |

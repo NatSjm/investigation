@@ -25,4 +25,7 @@ Baseline curve from `baseline_price` (fed by market-data); shocks `{fromMonth, p
 compound multiplicatively from `fromMonth` onwards; `BASELINE` scenario has no shocks.
 
 ## Parameters
-Keys, seeded defaults per scope, readers and the validator are generated into `generated/be/parameters.md`; cite keys$1exactly as there. The `## Parameters` table of the calculation owns the meaning of a key (unit, bound, formula it feeds);$1the admin spec `ADM-001` owns scope, versioning and validation and maps every key to its owner.$1Quote the key, not the number, unless the number is in the worked example.
+Keys, seeded defaults per scope, readers and the validator are generated into `generated/be/parameters.md`; cite keys
+exactly as there. The `## Parameters` table of the calculation owns the meaning of a key (unit, bound, formula it feeds);
+the admin spec `ADM-001` owns scope, versioning and validation and maps every key to its owner.
+Quote the key, not the number, unless the number is in the worked example.
