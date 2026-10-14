@@ -5,6 +5,8 @@ description: Slice a feature spec into a Jira epic, stories and subtasks as YAML
 
 # Jira work items from a spec
 
+0. Implemented already (the pack's graph lists the spec's endpoints, hooks, components)? Then slice only the change
+   request you were given; without one, answer "implemented - nothing to build".
 1. Work from the context pack (`task-context` skill). Epic = the feature: `summary` = spec title,
    `description` = spec Summary + link.
 2. Stories = **vertical slices** by actor goal or by business-rule cluster (3-6 BRs per story). See

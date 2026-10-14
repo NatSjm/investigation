@@ -45,7 +45,8 @@ a free-text task ("add transport-mode toggle to the stress table"), or an analyt
    `generated/analytics/coverage-matrix.md` plus the index badges (`index.md` files) - counts, gaps, stale items,
    `code only` entries from `generated/graph/REPO_MAP.md` spec coverage. Skill: `.github/skills/docs-analytics/SKILL.md`.
 8. Only if the pack leaves a question that blocks the task AND names a `file:line`, open exactly that range in
-   `../backend` or `../frontend`; record what you learned as an open question in the spec, not as a silent assumption.
+   `../backend` or `../frontend` (sibling checkouts); record what you learned as an open question in the spec, not as a
+   silent assumption. If those folders are not reachable (web chat, docs-only machine), record the question and stop.
 
 ## Output
 Files only (`work-items/<ID>.yml`, optional spec Open-questions update, `generated/analytics/*`). In chat <= 15
