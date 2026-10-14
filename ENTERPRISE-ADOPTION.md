@@ -57,37 +57,37 @@ Do not automate publication before confirming that the content helps analysts. D
 Create the repository through the approved enterprise process with this starting layout:
 
 ```text
-product-docs\
+product-docs/
   README.md
   glossary.md
   .github\
     CODEOWNERS
     copilot-instructions.md
-    agents\
+    agents/
       analyst.agent.md
       docs-maintainer.agent.md
-    workflows\
+    workflows/
       docs-check.yml
-  features\
-  calculations\
-  flows\
-  decisions\
-  templates\
+  features/
+  calculations/
+  flows/
+  decisions/
+  templates/
     feature.md
     calculation.md
-  sources\
+  sources/
     manifest.yml
-    contracts\
-    confluence\
-    code-index\
-    test-results\
-  mappings\
+    contracts/
+    confluence/
+    code-index/
+    test-results/
+  mappings/
     features.yml
-  reviews\
-  proposals\
-    work-items\
-    test-design\
-  scripts\
+  reviews/
+  proposals/
+    work-items/
+    test-design/
+  scripts/
 ```
 
 Keep `README.md` as a short entry point linking to the baseline, glossary, pilot feature, and contribution instructions. Do not start by generating an index in every folder.
