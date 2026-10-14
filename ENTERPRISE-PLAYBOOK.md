@@ -529,7 +529,7 @@ rule IDs and a trust badge, and a code change that correctly triggers a document
 
 ---
 
-## 17. Lessons from the first trial (read before week 2)
+## 17. Lessons from the first trial (read before phase 2)
 
 The first headless analyst run on a finished spec (ADM-001, Copilot CLI, 67 seconds, about 7.5 premium requests)
 produced a valid file and four honest open questions, and taught the following. Each item is a rule in the
