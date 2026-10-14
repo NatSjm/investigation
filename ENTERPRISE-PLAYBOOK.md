@@ -89,7 +89,7 @@ index.md                       keep the "Start here" block; the section list is 
 log.md                         empty it except the header
 contexts.yml                   rewrite (section 4)
 docs-map.yml                   rewrite (section 4)
-.markdownlint-cli2.yaml, .gitignore
+.markdownlint-cli2.yaml, .gitignore, .gitattributes   (line-ending normalisation, section 20)
 features/_template.md, features/conventions.md
 domain/glossary.md             empty table, keep the columns
 domain/context-map.md          rewrite from your context list
@@ -640,3 +640,32 @@ reachable from the docs repo as `../backend` and `../frontend`. Set it up once p
 
 Sources: GitHub changelog, "Introducing Copilot CLI agent and unified sessions view in GitHub Copilot for JetBrains
 IDEs" (2026-05-13); GitHub Docs, Copilot CLI command reference (`/add-dir`, `/list-dirs`, `/cwd`, `--add-dir`).
+
+---
+
+## 20. Workstations: Windows and macOS
+
+The scripts are PowerShell 7 and run unchanged on macOS and Linux; the CI examples already run on `ubuntu-latest`.
+What differs between a Windows and a Mac workstation, and what the repository does about it:
+
+| Topic | Windows | macOS | Rule in the repository |
+|---|---|---|---|
+| Shell | `pwsh` (PowerShell 7, not Windows PowerShell 5) | `brew install --cask powershell`, then `pwsh` | hooks and CI call `pwsh -NoProfile`; never `powershell.exe` |
+| Paths | `\` or `/` | `/` only; a backslash inside a quoted path is a literal character | scripts use `/` in every literal; two leftovers were found and fixed in the first macOS review |
+| Sort order | .NET uses ICU with the machine culture; a Czech machine sorts `ch` after `h` | ICU with the machine culture, usually `en-US` | every generator sets the invariant culture in process, so sorted tables and indexes are identical on every machine; without it the freshness gate fails across platforms |
+| Line endings | checkout CRLF with `core.autocrlf=true` | checkout LF | `.gitattributes` with `* text=auto` in every repository; the `-Check` comparisons ignore CR |
+| File-name case | NTFS case-insensitive | APFS case-insensitive by default | Linux CI is case-sensitive: links and `code_refs` must match the file name exactly; the validators report the mismatch before CI does |
+| Containers | Docker Desktop | Docker Desktop | the seed runner uses `docker compose exec`, no local `psql` needed |
+| Toolchain | JDK 21, Node, Maven paths as in `LOCAL-TESTING.md` | the same via Homebrew; Maven path differs | nothing in the docs repo depends on the toolchain; only the code repos do |
+| IDE | IntelliJ with the Copilot plugin | the same | section 19 applies unchanged |
+
+First day on a Mac: clone the three repositories side by side, open `pwsh` in the docs repo and run the full chain
+with `-Check` against files generated on Windows:
+
+```powershell
+./scripts/okf-validate.ps1 -Strict; ./scripts/validate-frontmatter.ps1; ./scripts/gen-graph.ps1 -Check; ./scripts/build-index.ps1 -Check
+../backend/scripts/docs/gen-all.ps1 -Root ../backend -Check; ../frontend/scripts/docs/gen-all.ps1 -Root ../frontend -Check
+```
+
+All green means the two platforms generate byte-identical maps. A `STALE` here is a platform difference, not a content
+change: open the two files, and the cause is a sort order, a line ending or a path separator, in that order of likelihood.

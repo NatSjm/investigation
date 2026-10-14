@@ -10,7 +10,7 @@ param([string[]]$Paths)
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path $PSScriptRoot -Parent
 if (-not $Paths) {
-    $Paths = Get-ChildItem (Join-Path $repo 'features'), (Join-Path $repo 'domain\calculations') -Recurse -Filter '*.md' |
+    $Paths = Get-ChildItem (Join-Path $repo 'features'), (Join-Path $repo 'domain/calculations') -Recurse -Filter '*.md' |
         Where-Object { $_.Name -notmatch '^(_template|README|INDEX)\.md$' } | ForEach-Object FullName
 }
 
@@ -75,7 +75,7 @@ if (Test-Path $catalogue) {
     $known = @([regex]::Matches($ct, '(?m)^\| `(?<k>[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+)` \|') | ForEach-Object { $_.Groups['k'].Value })
     $keyRx = '`(?<k>[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+)`'
     $explained = @{}
-    $docs = @(Get-ChildItem (Join-Path $repo 'domain\calculations') -Filter '*.md' | Where-Object { $_.Name -notmatch '^(_template|index)\.md$' }) +
+    $docs = @(Get-ChildItem (Join-Path $repo 'domain/calculations') -Filter '*.md' | Where-Object { $_.Name -notmatch '^(_template|index)\.md$' }) +
             @(Get-ChildItem (Join-Path $repo 'features') -Recurse -Filter '*.md' | Where-Object { $_.Name -match '^[A-Z][A-Z0-9]+-\d{3}\.md$' })
     foreach ($d in $docs) {
         $dt = [IO.File]::ReadAllText($d.FullName, [Text.UTF8Encoding]::new($false))

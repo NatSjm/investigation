@@ -14,6 +14,7 @@ param(
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+[cultureinfo]::CurrentCulture = [cultureinfo]::InvariantCulture   # identical sort order on every machine (ICU + machine culture otherwise)
 $Utf8 = [Text.UTF8Encoding]::new($false)
 $repo = Split-Path $PSScriptRoot -Parent
 $now = [DateTime]::UtcNow

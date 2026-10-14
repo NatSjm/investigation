@@ -4,7 +4,7 @@ title: "Component library (FE)"
 description: "One row per shared UI component: props, purpose, which features render it, file:line; name these in stories instead of inventing new components."
 generated:
   by: process:gen-docs
-  at: 2026-10-12
+  at: 2026-10-14
 status: stable
 ---
 # Component library (FE)

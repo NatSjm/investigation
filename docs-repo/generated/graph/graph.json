@@ -1,7 +1,7 @@
 {
   "generated": {
     "by": "process:gen-graph",
-    "at": "2026-10-13"
+    "at": "2026-10-14"
   },
   "communities": [
     {
@@ -76,6 +76,18 @@
     }
   ],
   "nodes": [
+    {
+      "id": "channel:harbor.session.{*}",
+      "kind": "channel",
+      "label": "harbor.session.{*}",
+      "community": "presentation",
+      "repo": "fe",
+      "location": "src/features/presentation/channel.ts",
+      "note": "BroadcastChannel",
+      "component": 1,
+      "rank": 5.91,
+      "degree": 7
+    },
     {
       "id": "class:AdminController",
       "kind": "class",
@@ -2585,18 +2597,6 @@
       "degree": 3
     },
     {
-      "id": "channel:harbor.session.{*}",
-      "kind": "channel",
-      "label": "harbor.session.{*}",
-      "community": "presentation",
-      "repo": "fe",
-      "location": "src/features/presentation/channel.ts",
-      "note": "BroadcastChannel",
-      "component": 1,
-      "rank": 5.91,
-      "degree": 7
-    },
-    {
       "id": "route:/",
       "kind": "route",
       "label": "/",
@@ -3294,6 +3294,12 @@
     }
   ],
   "edges": [
+    {
+      "from": "channel:harbor.session.{*}",
+      "to": "feature:presentation",
+      "rel": "consumed-by",
+      "source": "regex-map"
+    },
     {
       "from": "class:AdminController",
       "to": "class:AdminManager",
@@ -6317,12 +6323,6 @@
       "to": "endpoint:PUT /api/v1/admin/parameters/{key}",
       "rel": "calls",
       "source": "export"
-    },
-    {
-      "from": "channel:harbor.session.{*}",
-      "to": "feature:presentation",
-      "rel": "consumed-by",
-      "source": "regex-map"
     },
     {
       "from": "route:/",

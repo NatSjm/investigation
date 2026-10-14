@@ -4,7 +4,7 @@ title: "Graph: market (be+fe)"
 description: "entry point MarketManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-13
+  at: 2026-10-14
 status: stable
 ---
 # Graph: market (be+fe)

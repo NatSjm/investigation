@@ -38,8 +38,8 @@ if ($Check) {
     $diff = 0
     foreach ($f in Get-ChildItem $work -File) {
         $cur = Join-Path $target $f.Name
-        $a = if (Test-Path $cur) { (Read-Text $cur) -replace '(?m)^  at: .*$', '' } else { '' }
-        $b = (Read-Text $f.FullName) -replace '(?m)^  at: .*$', ''
+        $a = if (Test-Path $cur) { (Read-Text $cur) -replace '(?m)^  at: .*$', '' -replace "`r", '' } else { '' }
+        $b = (Read-Text $f.FullName) -replace '(?m)^  at: .*$', '' -replace "`r", ''
         if ($a -ne $b) { Write-Host "STALE: $OutDir/$($f.Name)"; $diff++ }
     }
     Remove-Item $work -Recurse -Force

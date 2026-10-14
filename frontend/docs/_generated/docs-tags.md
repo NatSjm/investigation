@@ -4,7 +4,7 @@ title: "Spec-to-code traceability (@docs tags)"
 description: "Generated map: Spec-to-code traceability (@docs tags), derived from @docs <ID> tags in KDoc/JSDoc; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-12
+  at: 2026-10-14
 status: stable
 ---
 # Spec-to-code traceability (@docs tags)

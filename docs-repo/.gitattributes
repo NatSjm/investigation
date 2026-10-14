@@ -1,0 +1,7 @@
+# Line endings are normalised in the repository; each platform checks out its native ending and the
+# generators compare EOL-insensitively (ENTERPRISE-PLAYBOOK.md section 20).
+* text=auto
+*.png binary
+*.jpg binary
+*.pdf binary
+*.xlsx binary

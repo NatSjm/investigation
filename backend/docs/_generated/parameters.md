@@ -4,7 +4,7 @@ title: "Parameters (BE)"
 description: "Generated catalogue of the admin parameters: every ParameterKey key with its seeded defaults per scope, the classes that read it and the validator that bounds it; the meaning of a key is documented in domain/calculations and the admin spec."
 generated:
   by: process:gen-docs
-  at: 2026-10-13
+  at: 2026-10-14
 status: stable
 ---
 # Parameters (BE)

@@ -7,6 +7,8 @@ from the file-exchange stub, baseline prices from the market-data stub. Paths ar
 
 JDK 21, Docker Desktop, Node 24, PowerShell 7, and Maven unpacked (no install) at `C:\projects\tools\apache-maven-3.9.9`.
 Nothing else. IntelliJ can replace the Maven command line (see "IntelliJ" below).
+On macOS the same via Homebrew (`brew install --cask powershell docker`, `brew install openjdk@21 node maven`); the
+documentation scripts are platform-neutral (ENTERPRISE-PLAYBOOK.md section 20), only the Maven path above is Windows-specific.
 
 ## 2. Start everything
 

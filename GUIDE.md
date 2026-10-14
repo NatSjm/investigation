@@ -32,7 +32,7 @@ the human-owned specs, calculations and glossary with trust metadata. For any ta
 
 ## Part 2 - Run it in 20 minutes
 
-Prerequisites: PowerShell 7 (`pwsh`), Git, VS Code with GitHub Copilot (agent mode). Nothing else. Open
+Prerequisites: PowerShell 7 (`pwsh`; on macOS `brew install --cask powershell`), Git, VS Code with GitHub Copilot (agent mode). Nothing else. The scripts run unchanged on Windows, macOS and Linux (ENTERPRISE-PLAYBOOK.md section 20). Open
 `harbor.code-workspace` in VS Code, then a PowerShell terminal at `C:\projects\investigation`.
 
 **Step 0 - Run the applications (optional, needs JDK 21, Docker, Node; Maven unpacked under `C:projects	ools`, no system install):**

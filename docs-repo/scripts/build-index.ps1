@@ -11,6 +11,7 @@ param(
     [switch]$Check,
     [string[]]$Exclude = @('.github', 'scripts', 'ci-examples', 'third-party', 'node_modules', '.git', 'confluence-import', 'work-items', 'test-design', '.context')
 )
+[cultureinfo]::CurrentCulture = [cultureinfo]::InvariantCulture   # identical sort order on every machine (ICU + machine culture otherwise)
 $root = (Resolve-Path $Path).Path
 $now = [DateTime]::UtcNow
 $changed = @()

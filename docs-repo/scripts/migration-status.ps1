@@ -20,6 +20,7 @@ param(
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+[cultureinfo]::CurrentCulture = [cultureinfo]::InvariantCulture   # identical sort order on every machine (ICU + machine culture otherwise)
 $Utf8 = New-Object System.Text.UTF8Encoding($false)
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '..')).ProviderPath
 function Read-File([string]$p) { if (Test-Path $p) { [IO.File]::ReadAllText($p, $Utf8) } else { '' } }

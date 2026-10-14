@@ -32,6 +32,7 @@ param(
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+[cultureinfo]::CurrentCulture = [cultureinfo]::InvariantCulture   # identical sort order on every machine (ICU + machine culture otherwise)
 $Utf8 = [System.Text.UTF8Encoding]::new($false)
 $Root = (Resolve-Path $Root).ProviderPath
 function Abs([string]$p) { if ([IO.Path]::IsPathRooted($p)) { $p } else { Join-Path $Root $p } }

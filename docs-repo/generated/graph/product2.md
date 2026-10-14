@@ -4,7 +4,7 @@ title: "Graph: product2 (be+fe)"
 description: "Product 2 overview per transport mode, reusing the projection tables, cover chart and modals of product1."
 generated:
   by: process:gen-graph
-  at: 2026-10-13
+  at: 2026-10-14
 status: stable
 ---
 # Graph: product2 (be+fe)

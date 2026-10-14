@@ -4,7 +4,7 @@ title: "Scheduled jobs (BE)"
 description: "Generated map: Scheduled jobs (BE), derived from @Scheduled scan; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-13
+  at: 2026-10-14
 status: stable
 ---
 # Scheduled jobs (BE)

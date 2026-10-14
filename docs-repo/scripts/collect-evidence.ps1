@@ -38,6 +38,7 @@ param(
     [switch]$Force
 )
 $ErrorActionPreference = 'Stop'
+[cultureinfo]::CurrentCulture = [cultureinfo]::InvariantCulture   # identical sort order on every machine (ICU + machine culture otherwise)
 $CollectorVersion = '1.0'
 $repo = Split-Path $PSScriptRoot -Parent
 $gen = Join-Path $repo 'generated'

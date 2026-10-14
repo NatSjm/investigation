@@ -4,6 +4,7 @@
 #>
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+[cultureinfo]::CurrentCulture = [cultureinfo]::InvariantCulture   # identical sort order on every machine (ICU + machine culture otherwise)
 
 $script:Utf8 = [System.Text.UTF8Encoding]::new($false)
 

@@ -4,7 +4,7 @@ title: "Datasets (BE)"
 description: "Generated catalogue of the named synthetic datasets - local seeds and integration-test fixtures - with purpose, tables and row counts, dependencies, the tests that load them and one sample row per table; cite a dataset by name in Gherkin instead of describing rows."
 generated:
   by: process:gen-docs
-  at: 2026-10-13
+  at: 2026-10-14
 status: stable
 ---
 # Datasets (BE)

@@ -14,15 +14,15 @@ param(
     [string[]]$Dataset,
     [switch]$Fixtures,
     [string]$Database = 'harbor',
-    [string]$ComposeFile = (Join-Path $PSScriptRoot '..\..\init_docker_compose\docker-compose.yml'),
+    [string]$ComposeFile = (Join-Path $PSScriptRoot '../../init_docker_compose/docker-compose.yml'),
     [switch]$DryRun
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).ProviderPath
+$root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).ProviderPath
 
 $files = @(Get-ChildItem (Join-Path $PSScriptRoot 'seed') -Filter '*.sql' | Sort-Object Name)
-if ($Fixtures) { $files += @(Get-ChildItem (Join-Path $root 'core\src\test\resources\datasets') -Filter '*.sql' | Sort-Object Name) }
+if ($Fixtures) { $files += @(Get-ChildItem (Join-Path $root 'core/src/test/resources/datasets') -Filter '*.sql' | Sort-Object Name) }
 
 $selected = foreach ($f in $files) {
     $head = (Get-Content $f.FullName -TotalCount 10) -join "`n"

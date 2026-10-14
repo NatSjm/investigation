@@ -4,7 +4,7 @@ title: "Graph: admin (be+fe)"
 description: "Administration outside meetings: parameter sets with inline editing and the daily import batch monitor."
 generated:
   by: process:gen-graph
-  at: 2026-10-13
+  at: 2026-10-14
 status: stable
 ---
 # Graph: admin (be+fe)
