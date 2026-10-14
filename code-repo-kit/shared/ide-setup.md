@@ -9,7 +9,7 @@
 | **Settings > Editor > File Types > Ignored Files and Folders** add `target;build;*.iml` | removes noise from indexing and Copilot file pickers |
 | **Copilot plugin** - `AGENTS.md` (since 2026-03), `.github/copilot-instructions.md`, `*.instructions.md`, `.prompt.md` and `.agent.md` are picked up automatically; `.github/hooks/*.json` and skills are preview in JetBrains | same rules in both IDEs |
 | Chat: attach `docs/_generated/<map>.md` + the context manager (`manager/<Ctx>Manager.kt`) and its `components.md` rows; avoid "whole project" context | the maps are ~300 tokens each |
-| Graph questions: `pwsh ../harbor-docs/scripts/graph-query.ps1 -Node spec:P1-001 -Depth 2` and paste the result | same data as the VS Code `#impact` tool |
+| Graph questions: `python3 ../harbor-docs/scripts/graph-query.py --node spec:P1-001 --depth 2` and paste the result | same data as the VS Code `#impact` tool |
 
 No custom IntelliJ plugin is required; Copilot tools/participants are not exposed to third-party JetBrains plugins,
 so the retrieval helpers live in VS Code only (`vscode-extension/`).
@@ -23,10 +23,10 @@ so the retrieval helpers live in VS Code only (`vscode-extension/`).
 - Install the in-house **Harbor Docs for Copilot** extension (`vscode-extension/`) to get `#docsLookup`, `#codeMap`, `#specToCode`,
   `#impact` tools and the `@docs` participant.
 - Prefer `#file`, `#sym`, `#selection`, `#docsLookup:P1-001`, `#specToCode:monthly_projection` over `@workspace`.
-- `.github/hooks/docs-maps.json` runs `gen-all.ps1 -Check` when an agent session stops; leave it enabled.
+- `.github/hooks/docs-maps.json` runs `gen-all.py --check` when an agent session stops; leave it enabled.
 
 ## Both
 
 - Content exclusion is configured on GitHub (repo settings) - see `copilot-content-exclusion.yml`; it applies to every Copilot surface.
-- Run `scripts/docs/gen-all.ps1` before asking architecture questions if `docs/_generated/*` is older than your branch.
+- Run `scripts/docs/gen-all.py` before asking architecture questions if `docs/_generated/*` is older than your branch.
 - Contract changes start in `harbor-backend/core/src/main/resources/openapi/harbor-api.yaml`; the generated `*Api` interfaces and the FE client are never edited.

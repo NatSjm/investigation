@@ -20,11 +20,11 @@ Then run the application from the repository root (defaults in `core/src/main/re
 already point to localhost):
 
 ```
-$env:HARBOR_CLIENT_REGISTRY_URL  = "http://localhost:8089"
-$env:HARBOR_MARKET_DATA_URL      = "http://localhost:8089"
-$env:HARBOR_COVER_PROVIDER_URL   = "http://localhost:8089"
-$env:HARBOR_DOCUMENT_SERVICE_URL = "http://localhost:8089"
-$env:HARBOR_FILE_EXCHANGE_URL    = "http://localhost:8089"
+export HARBOR_CLIENT_REGISTRY_URL="http://localhost:8089"
+export HARBOR_MARKET_DATA_URL="http://localhost:8089"
+export HARBOR_COVER_PROVIDER_URL="http://localhost:8089"
+export HARBOR_DOCUMENT_SERVICE_URL="http://localhost:8089"
+export HARBOR_FILE_EXCHANGE_URL="http://localhost:8089"
 mvn -q -pl core -am spring-boot:run
 ```
 
@@ -33,7 +33,7 @@ mvn -q -pl core -am spring-boot:run
 - `docker-compose.yml` - the three services and the topic initialiser.
 - `init-db.sql` - executed once on the first start of the postgres container (extension `pgcrypto`, UTC time zone,
   database `harbor_test`). Tables come from `core/src/main/resources/db/migration` (Flyway), never from here.
-- Synthetic data: `scripts/db/seed-local.ps1` loads the named datasets of `scripts/db/seed/*.sql` through `psql` in the container (`-Fixtures` adds the integration-test datasets; `-Database harbor_test` targets the test database). Catalogue: `docs/_generated/datasets.md`.
+- Synthetic data: `scripts/db/seed-local.py` loads the named datasets of `scripts/db/seed/*.sql` through `psql` in the container (`--fixtures` adds the integration-test datasets; `--database harbor_test` targets the test database). Catalogue: `docs/_generated/datasets.md`.
 - `wiremock/mappings/*.json` - one file per external contract in `core/src/main/resources/api/`:
 
 | File | Contract | Stubs |

@@ -10,7 +10,7 @@ You are a QA architect designing automated tests for the Harbor platform.
 Feature ID or spec path. Optional: `work-items/<ID>.yml` to align scenarios with stories.
 
 ## Procedure
-1. `./scripts/context-pack.ps1 -Task <ID>`; read the pack. Prefer specs whose badge is `human-reviewed`; for
+1. `python3 scripts/context-pack.py --task <ID>`; read the pack. Prefer specs whose badge is `human-reviewed`; for
    `unverified` / `draft` / `STALE` specs add `@needs-review` to every generated scenario and say so.
 2. Extract every `BR-*` rule and every calculation link from the pack.
 3. For each calculation use the **Worked examples** table in the pack as `Examples` rows - do not recompute from
@@ -26,7 +26,7 @@ Feature ID or spec path. Optional: `work-items/<ID>.yml` to align scenarios with
 6. Setup first from the pack's **Datasets touching these tables** (`generated/be/datasets.md`): `Given dataset "<name>" is loaded`;
    only the values a scenario asserts on become explicit `Given` rows. Fixtures `test-design/fixtures/<ID>-*.json` -
    synthetic only, <= 200 lines each, never a copy of a catalogued dataset.
-7. Update the spec frontmatter `tests:` list; `./scripts/okf-validate.ps1 -Strict`; `./scripts/coverage-matrix.ps1`.
+7. Update the spec frontmatter `tests:` list; `python3 scripts/okf-validate.py --strict`; `python3 scripts/coverage-matrix.py`.
 
 ## Output
 Files only; in chat a rule -> scenario coverage matrix (<= 20 lines) and the list of `@needs-review` reasons.

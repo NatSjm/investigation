@@ -11,7 +11,7 @@ executor:
   resource: backend/core/src/test/kotlin/harbor/utils/<X>Test.kt   # unit test running the sanctioned computation
   receipt: [test_class, inputs, expected, actual]
 attester:
-  resource: /scripts/attest-calculation.ps1          # compares worked-examples table with test output (stub)
+  resource: /scripts/attest-calculation.py          # compares worked-examples table with test output (stub)
 generated: { by: copilot/doc-sync, at: 2026-01-01T00:00:00Z }
 # verified: { by: human:<reviewer>, at: <ISO> }
 # stale_after: <ISO>

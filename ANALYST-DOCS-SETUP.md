@@ -13,10 +13,10 @@ Assumptions (adjust the names, keep the shape):
 | `<be>`, `<fe>` | backend (Kotlin/Spring, layered `core/src/main/kotlin/<project>/<layer>/`) and frontend repositories |
 | `<project>` | the Kotlin root package |
 | `<CTX>` | spec ID prefix of one bounded context (e.g. `P1`, `CLI`) |
-| `C:\src\` | the folder where `<docs>`, `<be>`, `<fe>` are checked out side by side |
+| `C:/src\` | the folder where `<docs>`, `<be>`, `<fe>` are checked out side by side |
 
-Tooling: GitHub Copilot (VS Code / JetBrains / CLI), PowerShell 7 (`pwsh`), git. No MCP, no Python, no npm needed for
-the core flow.
+Tooling: GitHub Copilot (VS Code / JetBrains / CLI), Python 3.11+ (`python3`, standard library only), git. No MCP, no pip
+packages, no npm needed for the core flow.
 
 ---
 
@@ -24,19 +24,19 @@ the core flow.
 
 ```text
  <be> / <fe> source
-     |  scripts/docs/gen-all.ps1  (regex scan, no build)          -> <repo>/docs/_generated/*.md   (code maps)
+     |  scripts/docs/gen-all.py  (regex scan, no build)          -> <repo>/docs/_generated/*.md   (code maps)
      v
- <docs>/scripts/collect-evidence.ps1                               -> generated/be, generated/fe, generated/openapi,
+ <docs>/scripts/collect-evidence.py                               -> generated/be, generated/fe, generated/openapi,
      |                                                                generated/asyncapi, generated/manifest.yml
      v
- gen-graph.ps1 (contexts.yml + docs-map.yml + maps)                -> generated/graph/REPO_MAP.md, <context>.md, graph.json
+ gen-graph.py (contexts.yml + docs-map.yml + maps)                -> generated/graph/REPO_MAP.md, <context>.md, graph.json
      v
  Run 1  spec-writer       skeleton spec per context from graph      -> features/<ctx>/<CTX>-001.md  (draft)
  Run 2  confluence-migrator  one exported page per run, merged      -> same spec + glossary, page -> _done/
  Run 3  calc-auditor      formula vs calculator + its unit test     -> domain/calculations/<name>.md (Audit table)
  Run 4  human owner       answers open questions, marks verified    -> status: stable
      v
- analyst agent: context-pack.ps1 -Task <ID>  ->  .context/<ID>.md  ->  answers / work items / analytics
+ analyst agent: context-pack.py --task <ID>  ->  .context/<ID>.md  ->  answers / work items / analytics
 ```
 
 The principle that makes the analyst trustworthy: **the code is the truth, Confluence is evidence.** The skeleton of
@@ -87,10 +87,10 @@ Checks before you move anything:
   confluence-import/README.md    inventory of exported pages; pages go to confluence-import/<SPACE>/
   contracts/                     hand-maintained contracts (Step 1)
   generated/                     collector-owned evidence + graph + analytics (never hand-edited)
-  migration/                     migration board written by migration-status.ps1
+  migration/                     migration board written by migration-status.py
   work-items/_schema.yml         analyst output schema
   test-design/                   test-designer output
-  scripts/                       PowerShell tooling (Step 3)
+  scripts/                       Python tooling (Step 3)
 ```
 
 ### Step 3. Copy files from this repository
@@ -102,8 +102,8 @@ Everything named "Harbor", `harbor`, `HARBOR`, `P1`, `CLI`, ... is sample vocabu
 
 | File(s) | Edit after copying |
 |---|---|
-| `scripts/context-pack.ps1`, `graph-query.ps1`, `gen-graph.ps1`, `build-index.ps1`, `okf-validate.ps1`, `validate-frontmatter.ps1`, `validate-work-items.ps1`, `map-paths.ps1`, `coverage-matrix.ps1`, `migration-status.ps1`, `hooks/guard-generated.ps1` | `build-index.ps1` line ~78: bundle title. `context-pack.ps1` lines ~163-177: if you keep hand-maintained contracts in `contracts/`, add them to the "Contracts" section (it only reads `generated/openapi/backend.yaml` today). `validate-frontmatter.ps1` checks the generic ID pattern `^[A-Z][A-Z0-9]*-\d{3}$` and the required keys (line 17); change only if your IDs look different. |
-| `scripts/collect-evidence.ps1` | Lines 99-101: replace `openapi/harbor-api.yaml` and `openapi/harbor-events.yaml` with your file names. Remove the `asyncapi` line if your events contract is not AsyncAPI. Line 76: temp folder prefix. |
+| `scripts/context-pack.py`, `graph-query.py`, `gen-graph.py`, `build-index.py`, `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py`, `map-paths.py`, `coverage-matrix.py`, `migration-status.py`, `hooks/guard-generated.py` | `build-index.py` line ~78: bundle title. `context-pack.py` lines ~163-177: if you keep hand-maintained contracts in `contracts/`, add them to the "Contracts" section (it only reads `generated/openapi/backend.yaml` today). `validate-frontmatter.py` checks the generic ID pattern `^[A-Z][A-Z0-9]*-\d{3}$` and the required keys (line 17); change only if your IDs look different. |
+| `scripts/collect-evidence.py` | Lines 99-101: replace `openapi/harbor-api.yaml` and `openapi/harbor-events.yaml` with your file names. Remove the `asyncapi` line if your events contract is not AsyncAPI. Line 76: temp folder prefix. |
 | `.github/agents/analyst.agent.md` | Replace with the version in Step 14 (adds a question-answering mode). |
 | `.github/agents/spec-writer.agent.md`, `confluence-migrator.agent.md`, `calc-auditor.agent.md`, `doc-sync.agent.md`, `migration-lead.agent.md` | Replace `harbor` paths with `<project>`. In `calc-auditor` replace `V9__parameters.sql` / `parameter_set` / `.../calc/<Class>Test.kt` with where your parameters and calculator tests really live. In `doc-sync` step 5 replace `core/src/main/kotlin/harbor/utils/**` with your calculation package. |
 | `.github/prompts/*.prompt.md` | Replace sample defaults in `${input:...:default}` (e.g. `product2 P2-001`). |
@@ -114,11 +114,11 @@ Everything named "Harbor", `harbor`, `HARBOR`, `P1`, `CLI`, ... is sample vocabu
 | `confluence-import/README.md` | Empty the inventory table; keep the header format description. |
 
 **Copy later (not needed before the analyst works):** `test-designer`, `architect`, `impact-analyst` agents;
-`scripts/check-freshness.ps1`, `ci-examples/collect-evidence.yml`, `.github/workflows/docs-quality.yml` (Phase F).
+`scripts/check-freshness.py`, `ci-examples/collect-evidence.yml`, `.github/workflows/docs-quality.yml` (Phase F).
 
-**Do not copy:** `confluence-export.ps1`, `confluence-publish.ps1`, `jira-push.ps1`, `push-to-tests-repo.ps1` (they are
-stubs that only print what they would do), `publish-local.ps1` (deprecated wrapper), `third-party/`, the OKF Python
-scripts (optional duplicates of the PowerShell validators), `code-repo-kit/vscode-extension/` (separate project).
+**Do not copy:** `confluence-export.py`, `confluence-publish.py`, `jira-push.py`, `push-to-tests-repo.py` (they are
+stubs that only print what they would do), `publish-local.py` (deprecated wrapper), `third-party/`, the OKF Python
+reference checkers (optional duplicates of the standard-library validators), `code-repo-kit/vscode-extension/` (separate project).
 Do not copy any sample content (`features/*/*.md`, `domain/calculations/*.md`, `generated/**`, `confluence-import/HARBOR/`).
 
 ### Step 4. Write `AGENTS.md` and `.github/copilot-instructions.md`
@@ -136,7 +136,7 @@ Agents orient through indexes, never through directory listings.
 
 ## Work task-scoped: build the context pack first
 For any task about a feature, calculation, change or ticket run
-`./scripts/context-pack.ps1 -Task <spec ID | calculation | graph node | free text>` and read `.context/<task>.md`.
+`python3 scripts/context-pack.py --task <spec ID | calculation | graph node | free text>` and read `.context/<task>.md`.
 Read the pack, not the repository. Open anything else only to answer a question the pack leaves open, and then only
 the `file:line` it names.
 
@@ -162,17 +162,17 @@ the `file:line` it names.
 - No real customer data, personal data or secrets in any file.
 - Outputs go to files; chat summaries <= 15 lines. Specs <= 300 lines; diagrams <= 25 nodes.
 
-## Commands (PowerShell 7)
+## Commands (Python 3.11+)
 | Purpose | Command |
 |---|---|
-| Context pack | `./scripts/context-pack.ps1 -Task <ID|name|text> [-Budget 500]` |
-| Validate | `./scripts/okf-validate.ps1 -Strict`; `./scripts/validate-frontmatter.ps1`; `./scripts/validate-work-items.ps1` |
-| Indexes | `./scripts/build-index.ps1` |
-| Graph | `./scripts/graph-query.ps1 -Node spec:<ID> -Depth 2` / `-Files <paths>` / `-Find <text>` |
-| Migration board | `./scripts/migration-status.ps1 -Scope all` |
-| Analytics | `./scripts/coverage-matrix.ps1` |
+| Context pack | `python3 scripts/context-pack.py --task <ID|name|text> [--budget 500]` |
+| Validate | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
+| Indexes | `python3 scripts/build-index.py` |
+| Graph | `python3 scripts/graph-query.py --node spec:<ID> --depth 2` / `--files <paths>` / `--find <text>` |
+| Migration board | `python3 scripts/migration-status.py --scope all` |
+| Analytics | `python3 scripts/coverage-matrix.py` |
 
-Before finishing any edit: `okf-validate.ps1 -Strict`, `build-index.ps1`, and a dated line in `log.md`.
+Before finishing any edit: `okf-validate.py --strict`, `build-index.py`, and a dated line in `log.md`.
 
 ## Agents
 `.github/agents/`: `analyst`, `spec-writer`, `confluence-migrator`, `calc-auditor`, `doc-sync`, `migration-lead`.
@@ -194,23 +194,23 @@ some surfaces). Settings: `code-repo-kit/shared/ide-setup.md`.
 
 ### Step 5. Install the generators in `<be>` and `<fe>`
 
-From `code-repo-kit/` copy into each code repository (review first with `apply-kit.ps1 -WhatIf`, or copy by hand):
+From `code-repo-kit/` copy into each code repository (review first with `apply-kit.py --what-if`, or copy by hand):
 
 | `<be>` | `<fe>` |
 |---|---|
-| `scripts/docs/_common.ps1`, `gen-all.ps1`, `gen-codebase-map.ps1`, `gen-components.ps1`, `gen-api-index.ps1`, `gen-events.ps1`, `gen-db-schema.ps1`, `gen-jobs.ps1`, `gen-docs-tags.ps1`, `tag-candidates.ps1` | `scripts/docs/_common.ps1`, `gen-all.ps1`, `gen-codebase-map.ps1`, `gen-components.ps1`, `gen-routes.ps1`, `gen-types-index.ps1`, `gen-docs-tags.ps1`, `tag-candidates.ps1` |
+| `scripts/docs/_common.py`, `gen-all.py`, `gen-codebase-map.py`, `gen-components.py`, `gen-api-index.py`, `gen-events.py`, `gen-db-schema.py`, `gen-jobs.py`, `gen-docs-tags.py`, `tag-candidates.py` | `scripts/docs/_common.py`, `gen-all.py`, `gen-codebase-map.py`, `gen-components.py`, `gen-routes.py`, `gen-types-index.py`, `gen-docs-tags.py`, `tag-candidates.py` |
 | `.github/agents/docs-tagger.agent.md`, `.github/prompts/tag-docs.prompt.md` | same |
 | `AGENTS.md` (rewrite for your repo, keep the structure) | same |
 
-Edits: `gen-api-index.ps1` line 78 adds a sample-specific header name (`X-Harbor-Session`) - change it to your
-header or delete the line; `gen-all.ps1` lines 32-33 contract file names in the index text; `tag-candidates.ps1` (BE line 29, FE line 24)
+Edits: `gen-api-index.py` line 78 adds a sample-specific header name (`X-Harbor-Session`) - change it to your
+header or delete the line; `gen-all.py` lines 32-33 contract file names in the index text; `tag-candidates.py` (BE line 29, FE line 24)
 default path to `contexts.yml` (`../<docs>/contexts.yml`).
 
 Run and inspect:
 
-```powershell
-cd C:\src\<be>; pwsh scripts/docs/gen-all.ps1
-cd C:\src\<fe>; pwsh scripts/docs/gen-all.ps1
+```bash
+cd C:/src/<be>; python3 scripts/docs/gen-all.py
+cd C:/src/<fe>; python3 scripts/docs/gen-all.py
 ```
 
 Open every file in `docs/_generated/` and check it against reality. The generators are regex scanners with
@@ -218,14 +218,14 @@ assumptions; an empty or wrong map means the generator must be adapted, never th
 
 | Map | Assumes | If your code differs |
 |---|---|---|
-| `components.md` | Spring stereotypes, constructor injection, `JpaRepository<Entity>` / `@Table` | adapt the regex in `gen-components.ps1` |
+| `components.md` | Spring stereotypes, constructor injection, `JpaRepository<Entity>` / `@Table` | adapt the regex in `gen-components.py` |
 | `api-index.md` | contract-first: `operationId` implemented as `override fun <operationId>(` in a `@RestController` | otherwise it falls back to `@*Mapping` annotations; check `_not implemented_` rows |
-| `events.md` | `@KafkaListener` + `KafkaTemplate.send(Topics.X, ...)`, constants in `kafka_client` | adapt `gen-events.ps1` |
-| `db-schema.md` | Flyway `db/migration/V*.sql` | Liquibase -> rewrite `gen-db-schema.ps1` |
+| `events.md` | `@KafkaListener` + `KafkaTemplate.send(Topics.X, ...)`, constants in `kafka_client` | adapt `gen-events.py` |
+| `db-schema.md` | Flyway `db/migration/V*.sql` | Liquibase -> rewrite `gen-db-schema.py` |
 | `jobs.md` | `@Scheduled` | - |
-| `parameters.md` | enum `ParameterKey(val key)` + `INSERT INTO parameter_set` seeds in Flyway migrations | other names via `-EnumName` / `-Table`; otherwise adapt `gen-parameters.ps1` |
-| `datasets.md` | `-- dataset:` header block on seed and fixture `.sql` files, `INSERT ... VALUES` tuples | add the five header lines to your existing seed scripts; other loaders (CSV, DbUnit XML) need a reader in `gen-datasets.ps1` |
-| `routes.md` (FE) | react-router object routes or `<Route>` | adapt `gen-routes.ps1` |
+| `parameters.md` | enum `ParameterKey(val key)` + `INSERT INTO parameter_set` seeds in Flyway migrations | other names via `--enum-name` / `--table`; otherwise adapt `gen-parameters.py` |
+| `datasets.md` | `-- dataset:` header block on seed and fixture `.sql` files, `INSERT ... VALUES` tuples | add the five header lines to your existing seed scripts; other loaders (CSV, DbUnit XML) need a reader in `gen-datasets.py` |
+| `routes.md` (FE) | react-router object routes or `<Route>` | adapt `gen-routes.py` |
 
 Commit `scripts/docs/**` and `docs/_generated/**` in each code repo through a normal PR. The generators only read
 source and write `docs/_generated/`.
@@ -247,27 +247,27 @@ missing. Repeat until `shared` holds only helpers.
 
 `@docs <ID>` in a KDoc/JSDoc is the only link from a spec to `file:line`. In `<be>`:
 
-```powershell
-pwsh scripts/docs/tag-candidates.ps1      # read-only table: manager/calculation -> current tag, proposed tag, PROPOSE/REVIEW/BLOCKED
+```bash
+python3 scripts/docs/tag-candidates.py      # read-only table: manager/calculation -> current tag, proposed tag, PROPOSE/REVIEW/BLOCKED
 ```
 
 Then in Copilot Chat (agent `docs-tagger`, or prompt `/tag-docs <context>`). The agent edits **comment lines only**
 (adds `@docs <CTX>-001` to `manager/<Ctx>Manager.kt`, `@docs <calculation_name>` to calculation classes), reruns
-`gen-all.ps1`, and reports. Review the diff like any code PR; build and tests must pass.
+`gen-all.py`, and reports. Review the diff like any code PR; build and tests must pass.
 
 ### Step 8. Collect the evidence into `<docs>` and build the graph
 
-```powershell
-cd C:\src\<docs>
+```bash
+cd C:/src/<docs>
 git status                                                         # clean tree first
-./scripts/collect-evidence.ps1 -Backend C:\src\<be> -Frontend C:\src\<fe> -DryRun
-./scripts/collect-evidence.ps1 -Backend C:\src\<be> -Frontend C:\src\<fe> -Graph
+python3 scripts/collect-evidence.py --backend C:/src/<be> --frontend C:/src/<fe> --dry-run
+python3 scripts/collect-evidence.py --backend C:/src/<be> --frontend C:/src/<fe> --graph
 git diff --stat
 ```
 
-`-DryRun` lists `+` added / `~` changed / `-` removed files and writes nothing - read the `-` lines carefully the first
+`--dry-run` lists `+` added / `~` changed / `-` removed files and writes nothing - read the `-` lines carefully the first
 time (they are files that will be deleted from `generated/`). The real run writes `generated/manifest.yml` with the
-source commits and hashes, then `gen-graph.ps1` and `build-index.ps1`. Commit as one PR ("evidence snapshot <be sha>/<fe sha>").
+source commits and hashes, then `gen-graph.py` and `build-index.py`. Commit as one PR ("evidence snapshot <be sha>/<fe sha>").
 
 Read `generated/graph/REPO_MAP.md`: every community is a future spec; the "code only" list is your backlog.
 
@@ -314,8 +314,8 @@ Before committing:
 
 ### Step 11. Plan with the migration board
 
-```powershell
-./scripts/migration-status.ps1 -Scope all      # writes migration/all.md: per context the runs due + exact command
+```bash
+python3 scripts/migration-status.py --scope all      # writes migration/all.md: per context the runs due + exact command
 ```
 
 Optionally ask the `migration-lead` agent (prompt `/migration-plan all`) to add the processing order, targets for
@@ -331,7 +331,7 @@ unassigned pages and blockers. It never edits specs.
 | 4 Owner decision | a person, no agent | open questions | answers in the Change log, `verified: { by: human:<id>, at }`, `stale_after` (+90 days), `status: stable` | - |
 
 Order: all Run 1 first (they can be batched - one Copilot coding-agent issue per context with the same prompt), then
-Run 2 interactively page by page, Run 3 after each spec, Run 4 by the owner. Rerun `migration-status.ps1` after each
+Run 2 interactively page by page, Run 3 after each spec, Run 4 by the owner. Rerun `migration-status.py` after each
 batch. When a run fails validation the `agentStop` hook prints the error; fix the file, do not disable the hook.
 
 ---
@@ -340,14 +340,14 @@ batch. When a run fails validation the `agentStop` hook prints the error; fix th
 
 ### Step 13. Readiness check per context
 
-A context is ready for the analyst when all of these hold (`migration-status.ps1 -Scope <ctx> -Print` shows most of them):
+A context is ready for the analyst when all of these hold (`migration-status.py --scope <ctx> --print` shows most of them):
 
 - no "code only" entry for the context in `generated/graph/REPO_MAP.md`;
 - the spec exists, high-value specs are `stable` + human-verified;
 - every linked calculation has a concept with worked examples from its test and an `## Audit` table;
 - no page for the context remains outside `confluence-import/<SPACE>/_done/`;
-- `./scripts/okf-validate.ps1 -Strict` reports 0 errors;
-- `./scripts/context-pack.ps1 -Task <CTX>-001 -Print` contains spec, calculations, graph neighbourhood, contracts and
+- `python3 scripts/okf-validate.py --strict` reports 0 errors;
+- `python3 scripts/context-pack.py --task <CTX>-001 --print` contains spec, calculations, graph neighbourhood, contracts and
   tables within the budget.
 
 Then test it: write 10-15 questions with answers your domain owner agrees with (including one the docs cannot answer)
@@ -378,7 +378,7 @@ bundle is prepared so that you do not have to.
 A spec ID (`<CTX>-001`), a calculation name, a graph node, a free-text question or task, or an analytics question.
 
 ## Procedure
-1. Build the pack: `./scripts/context-pack.ps1 -Task "<input>"`; read `.context/<task>.md` top to bottom. If it lists
+1. Build the pack: `python3 scripts/context-pack.py --task "<input>"`; read `.context/<task>.md` top to bottom. If it lists
    `candidates:`, pick one and rebuild, or ask the user.
 2. Trust check: `draft`, `unverified` or `STALE` concepts are unreliable - say so. Legacy pages are evidence, not rules.
 3. Question mode: answer from the pack. Every statement cites `BR-<ID>-<n>`, a calculation or a contract operation.
@@ -388,8 +388,8 @@ A spec ID (`<CTX>-001`), a calculation name, a graph node, a free-text question 
 4. Work-item mode: slice per `.github/skills/jira-work-items/SKILL.md` (1 epic, 2-8 stories, subtasks <= 1 day per
    graph node kind). Every acceptance criterion is Gherkin and cites a `BR-` that exists in the pack. Stories derived
    from non-stable specs get the label `needs-spec-review`. Write `work-items/<ID>.yml`; run
-   `./scripts/validate-work-items.ps1 work-items/<ID>.yml`.
-5. Analytics mode: `./scripts/coverage-matrix.ps1`; answer from `generated/analytics/coverage-matrix.md` and index badges.
+   `python3 scripts/validate-work-items.py work-items/<ID>.yml`.
+5. Analytics mode: `python3 scripts/coverage-matrix.py`; answer from `generated/analytics/coverage-matrix.md` and index badges.
 6. Only if the pack leaves a blocking question AND names a `file:line`, open exactly that range in `../<be>` or
    `../<fe>`, and record what you learned as an open question, not as a silent assumption.
 
@@ -412,11 +412,11 @@ choose agent `analyst`, ask the question or type `/jira-from-spec <ID>`. Never u
 | `.github/hooks/docs-quality.json` | `<docs>` | `preToolUse`: blocks agent edits to `generated/**` and `index.md`; `agentStop`: rebuilds indexes and validates |
 | `CODEOWNERS` | `<docs>` | `generated/**` and `scripts/**` owned by platform; `features/<ctx>/**` by the context owner |
 | Branch protection | `<docs>` | PR + green checks + code-owner approval on the default branch |
-| CI job `docs-quality` | `<docs>` | PowerShell steps from `.github/workflows/docs-quality.yml`: `validate-frontmatter`, `validate-work-items`, `okf-validate -Strict`, `build-index -Check`, `gen-graph -Check`. The markdownlint / lychee / mermaid / spectral / Python steps pull third-party actions and packages - include them only if your platform approves them |
-| Collector job | `<docs>` | `ci-examples/collect-evidence.yml` adapted to your CI: scheduled or manual, checks out `<be>`/`<fe>` into separate folders, runs `collect-evidence.ps1 -Graph`, opens one PR per changed snapshot |
-| `gen-all.ps1 -Check` | `<be>`, `<fe>` PRs | fails when `docs/_generated` is stale |
-| Freshness gate | `<be>`, `<fe>` PRs | `code-repo-kit/ci/docs-maps.yml` + `check-freshness.ps1`: a PR touching a mapped path must update the spec's `last_verified` or carry the label `docs-not-affected`. Start warn-only |
-| `doc-sync` agent | `<docs>` | on each collector PR: maps changed paths to specs (`map-paths.ps1`, `graph-query.ps1 -Files`), updates API/Data sections, flags calculations to `calc-auditor`, removes a human verification when the section it covered changed |
+| CI job `docs-quality` | `<docs>` | Python steps from `.github/workflows/docs-quality.yml`: `validate-frontmatter`, `validate-work-items`, `okf-validate --strict`, `build-index --check`, `gen-graph --check`. The markdownlint / lychee / mermaid / spectral / pyyaml steps pull third-party actions and packages - include them only if your platform approves them |
+| Collector job | `<docs>` | `ci-examples/collect-evidence.yml` adapted to your CI: scheduled or manual, checks out `<be>`/`<fe>` into separate folders, runs `collect-evidence.py --graph`, opens one PR per changed snapshot |
+| `gen-all.py --check` | `<be>`, `<fe>` PRs | fails when `docs/_generated` is stale |
+| Freshness gate | `<be>`, `<fe>` PRs | `code-repo-kit/ci/docs-maps.yml` + `check-freshness.py`: a PR touching a mapped path must update the spec's `last_verified` or carry the label `docs-not-affected`. Start warn-only |
+| `doc-sync` agent | `<docs>` | on each collector PR: maps changed paths to specs (`map-paths.py`, `graph-query.py --files`), updates API/Data sections, flags calculations to `calc-auditor`, removes a human verification when the section it covered changed |
 
 ---
 
@@ -437,27 +437,27 @@ Agents never call each other; handoffs are buttons a person clicks after reviewi
 
 ## Scripts - what each does and whether it is safe
 
-None of the copied scripts makes a network call or needs credentials. All are plain PowerShell 7 with no modules.
+None of the copied scripts makes a network call or needs credentials. All are plain Python 3.11+ using only the standard library (no pip packages).
 
 | Script | Reads | Writes | Risk and how to handle it |
 |---|---|---|---|
-| `be|fe/scripts/docs/gen-all.ps1` (+ `gen-*.ps1`) | source files of that repo | only `docs/_generated/` (`-Check` writes to a temp folder) | Safe. Output reveals class names and table names to whoever can read `<docs>` - same audience as the code, normally fine |
-| `tag-candidates.ps1` | `docs/_generated/components.md`, `contexts.yml` | nothing (or `-Out` file) | Safe, read-only |
-| `collect-evidence.ps1` | `<be>`, `<fe>` checkouts (runs `git rev-parse/status`; with `-Generate` runs their `gen-all.ps1`) | **deletes and rewrites** all files in `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi`; writes `generated/manifest.yml` | The only destructive script. By design it removes files the sources no longer produce. Never keep hand-made files in those four folders; start from a clean git tree; run `-DryRun` first; a failed validation publishes nothing |
-| `gen-graph.ps1` | `generated/be|fe`, `contexts.yml`, `docs-map.yml` | `generated/graph/**` | Safe; overwrites its own output |
-| `build-index.ps1` | frontmatter of all concepts | **every `index.md`** outside excluded folders; root `index.md` keeps the `manual:start/end` block | Do not keep hand-written content in `index.md` files (put it in `README.md` or a concept) |
-| `context-pack.ps1` | specs, calculations, graph, contracts, `confluence-import/` | `.context/<task>.md` (git-ignored) | Safe. Packs may quote legacy pages - keep `.context/` ignored |
-| `graph-query.ps1`, `map-paths.ps1` | `graph.json`, `docs-map.yml` | nothing (stdout) | Safe, read-only |
-| `okf-validate.ps1`, `validate-frontmatter.ps1`, `validate-work-items.ps1` | the bundle | nothing | Safe, read-only; exit code 1 on errors |
-| `coverage-matrix.ps1` | specs, work items, test design | `generated/analytics/coverage-matrix.md|json` | Safe |
-| `migration-status.ps1` | specs, calculations, `confluence-import/`, graph | `migration/<scope>.md` | Safe |
-| `check-freshness.ps1` | changed paths, `docs-map.yml`, spec frontmatter | nothing; exit 1 when stale | Safe; it is a gate, start it warn-only |
-| `hooks/guard-generated.ps1` | hook payload on stdin | permission decision on stdout | Best effort (regex over the payload). It reduces accidents; it is not a security boundary - CODEOWNERS and branch protection are |
+| `be|fe/scripts/docs/gen-all.py` (+ `gen-*.py`) | source files of that repo | only `docs/_generated/` (`--check` writes to a temp folder) | Safe. Output reveals class names and table names to whoever can read `<docs>` - same audience as the code, normally fine |
+| `tag-candidates.py` | `docs/_generated/components.md`, `contexts.yml` | nothing (or `--out` file) | Safe, read-only |
+| `collect-evidence.py` | `<be>`, `<fe>` checkouts (runs `git rev-parse/status`; with `--generate` runs their `gen-all.py`) | **deletes and rewrites** all files in `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi`; writes `generated/manifest.yml` | The only destructive script. By design it removes files the sources no longer produce. Never keep hand-made files in those four folders; start from a clean git tree; run `--dry-run` first; a failed validation publishes nothing |
+| `gen-graph.py` | `generated/be|fe`, `contexts.yml`, `docs-map.yml` | `generated/graph/**` | Safe; overwrites its own output |
+| `build-index.py` | frontmatter of all concepts | **every `index.md`** outside excluded folders; root `index.md` keeps the `manual:start/end` block | Do not keep hand-written content in `index.md` files (put it in `README.md` or a concept) |
+| `context-pack.py` | specs, calculations, graph, contracts, `confluence-import/` | `.context/<task>.md` (git-ignored) | Safe. Packs may quote legacy pages - keep `.context/` ignored |
+| `graph-query.py`, `map-paths.py` | `graph.json`, `docs-map.yml` | nothing (stdout) | Safe, read-only |
+| `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py` | the bundle | nothing | Safe, read-only; exit code 1 on errors |
+| `coverage-matrix.py` | specs, work items, test design | `generated/analytics/coverage-matrix.md|json` | Safe |
+| `migration-status.py` | specs, calculations, `confluence-import/`, graph | `migration/<scope>.md` | Safe |
+| `check-freshness.py` | changed paths, `docs-map.yml`, spec frontmatter | nothing; exit 1 when stale | Safe; it is a gate, start it warn-only |
+| `hooks/guard-generated.py` | hook payload on stdin | permission decision on stdout | Best effort (regex over the payload). It reduces accidents; it is not a security boundary - CODEOWNERS and branch protection are |
 
 ## Safety rules for the agents themselves
 
 1. **`execute` tool = terminal access.** Agents with `tools: [..., 'execute']` can run commands. Keep terminal
-   auto-approval off, or allow-list only `pwsh ./scripts/*.ps1` and `pwsh scripts/docs/*.ps1`. Do not run agent
+   auto-approval off, or allow-list only `python3 ./scripts/*.py` and `python3 scripts/docs/*.py`. Do not run agent
    sessions in a shell that has production tokens in its environment.
 2. **Agents write drafts only.** They set `status: draft` and `generated.by: copilot/<agent>`; only a person adds
    `verified.by: human:<id>`. Approval is the PR review, not a field the agent can write.
@@ -467,9 +467,9 @@ None of the copied scripts makes a network call or needs credentials. All are pl
    content exclusion (`code-repo-kit/shared/copilot-content-exclusion.yml`) for anything sensitive in the code repos.
 5. **Code repos.** The only source edit any agent makes in this flow is `docs-tagger` adding comment lines. It goes
    through a normal code PR with build and tests.
-6. **Execution policy.** If your machines enforce signed PowerShell scripts (`AllSigned`), the scripts must be signed by
-   your platform team before use; do not bypass the policy.
-7. **CI dependencies.** The PowerShell checks need nothing external. Third-party CI actions, npm and pip packages in the
+6. **Interpreter policy.** The scripts need an approved Python 3.11+ interpreter and nothing else: no `pip install`, no
+   virtual environment. If your machines allow-list interpreters, register that Python; do not bypass the policy.
+7. **CI dependencies.** The Python checks need nothing external. Third-party CI actions, npm and pip packages in the
    sample workflow need the usual enterprise approval or can be dropped.
 
 ## Minimal path (if you need the analyst quickly)

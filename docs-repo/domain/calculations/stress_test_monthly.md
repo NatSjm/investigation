@@ -17,7 +17,7 @@ executor:
   resource: backend/core/src/test/kotlin/harbor/utils/StressTestCalculatorTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
-  resource: /scripts/attest-calculation.ps1
+  resource: /scripts/attest-calculation.py
 generated: { by: copilot/doc-sync, at: 2026-10-09T08:00:00Z }
 verified: { by: human:example-reviewer, at: 2026-10-08T15:00:00Z }
 stale_after: 2027-01-06T00:00:00Z

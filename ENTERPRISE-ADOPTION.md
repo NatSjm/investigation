@@ -8,7 +8,7 @@ This guide assumes four real repositories: frontend, backend, automated tests, a
 
 This is an implementation guide, not a deployed solution. Repository names, paths, script names, metadata, and workflow names below are proposed enterprise conventions. The new scripts and workflows must be implemented and validated before use.
 
-Use the investigation repository as a source of selected examples, not as a production-ready kit. Do not run `apply-kit.ps1` against enterprise repositories as the first step.
+Use the investigation repository as a source of selected examples, not as a production-ready kit. Do not run `apply-kit.py` against enterprise repositories as the first step.
 
 **First milestone:** one reviewed business feature that an analyst can explain correctly from the docs repo, followed by one source change that correctly triggers a documentation review.
 
@@ -46,7 +46,7 @@ Do not automate publication before confirming that the content helps analysts. D
 5. Assign the reviewers and decide who resolves conflicts between implemented behavior and approved requirements.
 6. Agree which Copilot client and mode the pilot will use. Verify customization support and enterprise permissions on that actual client; do not assume the prototype's cross-IDE support table is current.
 
-**Deliverable:** `decisions\documentation-baseline.md`, a pilot feature ID such as `FTR-001`, and a short question list.
+**Deliverable:** `decisions/documentation-baseline.md`, a pilot feature ID such as `FTR-001`, and a short question list.
 
 **Acceptance:** reviewers can identify exactly which application state the pilot documents. Independently selected latest FE and BE commits must not be described as a tested release.
 
@@ -146,7 +146,7 @@ Use `draft`, `reviewed`, `needs-review`, and `retired` as the initial lifecycle.
 
 ### Contracts
 
-Copy the pilot's FE-to-BE and BE-to-external-service contracts into `sources\contracts`. Reuse your already uploaded Swagger files after identifying their versions.
+Copy the pilot's FE-to-BE and BE-to-external-service contracts into `sources/contracts`. Reuse your already uploaded Swagger files after identifying their versions.
 
 Record whether each contract is implemented by your application, consumed from a provider, or supplied as a reference. A provider specification does not prove which operations the application actually calls.
 
@@ -154,7 +154,7 @@ Keep the complete contract and its referenced files. If external references cann
 
 ### Confluence
 
-Export the relevant pages into `sources\confluence`. Keep page ID, URL, page version, title, and export time. Preserve relevant tables, diagrams, and attachment references after checking access and sensitive content.
+Export the relevant pages into `sources/confluence`. Keep page ID, URL, page version, title, and export time. Preserve relevant tables, diagrams, and attachment references after checking access and sensitive content.
 
 Markdown is convenient, but an approved HTML export is acceptable. If conversion loses a table or macro, record that limitation and retain an accessible source reference.
 
@@ -172,7 +172,7 @@ Copy only approved evidence summaries into the docs repo, not application source
 
 **Owner:** documentation maintainer; technical and business owners approve. **Repository:** docs, with source access during preparation.
 
-Create `features\FTR-001.md` containing:
+Create `features/FTR-001.md` containing:
 
 | Section | Required content |
 |---|---|
@@ -186,7 +186,7 @@ Create `features\FTR-001.md` containing:
 | Tests | Proposed and implemented coverage, clearly distinguished |
 | Evidence and gaps | Claim citations, conflicts, unanswered questions and their owners |
 
-Write a separate `flows\FTR-001.md` only if the cross-service sequence is too large for the feature. Include asynchronous behavior, ordering, idempotency, and transaction boundaries only where supported by evidence.
+Write a separate `flows/FTR-001.md` only if the cross-service sequence is too large for the feature. Include asynchronous behavior, ordering, idempotency, and transaction boundaries only where supported by evidence.
 
 For calculations, document inputs, units, defaults, formula, rounding stage, outputs, and worked examples. Cite specific tests and source revisions. Distinguish expected examples from values actually demonstrated by a test run.
 
@@ -200,7 +200,7 @@ Classify contradictions as: matches implementation, differs from implementation,
 
 **Owner:** documentation maintainer. **Repositories:** docs; source repos accessible only to the maintenance workflow when needed.
 
-Start with `.github\copilot-instructions.md` and two custom agents if supported by the chosen client. Otherwise use the same procedures as ordinary saved prompts. Copy ideas from the prototype agents, not their graph-dependent procedures or fixed source-file limits.
+Start with `.github/copilot-instructions.md` and two custom agents if supported by the chosen client. Otherwise use the same procedures as ordinary saved prompts. Copy ideas from the prototype agents, not their graph-dependent procedures or fixed source-file limits.
 
 ### Analyst workflow
 
@@ -230,7 +230,7 @@ If the same analyst is permitted to inspect source, require an explicit escalati
 
 **Owner:** platform engineer. **Repository:** docs.
 
-Implement the proposed `scripts\check-docs.ps1` and `docs-check.yml` using approved tooling. Prefer a real YAML/OpenAPI parser to increasingly complex regular expressions. Dependencies can live in the docs pipeline without adding runtime dependencies to FE or BE.
+Implement the proposed `scripts/check-docs.py` and `docs-check.yml` using approved tooling. Prefer a real YAML/OpenAPI parser to increasingly complex regular expressions. Dependencies can live in the docs pipeline without adding runtime dependencies to FE or BE.
 
 Check:
 
@@ -256,7 +256,7 @@ Use the enterprise's actual runner OS. Validate path handling, case sensitivity,
 
 For the initial enterprise rollout, prefer one collector workflow in the docs repo over separate cross-repository publishers in every application repo. This reduces credentials, duplicated scripts, and concurrent writers.
 
-Implement `scripts\collect-evidence.ps1` and `collect-evidence.yml` with manual and scheduled execution:
+Implement `scripts/collect-evidence.py` and `collect-evidence.yml` with manual and scheduled execution:
 
 1. Resolve configured source refs to immutable FE/BE/test SHAs and record the baseline type.
 2. Check out authorized inputs into separate temporary directories, not inside the destination documentation tree.
@@ -280,7 +280,7 @@ Start scheduled/manual. Add FE/BE release or merge notifications to the collecto
 
 **Owner:** technical lead and documentation maintainer. **Repositories:** docs, then FE/BE PR templates.
 
-Maintain `mappings\features.yml` with explicit source ownership. Start with a few manual mappings:
+Maintain `mappings/features.yml` with explicit source ownership. Start with a few manual mappings:
 
 ```yaml
 features:
@@ -298,7 +298,7 @@ features:
 
 Use the actual repository paths and the selected tool's documented glob syntax. Include shared calculators, configuration and integration adapters, not just controllers/screens. An edited contract can be conservatively mapped to all consumers until operation-level diffing is dependable.
 
-Implement `scripts\find-affected-features.ps1` to compare the prior baseline with the candidate baseline. Fetch enough Git history, or compare trees; do not assume `HEAD~1` covers all changes. Include additions, modifications, renames and deletions.
+Implement `scripts/find-affected-features.py` to compare the prior baseline with the candidate baseline. Fetch enough Git history, or compare trees; do not assume `HEAD~1` covers all changes. Include additions, modifications, renames and deletions.
 
 Record unmapped relevant changes in a visible triage queue. They are unknown impact, not proof of no impact.
 
@@ -404,14 +404,14 @@ Expand one feature or business context at a time. Move advisory gates to blockin
 
 | Existing asset | Enterprise adoption |
 |---|---|
-| `docs-repo\features\_template.md` | Reuse section ideas and rule IDs; simplify metadata |
-| `docs-repo\domain\calculations\_template.md` | Reuse units/formulas/examples; remove unsupported attestation claims |
-| `docs-repo\.github\agents\analyst.agent.md` | Rewrite for docs-first retrieval, explicit trust and escalation; remove graph dependence |
-| `docs-repo\.github\agents\doc-sync.agent.md` | Adapt into docs maintainer; do not automatically renew verification dates |
-| `docs-repo\.github\skills\legacy-page-audit\SKILL.md` | Reuse conflict classification; remove arbitrary source-file limits |
-| `docs-repo\docs-map.yml` | Reuse explicit mapping idea; add shared dependencies and unmapped-change handling |
+| `docs-repo/features/_template.md` | Reuse section ideas and rule IDs; simplify metadata |
+| `docs-repo/domain/calculations/_template.md` | Reuse units/formulas/examples; remove unsupported attestation claims |
+| `docs-repo/.github/agents/analyst.agent.md` | Rewrite for docs-first retrieval, explicit trust and escalation; remove graph dependence |
+| `docs-repo/.github/agents/doc-sync.agent.md` | Adapt into docs maintainer; do not automatically renew verification dates |
+| `docs-repo/.github/skills/legacy-page-audit/SKILL.md` | Reuse conflict classification; remove arbitrary source-file limits |
+| `docs-repo/docs-map.yml` | Reuse explicit mapping idea; add shared dependencies and unmapped-change handling |
 | Code-map generators | Adopt selectively after representative enterprise-source checks |
-| `context-pack.ps1` | Optional later; fix contract selection, reference completeness and total budget first |
+| `context-pack.py` | Optional later; fix contract selection, reference completeness and total budget first |
 | Publisher/validation workflows | Reference only; correct checkout collision, platform handling and freshness semantics |
 | Graph, extension, broad kit installer | Defer until a measured problem justifies them |
 

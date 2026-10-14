@@ -1,9 +1,10 @@
-# Lives in each code repo as .github/workflows/docs-maps.yml (apply-kit.ps1 copies it there).
+# Lives in each code repo as .github/workflows/docs-maps.yml (apply-kit.py copies it there).
 # PR-time freshness check ONLY. Publication into the docs repository is done by the docs repo's single collector
-# (harbor-docs/.github/workflows/collect-evidence.yml -> scripts/collect-evidence.ps1): one owner of publication, no
+# (harbor-docs/.github/workflows/collect-evidence.yml -> scripts/collect-evidence.py): one owner of publication, no
 # docs-repo credentials in the code repos. Optional precise graph exports (be/templates/GraphExportTest.kt,
 # fe scripts/docs/gen-graph-fe.ts) can be published as build artifacts for the collector to download.
-# Lib-free: PowerShell 7 is preinstalled on GitHub-hosted runners (also fine on self-hosted with pwsh).
+# Lib-free: the generators are standard-library Python 3.11+; python3 is preinstalled on GitHub-hosted runners
+# (self-hosted runners need a Python 3.11+ on PATH).
 # REPO_KIND is `be` for harbor-backend and `fe` for harbor-frontend; set it in the repo variables.
 name: docs-maps
 on:
@@ -21,9 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Generated maps match source
-        shell: pwsh
-        run: ./scripts/docs/gen-all.ps1 -Root . -Check
+        run: python3 scripts/docs/gen-all.py --root . --check
       - name: File size budget (token hygiene)
-        shell: pwsh
-        run: ./scripts/check-file-size.ps1 -Root . -MaxLines $env:MAX_LINES -Baseline .filesize-baseline.txt
-
+        run: python3 scripts/check-file-size.py --root . --max-lines "$MAX_LINES" --baseline .filesize-baseline.txt

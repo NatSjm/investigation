@@ -6,7 +6,7 @@ agent: analyst
 ---
 Scope: ${input:scope:all}
 
-1. Run `./scripts/coverage-matrix.ps1` and read `generated/analytics/coverage-matrix.md`.
+1. Run `python3 scripts/coverage-matrix.py` and read `generated/analytics/coverage-matrix.md`.
 2. Read the trust badges in `features/index.md` and each `features/<ctx>/index.md`, and the **Spec coverage**
    section of `generated/graph/REPO_MAP.md`.
 3. Report (<= 25 lines): per spec in scope - rules total / with story / with scenario, badge, stale_after;

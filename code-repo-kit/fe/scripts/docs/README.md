@@ -2,7 +2,7 @@
 
 | Script | Needs | Output |
 |---|---|---|
-| `gen-*.ps1`, `gen-all.ps1 [-Check]` | PowerShell only | `docs/_generated/*.md` regex maps (`codebase-map`, `routes`, `types-index`, `docs-tags`, `index`) |
+| `gen-*.py`, `gen-all.py [--check]` | Python 3.11+ (standard library) | `docs/_generated/*.md` regex maps (`codebase-map`, `routes`, `types-index`, `docs-tags`, `index`) |
 | `gen-graph-fe.ts` | the repo's existing `typescript` + `@types/node` devDependencies (no new library) | `docs/_generated/graph-export-fe.json` precise graph (TS compiler API) |
 
 Run the exporter from the repo root so `node_modules` resolves:

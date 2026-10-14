@@ -13,7 +13,7 @@ executor:
   resource: backend/core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
-  resource: /scripts/attest-calculation.ps1
+  resource: /scripts/attest-calculation.py
 generated: { by: copilot/calc-auditor, at: 2026-10-12T20:30:00Z }
 stale_after: 2027-01-10T00:00:00Z
 sources:

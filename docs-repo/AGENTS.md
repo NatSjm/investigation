@@ -12,8 +12,8 @@ every folder has a generated `index.md`. Agents orient through indexes, never th
 
 For any task about a feature, calculation, change or ticket:
 
-```powershell
-./scripts/context-pack.ps1 -Task P1-001          # spec ID, calculation name, graph node or free text
+```bash
+python3 scripts/context-pack.py --task P1-001          # spec ID, calculation name, graph node or free text
 ```
 
 It writes `.context/<task>.md` (git-ignored, ~300-500 lines): the spec with its trust badge, linked calculations
@@ -40,7 +40,7 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
 
 - Never hand-edit `generated/**`; it is published by the code repositories' CI. Fix the generator or the code.
 - Every concept under `architecture/`, `domain/`, `features/`, `flows/` (cross-context behaviour, `type: Flow`), `generated/` has frontmatter with `type`; folders use
-  `index.md` (built by `scripts/build-index.ps1`), never `README.md`.
+  `index.md` (built by `scripts/build-index.py`), never `README.md`.
 - Provenance: set `generated: { by: copilot/<agent>, at: <ISO> }` on anything you write; cite `sources[]` with
   `[^id]`; never write `verified.by: human:<id>` yourself; `status: draft` until a person verifies.
 - Traceability IDs are mandatory: specs `<CTX>-<NNN>` (`CLI MTG IMP P1 P2 COV MKT STR RPT ADM`), rules
@@ -51,18 +51,18 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
   and never as current behaviour; it reaches `generated/` only through a code repository and the collector.
 - Keep outputs in files; chat summaries <= 15 lines. Specs <= 300 lines; diagrams <= 25 nodes.
 
-## Commands (PowerShell 7, no other dependencies)
+## Commands (Python 3.11+, no other dependencies)
 
 | Purpose | Command |
 |---|---|
-| Task context pack | `./scripts/context-pack.ps1 -Task <ID|name|text> [-Budget 500]` |
-| Validate bundle | `./scripts/okf-validate.ps1 -Strict`; `./scripts/validate-frontmatter.ps1`; `./scripts/validate-work-items.ps1` |
-| Rebuild indexes | `./scripts/build-index.ps1` (`-Check` in CI) |
-| Graph | `./scripts/gen-graph.ps1 [-Check]`; `./scripts/graph-query.ps1 -Node spec:P1-001 -Depth 2` / `-Files <paths>` / `-Find <text>` |
-| Changed code -> specs | `git -C ../backend diff --name-only main | % { "be/$_" } | ./scripts/map-paths.ps1` |
-| Analytics | `./scripts/coverage-matrix.ps1` (BR <-> story <-> scenario matrix into `generated/analytics/`) |
+| Task context pack | `python3 scripts/context-pack.py --task <ID|name|text> [--budget 500]` |
+| Validate bundle | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
+| Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |
+| Graph | `python3 scripts/gen-graph.py [--check]`; `python3 scripts/graph-query.py --node spec:P1-001 --depth 2` / `--files <paths>` / `--find <text>` |
+| Changed code -> specs | `git -C ../backend diff --name-only main | % { "be/$_" } | python3 scripts/map-paths.py` |
+| Analytics | `python3 scripts/coverage-matrix.py` (BR <-> story <-> scenario matrix into `generated/analytics/`) |
 
-Before finishing any edit: `okf-validate.ps1 -Strict`, `build-index.ps1`, and a dated entry in `log.md` for
+Before finishing any edit: `okf-validate.py --strict`, `build-index.py`, and a dated entry in `log.md` for
 lifecycle events (created / deprecated / verified / regenerated).
 
 ## Agents, prompts, skills
@@ -70,5 +70,5 @@ lifecycle events (created / deprecated / verified / regenerated).
 Custom agents live in `.github/agents/` (`analyst`, `spec-writer`, `doc-sync`, `calc-auditor`, `test-designer`,
 `architect`, `impact-analyst`, `confluence-migrator`, `migration-lead`), one-shot prompts in `.github/prompts/`,
 procedures in `.github/skills/`. A spec is written run by run (skeleton -> legacy merge -> calculation audit ->
-owner decision; skill `spec-lifecycle`); `./scripts/migration-status.ps1 -Scope all` lists the runs still due per
+owner decision; skill `spec-lifecycle`); `python3 scripts/migration-status.py --scope all` lists the runs still due per
 context in `migration/all.md` (agent `migration-lead` / prompt `migration-plan`). Copilot-specific notes are in `.github/copilot-instructions.md`. Layout table: `README.md`.

@@ -11,7 +11,7 @@ handoffs:
 You are migrating legacy documentation into this docs-as-code repository.
 
 ## Input
-Path(s) under `confluence-import/<space>/<page>.md` (converted by `scripts/confluence-export.ps1`).
+Path(s) under `confluence-import/<space>/<page>.md` (converted by `scripts/confluence-export.py`).
 
 ## Procedure
 1. Read the page. Classify: `feature-spec` | `calculation` | `architecture` | `decision` | `glossary` |
@@ -21,7 +21,7 @@ Path(s) under `confluence-import/<space>/<page>.md` (converted by `scripts/confl
    `source_lang: <code>`, `lang: en`, and put the original title / key terms into `aliases: [...]` so searches in
    the source language still find the concept. Keep numbers, IDs and field names verbatim. Translated business
    rules are `status: draft` until an owner adds `verified.by: human:<id>`.
-2. Find the existing target: `./scripts/context-pack.ps1 -Task "<page title keywords>"` lists candidate specs.
+2. Find the existing target: `python3 scripts/context-pack.py --task "<page title keywords>"` lists candidate specs.
    - Target exists -> merge only *new* facts; mark contradictions with `> ⚠️ CONFLICT (legacy: <page>)`.
    - None -> create from the matching template (or hand to `spec-writer` if the context has a graph community).
 3. Verify claims against `generated/` (contracts, `api-index.md`, `events.md`, `db-schema.md`, `routes.md`). Mark
@@ -31,7 +31,7 @@ Path(s) under `confluence-import/<space>/<page>.md` (converted by `scripts/confl
 5. Provenance: add a `sources[]` entry (`{ id: conf-<slug>, title, resource, author: human:<page author>, last_modified }`)
    and cite it with `[^conf-<slug>]`; set `generated.by: copilot/confluence-migrator`, `generated.at`, `status: draft`.
 6. Move the processed page to `confluence-import/_done/` (keep the file for audit); set its header `status: migrated|obsolete`.
-7. `./scripts/okf-validate.ps1 -Strict`, `./scripts/build-index.ps1`; log the migration in `log.md`.
+7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log the migration in `log.md`.
 
 ## Never
 - Copy client data, screenshots with real data, or personal names of clients.

@@ -11,7 +11,7 @@ status: stable
 
 > Generated from `ParameterKey + parameter_set seeds` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
 10 key(s), 19 seeded value(s). Scope = product group / country / scope value; `global` = no scope. Lookups take the most specific scope in force, then the newest `valid_from`.
-Meaning, unit and business rule of each key: `domain/calculations/*.md` (`## Parameters`) and the admin feature spec; `scripts/validate-frontmatter.ps1` checks that every key below is documented there and that documents name only keys that exist here.
+Meaning, unit and business rule of each key: `domain/calculations/*.md` (`## Parameters`) and the admin feature spec; `scripts/validate-frontmatter.py` checks that every key below is documented there and that documents name only keys that exist here.
 
 | Key | Constant | Seeded defaults | Read by | Validated by | Location |
 |---|---|---|---|---|---|

@@ -11,15 +11,15 @@
 |---|---|---|---|
 | Keep licence text | copyright + permission notice in all copies/substantial portions | copy of the licence with any redistribution (§4a) | `okf-skills/LICENSE`, `okf-spec-LICENSE.md` |
 | Keep attribution / NOTICE | - | retain attribution notices (§4c); include NOTICE if upstream ships one (§4d) | SPEC.md header; upstream Google repo has no NOTICE; okf-skills NOTICE vendored |
-| Mark modifications | not required (we still attribute) | modified files must carry prominent change notices (§4b) | SPEC.md is **unmodified**; Python scripts unmodified; `okf-validate.ps1`, `SKILL.md`, prompts are our rewrites and say so |
-| Right to modify / create derivatives / use commercially / keep private | yes | yes (incl. patent grant) | the PowerShell port and the Copilot rewrites are permitted derivative works |
+| Mark modifications | not required (we still attribute) | modified files must carry prominent change notices (§4b) | SPEC.md is **unmodified**; Python scripts unmodified; `okf-validate.py`, `SKILL.md`, prompts are our rewrites and say so |
+| Right to modify / create derivatives / use commercially / keep private | yes | yes (incl. patent grant) | the standard-library Python port and the Copilot rewrites are permitted derivative works |
 | Copyleft / share-alike | none | none | no obligation to publish our changes or open-source the docs repo |
 | Trademarks | - | no right to use Google marks beyond describing origin (§6) | we only name the format and link the source |
 
 Internal use inside the organisation is not "distribution" in most readings, so even fewer obligations apply - but the notices
 above are kept regardless, which is the conservative, audit-friendly position.
 
-The `SKILL.md`, prompt, agent and PowerShell files in `.github/` are rewritten for GitHub Copilot and are
+The `SKILL.md`, prompt, agent and script files in `.github/` and `scripts/` are rewritten for GitHub Copilot and are
 this repository's own work; the Claude Code plugin manifest, Stop hook, MCP server and backfill subagents
 were **not** ported (see `.github/skills/okf/PORTING.md`).
 

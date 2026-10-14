@@ -1,7 +1,7 @@
 # Graph neighbourhood -> Jira subtasks / test scope
 
 Deterministic mapping used by `analyst` and `test-designer`. Start from `spec:<ID>` at depth 2
-(the **Graph neighbourhood** section of the context pack, `graph-query.ps1 -Node spec:<ID> -Depth 2` or `#impact spec:<ID>`).
+(the **Graph neighbourhood** section of the context pack, `graph-query.py --node spec:<ID> --depth 2` or `#impact spec:<ID>`).
 
 | Node kind in radius | Jira subtask | Test layer tag | Fixture |
 |---|---|---|---|

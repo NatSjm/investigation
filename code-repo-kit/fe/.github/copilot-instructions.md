@@ -9,7 +9,7 @@ The repository rules (read order, contracts, conventions, commands, where busine
 
 ## Output discipline
 - Return diffs, not full files. Explanations <= 15 lines with `file:line` and the spec ID.
-- After changing routes, barrels, types or `@docs` tags: run `scripts/docs/gen-all.ps1` and include `docs/_generated/*`.
+- After changing routes, barrels, types or `@docs` tags: run `scripts/docs/gen-all.py` and include `docs/_generated/*`.
 - A new or changed backend field starts in the backend `core/src/main/resources/openapi/harbor-api.yaml`; here only `npm run generate:api` and the
   feature types/hooks change.
 
@@ -20,10 +20,10 @@ for backend endpoints use the backend `docs/_generated/api-index.md` or `#codeMa
 ## Custom agents and prompts in this repo
 - Agents (`.github/agents/`): `code-reader` (read-only navigator, max 3 files), `docs-tagger` (adds missing `@module` / `@docs`
   JSDoc tags from `contexts.yml`, comment lines only, one PR per feature).
-- Prompts (`.github/prompts/`): `/explain-feature` (default `stress`), `/tag-docs <feature|all>` (inventory from `scripts/docs/tag-candidates.ps1`, then the tags).
-- Hook `.github/hooks/docs-maps.json` runs `gen-all.ps1 -Check` when an agent session stops.
+- Prompts (`.github/prompts/`): `/explain-feature` (default `stress`), `/tag-docs <feature|all>` (inventory from `scripts/docs/tag-candidates.py`, then the tags).
+- Hook `.github/hooks/docs-maps.json` runs `gen-all.py --check` when an agent session stops.
 
 ## Docs-repo tools
 - VS Code with the "Harbor Docs for Copilot" extension: `#docsLookup:P1-001`, `#codeMap`, `#specToCode`, `#impact <node|file>`,
   participant `@docs /spec | /where | /impact`.
-- JetBrains: `pwsh ../harbor-docs/scripts/graph-query.ps1 -Node feature:stress -Depth 2` and attach `docs/_generated/<map>.md`.
+- JetBrains: `python3 ../harbor-docs/scripts/graph-query.py --node feature:stress --depth 2` and attach `docs/_generated/<map>.md`.

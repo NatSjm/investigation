@@ -1,6 +1,6 @@
 # Traceability: code path globs (relative to the code repo roots, prefixed `be/` = harbor-backend,
 # `fe/` = harbor-frontend) -> feature specs / calculation docs.
-# Used by scripts/map-paths.ps1 (PR changed files -> specs) and scripts/check-freshness.ps1 (CI gate).
+# Used by scripts/map-paths.py (PR changed files -> specs) and scripts/check-freshness.py (CI gate).
 # Rule: a PR touching a mapped path must either bump last_verified in the spec or carry label `docs-not-affected`.
 # The backend is layered (core/src/main/kotlin/harbor/<layer>/), so BE globs select a context by CLASS-NAME PREFIX
 # (prefixes from contexts.yml; `**/` = any layer folder, `*` = rest of the file name). A file matching prefixes of

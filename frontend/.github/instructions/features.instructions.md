@@ -17,4 +17,4 @@ description: "Feature folders: barrel with @module/@docs, <name>.types.ts, hooks
   `src/features/presentation/channel.ts`: use `usePresentationPublisher` / `usePresentationSubscriber` and extend the
   `PresentationMessage` union there. Never create a second `BroadcastChannel` or call `postMessage` elsewhere.
 - Tests: `*.test.tsx` beside the file; mocks under `__mocks__/` <= 100 lines, synthetic data only.
-- After changes to the barrel, types, routes or tags: `pwsh scripts/docs/gen-all.ps1`, commit `docs/_generated/*`.
+- After changes to the barrel, types, routes or tags: `python3 scripts/docs/gen-all.py`, commit `docs/_generated/*`.

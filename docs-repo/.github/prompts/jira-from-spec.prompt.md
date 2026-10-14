@@ -10,4 +10,4 @@ Sprint capacity hint (optional): ${input:capacity}
 
 Build the context pack for the feature, then produce `work-items/${input:featureId}.yml` following
 `work-items/_schema.yml` with subtasks derived per graph node kind. Validate with
-`./scripts/validate-work-items.ps1`. Print story summaries, estimates, `depends_on` and open questions only.
+`python3 scripts/validate-work-items.py`. Print story summaries, estimates, `depends_on` and open questions only.

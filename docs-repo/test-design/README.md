@@ -1,7 +1,7 @@
 # Test design
 
 Gherkin cases + synthetic fixtures consumed by the **automated tests repo** (already exists). That repo owns
-step definitions; this repo owns *what* to test. Sync: `scripts/push-to-tests-repo.ps1` opens a PR copying
+step definitions; this repo owns *what* to test. Sync: `scripts/push-to-tests-repo.py` opens a PR copying
 `features/*.feature` and `fixtures/*` into the tests repo.
 
 Tags: `@<ID>` on the feature, `@BR-<ID>-<n>` on every scenario (one rule per scenario), plus a layer tag

@@ -16,12 +16,12 @@ format (`SKILL.md`, agentskills.io) is the same one Copilot reads, so procedures
 
 ## 2. What we already have (no action)
 
-- Shared docs repo fed by several code repos: yes (`docs-repo/` + the single collector `collect-evidence.ps1` / `collect-evidence.yml`), with
+- Shared docs repo fed by several code repos: yes (`docs-repo/` + the single collector `collect-evidence.py` / `collect-evidence.yml`), with
   code maps and a graph the others do not have.
 - Typed documents with frontmatter and quality rules: yes (OKF concepts: Feature Spec, Attested Computation,
   Decision, HLD, Glossary; ADR template with alternatives).
 - `AGENTS.md` as index + read order; glossary; traceability IDs; freshness gate; task-scoped context packs.
-- Session-end gap check: partly (agentStop hook validates the bundle; `check-freshness.ps1` in code repos).
+- Session-end gap check: partly (agentStop hook validates the bundle; `check-freshness.py` in code repos).
 
 ## 3. Adopt
 
@@ -38,7 +38,7 @@ automatically:
   `applyTo: "src/features/product1/**"` (FE). Copilot then applies the rules whenever a developer edits that context.
 - `manifest` = our `contexts.yml` + `docs-map.yml` extended with `owners:` per context; `baselines/<context>.md` =
   hand-written rules that survive regeneration verbatim (e.g. conventions from `features/conventions.md`).
-- Agent `distiller` (new) + script `distill-check.ps1`: frontmatter `distilled_at` + `sources_sha`; re-run when a
+- Agent `distiller` (new) + script `distill-check.py`: frontmatter `distilled_at` + `sources_sha`; re-run when a
   spec, calculation or ADR of the context changed since `sources_sha`; weekly scheduled workflow opens a draft PR
   per owner team, never auto-merged. Rules copied from GitLab: traceability, selectivity, imperative mood, merge
   duplicates, keep rule + exception in one bullet, drop an item only when confirmed absent from the full source
@@ -48,23 +48,23 @@ automatically:
 Cross-context behaviour has no home today (meeting flow: client search -> product selection -> product page ->
 report; import pipeline: XLS -> tables -> Kafka -> projection refresh; session lifecycle incl. header). Add
 `docs-repo/flows/<slug>.md` (`type: Flow`) with Trigger, Participants (contexts), Steps with `file:line` from the
-graph, Data changes, Failure behaviour, Invariants, Source map. `gen-graph.ps1` can seed the step list from
+graph, Data changes, Failure behaviour, Invariants, Source map. `gen-graph.py` can seed the step list from
 `depends-on` edges across communities. The analyst packs include the flows that mention the spec.
 
 ### C. "Questions this doc answers" (from the gist)
-Add `questions: [...]` to spec and calculation frontmatter (3-6 questions a person would type). `context-pack.ps1`
+Add `questions: [...]` to spec and calculation frontmatter (3-6 questions a person would type). `context-pack.py`
 free-text matching uses `description` + `aliases` today; adding `questions` improves hits for analysts' phrasing.
 Cheap, no new tooling.
 
 ### D. Phased bootstrap with an approval gate (from Lieben `doc-init`)
-Our `migration-status.ps1` already produces the plan; add the gate: `migration-lead` must present the plan and
+Our `migration-status.py` already produces the plan; add the gate: `migration-lead` must present the plan and
 wait for approval before any Run 1 is started in batch; Run 1 batch = one Copilot coding agent issue per context.
 Also take the **git-history phase**: an `architect` task that infers ADRs from history ("Inferred, needs review",
 "Rationale unknown, confirm with the team"), for decisions nobody wrote down. Our ADR template already requires
 alternatives; add the "at least one negative consequence" rule.
 
 ### E. Wrap-up gap check in the code repos (from Lieben `meta-wrap-up`)
-A prompt `/wrap-up` in `code-repo-kit/{be,fe}`: `git diff --name-only` -> `map-paths.ps1` -> list specs to touch,
+A prompt `/wrap-up` in `code-repo-kit/{be,fe}`: `git diff --name-only` -> `map-paths.py` -> list specs to touch,
 calculations changed (-> calc-auditor), new endpoint/topic/table without spec section, decision without ADR.
 Output is a checklist the developer acts on; the freshness CI gate remains the hard stop.
 

@@ -18,8 +18,8 @@ naming contract every file follows.
 |---|---|---|
 | [`backend/`](backend/) | `harbor-backend` (Kotlin / Spring Boot / Maven / PostgreSQL / Kafka) | layered `core` (package-by-layer `harbor/<layer>/`: api, manager, service, dao, event, job, utils, ...; business context = class-name prefix per `docs-repo/contexts.yml`) + `kafka_client` (topics, payloads) + `init_docker_compose/` (local env); OpenAPI-first contract (`core/src/main/resources/openapi/harbor-api.yaml`), AsyncAPI (`openapi/harbor-events.yaml`), Flyway migrations, calculations in `utils/` with unit tests, external-service contracts in `core/src/main/resources/api/`; the applied kit (`AGENTS.md`, `.github/`, `scripts/docs/`, `docs/_generated/`) |
 | [`frontend/`](frontend/) | `harbor-frontend` (React / TypeScript) | feature folders mirroring the bounded contexts, generated `openapi-fetch` client with the session header, routes; the applied kit |
-| [`docs-repo/`](docs-repo/) | `harbor-docs` (OKF v0.2 bundle) | specs, calculations, glossary, architecture, generated maps + graph + contracts, work items, test design, legacy pages; **Copilot customisation** (`AGENTS.md`, agents, prompts, skills, hooks) and PowerShell scripts (context packs, validators, graph, analytics) |
-| [`code-repo-kit/`](code-repo-kit/) | reusable kit | what gets copied into each code repo (`apply-kit.ps1`), CI, VS Code retrieval extension (MCP substitute), shared hygiene files |
+| [`docs-repo/`](docs-repo/) | `harbor-docs` (OKF v0.2 bundle) | specs, calculations, glossary, architecture, generated maps + graph + contracts, work items, test design, legacy pages; **Copilot customisation** (`AGENTS.md`, agents, prompts, skills, hooks) and Python scripts (context packs, validators, graph, analytics) |
+| [`code-repo-kit/`](code-repo-kit/) | reusable kit | what gets copied into each code repo (`apply-kit.py`), CI, VS Code retrieval extension (MCP substitute), shared hygiene files |
 | [`harbor.code-workspace`](harbor.code-workspace) | the workspace | opens all of the above side by side with the extension settings |
 
 Documents: [INVESTIGATION.md](INVESTIGATION.md) (problem, options, decisions, token strategy),
@@ -29,33 +29,33 @@ Documents: [INVESTIGATION.md](INVESTIGATION.md) (problem, options, decisions, to
 
 ```mermaid
 flowchart LR
-  BE[backend<br/>scripts/docs/gen-all.ps1] -- CI publishes maps + contracts --> GEN[docs-repo/generated/be, fe, openapi, asyncapi]
-  FE[frontend<br/>scripts/docs/gen-all.ps1] -- CI --> GEN
-  GEN -- gen-graph.ps1 --> GRAPH[generated/graph]
-  GRAPH & SPEC[features · domain · architecture] -- context-pack.ps1 --> PACK[.context/task.md]
+  BE[backend<br/>scripts/docs/gen-all.py] -- CI publishes maps + contracts --> GEN[docs-repo/generated/be, fe, openapi, asyncapi]
+  FE[frontend<br/>scripts/docs/gen-all.py] -- CI --> GEN
+  GEN -- gen-graph.py --> GRAPH[generated/graph]
+  GRAPH & SPEC[features · domain · architecture] -- context-pack.py --> PACK[.context/task.md]
   PACK --> ANALYST[@analyst] --> WI[work-items -> Jira]
   PACK --> TD[@test-designer] --> TESTS[test-design -> tests repo]
   PACK --> SW[@spec-writer / @calc-auditor / @doc-sync] --> SPEC
   LEGACY[confluence-import] -. verified, never copied .-> SW
 ```
 
-## Try it (PowerShell 7, nothing else to install)
+## Try it (Python 3.11+, nothing else to install)
 
-```powershell
+```bash
 # 1. regenerate the code maps in both "repos" (regex scanners, no build)
-.\code-repo-kit\be\scripts\docs\gen-all.ps1 -Root .\backend
-.\code-repo-kit\fe\scripts\docs\gen-all.ps1 -Root .\frontend
+python3 code-repo-kit/be/scripts/docs/gen-all.py --root ./backend
+python3 code-repo-kit/fe/scripts/docs/gen-all.py --root ./frontend
 
 # 2. publish them into the docs repo the way CI would, then build the graph and indexes
-.\docs-repo\scripts\collect-evidence.ps1       # single collector: maps + contracts -> docs-repo/generated, with manifest.yml (source commits, hashes)
-.\docs-repo\scripts\gen-graph.ps1
-.\docs-repo\scripts\build-index.ps1
-.\docs-repo\scripts\okf-validate.ps1 -Strict
+python3 docs-repo/scripts/collect-evidence.py       # single collector: maps + contracts -> docs-repo/generated, with manifest.yml (source commits, hashes)
+python3 docs-repo/scripts/gen-graph.py
+python3 docs-repo/scripts/build-index.py
+python3 docs-repo/scripts/okf-validate.py --strict
 
 # 3. what an agent reads for a task
-.\docs-repo\scripts\context-pack.ps1 -Task P1-001 -Print
-.\docs-repo\scripts\graph-query.ps1 -Node spec:STR-001 -Depth 2
-.\docs-repo\scripts\coverage-matrix.ps1
+python3 docs-repo/scripts/context-pack.py --task P1-001 --print
+python3 docs-repo/scripts/graph-query.py --node spec:STR-001 --depth 2
+python3 docs-repo/scripts/coverage-matrix.py
 ```
 
 Then open `harbor.code-workspace` in VS Code with Copilot and, in the `harbor-docs` folder, try

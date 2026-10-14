@@ -4,8 +4,8 @@
     "agentStop": [
       {
         "type": "command",
-        "powershell": "pwsh -NoProfile -File scripts/docs/gen-all.ps1 -Check",
-        "bash": "pwsh -NoProfile -File scripts/docs/gen-all.ps1 -Check",
+        "powershell": "python scripts/docs/gen-all.py --check",
+        "bash": "python3 scripts/docs/gen-all.py --check",
         "timeoutSec": 120
       }
     ]

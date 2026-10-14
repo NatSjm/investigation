@@ -14,7 +14,7 @@ executor:
   resource: backend/core/src/test/kotlin/harbor/utils/ScenarioPricePathTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
-  resource: /scripts/attest-calculation.ps1
+  resource: /scripts/attest-calculation.py
 generated: { by: copilot/doc-sync, at: 2026-10-09T08:00:00Z }
 stale_after: 2027-01-07T00:00:00Z
 sources:

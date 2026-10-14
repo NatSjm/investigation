@@ -21,4 +21,4 @@ description: Slice a feature spec into a Jira epic, stories and subtasks as YAML
    shows a cross-community edge.
 6. Unknowns -> `questions[]`, never assumptions. Spec badge `draft` / `unverified` / `STALE` -> label
    `needs-spec-review` on the epic.
-7. Validate: `./scripts/validate-work-items.ps1 work-items/<ID>.yml`.
+7. Validate: `python3 scripts/validate-work-items.py work-items/<ID>.yml`.

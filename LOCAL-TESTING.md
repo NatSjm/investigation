@@ -1,29 +1,30 @@
 # Local testing: run the apps, walk through them, and exercise the documentation tooling
 
 Everything here is synthetic. Three clients come from the WireMock stub of the client registry, one movement file
-from the file-exchange stub, baseline prices from the market-data stub. Paths are relative to `C:\projects\investigation`.
+from the file-exchange stub, baseline prices from the market-data stub. Paths are relative to `C:/projects/investigation`.
 
 ## 1. Prerequisites (already on this machine)
 
-JDK 21, Docker Desktop, Node 24, PowerShell 7, and Maven unpacked (no install) at `C:\projects\tools\apache-maven-3.9.9`.
+JDK 21, Docker Desktop, Node 24, Python 3.11+, and Maven unpacked (no install) at `C:/projects/tools/apache-maven-3.9.9`.
 Nothing else. IntelliJ can replace the Maven command line (see "IntelliJ" below).
-On macOS the same via Homebrew (`brew install --cask powershell docker`, `brew install openjdk@21 node maven`); the
-documentation scripts are platform-neutral (ENTERPRISE-PLAYBOOK.md section 20), only the Maven path above is Windows-specific.
+On macOS the same via Homebrew (`brew install --cask docker`, `brew install python openjdk@21 node maven`); the
+documentation scripts are standard-library Python and platform-neutral (ENTERPRISE-PLAYBOOK.md section 20); only the Maven path
+above is Windows-specific (`mvn` from Homebrew on macOS). The shell blocks below are bash/zsh; on Windows use `python` for `python3`.
 
 ## 2. Start everything
 
-```powershell
+```bash
 # 1. infrastructure: Postgres 16, Kafka (KRaft) with the five topics, WireMock with the five external services
-docker compose -f backend\init_docker_compose\docker-compose.yml up -d
-docker compose -f backend\init_docker_compose\docker-compose.yml ps        # all healthy, kafka-init exited 0
+docker compose -f backend/init_docker_compose/docker-compose.yml up -d
+docker compose -f backend/init_docker_compose/docker-compose.yml ps        # all healthy, kafka-init exited 0
 
 # 2. backend (first time: build; afterwards only the java line)
 cd backend
-C:\projects\tools\apache-maven-3.9.9\bin\mvn -B -DskipTests clean package   # ~2 min; `mvn -B test` runs the 27 unit tests
-$env:HARBOR_CLIENT_REGISTRY_URL='http://localhost:8089'; $env:HARBOR_MARKET_DATA_URL='http://localhost:8089'
-$env:HARBOR_COVER_PROVIDER_URL='http://localhost:8089'; $env:HARBOR_DOCUMENT_SERVICE_URL='http://localhost:8089'
-$env:HARBOR_FILE_EXCHANGE_URL='http://localhost:8089'
-java -jar core\target\core-1.0.0-SNAPSHOT.jar          # "Started HarborApplicationKt", Flyway applies V1..V9
+C:/projects/tools/apache-maven-3.9.9/bin/mvn -B -DskipTests clean package   # ~2 min; `mvn -B test` runs the 27 unit tests
+export HARBOR_CLIENT_REGISTRY_URL='http://localhost:8089'; export HARBOR_MARKET_DATA_URL='http://localhost:8089'
+export HARBOR_COVER_PROVIDER_URL='http://localhost:8089'; export HARBOR_DOCUMENT_SERVICE_URL='http://localhost:8089'
+export HARBOR_FILE_EXCHANGE_URL='http://localhost:8089'
+java -jar core/target/core-1.0.0-SNAPSHOT.jar          # "Started HarborApplicationKt", Flyway applies V1..V9
 cd ..
 
 # 3. frontend
@@ -36,7 +37,7 @@ npm run dev                                             # http://localhost:5173,
 Health: `http://localhost:8080/api/v1/actuator/health` returns `{"status":"UP"}`. WireMock admin: `http://localhost:8089/__admin/mappings`.
 
 **IntelliJ instead of the java line.** Open `backend/pom.xml` as a Maven project (bundled Maven is fine, or point it at
-`C:\projects\tools\apache-maven-3.9.9`), JDK 21, run the Maven phase `generate-sources` once so the OpenAPI
+`C:/projects/tools/apache-maven-3.9.9`), JDK 21, run the Maven phase `generate-sources` once so the OpenAPI
 interfaces exist under `core/target/generated-sources/openapi/*/src/main/kotlin` (mark them as generated source
 roots if they stay red), then a run configuration with main class `harbor.HarborApplicationKt`, module `core`, and
 the five `HARBOR_*_URL` environment variables above. Unit tests: right-click `core/src/test/kotlin`.
@@ -45,7 +46,7 @@ the five `HARBOR_*_URL` environment variables above. Unit tests: right-click `co
 
 The tables are empty after the first start. The daily import job also runs on a schedule, but trigger it by hand:
 
-```powershell
+```bash
 curl -X POST http://localhost:8080/api/v1/admin/imports/run
 ```
 
@@ -146,7 +147,7 @@ transport costs, role thresholds), editable inline per product group; seeded by 
 8. Preparation sessions: **Prepare** on a client creates one; it appears in the second list only.
 
 API-level checks of the same flow, if you prefer curl:
-```powershell
+```bash
 curl "http://localhost:8080/api/v1/clients?q=ald"
 curl -X POST http://localhost:8080/api/v1/clients/<clientId>/sessions -H "Content-Type: application/json" -d '{"productGroup":"product1","kind":"CLIENT"}'
 curl -H "X-Harbor-Session: <sessionId>" http://localhost:8080/api/v1/session/product1/overview
@@ -156,22 +157,22 @@ curl "http://localhost:8080/api/v1/clients"                             # -> 400
 
 ## 6. Unit tests and type checks
 
-```powershell
-cd backend;  C:\projects\tools\apache-maven-3.9.9\bin\mvn -B test       # 27 tests: calculators + scenario validator
+```bash
+cd backend;  C:/projects/tools/apache-maven-3.9.9/bin/mvn -B test       # 27 tests: calculators + scenario validator
 cd frontend; npm run typecheck; npm test; npm run build                 # 0 errors, 18 tests, vite build
 ```
 
 ## 7. The documentation tooling against the running state
 
-```powershell
-.\backend\scripts\docs\gen-all.ps1 -Root .\backend -Check               # maps match the code
-.\frontend\scripts\docs\gen-all.ps1 -Root .\frontend -Check
+```bash
+python3 backend/scripts/docs/gen-all.py --root ./backend --check               # maps match the code
+python3 frontend/scripts/docs/gen-all.py --root ./frontend --check
 cd docs-repo
-.\scripts\collect-evidence.ps1 -Graph                                    # collect maps + contracts, manifest, then graph + indexes; run twice: "no change"
-.\scripts\okf-validate.ps1 -Strict; .\scripts\validate-frontmatter.ps1; .\scripts\gen-graph.ps1 -Check
-.\scripts\context-pack.ps1 -Task PRS-001 -Print                          # the pack of the presentation spec
-.\scripts\graph-query.ps1 -Node "channel:harbor.session.{*}" -Depth 1    # who publishes / subscribes
-.\scripts\migration-status.ps1 -Scope all                                # runs still due per context
+python3 scripts/collect-evidence.py --graph                                    # collect maps + contracts, manifest, then graph + indexes; run twice: "no change"
+python3 scripts/okf-validate.py --strict; python3 scripts/validate-frontmatter.py; python3 scripts/gen-graph.py --check
+python3 scripts/context-pack.py --task PRS-001 --print                          # the pack of the presentation spec
+python3 scripts/graph-query.py --node "channel:harbor.session.{*}" --depth 1    # who publishes / subscribes
+python3 scripts/migration-status.py --scope all                                # runs still due per context
 ```
 
 In VS Code with Copilot (workspace root `docs-repo`): `/context-pack PRS-001`, `@analyst /jira-from-spec PRS-001`
@@ -180,9 +181,9 @@ In VS Code with Copilot (workspace root `docs-repo`): `/context-pack PRS-001`, `
 
 ## 8. Stop
 
-```powershell
-taskkill /IM java.exe /F                                                 # backend
-docker compose -f backend\init_docker_compose\docker-compose.yml down    # add -v to drop the database volume
+```bash
+taskkill /IM java.exe /F                                                 # backend (Windows); macOS: pkill -f core-1.0.0-SNAPSHOT.jar
+docker compose -f backend/init_docker_compose/docker-compose.yml down    # add -v to drop the database volume
 ```
 The Vite server stops with Ctrl+C in its terminal.
 

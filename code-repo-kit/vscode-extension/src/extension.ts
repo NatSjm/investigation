@@ -52,14 +52,14 @@ function codeMap(map: string, query: string): string {
 
 function specToCode(id: string): string {
   const rows = generatedDirs().flatMap(d => mapRows(path.join(d, 'docs-tags.md'), id).slice(2));
-  if (!rows.length) return `No @docs ${id} tags found. Check docs-tags.md freshness (scripts/docs/gen-all.ps1) or tag the code.`;
+  if (!rows.length) return `No @docs ${id} tags found. Check docs-tags.md freshness (scripts/docs/gen-all.py) or tag the code.`;
   return clip(['| Spec ID | Declaration | Summary | Location |', '|---|---|---|---|', ...rows].join('\n'), maxChars());
 }
 
 /** Blast radius from the architectural graph; `target` may be a node id, substring or a changed file path. */
 function graphImpact(target: string, depth = 2): string {
   const g = graph();
-  if (!g) return `No graph at ${graphFile()} - run docs repo scripts/gen-graph.ps1 (falls back to flat maps).\n\n` + codeMap('any', target);
+  if (!g) return `No graph at ${graphFile()} - run docs repo scripts/gen-graph.py (falls back to flat maps).\n\n` + codeMap('any', target);
   const start = resolveNodes(g, target);
   if (!start.length) return `No graph node matches "${target}". Try #codeMap or a shorter substring.`;
   if (start.length > 8) return `"${target}" is ambiguous (${start.length} nodes): ${start.slice(0, 8).map(n => n.id).join(', ')} ... - be more specific.`;

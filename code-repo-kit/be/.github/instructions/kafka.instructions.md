@@ -6,7 +6,7 @@ description: "Kafka listeners/publishers (event/) and topics/payloads (kafka_cli
 
 - Topic names only via `Topics.<CONST>` from `kafka_client/src/main/kotlin/harbor/kafka/Topics.kt` (`harbor.imports.movements-loaded`,
   `harbor.market.prices-updated`, `harbor.meetings.session-closed`, `harbor.reports.render-requested`, `harbor.reports.rendered`).
-  `gen-events.ps1` resolves the constants; string literals break `docs/_generated/events.md`.
+  `gen-events.py` resolves the constants; string literals break `docs/_generated/events.md`.
 - Listeners live in `core/src/main/kotlin/harbor/event/`: `@KafkaListener(topics = [Topics.X], groupId = "harbor-<context>")`;
   the handler parameter type is the event class (it is used as the payload reference in the docs).
 - Producers call `kafkaTemplate.send(Topics.X, key, payload)` from a `*Publisher` / `*Requester` class in `event/`.

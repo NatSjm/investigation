@@ -8,7 +8,7 @@ description: Render the docs bundle as a self-contained interactive HTML graph (
 Script vendored unchanged from `scaccogatto/okf-skills` (MIT, see `third-party/okf-skills/LICENSE`); this SKILL.md is rewritten for Copilot.
 
 ```
-python .github/skills/okf-visualize/scripts/okf_visualize.py . -o viz.html --title "Harbor docs" --link "<repo url>"
+python3 .github/skills/okf-visualize/scripts/okf_visualize.py . -o viz.html --title "Harbor docs" --link "<repo url>"
 ```
 Requires Python + `pyyaml` (CI or a workstation with Python). The page loads cytoscape/marked/dompurify from
 `cdn.jsdelivr.net` — if your network blocks CDNs, vendor those three files and patch the script's `<script src>` lines.

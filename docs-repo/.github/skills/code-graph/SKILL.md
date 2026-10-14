@@ -5,7 +5,7 @@ description: Answer "what is affected / where is it / what talks to what" from t
 
 # Code graph (REPO_MAP + graph/<community>.md + graph.json)
 
-The graph is built by `scripts/gen-graph.ps1` from the BE/FE generated maps, `contexts.yml` and `@docs` tags. Nodes
+The graph is built by `scripts/gen-graph.py` from the BE/FE generated maps, `contexts.yml` and `@docs` tags. Nodes
 are *architectural* (context, feature, endpoint, route, class, hook, component, topic, table, spec); there are a few
 hundred, not thousands, so one neighbourhood file fits in ~1-2k tokens.
 
@@ -14,7 +14,7 @@ hundred, not thousands, so one neighbourhood file fits in ~1-2k tokens.
 2. `generated/graph/REPO_MAP.md` - communities, top nodes, cross-repo flows, spec coverage (~4k tokens).
 3. `generated/graph/<community>.md` - one bounded-context neighbourhood (BE classes + FE feature): nodes with `file:line`, edges, specs.
 4. A query: VS Code `#impact <node|file>` (extension) or
-   `scripts/graph-query.ps1 -Node <id> -Depth 2` / `-Files <paths>` / `-Find <text>` (JetBrains, CLI, CI).
+   `scripts/graph-query.py --node <id> --depth 2` / `--files <paths>` / `--find <text>` (JetBrains, CLI, CI).
 5. Class-level detail the graph omits (validators, mappers, injected deps, tables): `generated/be/components.md`.
 6. Only then a source range (`file:line` from the node) - never a whole file or layer.
 
@@ -32,7 +32,7 @@ Edge marks: `(exact)` = from Spring-context / TS-compiler export; `(heuristic)` 
 | Question | Do |
 |---|---|
 | Blast radius of a change | `#impact <node>` depth 2 -> list by kind; specs in radius = docs to update |
-| Which specs does this PR touch | `graph-query.ps1 -Files (git diff --name-only)` -> `specs in blast radius` |
+| Which specs does this PR touch | `graph-query.py --files (git diff --name-only)` -> `specs in blast radius` |
 | Jira subtasks for a story | neighbourhood of `spec:<ID>` -> one `[BE]` per class along `depends-on`, `[FE]` per feature/hook, `[DB]` per table, `[INT]` per topic; see `references/subtask-mapping.md` |
 | Test scope for a spec | depth-2 from `spec:<ID>`: endpoints -> `@api`, routes -> `@ui`, calculators -> `@calc`, topics -> `@kafka`, tables -> fixtures |
 | Doc skeleton for a context | `<community>.md` sections become the spec's API / Events / Data headings; prose is the only thing left to write |
@@ -40,6 +40,6 @@ Edge marks: `(exact)` = from Spring-context / TS-compiler export; `(heuristic)` 
 
 ## Rules
 - Quote node ids and `file:line` from the graph; do not invent edges.
-- If a node is missing, say "not in graph (maps stale or not architectural)" and point to `gen-all.ps1` / `gen-graph.ps1`.
+- If a node is missing, say "not in graph (maps stale or not architectural)" and point to `gen-all.py` / `gen-graph.py`.
 - `url:` nodes mean an FE call that matched no BE endpoint - external service or stale map; flag it.
 - Graph edges are structural, not behavioural: formulas live in `domain/calculations/`, not here.

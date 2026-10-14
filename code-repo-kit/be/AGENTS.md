@@ -51,12 +51,12 @@ bounded context of a class is its **name prefix** (`Product1*`, `Projection*`, `
   (e.g. `monthly_projection`), `BigDecimal` + `RoundingMode.HALF_EVEN`, a unit test per calculation in
   `core/src/test/kotlin/harbor/utils/` whose cases are the worked examples.
 - Migrations: `core/src/main/resources/db/migration/V<n>__<name>.sql`, one column per line - `db-schema.md` is parsed from them.
-- Files <= 400 lines (`scripts/check-file-size.ps1`). No real client data anywhere; synthetic values only.
+- Files <= 400 lines (`scripts/check-file-size.py`). No real client data anywhere; synthetic values only.
 
 ## Commands
-- `pwsh scripts/docs/gen-all.ps1` regenerates `docs/_generated/*`; `-Check` fails if they are stale (CI gate).
+- `python3 scripts/docs/gen-all.py` regenerates `docs/_generated/*`; `--check` fails if they are stale (CI gate).
   Run it after changing an endpoint, topic, table, job, injected dependency or `@docs` tag and commit the regenerated maps.
-- `pwsh scripts/check-file-size.ps1 -Root . -MaxLines 400 -Baseline .filesize-baseline.txt`
+- `python3 scripts/check-file-size.py --root . --max-lines 400 --baseline .filesize-baseline.txt`
 - `mvn -q -pl core -am -DskipTests generate-sources` (regenerate `*Api` interfaces), `mvn test`.
 - Local run: `docker compose -f init_docker_compose/docker-compose.yml up -d`, then start `core`.
 

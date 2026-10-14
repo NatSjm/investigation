@@ -10,7 +10,7 @@ status: stable
 # Datasets (BE)
 
 > Generated from `scripts/db/seed + src/test/resources/datasets headers` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
-5 dataset(s): 3 seed(s) for the developer database (`scripts/db/seed-local.ps1`), 2 integration-test fixture(s) (`@Sql("/datasets/<name>.sql")`). Row counts are tuples in `INSERT` statements; samples are the first row per table, shown only for datasets declared `synthetic: yes`.
+5 dataset(s): 3 seed(s) for the developer database (`scripts/db/seed-local.py`), 2 integration-test fixture(s) (`@Sql("/datasets/<name>.sql")`). Row counts are tuples in `INSERT` statements; samples are the first row per table, shown only for datasets declared `synthetic: yes`.
 Use in test design: `Given dataset "<name>" is loaded` (step vocabulary in the docs repo, `test-design/README.md`); add explicit `Given` rows only for the values a scenario asserts on.
 
 | Dataset | Kind | Purpose | Tables (rows) | Depends on | Loaded by | Location |

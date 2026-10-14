@@ -17,7 +17,7 @@ by folder:
 
 | Folder | Meaning | Owner |
 |---|---|---|
-| `generated/openapi/`, `generated/asyncapi/` | what the code implements; copied from the code repositories by the collector, never edited by hand | `scripts/collect-evidence.ps1` |
+| `generated/openapi/`, `generated/asyncapi/` | what the code implements; copied from the code repositories by the collector, never edited by hand | `scripts/collect-evidence.py` |
 | `contracts/proposed/` | what is being designed; written in a PR, reviewed, then handed to a code repository | analyst, architect, tech lead |
 
 ## Writing a proposal

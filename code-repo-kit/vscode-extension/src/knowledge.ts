@@ -78,7 +78,7 @@ export function loadBundle(root: string): Concept[] {
   for (const file of files) {
     if (path.basename(file).toLowerCase() !== 'index.md') continue;
     const text = fs.readFileSync(file, 'utf8');
-    // "- [Title](rel.md): description" or "* [Title](rel.md) - description · badge" (build-index.ps1 style)
+    // "- [Title](rel.md): description" or "* [Title](rel.md) - description · badge" (build-index.py style)
     for (const l of text.matchAll(/^[-*]\s+\[[^\]]*\]\(([^)]+)\)\s*(?::|-)\s*(.+)$/gm)) {
       const desc = l[2].replace(/\s*·\s*(human-reviewed|machine-confirmed|unverified|STALE)\s*$/, '').trim();
       descriptions.set(path.normalize(path.join(path.dirname(file), l[1])), desc);
@@ -140,7 +140,7 @@ export function clip(text: string, max: number): string {
   return text.length <= max ? text : text.slice(0, max - 40) + `\n... [truncated, ${text.length - max} more chars]`;
 }
 
-// --- architectural graph (generated/graph/graph.json from scripts/gen-graph.ps1) --------------
+// --- architectural graph (generated/graph/graph.json from scripts/gen-graph.py) --------------
 
 export interface GraphNode { id: string; kind: string; label: string; community: string; repo: string; location?: string; note?: string; rank?: number; degree?: number }
 export interface GraphLink { from: string; to: string; rel: string; source?: string }

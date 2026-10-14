@@ -23,7 +23,7 @@ do not execute the runs yourself.
 A context name (`product2`), a list of contexts, a Confluence space key (`HARBOR`), or `all`.
 
 ## Procedure
-1. `./scripts/migration-status.ps1 -Scope <scope>` (for a space key use `all`). It writes `migration/<scope>.md`:
+1. `python3 scripts/migration-status.py --scope <scope>` (for a space key use `all`). It writes `migration/<scope>.md`:
    per context the runs due with their commands, pending legacy pages, calculations without concept or audit,
    specs waiting for an owner, and the pages that mention no context.
 2. Read the generated file and `generated/graph/REPO_MAP.md` (PageRank order = business weight). Add, below the
@@ -37,7 +37,7 @@ A context name (`product2`), a list of contexts, a Confluence space key (`HARBOR
      `contexts.yml` (classes in `generated/graph/shared.md` that are not helpers), an empty `generated/`.
 3. Never edit `features/`, `domain/`, `architecture/` or `confluence-import/` - propose, do not fix. If a page or a
    calculation needs a run now, use a handoff.
-4. `./scripts/build-index.ps1`; one `log.md` line ("migration plan <scope>: n runs due").
+4. `python3 scripts/build-index.py`; one `log.md` line ("migration plan <scope>: n runs due").
 
 ## Output
 `migration/<scope>.md`. Chat <= 10 lines: runs due by type, contexts ready, the first three commands to type.

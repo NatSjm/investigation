@@ -44,8 +44,8 @@ refers to the real application or its industry.
 ```
 backend/        Kotlin 1.9 / Spring Boot 3 / Maven (root pom + core + kafka_client) / PostgreSQL (Flyway) / Kafka   (simulated repo "harbor-backend")
 frontend/       React 18 / TypeScript / react-router / openapi-fetch client                         (simulated repo "harbor-frontend")
-docs-repo/      OKF v0.2 docs bundle + Copilot customisation + PowerShell scripts                   (simulated repo "harbor-docs")
-code-repo-kit/  reusable kit copied into the code repos (apply-kit.ps1)
+docs-repo/      OKF v0.2 docs bundle + Copilot customisation + Python scripts                       (simulated repo "harbor-docs")
+code-repo-kit/  reusable kit copied into the code repos (apply-kit.py)
 harbor.code-workspace   multi-root workspace: the three repos side by side
 ```
 
@@ -203,7 +203,7 @@ src/api/client.ts                  openapi-fetch client `api` (baseUrl /api/v1) 
 src/api/generated/schema.d.ts      openapi-typescript output (committed, trimmed to the paths above)
 src/api/sessionStore.ts
 src/app/routes.tsx, src/app/AdminRoutes.tsx, src/app/App.tsx, src/app/RootLayout.tsx (sidebar), src/app/SessionLayout.tsx (session steps, "Open client screen"), src/app/PresentationLayout.tsx (client window: no sidebar)
-src/shared/ui/DataTable.tsx, src/shared/ui/Modal.tsx   shared component library (mapped by scripts/docs/gen-components.ps1)
+src/shared/ui/DataTable.tsx, src/shared/ui/Modal.tsx   shared component library (mapped by scripts/docs/gen-components.py)
 src/shared/charts/LineChart.tsx, src/shared/charts/StackedBars.tsx
 src/shared/utils/months.ts (month grid helpers), src/shared/utils/format.ts
 src/features/<feature>/index.ts (barrel with /** @module ... @docs <ID> */), <feature>.types.ts, api/use*.ts hooks, ui/*.tsx
@@ -249,7 +249,7 @@ Deliberate state of the sample content (so the agents have real work to do):
 | `work-items/P1-001.yml`, `test-design/features/STR-001.feature` + fixture | worked examples |
 | `generated/be`, `generated/fe` | copies of `backend/docs/_generated`, `frontend/docs/_generated` (what CI publishes) |
 | `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` | copies of the contracts |
-| `generated/graph/` | built by `scripts/gen-graph.ps1` |
+| `generated/graph/` | built by `scripts/gen-graph.py` |
 
 Glossary terms (English canonical; `aliases` may hold other-language synonyms): client, representative, meeting, session, preparation session,
 product group, sub-product, corridor, price basis, importer, exporter, mixed, role override, actual movement, modelled movement, peer simulation,

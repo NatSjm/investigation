@@ -1,6 +1,6 @@
 # Confluence import (quarantine)
 
-Raw legacy pages exported by `scripts/confluence-export.ps1` (Confluence REST → storage-format HTML → Markdown via
+Raw legacy pages exported by `scripts/confluence-export.py` (Confluence REST → storage-format HTML → Markdown via
 pandoc). Structure: `<SPACE>/<page-title>.md` with a header block `source`, `last_modified`, `author`
 (and `confluence_id`, `url` when the export provides them).
 
@@ -17,9 +17,9 @@ pandoc). Structure: `<SPACE>/<page-title>.md` with a header block `source`, `las
 4. Terminology is translated only through `domain/glossary.md` (`Aliases` column); unknown terms are added to the
    glossary first.
 5. After a space is fully migrated, the Confluence pages are replaced by a banner plus a link to the published copy
-   (`scripts/confluence-publish.ps1`).
+   (`scripts/confluence-publish.py`).
 6. Attachments are not imported automatically; screenshots or tables containing client data must be dropped.
-7. This folder is excluded from `okf-validate.ps1` and markdownlint; do not add frontmatter `type` here.
+7. This folder is excluded from `okf-validate.py` and markdownlint; do not add frontmatter `type` here.
 
 ## Current pages (space `HARBOR`)
 

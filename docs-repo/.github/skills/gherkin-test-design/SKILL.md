@@ -14,4 +14,4 @@ description: Write Gherkin test cases and synthetic fixtures from a feature spec
 5. Session-scoped endpoints: one scenario for missing header (`428`), one for a closed session (`409`).
 6. Coverage checklist (`references/coverage-checklist.md`) fully ticked in the chat summary.
 7. Fixtures: synthetic only; patterns in `test-design/fixtures/README.md`; <= 200 lines each.
-8. Add produced paths to the spec frontmatter `tests:`; run `./scripts/coverage-matrix.ps1`.
+8. Add produced paths to the spec frontmatter `tests:`; run `python3 scripts/coverage-matrix.py`.

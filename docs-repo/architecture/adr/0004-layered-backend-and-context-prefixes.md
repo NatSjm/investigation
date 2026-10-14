@@ -40,7 +40,7 @@ navigation step for people, agents or the docs scripts.
 | Package-by-layer + name prefix (chosen) | matches the code as it is; one small mapping file | context is implicit; needs naming discipline and generated maps |
 
 ## Consequences for the docs
-+ `contexts.yml` is the single source for context membership; `scripts/gen-graph.ps1` and `scripts/context-pack.ps1`
++ `contexts.yml` is the single source for context membership; `scripts/gen-graph.py` and `scripts/context-pack.py`
   read it, and `docs-map.yml` uses prefix globs (`be/core/src/main/kotlin/harbor/**/Product1*.kt`).
 + The BE kit generates `components.md` (one row per class: layer, stereotype, injected dependencies, tables, `@docs`,
   `file:line`); `codebase-map.md` lists modules -> layers -> classes; `api-index.md` shows the context in column `Tag`.

@@ -34,12 +34,12 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 // Precise FE graph export using the TypeScript compiler API - `typescript` is already a devDependency in any
-// TS React repo, so this adds no library. Complements the regex maps (gen-codebase-map.ps1) with exact
+// TS React repo, so this adds no library. Complements the regex maps (gen-codebase-map.py) with exact
 // import edges and resolved API URLs: openapi-fetch calls such as `api.GET('/session/product1/overview', ...)`
 // (method from the member name, literal contract path), plus fetch/axios with template literals and
 // `const BASE = '...'` constants.
 //
-// Output: docs/_generated/graph-export-fe.json, consumed by docs repo scripts/gen-graph.ps1 (edges source=export).
+// Output: docs/_generated/graph-export-fe.json, consumed by docs repo scripts/gen-graph.py (edges source=export).
 //
 // Run:   npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js [srcDir] [outFile]
 // or     npx ts-node scripts/docs/gen-graph-fe.ts            (if ts-node is already present)

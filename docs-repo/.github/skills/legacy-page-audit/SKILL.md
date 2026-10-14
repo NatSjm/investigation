@@ -9,7 +9,7 @@ Legacy pages describe how things *were meant* to work; the unit test next to the
 *do* work today. Auditing means putting the two side by side without rewriting either from memory.
 
 ## Procedure
-1. **Pack**: `./scripts/context-pack.ps1 -Task <calculation | spec ID | page path>`.
+1. **Pack**: `python3 scripts/context-pack.py --task <calculation | spec ID | page path>`.
 2. **Claims list**: extract from the page / concept every checkable claim: formula terms, thresholds, defaults,
    rounding, units, sign conventions, flow steps, field names. One row each.
 3. **Locate code** through `generated/be/docs-tags.md` (`@docs <name>` -> `file:line`) or the graph node

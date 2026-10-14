@@ -27,4 +27,4 @@ You answer questions about this codebase using the fewest tokens possible. You n
 ## Output
 - Answer, then `Sources:` list of `path:line` (and spec IDs).
 - If a generated map looks stale (`at:` older than the last commit touching the area), add a one-line warning and suggest
-  running `scripts/docs/gen-all.ps1`.
+  running `scripts/docs/gen-all.py`.

@@ -20,7 +20,7 @@ A feature ID (`P1-001`), a calculation name (`stress_test_monthly`), a graph nod
 a free-text task ("add transport-mode toggle to the stress table"), or an analytics question ("what is covered by tests?").
 
 ## Procedure
-1. **Build the context pack** - `./scripts/context-pack.ps1 -Task "<input>"` - and read `.context/<task>.md` top to
+1. **Build the context pack** - `python3 scripts/context-pack.py --task "<input>"` - and read `.context/<task>.md` top to
    bottom. It contains the spec with its trust badge, calculations with worked examples, the depth-2 graph
    neighbourhood, contracts, tables, existing work items/tests and legacy pages. If the pack says
    `candidates:` (free text matched several specs), pick one and rebuild, or ask the user.
@@ -40,8 +40,8 @@ a free-text task ("add transport-mode toggle to the stress table"), or an analyt
    spec's API / Events table with the proposal link, and label the story `needs-contract` (`contracts/conventions.md`).
    Gaps go to `questions[]` - never guess; if a gap blocks estimation, append it to the spec's **Open questions**
    and stop.
-6. Write `work-items/<ID>.yml` per `work-items/_schema.yml`; run `./scripts/validate-work-items.ps1 work-items/<ID>.yml`.
-7. **Analytics mode** (coverage / status / freshness questions): run `./scripts/coverage-matrix.ps1` and answer from
+6. Write `work-items/<ID>.yml` per `work-items/_schema.yml`; run `python3 scripts/validate-work-items.py work-items/<ID>.yml`.
+7. **Analytics mode** (coverage / status / freshness questions): run `python3 scripts/coverage-matrix.py` and answer from
    `generated/analytics/coverage-matrix.md` plus the index badges (`index.md` files) - counts, gaps, stale items,
    `code only` entries from `generated/graph/REPO_MAP.md` spec coverage. Skill: `.github/skills/docs-analytics/SKILL.md`.
 8. Only if the pack leaves a question that blocks the task AND names a `file:line`, open exactly that range in

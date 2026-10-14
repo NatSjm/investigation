@@ -1,18 +1,18 @@
 # Implementation plan - from this prototype workspace to the real repositories
 
-Reference workspace: `C:\projects\investigation` (this folder; open `harbor.code-workspace`). Everything below points to a
+Reference workspace: `C:\projects/investigation` (this folder; open `harbor.code-workspace`). Everything below points to a
 file here that you copy, rename or run. The three simulated repositories stand in for the real ones; rename with one
 search/replace (`harbor-*` -> your repo names, `Harbor` -> your platform name):
 
 | Prototype folder | Stands in for | Stack | Gets |
 |---|---|---|---|
-| `backend/` (`harbor-backend`) | the real BE repo | Kotlin / Spring Boot / Maven / PostgreSQL / Kafka, OpenAPI-generated `*Api` interfaces | `code-repo-kit/be/**`, `shared/check-file-size.ps1`, `ci/docs-maps.yml` (via `apply-kit.ps1 -Flavour be`) |
-| `frontend/` (`harbor-frontend`) | the real FE repo | React / TypeScript, OpenAPI-generated client | `code-repo-kit/fe/**`, same shared files (`apply-kit.ps1 -Flavour fe`) |
-| `docs-repo/` (`harbor-docs`) | new docs repo | Markdown, OKF v0.2 bundle, PowerShell scripts, Copilot customisation | `docs-repo/**` |
-| - | existing tests repo | your test framework | receives `test-design/**` via `scripts/push-to-tests-repo.ps1` |
+| `backend/` (`harbor-backend`) | the real BE repo | Kotlin / Spring Boot / Maven / PostgreSQL / Kafka, OpenAPI-generated `*Api` interfaces | `code-repo-kit/be/**`, `shared/check-file-size.py`, `ci/docs-maps.yml` (via `apply-kit.py --flavour be`) |
+| `frontend/` (`harbor-frontend`) | the real FE repo | React / TypeScript, OpenAPI-generated client | `code-repo-kit/fe/**`, same shared files (`apply-kit.py --flavour fe`) |
+| `docs-repo/` (`harbor-docs`) | new docs repo | Markdown, OKF v0.2 bundle, Python scripts, Copilot customisation | `docs-repo/**` |
+| - | existing tests repo | your test framework | receives `test-design/**` via `scripts/push-to-tests-repo.py` |
 | - | internal VSIX feed | - | `code-repo-kit/vscode-extension` packaged |
 
-Constraints honoured: no third-party libraries or frameworks in the code repos (only PowerShell, the existing Spring test
+Constraints honoured: no third-party libraries or frameworks in the code repos (only standard-library Python, the existing Spring test
 classpath, the existing `typescript` devDependency), no MCP, GitHub Copilot only (VS Code + JetBrains), confidentiality in a
 regulated enterprise (synthetic data, content exclusion, read-only tooling). Confluence stays the legacy source and the
 publish target; Jira and the tests repo are outputs.
@@ -23,17 +23,17 @@ publish target; Jira and the tests repo are outputs.
 
 | # | Check | Where | If false |
 |---|---|---|---|
-| 0.1 | `core/src/main/resources/openapi/harbor-api.yaml` is the BE contract and controllers implement generated `*Api` interfaces with `override fun <operationId>` | BE repo | `gen-api-index.ps1` falls back to annotation scan; the join to operations is lost |
+| 0.1 | `core/src/main/resources/openapi/harbor-api.yaml` is the BE contract and controllers implement generated `*Api` interfaces with `override fun <operationId>` | BE repo | `gen-api-index.py` falls back to annotation scan; the join to operations is lost |
 | 0.2 | External service contracts exist as OpenAPI files (`core/src/main/resources/api/`); Kafka topics are constants in one `Topics` object (`kafka_client`) | BE repo | add the files / constants before Step 3 (`events.md` cannot resolve literals) |
 | 0.2a | Class-name prefixes cover the business contexts (layered `core`: `Product1*`, `Projection*`, `Stress*`, ...; one `<Ctx>Manager` per context) | BE repo, `components.md` | fill `docs-repo/contexts.yml` (context -> BE prefixes, FE feature, spec prefix); unmatched classes show as `shared` in the graph - rename or add a prefix line |
 | 0.3 | `spring-boot-starter-test` on the BE test classpath | BE `pom.xml` | skip `GraphExportTest.kt`; regex joiner alone (edges "approximate") |
 | 0.4 | `typescript` in FE `devDependencies`; API calls go through one generated client (`api.GET('<path>')` literals) | FE `package.json`, `src/api/` | skip `gen-graph-fe.ts`; FE regex maps alone |
-| 0.5 | PowerShell 7 on CI runners (`pwsh`) | GitHub-hosted: yes; self-hosted: install | generators are PS 5.1-compatible, Windows runners also work |
+| 0.5 | Python 3.11+ on CI runners (`python3`) | GitHub-hosted: yes; self-hosted: install | standard library only; Windows runners also work (`python`) |
 | 0.6 | Git platform (GitHub / GitLab / Azure DevOps) | - | port `ci/docs-maps.yml` and `docs-quality.yml`; hooks and scripts do not change |
 | 0.7 | Copilot surfaces: VS Code with custom agents, skills and hooks; JetBrains plugin from 2026-03 (reads `AGENTS.md`; hooks/skills preview); `chat.useAgentsMdFile` allowed by org policy | IDE admins | fall back to `copilot-instructions.md` carrying the full rules; CI enforces what hooks would |
 | 0.8 | Repo/org admin can set **Copilot content exclusion** | GitHub settings | "never open" lists in `copilot-instructions.md` (weaker) |
 | 0.9 | Jira / Confluence REST reachable from CI | network team | CSV fallback for Jira; Confluence publish optional |
-| 0.10 | Security review slot for the VS Code extension (~250 lines, read-only, no network) and for the vendored OKF Python | security team | JetBrains-only path still works via `graph-query.ps1` + prompts; `okf-validate.ps1` is the gate without Python |
+| 0.10 | Security review slot for the VS Code extension (~250 lines, read-only, no network) and for the vendored OKF Python | security team | JetBrains-only path still works via `graph-query.py` + prompts; `okf-validate.py` is the gate without Python |
 | 0.11 | Language policy agreed: English bundle, source language at the edges (INVESTIGATION §3.14); a native-speaking reviewer per context | owners | without a reviewer, migrated specs stay `draft` |
 
 Decide and record: owners per bounded context (frontmatter `owners`), pilot context (one with calculations **and** a legacy
@@ -53,8 +53,8 @@ page to audit), repo names.
 4. Sample content (`features/*/CLI-001|MTG-001|P1-001|STR-001|MKT-001|RPT-001.md`, `domain/calculations/*.md`,
    `work-items/P1-001.yml`, `test-design/features/STR-001.feature`, `confluence-import/HARBOR/*`): keep until your pilot
    spec, work items and audit exist (they are the worked examples the agents and skills quote), then delete.
-5. Run locally: `scripts/okf-validate.ps1 -Strict`, `scripts/build-index.ps1`, `scripts/validate-frontmatter.ps1`,
-   `scripts/validate-work-items.ps1`.
+5. Run locally: `scripts/okf-validate.py --strict`, `scripts/build-index.py`, `scripts/validate-frontmatter.py`,
+   `scripts/validate-work-items.py`.
 6. Enable CI `.github/workflows/docs-quality.yml` (warn-only for two weeks: `continue-on-error: true` on the graph and
    coverage steps until Step 3 publishes maps) and `copilot-setup-steps.yml`.
 
@@ -65,26 +65,26 @@ page to audit), repo names.
 
 ## Step 2 - Code-repo hygiene (BE and FE, 1 day each, no behaviour change)
 
-1. `code-repo-kit/apply-kit.ps1 -Flavour be -Target <be-repo> -WhatIf`, review, drop `-WhatIf`; same with `fe`. Copies
+1. `code-repo-kit/apply-kit.py --flavour be --target <be-repo> --what-if`, review, drop `--what-if`; same with `fe`. Copies
    `AGENTS.md`, `.github/` (copilot-instructions, instructions, agents, prompts, hooks, `copilot-setup-steps.yml`),
-   `scripts/docs/**`, `scripts/check-file-size.ps1`, `.github/workflows/docs-maps.yml`.
+   `scripts/docs/**`, `scripts/check-file-size.py`, `.github/workflows/docs-maps.yml`.
 2. Adjust in the copied files: base package (`harbor`), Maven modules (`core`, `kafka_client`), layer names, `applyTo` globs, feature folder root (`src/features`), the HTTP client wrapper name,
    header name (`X-Harbor-Session` -> yours), JDK / Node versions in `copilot-setup-steps.yml`.
 3. **Content exclusion**: apply `code-repo-kit/shared/copilot-content-exclusion.yml` in repo settings (`target/` incl.
    `generated-sources`, `build/`, `node_modules/`, lockfiles, generated clients and `schema.d.ts`, snapshots, fixtures, env configs).
-4. Legacy baseline once: `./scripts/check-file-size.ps1 -Root . -MaxLines 400 -WriteBaseline .filesize-baseline.txt` (FE: 300).
+4. Legacy baseline once: `python3 scripts/check-file-size.py --root . --max-lines 400 --write-baseline .filesize-baseline.txt` (FE: 300).
 5. Distribute `code-repo-kit/shared/ide-setup.md` and one `*.code-workspace` per bounded context from
    `shared/workspaces/product1.code-workspace` (BE `core` sources + resources + FE feature + docs repo; IntelliJ scopes by
    class-name prefix, e.g. `file:core/src/main/kotlin/harbor//Product1*.kt||file:core/src/main/kotlin/harbor//Projection*.kt`).
 
 **Done when:** Copilot in both IDEs shows `AGENTS.md`-driven answers; `@workspace` no longer indexes `target/` / `node_modules/`;
-the `agentStop` hook `docs-maps.json` runs `gen-all.ps1 -Check` at the end of a session.
+the `agentStop` hook `docs-maps.json` runs `gen-all.py --check` at the end of a session.
 
 ---
 
 ## Step 3 - Lib-free generated maps and contract publish (BE and FE, 1-2 days each)
 
-1. Run `./scripts/docs/gen-all.ps1 -Root .` and inspect `docs/_generated/*.md`:
+1. Run `python3 scripts/docs/gen-all.py --root .` and inspect `docs/_generated/*.md`:
    - BE: `codebase-map` (modules from `pom.xml` -> layers -> classes + resource folders), `components` (one row per class:
      layer, stereotype, injected deps, tables, `@docs`, `file:line`), `api-index` (operations from `openapi/harbor-api.yaml`
      joined to `override fun <operationId>`, `Tag` = context; rows `_not implemented_` are a real backlog), `events`,
@@ -100,7 +100,7 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.ps1 -Check` at the end of a 
    `.../openapi/harbor-events.yaml` -> `generated/asyncapi/backend.yaml`, `.../resources/api/*.yaml` -> `generated/openapi/external/`)
    as a PR into the docs repo.
 5. In the docs repo the PRs land in `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi`; agent
-   `doc-sync` reviews them (`map-paths.ps1` -> affected specs). The docs repo's collector (`scripts/collect-evidence.ps1`, CI `ci-examples/collect-evidence.yml`) does the copy, validation and manifest; the code repos keep only the PR freshness check.
+   `doc-sync` reviews them (`map-paths.py` -> affected specs). The docs repo's collector (`scripts/collect-evidence.py`, CI `ci-examples/collect-evidence.yml`) does the copy, validation and manifest; the code repos keep only the PR freshness check.
 
 **Done when:** a PR that adds an operation to `harbor-api.yaml` without regenerating fails CI; `generated/be/api-index.md` and
 `generated/openapi/backend.yaml` exist in the docs repo; `jobs.md` lists the import jobs.
@@ -109,8 +109,8 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.ps1 -Check` at the end of a 
 
 ## Step 4 - Architectural graph (1-2 days + 1 day BE export)
 
-1. Docs repo: `./scripts/gen-graph.ps1` (reads `generated/be` incl. `components.md`, `generated/fe`, `contexts.yml`), then
-   `./scripts/build-index.ps1`. Review `generated/graph/REPO_MAP.md`: communities = bounded contexts of `contexts.yml`
+1. Docs repo: `python3 scripts/gen-graph.py` (reads `generated/be` incl. `components.md`, `generated/fe`, `contexts.yml`), then
+   `python3 scripts/build-index.py`. Review `generated/graph/REPO_MAP.md`: communities = bounded contexts of `contexts.yml`
    (`context:<name>` node at its manager + BE classes by name prefix + the FE feature; `class:` nodes with `depends-on` /
    `persists-to` edges); the `shared` bucket lists classes without a known prefix; the
    **Spec coverage** list is your documentation backlog (`code only` -> `/spec-skeleton-from-graph`; `spec only` -> tag code).
@@ -120,11 +120,11 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.ps1 -Check` at the end of a 
    command to the code repo's CI as an artifact-producing step; the docs repo's collector downloads the artifact (comment block in `docs-maps.yml` / `collect-evidence.yml`).
 3. FE precise export (if 0.4 true): `npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js src
    docs/_generated/graph-export-fe.json`; adjust the client-wrapper regex in `gen-graph-fe.ts`.
-4. Re-run `gen-graph.ps1`; edges from the exports show `(exact)`. The CI step "Architectural graph is up to date" is in
-   `docs-quality.yml`; the PR step prints impacted specs via `graph-query.ps1 -Files`.
-5. Build a pack: `./scripts/context-pack.ps1 -Task <pilot-ID> -Print` - the graph section must be present (else the graph is missing or stale).
+4. Re-run `gen-graph.py`; edges from the exports show `(exact)`. The CI step "Architectural graph is up to date" is in
+   `docs-quality.yml`; the PR step prints impacted specs via `graph-query.py --files`.
+5. Build a pack: `python3 scripts/context-pack.py --task <pilot-ID> --print` - the graph section must be present (else the graph is missing or stale).
 
-**Done when:** `#impact spec:<pilot-ID>` (VS Code) or `graph-query.ps1 -Node spec:<pilot-ID>` returns endpoints, classes,
+**Done when:** `#impact spec:<pilot-ID>` (VS Code) or `graph-query.py --node spec:<pilot-ID>` returns endpoints, classes,
 tables, topics, FE hooks/routes with `file:line`; `REPO_MAP.md` shows the pilot spec as `spec + code`; the pack has all sections.
 
 ---
@@ -147,16 +147,16 @@ tables, topics, FE hooks/routes with `file:line`; `REPO_MAP.md` shows the pilot 
 
 | Order | Action | Asset | Output |
 |---|---|---|---|
-| 6.1 | Context pack | `/context-pack <ID>` or `scripts/context-pack.ps1 -Task <ID>` (skill `task-context`) | `.context/<ID>.md`; every later step starts from it |
+| 6.1 | Context pack | `/context-pack <ID>` or `scripts/context-pack.py --task <ID>` (skill `task-context`) | `.context/<ID>.md`; every later step starts from it |
 | 6.2 | Skeleton spec from graph | `/spec-skeleton-from-graph <context> <ID>` (agent `spec-writer`) | `features/<ctx>/<ID>.md` draft with Interfaces (from `harbor-api.yaml`), Events, Data prefilled |
 | 6.3 | Fill business rules | `spec-writer` reads graph neighbourhood + one manager file (`context:` node); legacy pages via `confluence-migrator` (translates via glossary `Aliases`, sets `source_lang`, `aliases`) | spec `status: draft`, open questions listed |
 | 6.4 | Calculations + audit | skill `calculation-spec` (worked examples copied from the unit test); `/audit-calculation <name>` (agent `calc-auditor`, skill `legacy-page-audit`) against the calculator + its test | `domain/calculations/<name>.md` with `## Audit <date>` table; legacy page `migrated | obsolete` |
 | 6.5 | Human review | owner adds `verified[].by: human:<id>` | index badge `human-reviewed` |
-| 6.6 | Jira | `@analyst /jira-from-spec <ID>` (pack only; subtasks per graph node kind) -> `work-items/<ID>.yml` -> `validate-work-items.ps1` -> `jira-push.ps1` (or CSV) | epic/stories/subtasks |
-| 6.7 | Tests | `@test-designer /tests-from-spec <ID>` -> `test-design/features/<ID>.feature` + fixtures -> `push-to-tests-repo.ps1` | PR in the tests repo |
+| 6.6 | Jira | `@analyst /jira-from-spec <ID>` (pack only; subtasks per graph node kind) -> `work-items/<ID>.yml` -> `validate-work-items.py` -> `jira-push.py` (or CSV) | epic/stories/subtasks |
+| 6.7 | Tests | `@test-designer /tests-from-spec <ID>` -> `test-design/features/<ID>.feature` + fixtures -> `push-to-tests-repo.py` | PR in the tests repo |
 | 6.8 | HLD | `/hld-from-spec` (agent `architect`, contracts + graph) | `architecture/` C4/Mermaid |
 | 6.9 | Status | `/coverage-report <prefix>` (skill `docs-analytics`) | <= 25-line report from `coverage-matrix.md` + badges + REPO_MAP coverage |
-| 6.10 | Publish | `scripts/confluence-publish.ps1` (English mirror + banner; `-Lang <code>` for a machine-translated page via `translate-for-publish`) | Confluence page points to Git |
+| 6.10 | Publish | `scripts/confluence-publish.py` (English mirror + banner; `--lang <code>` for a machine-translated page via `translate-for-publish`) | Confluence page points to Git |
 
 Measure during the pilot (Step 8) and adjust `AGENTS.md`, the pack budget and the agents before scaling to the other contexts.
 
@@ -165,12 +165,12 @@ Measure during the pilot (Step 8) and adjust `AGENTS.md`, the pack budget and th
 ## Step 7 - Scale out and harden (weeks 3-8)
 
 1. One bounded context per sprint: tag code (`@docs`), pack, skeleton from graph, migrate + audit legacy pages, review, Jira, tests.
-2. Flip gates to blocking: `gen-all.ps1 -Check`, `check-file-size.ps1`, `gen-graph.ps1 -Check`, `coverage-matrix.ps1 -Check`,
-   `okf-validate.ps1 -Strict`; keep the IDE hooks identical to CI.
+2. Flip gates to blocking: `gen-all.py --check`, `check-file-size.py`, `gen-graph.py --check`, `coverage-matrix.py --check`,
+   `okf-validate.py --strict`; keep the IDE hooks identical to CI.
 3. `stale_after` discipline: specs older than 90 days without re-verification get the `STALE` badge; packs show it; agents mark
    downstream outputs `needs-spec-review`.
-4. Implement the stub scripts for your platform: `jira-push.ps1`, `confluence-export.ps1`, `confluence-publish.ps1`,
-   `push-to-tests-repo.ps1` (REST calls; CSV fallback kept).
+4. Implement the stub scripts for your platform: `jira-push.py`, `confluence-export.py`, `confluence-publish.py`,
+   `push-to-tests-repo.py` (REST calls; CSV fallback kept).
 5. Optional (only if build plugins get approved): richer generators in `docs-repo/ci-examples/` (springdoc, springwolf, Dokka)
    feed the same `generated/` folders; the graph joiner and the packs do not change.
 
@@ -217,9 +217,9 @@ Jira subtasks produced in < 10 minutes per story with no source files read, ever
 | skill | `skills/docs-analytics` | coverage / trust / staleness answers from generated files |
 | skill | `skills/okf`, `okf-validate`, `okf-visualize` | OKF bundle rules, vendored checkers (MIT) |
 | prompt | `prompts/context-pack`, `spec-skeleton-from-graph`, `spec-from-code`, `audit-calculation`, `jira-from-spec`, `tests-from-spec`, `hld-from-spec`, `impact-from-graph`, `coverage-report`, `translate-for-publish`, `okf-produce`, `okf-validate` | one-click flows (`agent`, `argument-hint`) |
-| hooks | `.github/hooks/docs-quality.json` + `scripts/hooks/guard-generated.ps1` | `preToolUse` guard on `generated/**`, `agentStop` validators |
-| scripts | `context-pack.ps1`, `graph-query.ps1`, `gen-graph.ps1`, `coverage-matrix.ps1`, `build-index.ps1`, `okf-validate.ps1`, `validate-frontmatter.ps1`, `validate-work-items.ps1`, `map-paths.ps1`, `check-freshness.ps1`, `collect-evidence.ps1` (`publish-local.ps1` deprecated wrapper) | generation + gates (lib-free) |
-| scripts (stubs) | `jira-push.ps1`, `confluence-export.ps1`, `confluence-publish.ps1`, `push-to-tests-repo.ps1` | fill in REST calls for your platform |
+| hooks | `.github/hooks/docs-quality.json` + `scripts/hooks/guard-generated.py` | `preToolUse` guard on `generated/**`, `agentStop` validators |
+| scripts | `context-pack.py`, `graph-query.py`, `gen-graph.py`, `coverage-matrix.py`, `build-index.py`, `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py`, `map-paths.py`, `check-freshness.py`, `collect-evidence.py` (`publish-local.py` deprecated wrapper) | generation + gates (lib-free) |
+| scripts (stubs) | `jira-push.py`, `confluence-export.py`, `confluence-publish.py`, `push-to-tests-repo.py` | fill in REST calls for your platform |
 | CI | `.github/workflows/docs-quality.yml`, `copilot-setup-steps.yml` | all gates + impacted-specs output; coding-agent environment |
 | templates | `features/_template.md`, `domain/calculations/_template.md`, `architecture/adr/template.md`, `work-items/_schema.yml` | content shape |
 
@@ -227,18 +227,18 @@ Jira subtasks produced in < 10 minutes per story with no source files read, ever
 
 | Type | Name | Use it for |
 |---|---|---|
-| installer | `apply-kit.ps1 -Flavour be|fe -Target <repo> [-WhatIf]` | copies the flavour into a repo (kit is the source of truth) |
+| installer | `apply-kit.py --flavour be|fe --target <repo> [--what-if]` | copies the flavour into a repo (kit is the source of truth) |
 | canonical rules | `be/AGENTS.md`, `fe/AGENTS.md` (<= 60 lines) | read order (maps -> manager (+ `components.md` deps) / barrel -> one range), contracts as truth, conventions the generators rely on |
 | instructions | `be/.github/copilot-instructions.md`, `fe/.github/copilot-instructions.md` | never-open list, output discipline, agents/prompts/tools |
 | instructions | `be/.github/instructions/{api,calculations,kafka,migrations,tests}.instructions.md`, `fe/.github/instructions/{features,api-client}.instructions.md` | scoped conventions |
 | agent | `be/.github/agents/code-reader.agent.md`, `fe/.github/agents/code-reader.agent.md` | <= 3 files Q&A |
 | agent | `be/.github/agents/impact-analyst.agent.md` | blast radius across backend / frontend / docs |
 | prompt | `be/.github/prompts/{explain-module,find-spec-code,add-endpoint}`, `fe/.github/prompts/explain-feature` | bounded explanations (`/explain-module` explains a context: manager + its deps), contract-first endpoint checklist |
-| hooks / setup | `be|fe/.github/hooks/docs-maps.json`, `be|fe/.github/workflows/copilot-setup-steps.yml` | `agentStop` -> `gen-all.ps1 -Check`; JDK 21 / Node 24 for the coding agent |
-| scripts | `be/scripts/docs/gen-{codebase-map,components,api-index,events,db-schema,jobs,docs-tags}.ps1`, `fe/scripts/docs/gen-{codebase-map,routes,types-index,docs-tags}.ps1`, `gen-all.ps1 -Check` | regex/contract maps + freshness gate |
+| hooks / setup | `be|fe/.github/hooks/docs-maps.json`, `be|fe/.github/workflows/copilot-setup-steps.yml` | `agentStop` -> `gen-all.py --check`; JDK 21 / Node 24 for the coding agent |
+| scripts | `be/scripts/docs/gen-{codebase-map,components,api-index,events,db-schema,jobs,docs-tags}.py`, `fe/scripts/docs/gen-{codebase-map,routes,types-index,docs-tags}.py`, `gen-all.py --check` | regex/contract maps + freshness gate |
 | export | `be/templates/GraphExportTest.kt` | precise BE graph from the Spring context (test scope only) |
 | export | `fe/scripts/docs/gen-graph-fe.ts` + `tsconfig.gen.json` (+ `README.md`) | precise FE graph via the TypeScript compiler API |
-| shared | `shared/check-file-size.ps1`, `copilot-content-exclusion.yml`, `workspaces/product1.code-workspace`, `ide-setup.md` | hygiene + IDE scope |
+| shared | `shared/check-file-size.py`, `copilot-content-exclusion.yml`, `workspaces/product1.code-workspace`, `ide-setup.md` | hygiene + IDE scope |
 | CI | `ci/docs-maps.yml` | freshness/size gate; publish maps, contracts and exports to the docs repo |
 | extension | `vscode-extension/` (`#docsLookup`, `#codeMap`, `#specToCode`, `#impact`, `@docs`) | MCP-free retrieval in VS Code |
 

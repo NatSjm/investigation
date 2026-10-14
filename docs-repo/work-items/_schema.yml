@@ -1,4 +1,4 @@
-# Schema for work-items/<FEATURE-ID>.yml (documented example; validated by scripts/validate-work-items.ps1)
+# Schema for work-items/<FEATURE-ID>.yml (documented example; validated by scripts/validate-work-items.py)
 feature: CTX-000                # required, must exist in features/ (e.g. P1-001)
 project: HRB                    # Jira project key
 epic:

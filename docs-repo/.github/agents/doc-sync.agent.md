@@ -13,9 +13,9 @@ One of:
 - a feature ID to re-verify.
 
 ## Procedure
-1. Map changed paths to specs: `<paths> | ./scripts/map-paths.ps1` and
-   `./scripts/graph-query.ps1 -Files <paths> -Depth 2` (specs in blast radius). Unmapped paths -> step 6.
-2. For each affected spec build the pack (`./scripts/context-pack.ps1 -Task <ID>`) and compare its
+1. Map changed paths to specs: `<paths> | python3 scripts/map-paths.py` and
+   `python3 scripts/graph-query.py --files <paths> --depth 2` (specs in blast radius). Unmapped paths -> step 6.
+2. For each affected spec build the pack (`python3 scripts/context-pack.py --task <ID>`) and compare its
    **API / Events / Data** sections with the current `generated/openapi/backend.yaml`, `generated/asyncapi/backend.yaml`,
    `generated/be/db-schema.md`, `generated/be/api-index.md`, `generated/fe/routes.md`.
 3. Only if behaviour (not just signatures) changed and is not inferable from the contract diff, open the specific
@@ -32,7 +32,7 @@ One of:
 7. OKF provenance on every concept you touch: `generated.by: copilot/doc-sync`, `generated.at: <ISO now>`,
    refresh `stale_after`, add a `sources[]` entry for the PR/commit; remove a `human:` verification if the section
    it covered changed.
-8. Run `./scripts/okf-validate.ps1 -Strict` and `./scripts/build-index.ps1`; append a `## YYYY-MM-DD` entry to `log.md`.
+8. Run `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`; append a `## YYYY-MM-DD` entry to `log.md`.
 
 ## Output
 Edited files; chat summary <= 10 lines: specs touched, calculations flagged, tests needing review

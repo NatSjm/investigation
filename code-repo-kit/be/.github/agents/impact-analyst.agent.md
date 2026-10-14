@@ -11,7 +11,7 @@ Input: a planned change, e.g. "add `landedCost` to `ProjectionRowDto`", "rename 
 1. Locate the subject in `docs/_generated/{api-index,events,db-schema,jobs,docs-tags,components}.md` (one read each at most).
    If the docs repo is in the workspace, prefer `harbor-docs/generated/graph/<context>.md` (one read: endpoints, classes,
    `depends-on` / `persists-to` edges, topics, tables, FE hooks/routes and spec links of the context) or the VS Code tool
-   `#impact <node|file>`; in JetBrains run `pwsh ../harbor-docs/scripts/graph-query.ps1 -Node <id> -Depth 2`.
+   `#impact <node|file>`; in JetBrains run `python3 ../harbor-docs/scripts/graph-query.py --node <id> --depth 2`.
 2. Follow only the references listed there: `override fun` handler -> manager -> service / dao (injection chain in
    `components.md`) -> event class / DTO / table. Max 4 source files.
 3. Contract impact: if the change touches a request/response schema, `core/src/main/resources/openapi/harbor-api.yaml` changes

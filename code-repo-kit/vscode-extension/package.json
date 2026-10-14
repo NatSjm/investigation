@@ -34,7 +34,7 @@
         "harborDocs.graphPath": {
           "type": "string",
           "default": "",
-          "description": "Path to graph.json from scripts/gen-graph.ps1. Empty = <docsRepoPath>/generated/graph/graph.json."
+          "description": "Path to graph.json from scripts/gen-graph.py. Empty = <docsRepoPath>/generated/graph/graph.json."
         }
       }
     },

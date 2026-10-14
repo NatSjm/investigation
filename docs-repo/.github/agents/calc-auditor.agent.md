@@ -16,7 +16,7 @@ A calculation name (`stress_test_monthly`), a spec ID (audit all calculations it
 (`confluence-import/HARBOR/stress-test-calculation.md`).
 
 ## Procedure
-1. `./scripts/context-pack.ps1 -Task <name>`; read the calculation concept (formula, parameters, conventions,
+1. `python3 scripts/context-pack.py --task <name>`; read the calculation concept (formula, parameters, conventions,
    worked examples) and the legacy pages the pack lists.
 2. Locate the implementation through `generated/be/docs-tags.md` (`@docs <name>` -> `file:line`). Open exactly
    two files in `../backend`: the calculator class and its test (`.../calc/<Class>Test.kt`). Nothing else.
@@ -33,7 +33,7 @@ A calculation name (`stress_test_monthly`), a spec ID (audit all calculations it
 6. If any finding is not `MATCH`: set the concept `status: draft`, add open questions naming the owner who must
    decide, and set `generated: { by: copilot/calc-auditor, at }`. Worked examples are replaced **only** by values
    copied from the test, with the test method name in the row.
-7. `./scripts/okf-validate.ps1 -Strict`, `./scripts/build-index.ps1`, `log.md` entry ("audited <name>: n findings").
+7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`, `log.md` entry ("audited <name>: n findings").
 
 ## Output
 The updated concept(s). Chat <= 12 lines: findings count by severity, the two files you opened with line ranges,

@@ -34,13 +34,13 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
    `domain/calculations/_template.md`, `architecture/adr/template.md`).
 2. Fill `type`, `title`, `description` (one sentence — it becomes the index line), `tags`, `generated`,
    `sources` you actually read; cross-link related concepts.
-3. Run `scripts/build-index.ps1` (rewrites all `index.md`), then validate (below).
+3. Run `scripts/build-index.py` (rewrites all `index.md`), then validate (below).
 
 ### maintain
 1. Find affected concepts (`search` by `resource`, code path via `docs-map.yml`, or topic).
 2. Update body + `generated: { by: copilot/<agent>, at }`; keep existing `verified` only if the change is
    editorial — otherwise remove it (a human must re-verify). Deprecate, never silently delete.
-3. `build-index.ps1`; `log.md` entry only for lifecycle events; validate.
+3. `build-index.py`; `log.md` entry only for lifecycle events; validate.
 
 ### consume
 1. Read root `index.md`, then the directory `index.md`, then only the concepts you need. Never list directories.
@@ -48,6 +48,6 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
 3. Numbers covered by an `Attested Computation` come from its worked examples / executor — never re-derive.
 
 ## Validate before finishing
-- Dev machine (no Python): `scripts/okf-validate.ps1 -Strict`
-- CI / full checker: `python .github/skills/okf-validate/scripts/okf_validate.py . --strict` (see `okf-validate` skill).
-Fix every ERROR; under `-Strict` fix warnings too.
+- Dev machine (no Python): `scripts/okf-validate.py --strict`
+- CI / full checker: `python3 .github/skills/okf-validate/scripts/okf_validate.py . --strict` (see `okf-validate` skill).
+Fix every ERROR; under `--strict` fix warnings too.

@@ -4,7 +4,8 @@
 # (code-repo-kit/ci/docs-maps.yml); they no longer need credentials for, or knowledge of, the docs repository.
 #
 # Needs: a GitHub App or bot token with READ on harbor-backend / harbor-frontend and contents+pull-requests WRITE on
-# this repository (secret SOURCE_READ_TOKEN). PowerShell 7 is preinstalled on GitHub-hosted runners.
+# this repository (secret SOURCE_READ_TOKEN). The scripts are standard-library Python 3.11+ (preinstalled on
+# GitHub-hosted runners).
 # Start manual + nightly; add repository_dispatch from the code repos only when lower latency is needed.
 name: collect-evidence
 on:
@@ -33,35 +34,38 @@ jobs:
       # If a map needs the application's build (e.g. the precise Spring-context graph export), let the code repo's own
       # CI publish that file as an artifact and download it here instead of building the application in this job.
       - name: Collect one snapshot (regenerate maps, validate, replace generated/, manifest, graph, indexes)
-        shell: pwsh
         working-directory: docs
-        run: ./scripts/collect-evidence.ps1 -Backend ../backend -Frontend ../frontend -Generate -Graph
+        run: python3 scripts/collect-evidence.py --backend ../backend --frontend ../frontend --generate --graph
 
       - name: Affected specs (from the manifest diff -> docs-map.yml)
         id: affected
-        shell: pwsh
         working-directory: docs
         run: |
-          $changed = git diff --name-only -- generated | Where-Object { $_ -like 'generated/be/*' -or $_ -like 'generated/fe/*' -or $_ -like 'generated/openapi/*' -or $_ -like 'generated/asyncapi/*' }
-          if (-not $changed) { "changed=false" >> $env:GITHUB_OUTPUT; exit 0 }
-          "changed=true" >> $env:GITHUB_OUTPUT
+          changed=$(git diff --name-only -- generated | grep -E '^generated/(be|fe|openapi|asyncapi)/' || true)
+          if [ -z "$changed" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
           # source paths that changed between the previous and the new manifest commits, mapped to specs
-          $prev = (git show HEAD:generated/manifest.yml 2>$null | Select-String 'backend:.*commit: (\w+)').Matches.Groups[1].Value
-          $new  = (Get-Content generated/manifest.yml | Select-String 'backend:.*commit: (\w+)').Matches.Groups[1].Value
-          $paths = @()
-          if ($prev -and $new -and $prev -ne $new) { $paths += git -C ../backend diff --name-only $prev $new | ForEach-Object { "be/$_" } }
-          $prevF = (git show HEAD:generated/manifest.yml 2>$null | Select-String 'frontend:.*commit: (\w+)').Matches.Groups[1].Value
-          $newF  = (Get-Content generated/manifest.yml | Select-String 'frontend:.*commit: (\w+)').Matches.Groups[1].Value
-          if ($prevF -and $newF -and $prevF -ne $newF) { $paths += git -C ../frontend diff --name-only $prevF $newF | ForEach-Object { "fe/$_" } }
-          $report = if ($paths) { $paths | ./scripts/map-paths.ps1 | ForEach-Object { "- $($_.Path) -> $($_.Specs -join ', ')" } } else { @('- (no source commit change recorded; maps or contracts regenerated)') }
-          $body = "Evidence snapshot from backend $new / frontend $newF.`n`n### Changed source paths -> specs to review`n" + ($report -join "`n") + "`n`nRun agent doc-sync on this PR; a person reviews and merges."
-          Set-Content -Path body.md -Value $body
+          commit_of() { sed -n "s/.*$1:.*commit: \([0-9a-f]*\).*/\1/p"; }
+          prev=$(git show HEAD:generated/manifest.yml 2>/dev/null | commit_of backend)
+          new=$(commit_of backend < generated/manifest.yml)
+          prevF=$(git show HEAD:generated/manifest.yml 2>/dev/null | commit_of frontend)
+          newF=$(commit_of frontend < generated/manifest.yml)
+          paths=""
+          if [ -n "$prev" ] && [ -n "$new" ] && [ "$prev" != "$new" ]; then paths="$paths$(git -C ../backend diff --name-only "$prev" "$new" | sed 's#^#be/#')
+          "; fi
+          if [ -n "$prevF" ] && [ -n "$newF" ] && [ "$prevF" != "$newF" ]; then paths="$paths$(git -C ../frontend diff --name-only "$prevF" "$newF" | sed 's#^#fe/#')
+          "; fi
+          if [ -n "$(printf '%s' "$paths" | tr -d '[:space:]')" ]; then
+            report=$(printf '%s' "$paths" | python3 scripts/map-paths.py | sed 's/^/- /')
+          else
+            report='- (no source commit change recorded; maps or contracts regenerated)'
+          fi
+          printf 'Evidence snapshot from backend %s / frontend %s.\n\n### Changed source paths -> specs to review\n%s\n\nRun agent doc-sync on this PR; a person reviews and merges.\n' "$new" "$newF" "$report" > body.md
 
       - name: Validate the bundle with the new snapshot
         if: steps.affected.outputs.changed == 'true'
-        shell: pwsh
         working-directory: docs
-        run: ./scripts/okf-validate.ps1 -Strict; ./scripts/gen-graph.ps1 -Check; ./scripts/build-index.ps1 -Check
+        run: python3 scripts/okf-validate.py --strict && python3 scripts/gen-graph.py --check && python3 scripts/build-index.py --check
 
       - name: Open ONE pull request
         if: steps.affected.outputs.changed == 'true'

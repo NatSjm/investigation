@@ -1,4 +1,4 @@
-# graph.json schema (produced by scripts/gen-graph.ps1)
+# graph.json schema (produced by scripts/gen-graph.py)
 
 ```json
 {

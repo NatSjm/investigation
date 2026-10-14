@@ -6,6 +6,6 @@ agent: migration-lead
 ---
 Scope: ${input:scope:all}
 
-Run `./scripts/migration-status.ps1 -Scope <scope>`, read `migration/<scope>.md` and `generated/graph/REPO_MAP.md`,
+Run `python3 scripts/migration-status.py --scope <scope>`, read `migration/<scope>.md` and `generated/graph/REPO_MAP.md`,
 append `## Lead notes <date>` (processing order, targets for unassigned pages, batch vs interactive runs, blockers),
 rebuild indexes, log. Report runs due by type, contexts ready for the analyst and the first three commands (<= 10 lines).

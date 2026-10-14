@@ -28,4 +28,4 @@
 - [ ] each open question answered; decision recorded as a Change log row with date and reference
 - [ ] `verified: { by: human:<id>, at: <ISO> }` and `stale_after` (+90 days) added; `status: stable`
 - [ ] legacy page keeps `superseded_by: <concept>` for the audit trail
-- [ ] `build-index.ps1` run; badge shows *human-reviewed*
+- [ ] `build-index.py` run; badge shows *human-reviewed*

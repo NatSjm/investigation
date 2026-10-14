@@ -22,16 +22,16 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 - Spec exists and a page under `confluence-import/` is not in `_done/` -> Run 2 for that page.
 - A `@docs <calculation>` tag in `generated/be/docs-tags.md` has no concept, or the concept has no `## Audit` -> Run 3.
 - Spec is `draft` with open questions and no `verified` -> Run 4 (a person, not an agent).
-- `scripts/migration-status.ps1 -Scope <ctx> -Print` answers this deterministically.
+- `scripts/migration-status.py --scope <ctx> --print` answers this deterministically.
 
 ## Rules shared by every run
-- Build the context pack first (`scripts/context-pack.ps1 -Task <ID|name|page>`); read the pack, not the repo.
+- Build the context pack first (`scripts/context-pack.py --task <ID|name|page>`); read the pack, not the repo.
 - Never copy numbers from a legacy page; link the calculation and let Run 3 verify.
 - Never write `verified.by: human:*`; never edit `generated/**`.
-- Finish with `okf-validate.ps1 -Strict`, `build-index.ps1`, a `log.md` line. The `agentStop` hook repeats the checks.
+- Finish with `okf-validate.py --strict`, `build-index.py`, a `log.md` line. The `agentStop` hook repeats the checks.
 
 ## Planning (migration-lead)
-`scripts/migration-status.ps1 -Scope all` writes `migration/all.md`: per context the runs still due with the exact
+`scripts/migration-status.py --scope all` writes `migration/all.md`: per context the runs still due with the exact
 command, pending legacy pages, calculations without concept or audit, specs waiting for an owner. Order of work:
 all Run 1 first (may be batched through the Copilot coding agent, one issue per context), then Run 2 page by page
 interactively, Run 3 as the handoff after each spec, Run 4 by the owner. See `references/run-checklist.md`.

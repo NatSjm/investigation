@@ -25,8 +25,8 @@ not permitted; Copilot custom instructions, agents, prompts and skills are.
 Create a separate `harbor-docs` repository as the single source of truth (Markdown + Mermaid + YAML), structured
 as an **Open Knowledge Format v0.2 bundle** (typed concepts, trust/provenance/lifecycle frontmatter, `index.md`
 progressive disclosure), with: generated artifacts published by backend/frontend CI into `generated/`,
-Copilot agents/skills/prompts for downstream artefacts, quality gates in CI (`okf-validate.ps1 -Strict`,
-`build-index.ps1 -Check`, `check-freshness.ps1` against `docs-map.yml`), one-way publishing to Confluence via REST
+Copilot agents/skills/prompts for downstream artefacts, quality gates in CI (`okf-validate.py --strict`,
+`build-index.py --check`, `check-freshness.py` against `docs-map.yml`), one-way publishing to Confluence via REST
 scripts.
 
 ## Alternatives considered
@@ -39,5 +39,5 @@ scripts.
 
 ## Consequences
 + Traceability spec → Jira → tests via IDs (`<CTX>-<NNN>`, `BR-<ID>-<n>`). + Cheap Copilot context via `generated/`
-  and `scripts/context-pack.ps1 -Task <ID>`.
+  and `scripts/context-pack.py --task <ID>`.
 − Initial migration effort; discipline to keep `docs-map.yml` updated (enforced by the CI freshness gate).

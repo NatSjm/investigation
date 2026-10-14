@@ -8,4 +8,4 @@ Feature ID: ${input:featureId:STR-001}
 Layers to cover: ${input:layers:api,ui,calc,kafka}
 
 Build the context pack; produce `test-design/features/${input:featureId}.feature` and fixtures; update the spec's
-`tests:` list; run `./scripts/coverage-matrix.ps1`. Print the rule -> scenario coverage matrix only.
+`tests:` list; run `python3 scripts/coverage-matrix.py`. Print the rule -> scenario coverage matrix only.

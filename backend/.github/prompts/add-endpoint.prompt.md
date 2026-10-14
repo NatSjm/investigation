@@ -17,7 +17,7 @@ Work through this checklist and report each step:
    (no mapping annotations), delegating to the context manager (`harbor/manager/<Ctx>Manager.kt`); add the manager method with KDoc.
 4. **Tests** - controller contract test through the generated interface (with the session header where required) and
    a manager unit test with synthetic data (mock the dependencies listed in `components.md`).
-5. **Maps** - run `pwsh scripts/docs/gen-all.ps1`; check `docs/_generated/api-index.md` shows the operation with its handler
+5. **Maps** - run `python3 scripts/docs/gen-all.py`; check `docs/_generated/api-index.md` shows the operation with its handler
    (not `_not implemented_`) and include the regenerated maps in the change.
 6. **Spec** - state the spec ID the operation implements (e.g. `P1-001`); if no spec exists, say so and propose the ID
    (`<CONTEXT>-<nnn>`) so the docs repo can add it.

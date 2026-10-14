@@ -5,7 +5,7 @@
 // approximate: DI edges through interfaces, exact request mappings, Kafka listeners, JPA entity -> table.
 // Zero new libraries: everything below is in spring-boot-starter-test / -web / -data-jpa / spring-kafka,
 // which a 2-year Spring Boot service already depends on. Output: docs/_generated/graph-export-be.json,
-// consumed by the docs repo `scripts/gen-graph.ps1` (edges tagged source=export win over regex edges).
+// consumed by the docs repo `scripts/gen-graph.py` (edges tagged source=export win over regex edges).
 //
 // Run in CI after the unit tests:   mvn -pl core -am -Dtest=GraphExportTest -Ddocs.graph=true test
 // Guard: @EnabledIfSystemProperty so it never runs in the normal developer test loop.

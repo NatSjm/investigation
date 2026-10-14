@@ -34,13 +34,13 @@ the single `BroadcastChannel` module `src/features/presentation/channel.ts` (`ro
 - Routes are object routes in `src/app/routes.tsx` / `src/app/AdminRoutes.tsx` written as `{ path: '...', element: <Page /> }`
   with `path:` before `element:` -> `routes.md`.
 - Data fetching only in `api/use*.ts` hooks (react-query); components receive props. Charts: pure `compute*.ts` + rendering component.
-- Files <= 300 lines, components <= 150 lines, one component per file (`scripts/check-file-size.ps1 -MaxLines 300`).
+- Files <= 300 lines, components <= 150 lines, one component per file (`scripts/check-file-size.py --max-lines 300`).
 - No real client data in fixtures or mocks; synthetic values only.
 
 ## Commands
-- `pwsh scripts/docs/gen-all.ps1` regenerates `docs/_generated/*`; `-Check` fails if stale (CI gate). Run after changing routes,
+- `python3 scripts/docs/gen-all.py` regenerates `docs/_generated/*`; `--check` fails if stale (CI gate). Run after changing routes,
   barrels, types or `@docs` tags and commit the maps.
-- `pwsh scripts/check-file-size.ps1 -Root . -MaxLines 300 -Include *.ts,*.tsx -Baseline .filesize-baseline.txt`
+- `python3 scripts/check-file-size.py --root . --max-lines 300 --include *.ts,*.tsx --baseline .filesize-baseline.txt`
 - `npm run generate:api` (regenerate the client from the backend contract), `npm test`, `npm run build`.
 
 ## Where business rules live

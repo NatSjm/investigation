@@ -8,7 +8,7 @@ tools: ['read', 'execute']
 Task: ${input:task:P1-001}
 Budget (lines): ${input:budget:500}
 
-1. Run `./scripts/context-pack.ps1 -Task "${input:task}" -Budget ${input:budget}`.
+1. Run `python3 scripts/context-pack.py --task "${input:task}" --budget ${input:budget}`.
 2. Read the produced `.context/*.md` file.
 3. Reply in <= 12 lines: the subject resolved (spec / calculation / node / candidates), its trust badge, sections
    present, sections truncated or empty, open questions carried from the spec, and the legacy pages that mention it.

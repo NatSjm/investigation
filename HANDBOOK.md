@@ -14,7 +14,7 @@ Contents: 1 Problem and idea · 2 Core concepts (incl. why OKF) · 3 The docs re
 Two repositories (a large layered Kotlin/Spring backend and a React frontend) and a Confluence space of pages that
 are partly outdated. You want an analyst agent (GitHub Copilot) that produces Jira stories, test designs, HLDs and
 status analytics from documentation alone, and only goes to the code when a fact must be verified. Constraints:
-Copilot is the only harness, no MCP servers, no third-party agent frameworks, PowerShell for scripts, English in
+Copilot is the only harness, no MCP servers, no third-party agent frameworks, standard-library Python for scripts, English in
 files, synthetic data only.
 
 The idea has four parts:
@@ -44,7 +44,7 @@ read and write it with the same tools as code; Confluence pages cannot drift sil
 Git.
 
 ### 2.2 Generated maps
-Each code repository has `scripts/docs/gen-*.ps1`, regex scanners that need no build. They produce
+Each code repository has `scripts/docs/gen-*.py`, regex scanners that need no build. They produce
 `docs/_generated/*.md`: one row per class, operation, topic, table, job, route, type, or `@docs` tag, each with
 `file:line`. They exist so that an agent reads a 100-line table instead of 150 source files, and so that the docs
 repo can be verified against the code mechanically. The maps are checked for freshness on every PR.
@@ -77,7 +77,7 @@ inventing our own metadata because it already defines the things we would have h
   badge. Agents navigate index to index and open only what they need; they never list directories. `README.md` is
   forbidden inside the bundle so that there is exactly one entry file per folder.
 - **A lifecycle log** (`log.md`): created, verified, deprecated, regenerated.
-- **A validator** (`okf-validate.ps1`, plus the reference Python checker in CI) that fails the build when any of the
+- **A validator** (`okf-validate.py`, plus the reference Python checker in CI) that fails the build when any of the
   above is missing.
 - **Attested Computation**, a concept type for formulas: parameters, an executor (the unit test), worked examples,
   and the sanctioned code shape. Agents bind parameters; they never re-derive a formula.
@@ -89,7 +89,7 @@ which agents never see (the pack strips it) and people can fold. Our repository-
 `code_refs`, `api`, `events`, `tables`, `calculations`, `jira`, `tests`) are allowed extensions.
 
 ### 2.6 Context packs
-`scripts/context-pack.ps1 -Task <x>` writes `.context/<task>.md`: a ranked, budgeted (default 500 lines) selection
+`scripts/context-pack.py --task <x>` writes `.context/<task>.md`: a ranked, budgeted (default 500 lines) selection
 for one task. Sections in priority order: subject and badge, spec body, calculations, flows, graph neighbourhood,
 contracts, tables, related work items and tests, legacy pages, and a footer naming what was truncated. Lower
 sections are cut first. The pack is deterministic, attachable to a PR, and cheap: one read instead of twenty tool
@@ -97,7 +97,7 @@ calls. When it is not enough, the escalation order is fixed (wider budget, follo
 pack, one named line range, then it is a documentation gap).
 
 ### 2.7 The architectural graph
-`gen-graph.ps1` turns the maps into nodes (`context:`, `class:`, `endpoint:`, `topic:`, `table:`, `feature:`,
+`gen-graph.py` turns the maps into nodes (`context:`, `class:`, `endpoint:`, `topic:`, `table:`, `feature:`,
 `route:`, `component:` (feature components and, in community `shared-ui`, the shared component library), `hook:`, `channel:` (browser `BroadcastChannel`, the frontend counterpart of a topic), `spec:`) and edges (`depends-on` from constructor injection, `persists-to` from
 tables, `handles`, `publishes`, `consumes`, `calls`, `documents`). Communities are the contexts. A small PageRank
 ranks nodes so that `REPO_MAP.md` fits a budget; each context gets its own `<context>.md`; `graph.json` serves the
@@ -148,12 +148,12 @@ docs-repo/
   flows/                      cross-context behaviour (`type: Flow`): trigger, participants, steps with file:line, invariants, source map
     _template.md, client-presentation.md
   confluence-import/          quarantine for exported legacy pages; README with rules + inventory; <SPACE>/_done/
-  generated/                  collected from the code repos by scripts/collect-evidence.ps1 (manifest.yml names the source commits); never edited by hand
+  generated/                  collected from the code repos by scripts/collect-evidence.py (manifest.yml names the source commits); never edited by hand
     be/, fe/                  the maps; openapi/, asyncapi/ the contracts; graph/ the graph; analytics/ the coverage matrix
-  migration/                  migration board(s) written by migration-status.ps1 / migration-lead
+  migration/                  migration board(s) written by migration-status.py / migration-lead
   work-items/                 analyst output: <ID>.yml per feature, _schema.yml, README
   test-design/                test-designer output: features/<ID>.feature, fixtures/, README with the step vocabulary
-  scripts/                    PowerShell 7 scripts (section 4) + hooks/guard-generated.ps1 + README
+  scripts/                    Python 3.11+ scripts (section 4) + hooks/guard-generated.py + README
   ci-examples/                CI fragments for the code repos
   third-party/                vendored OKF skills (MIT) and licences
   .github/                    Copilot customisation: agents, skills, prompts, instructions, hooks, workflows
@@ -165,25 +165,25 @@ Key files worth reading once: `AGENTS.md` (the contract between people and agent
 
 ---
 
-## 4. Scripts (`docs-repo/scripts/`, PowerShell 7, no modules)
+## 4. Scripts (`docs-repo/scripts/`, Python 3.11+, standard library only)
 
 | Script | What it does | Input | Output | When |
 |---|---|---|---|---|
-| `context-pack.ps1 -Task <x> [-Budget N] [-Print]` | builds the task-scoped pack (2.6) | spec ID, calculation, graph node or free text | `.context/<task>.md` | start of every agent task |
-| `graph-query.ps1 -Node <id> -Depth n` / `-Files <paths>` / `-Find <text>` | queries the graph: neighbourhood, impacted specs for changed files, text search | `generated/graph/graph.json` | text (or `-Json`) | impact questions, CI PR comment, IntelliJ users |
-| `gen-graph.ps1 [-Check]` | joins BE/FE maps + `@docs` tags + `docs-map.yml` rows (+ precise exports) into the graph; a mapping row gives the same `implemented-by` edges as a tag, so tags are optional at the start | `generated/be`, `generated/fe`, `contexts.yml` | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json`; prunes orphan community files | after publish; `-Check` in CI |
-| `build-index.ps1 [-Check]` | regenerates every `index.md` with trust badges | frontmatter of all concepts | `index.md` per folder | after any edit; hook; CI |
-| `okf-validate.ps1 [-Strict]` | OKF conformance: frontmatter, types, actors, staleness, provenance warnings | the bundle | errors/warnings | hook; CI; before commit |
-| `validate-frontmatter.ps1` | repo-specific keys: ID format, BR numbering, calculation and flow links on specs and calculations; `parameter_set` keys vs `generated/be/parameters.md` | `features/`, `domain/calculations/` | OK / errors | hook; CI |
-| `validate-work-items.ps1` | work-item YAML against `_schema.yml`: BRs exist, estimates Fibonacci, subtasks <= 8 h | `work-items/*.yml` | OK / errors | after analyst runs; CI |
-| `coverage-matrix.ps1` | BR -> story -> scenario coverage, badges, calculation audits | specs, work items, feature files | `generated/analytics/coverage-matrix.md|json` | analytics questions; CI check |
-| `map-paths.ps1` | changed code paths -> affected specs | stdin paths + `docs-map.yml` | spec list | doc-sync, CI |
-| `check-freshness.ps1` | CI gate in the code repos: mapped path changed but `last_verified` not bumped and no `docs-not-affected` label | PR diff, specs | pass/fail | code-repo PRs |
-| `collect-evidence.ps1 [-Generate] [-Graph] [-DryRun]` | the single evidence collector: stages maps + contracts from the code checkouts, validates the candidate (frontmatter, OpenAPI/AsyncAPI headers, unresolved `$ref`), replaces the collector-owned sets under `generated/` (deletions included), writes `generated/manifest.yml` (source commits, dirty flag, sha256 per file); no-op when nothing changed | the code repos' `docs/_generated` and contracts | `generated/be|fe|openapi|asyncapi/**`, `manifest.yml` | local loop; CI `ci-examples/collect-evidence.yml` (manual + nightly, one PR per snapshot) |
-| `publish-local.ps1` | deprecated name of `collect-evidence.ps1`, forwards to it | - | - | - |
-| `migration-status.ps1 -Scope <ctx|all>` | which lifecycle runs are still due per context, with commands | `contexts.yml`, specs, calculations, docs-tags, REPO_MAP, pending pages | `migration/<scope>.md` | planning; migration-lead |
-| `hooks/guard-generated.ps1` | Copilot `preToolUse` hook: denies edits under `generated/**` and of `index.md` | hook payload | permission decision | every agent edit |
-| `confluence-export.ps1`, `confluence-publish.ps1`, `jira-push.ps1`, `push-to-tests-repo.ps1` | **stubs** describing the intended integrations (export/import of legacy pages, publish back, Jira REST, tests repo PR) | - | - | to be implemented per environment |
+| `context-pack.py --task <x> [--budget N] [--print]` | builds the task-scoped pack (2.6) | spec ID, calculation, graph node or free text | `.context/<task>.md` | start of every agent task |
+| `graph-query.py --node <id> --depth n` / `--files <paths>` / `--find <text>` | queries the graph: neighbourhood, impacted specs for changed files, text search | `generated/graph/graph.json` | text (or `--json`) | impact questions, CI PR comment, IntelliJ users |
+| `gen-graph.py [--check]` | joins BE/FE maps + `@docs` tags + `docs-map.yml` rows (+ precise exports) into the graph; a mapping row gives the same `implemented-by` edges as a tag, so tags are optional at the start | `generated/be`, `generated/fe`, `contexts.yml` | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json`; prunes orphan community files | after publish; `--check` in CI |
+| `build-index.py [--check]` | regenerates every `index.md` with trust badges | frontmatter of all concepts | `index.md` per folder | after any edit; hook; CI |
+| `okf-validate.py [--strict]` | OKF conformance: frontmatter, types, actors, staleness, provenance warnings | the bundle | errors/warnings | hook; CI; before commit |
+| `validate-frontmatter.py` | repo-specific keys: ID format, BR numbering, calculation and flow links on specs and calculations; `parameter_set` keys vs `generated/be/parameters.md` | `features/`, `domain/calculations/` | OK / errors | hook; CI |
+| `validate-work-items.py` | work-item YAML against `_schema.yml`: BRs exist, estimates Fibonacci, subtasks <= 8 h | `work-items/*.yml` | OK / errors | after analyst runs; CI |
+| `coverage-matrix.py` | BR -> story -> scenario coverage, badges, calculation audits | specs, work items, feature files | `generated/analytics/coverage-matrix.md|json` | analytics questions; CI check |
+| `map-paths.py` | changed code paths -> affected specs | stdin paths + `docs-map.yml` | spec list | doc-sync, CI |
+| `check-freshness.py` | CI gate in the code repos: mapped path changed but `last_verified` not bumped and no `docs-not-affected` label | PR diff, specs | pass/fail | code-repo PRs |
+| `collect-evidence.py [--generate] [--graph] [--dry-run]` | the single evidence collector: stages maps + contracts from the code checkouts, validates the candidate (frontmatter, OpenAPI/AsyncAPI headers, unresolved `$ref`), replaces the collector-owned sets under `generated/` (deletions included), writes `generated/manifest.yml` (source commits, dirty flag, sha256 per file); no-op when nothing changed | the code repos' `docs/_generated` and contracts | `generated/be|fe|openapi|asyncapi/**`, `manifest.yml` | local loop; CI `ci-examples/collect-evidence.yml` (manual + nightly, one PR per snapshot) |
+| `publish-local.py` | deprecated name of `collect-evidence.py`, forwards to it | - | - | - |
+| `migration-status.py --scope <ctx|all>` | which lifecycle runs are still due per context, with commands | `contexts.yml`, specs, calculations, docs-tags, REPO_MAP, pending pages | `migration/<scope>.md` | planning; migration-lead |
+| `hooks/guard-generated.py` | Copilot `preToolUse` hook: denies edits under `generated/**` and of `index.md` | hook payload | permission decision | every agent edit |
+| `confluence-export.py`, `confluence-publish.py`, `jira-push.py`, `push-to-tests-repo.py` | **stubs** describing the intended integrations (export/import of legacy pages, publish back, Jira REST, tests repo PR) | - | - | to be implemented per environment |
 
 All validators return a non-zero exit code on failure so the same commands run in hooks and CI.
 
@@ -198,7 +198,7 @@ Each file is YAML frontmatter (`name`, `description`, `tools`, optional `handoff
 |---|---|---|---|---|
 | `analyst` | business/system analyst: epic, stories, subtasks with Gherkin criteria; analytics mode for coverage/freshness questions | the pack only; source only at a `file:line` the pack names and only when blocked | `work-items/<ID>.yml`, open questions in the spec | `test-designer`, `spec-writer` |
 | `spec-writer` | writes or refreshes a feature spec from the graph and one manager file; marks everything unsourced as unverified | pack, `generated/graph/<ctx>.md`, contracts, `manager/<Ctx>Manager.kt` | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | `analyst`, `calc-auditor` |
-| `doc-sync` | keeps specs in sync with code changes from the generated diffs with minimal source reading | `map-paths`, `graph-query -Files`, contracts, maps | change-log rows, `last_verified`, stubs for unmapped contexts | `calc-auditor` for utils changes |
+| `doc-sync` | keeps specs in sync with code changes from the generated diffs with minimal source reading | `map-paths`, `graph-query --files`, contracts, maps | change-log rows, `last_verified`, stubs for unmapped contexts | `calc-auditor` for utils changes |
 | `calc-auditor` | verifies a calculation concept or a legacy formula page against the calculator and its unit test; never changes numbers | two source files only | `## Audit <date>` table, status, open questions | `spec-writer` |
 | `confluence-migrator` | converts one legacy page into the right concept: merge new facts, mark conflicts, extract glossary terms, cite the page | the page, the pack, `generated/` | merged concept, glossary, page moved to `_done/` | `calc-auditor` for formula pages |
 | `test-designer` | Gherkin scenarios and synthetic fixtures from the spec's BRs and worked examples | pack | `test-design/features/<ID>.feature`, fixtures | - |
@@ -257,8 +257,8 @@ beside it under `references/`.
 `calculations` (Attested Computation rules), `confluence-import` (quarantine rules), `generated` (read-only),
 `test-design`, `work-items`. They are short because the detailed procedures are in skills.
 
-**Hooks** (`.github/hooks/docs-quality.json`): `preToolUse` runs `guard-generated.ps1` (blocks edits under
-`generated/**` and of `index.md`); `agentStop` runs `build-index`, `okf-validate -Strict`, `validate-frontmatter`,
+**Hooks** (`.github/hooks/docs-quality.json`): `preToolUse` runs `guard-generated.py` (blocks edits under
+`generated/**` and of `index.md`); `agentStop` runs `build-index`, `okf-validate --strict`, `validate-frontmatter`,
 `validate-work-items`. An agent cannot finish with an invalid bundle.
 
 **CI** (`.github/workflows/docs-quality.yml`): markdownlint, frontmatter and work-item validation, both OKF
@@ -270,7 +270,7 @@ link check, Mermaid syntax, OpenAPI/AsyncAPI lint; on main, publish changed conc
 
 ## 9. The code-repo kit (`code-repo-kit/`)
 
-`apply-kit.ps1 -Flavour be|fe -Target <repo>` copies the flavour into a code repository. The kit is the source of
+`apply-kit.py --flavour be|fe --target <repo>` copies the flavour into a code repository. The kit is the source of
 truth; existing files are overwritten.
 
 | Part | Backend (`be/`) | Frontend (`fe/`) | Why |
@@ -280,11 +280,11 @@ truth; existing files are overwritten.
 | `.github/instructions/` | `api` (contract-first), `calculations` (utils), `kafka`, `migrations`, `tests`, `layers` (allowed dependencies between layers, prefix rule) | `api-client`, `features` | path-scoped rules, loaded only when editing matching files |
 | `.github/agents/` | `code-reader` (read-only navigator, max 3 files), `impact-analyst` | `code-reader` | cheap answers before any implementation agent |
 | `.github/prompts/` | `/explain-module`, `/find-spec-code`, `/add-endpoint` | `/explain-feature` | repeatable questions |
-| `.github/hooks/docs-maps.json` | `agentStop` -> `gen-all.ps1 -Check` | same | an agent cannot leave stale maps |
+| `.github/hooks/docs-maps.json` | `agentStop` -> `gen-all.py --check` | same | an agent cannot leave stale maps |
 | `.github/workflows/copilot-setup-steps.yml` | JDK 21 + `mvn generate-sources` | Node 24 | cloud coding agent environment |
-| `scripts/docs/gen-*.ps1`, `gen-all.ps1` | codebase-map (modules, layers), components (one row per class), api-index (contract-first), events, db-schema, jobs, docs-tags | codebase-map (features + Channels column for `BroadcastChannel`s), components (shared library: props, used by), routes, types-index, docs-tags, `gen-graph-fe.ts` | the maps (2.2) |
+| `scripts/docs/gen-*.py`, `gen-all.py` | codebase-map (modules, layers), components (one row per class), api-index (contract-first), events, db-schema, jobs, docs-tags | codebase-map (features + Channels column for `BroadcastChannel`s), components (shared library: props, used by), routes, types-index, docs-tags, `gen-graph-fe.ts` | the maps (2.2) |
 | `templates/GraphExportTest.kt` | precise graph export from the Spring context (test scope) | - | optional precision over regex |
-| `shared/` | `check-file-size.ps1` (line cap with baseline), `copilot-content-exclusion.yml`, `workspaces/product1.code-workspace` (per-context multi-root workspace), `ide-setup.md` | same | token hygiene, less noise |
+| `shared/` | `check-file-size.py` (line cap with baseline), `copilot-content-exclusion.yml`, `workspaces/product1.code-workspace` (per-context multi-root workspace), `ide-setup.md` | same | token hygiene, less noise |
 | `ci/docs-maps.yml` | PR: maps fresh + size budget, nothing else | same | the code repo keeps describing itself; publication belongs to the docs repo's collector, so no docs-repo credentials here |
 | `vscode-extension/` | `#docsLookup`, `#codeMap`, `#specToCode`, `#impact`, chat participant `@docs` | same | retrieval tools without MCP |
 
@@ -293,15 +293,15 @@ truth; existing files are overwritten.
 ## 10. The flows end to end
 
 ### A. A code change reaches the documentation
-1. Developer changes `ProjectionService.kt`, opens a PR. CI runs `gen-all.ps1 -Check` (maps must be regenerated in
-   the PR) and the file-size gate. `check-freshness.ps1` (when enabled) requires `last_verified` of P1-001 to be
+1. Developer changes `ProjectionService.kt`, opens a PR. CI runs `gen-all.py --check` (maps must be regenerated in
+   the PR) and the file-size gate. `check-freshness.py` (when enabled) requires `last_verified` of P1-001 to be
    bumped or the label `docs-not-affected`.
-2. Nightly, or on demand, the docs repo's collector (`collect-evidence.yml` -> `collect-evidence.ps1`) checks out
+2. Nightly, or on demand, the docs repo's collector (`collect-evidence.yml` -> `collect-evidence.py`) checks out
    backend and frontend read-only, runs their generators, validates the snapshot, replaces `generated/`, records the
    source commits in `generated/manifest.yml`, rebuilds the graph and opens ONE PR labelled `generated`; the body lists
    the source paths changed since the previous manifest, mapped to specs through `docs-map.yml`. A second run against
    unchanged sources opens nothing. Lower latency, when needed, is a `repository_dispatch` from the code repos' CI.
-3. In the docs repo, `doc-sync` runs on that PR: `map-paths` and `graph-query -Files` name the specs in the blast
+3. In the docs repo, `doc-sync` runs on that PR: `map-paths` and `graph-query --files` name the specs in the blast
    radius; it compares their API/Events/Data sections with the new contracts and maps, updates them, appends a
    change-log row, sets `last_verified`, flags calculations for `calc-auditor` if `utils/` changed, and stubs any
    context that has no spec. Hooks validate; a person reviews and merges.
@@ -309,7 +309,7 @@ truth; existing files are overwritten.
 ### B. A spec is written (the four runs, see `spec-lifecycle`)
 Run 1 skeleton from the graph and the manager (`spec-writer`), Run 2 legacy pages merged one per run
 (`confluence-migrator`), Run 3 calculation audit (`calc-auditor`), Run 4 owner decision (a person adds
-`verified.by`). One run, one review, one commit. `migration-status.ps1` says what is still due.
+`verified.by`). One run, one review, one commit. `migration-status.py` says what is still due.
 
 ### C. Confluence migration
 Space export to HTML, imported into `confluence-import/<SPACE>/` with a header block by the importer script
@@ -324,11 +324,11 @@ spec refresh.
 
 ### E. Tests and Jira
 `test-designer` writes `test-design/features/<ID>.feature` with `@BR` tags and synthetic fixtures using the shared
-step vocabulary; `push-to-tests-repo.ps1` (stub) hands them to the tests repository. `jira-push.ps1` (stub) creates
+step vocabulary; `push-to-tests-repo.py` (stub) hands them to the tests repository. `jira-push.py` (stub) creates
 the epic and stories and writes back keys.
 
 ### F. Analytics
-`coverage-matrix.ps1` computes BR coverage by stories and scenarios, badges and staleness. `/coverage-report`
+`coverage-matrix.py` computes BR coverage by stories and scenarios, badges and staleness. `/coverage-report`
 answers from it and from the index badges, including `code only` contexts from REPO_MAP. `/impact-from-graph`
 answers change questions from the graph alone.
 
@@ -341,8 +341,8 @@ and the human analyst's assessment of agent-written stories (the baseline record
 
 ## 11. Design decisions as questions and answers
 
-**Why PowerShell and regex instead of a parser or a library?** No dependencies to approve, runs on Windows, macOS and
-CI runners unchanged, and a regex over Kotlin declarations is enough for maps that carry `file:line`; precision
+**Why standard-library Python and regex instead of a parser or a library?** No packages to approve (only an interpreter),
+runs on Windows, macOS and CI runners unchanged, and a regex over Kotlin declarations is enough for maps that carry `file:line`; precision
 comes from the optional compiler-based exports when needed.
 
 **Why no MCP?** Not permitted in the environment. The VS Code extension provides the same retrieval through the

@@ -11,7 +11,7 @@ benefit - retrieval instead of file dumps - through the public VS Code API (`vsc
 | `#docsLookup` | `harbor-docs_docsLookup` | top-5 concepts from the OKF bundle (path, type, status, trust) + one section of the best match |
 | `#codeMap` | `harbor-docs_codeMap` | matching rows from `docs/_generated/{api-index,events,db-schema,jobs,codebase-map,routes,types-index,docs-tags}.md` |
 | `#specToCode` | `harbor-docs_specToCode` | `@docs <ID>` locations across backend/frontend (`file:line`) |
-| `#impact` | `harbor-docs_impact` | BFS over `generated/graph/graph.json` (from docs repo `scripts/gen-graph.ps1`): neighbours by depth, edges, spec IDs in the blast radius. Input = node id, substring or changed file path |
+| `#impact` | `harbor-docs_impact` | BFS over `generated/graph/graph.json` (from docs repo `scripts/gen-graph.py`): neighbours by depth, edges, spec IDs in the blast radius. Input = node id, substring or changed file path |
 | `@docs /spec`, `/where`, `/impact` | chat participant `harbor.docs` | retrieval -> one bounded model call -> answer with citations; `/impact` = graph BFS + docs lookup |
 
 Agent mode picks the tools automatically from `modelDescription`; users can also pin them, e.g.
@@ -42,5 +42,5 @@ Install via *Extensions: Install from VSIX* or push to an internal extension gal
 
 ## Not covered
 JetBrains: Copilot's JetBrains plugin does not expose tool/participant APIs to third-party plugins.
-Backend developers on IntelliJ rely on the same maps via `AGENTS.md`, prompt files and `harbor-docs/scripts/graph-query.ps1`
+Backend developers on IntelliJ rely on the same maps via `AGENTS.md`, prompt files and `harbor-docs/scripts/graph-query.py`
 (see `shared/ide-setup.md`).

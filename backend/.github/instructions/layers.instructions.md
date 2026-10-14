@@ -24,4 +24,4 @@ Allowed dependency direction: `api` -> `manager` -> `service` -> `dao` / `utils`
 - Suffix = stereotype: `*Controller` (api), `*Manager`, `*Service`, `*Dao`, `*Client`, `*Listener` / `*Publisher` / `*Requester`
   (event), `*Job`, `*Mapper`, `*Validator`, `*Calculator` / `*Aggregator` (utils).
 - One manager per context with KDoc + `@docs <ID>`; it is the transactional boundary and the only cross-context entry point.
-- After adding a class or changing an injected dependency run `scripts/docs/gen-all.ps1` and commit `components.md`.
+- After adding a class or changing an injected dependency run `scripts/docs/gen-all.py` and commit `components.md`.

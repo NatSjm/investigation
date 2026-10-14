@@ -23,7 +23,7 @@ flowchart LR
   CONF[Confluence legacy] -- export --> IMP[confluence-import/]
   GEN --> SPEC[features/ · domain/ · flows/ · architecture/]
   CTX[contexts.yml<br/>class-name prefixes] --> GRAPH
-  GEN -- gen-graph.ps1 --> GRAPH[generated/graph/<br/>REPO_MAP · context.md · graph.json]
+  GEN -- gen-graph.py --> GRAPH[generated/graph/<br/>REPO_MAP · context.md · graph.json]
   GRAPH -- agent impact-analyst / #impact --> SPEC
   IMP -- agent confluence-migrator --> SPEC
   GEN -- agent doc-sync --> SPEC
@@ -36,7 +36,7 @@ flowchart LR
 ## Quick start (Copilot in IDE / CLI)
 - Open this repo (optionally add `harbor-backend` / `harbor-frontend` as extra workspace folders, read-only).
 - Agents always start at `index.md` → folder `index.md` → concept (see `.github/skills/okf/SKILL.md`).
-- `scripts/context-pack.ps1 -Task <ID>` — assemble a **task-scoped context** for an analyst: the spec, its
+- `scripts/context-pack.py --task <ID>` — assemble a **task-scoped context** for an analyst: the spec, its
   calculations, glossary terms, graph neighbourhood and contract anchors for one feature ID (e.g. `P1-001`).
 - `@doc-sync` / `/spec-from-code featureId=P1-001` — create or refresh a spec from `generated/`.
 - `@analyst` / `/jira-from-spec` — stories & subtasks → `work-items/`.
@@ -44,11 +44,11 @@ flowchart LR
 - `@architect` / `/hld-from-spec` — HLD.
 - `@impact-analyst` / `/impact-from-graph` — blast radius from `generated/graph/` (no source reading);
   `/spec-skeleton-from-graph` — spec skeleton prefilled from a context neighbourhood (skill `code-graph`).
-  CLI: `scripts/graph-query.ps1 -Node spec:P1-001 -Depth 2` or `-Files (git diff --name-only)`.
+  CLI: `scripts/graph-query.py --node spec:P1-001 --depth 2` or `--files (git diff --name-only)`.
 - `@confluence-migrator confluence-import/HARBOR/<page>.md` — migrate a legacy page.
 - `@migration-lead` / `/migration-plan all` — which lifecycle runs (skeleton, legacy merge, calculation audit, owner
   decision) are still due per context, with the command for each → `migration/<scope>.md`
-  (skill `spec-lifecycle`, script `scripts/migration-status.ps1`).
+  (skill `spec-lifecycle`, script `scripts/migration-status.py`).
 - `/okf-validate`, `/okf-produce` — OKF conformance and knowledge capture
   (skills `okf`, `okf-validate`, `okf-visualize`).
 
@@ -60,13 +60,13 @@ Contracts designed before code live under `contracts/proposed/` (proposals, `con
 Bounded contexts and spec ID prefixes: [features/conventions.md](features/conventions.md);
 domain vocabulary: [domain/glossary.md](domain/glossary.md); contexts: [domain/context-map.md](domain/context-map.md).
 The backend is layered (package-by-layer, ADR-0004): a bounded context is a set of class-name prefixes in
-`contexts.yml`, used by `gen-graph.ps1`, `context-pack.ps1` and the globs in `docs-map.yml`; the BE map
+`contexts.yml`, used by `gen-graph.py`, `context-pack.py` and the globs in `docs-map.yml`; the BE map
 `generated/be/components.md` lists every class with its layer, injected dependencies and tables.
 
 ## Local checks
-```powershell
-./scripts/okf-validate.ps1 -Strict          # OKF §11 conformance + warnings (no Python needed)
-./scripts/build-index.ps1                   # regenerate index.md files (-Check in CI)
-./scripts/validate-frontmatter.ps1          # repo-specific keys (IDs, BR numbering, links)
-git -C ../harbor-backend diff --name-only main | % { "be/$_" } | ./scripts/map-paths.ps1
+```bash
+python3 scripts/okf-validate.py --strict          # OKF §11 conformance + warnings (no pyyaml needed)
+python3 scripts/build-index.py                   # regenerate index.md files (--check in CI)
+python3 scripts/validate-frontmatter.py          # repo-specific keys (IDs, BR numbering, links)
+git -C ../harbor-backend diff --name-only main | sed 's#^#be/#' | python3 scripts/map-paths.py
 ```

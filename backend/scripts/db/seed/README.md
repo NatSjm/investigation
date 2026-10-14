@@ -1,7 +1,7 @@
 # Named datasets (local seeds)
 
 Synthetic data for a developer database. One file per **dataset**; the file header is the contract that
-`scripts/docs/gen-datasets.ps1` reads to build `docs/_generated/datasets.md` (collected into the docs repo as
+`scripts/docs/gen-datasets.py` reads to build `docs/_generated/datasets.md` (collected into the docs repo as
 `generated/be/datasets.md`), so analysts and test designers can cite a setup by name instead of describing rows.
 
 ```sql
@@ -21,4 +21,4 @@ Rules:
 - Integration-test fixtures live in `core/src/test/resources/datasets/` with the same header and are listed in the
   same catalogue (kind `fixture`); tests load them with `@Sql("/datasets/<name>.sql")`.
 
-Run: `scripts/db/seed-local.ps1` (all) or `scripts/db/seed-local.ps1 -Dataset p1-baseline-12m`.
+Run: `scripts/db/seed-local.py` (all) or `scripts/db/seed-local.py --dataset p1-baseline-12m`.

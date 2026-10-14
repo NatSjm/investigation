@@ -1,14 +1,14 @@
 # Context pack - section markers
 
-`scripts/context-pack.ps1` writes these H2 headings in this order. Agents and prompts refer to them by name.
+`scripts/context-pack.py` writes these H2 headings in this order. Agents and prompts refer to them by name.
 
 | Heading | Source | Truncation rank (1 = never) |
 |---|---|---|
-| `## Subject` | resolution of `-Task`; frontmatter of the spec / calculation; `index.md` badge logic | 1 |
+| `## Subject` | resolution of `--task`; frontmatter of the spec / calculation; `index.md` badge logic | 1 |
 | `## Spec` | `features/<ctx>/<ID>.md` body | 1 (reduced to key sections if > 200 lines) |
 | `## Calculations` | `domain/calculations/<name>.md` for every `calculations[]` entry | 2 |
 | `## Flows` | `flows/<name>.md` for every `flows[]` entry of the spec plus every flow whose `specs[]` names the ID (Purpose, Trigger, Participants, Steps, Invariants) | 3 |
-| `## Graph neighbourhood` | `scripts/graph-query.ps1 -Node spec:<ID> -Depth 2` (or `context:`/`feature:` for a community); class detail from `generated/be/components.md` | 2 |
+| `## Graph neighbourhood` | `scripts/graph-query.py --node spec:<ID> --depth 2` (or `context:`/`feature:` for a community); class detail from `generated/be/components.md` | 2 |
 | `## Contracts` | `generated/openapi/backend.yaml` path blocks for `api[]`; `generated/asyncapi/backend.yaml` channel names for `events[]` | 4 |
 | `## Data` | `generated/be/db-schema.md` sections for `tables[]` | 4 |
 | `## Related work items and tests` | `work-items/<ID>.yml` (`summary:` lines), `test-design/features/<ID>.feature` (`Scenario` lines) | 3 |

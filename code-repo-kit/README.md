@@ -1,12 +1,12 @@
 # code-repo-kit - token-efficient Copilot setup for harbor-backend and harbor-frontend
 
 Companion to `docs-repo/` (the OKF docs bundle, simulated repo `harbor-docs`). Everything here is **library-free**
-(PowerShell 7 / regex, plain VS Code API) so it can be adopted without new third-party dependencies.
-`apply-kit.ps1` copies the relevant part into each code repository.
+(Python 3.11+ standard library / regex, plain VS Code API) so it can be adopted without new third-party dependencies.
+`apply-kit.py` copies the relevant part into each code repository.
 
 ```
 code-repo-kit/
-  apply-kit.ps1           -Flavour be|fe -Target <repo> [-WhatIf]: copies .github/**, AGENTS.md, scripts/docs/**, check-file-size.ps1, docs-maps.yml
+  apply-kit.py           --flavour be|fe --target <repo> [--what-if]: copies .github/**, AGENTS.md, scripts/docs/**, check-file-size.py, docs-maps.yml
   be/                     -> harbor-backend (Kotlin / Spring Boot / Maven core + kafka_client / PostgreSQL / Kafka; package-by-layer)
     AGENTS.md                               <= 60 lines: repo purpose, read order, contracts, conventions, commands, where rules live
     .github/copilot-instructions.md         Copilot-only supplement (never-open list, output discipline, agents/prompts/tools)
@@ -15,18 +15,18 @@ code-repo-kit/
     .github/agents/impact-analyst.agent.md  blast-radius checklist across backend / frontend / docs
     .github/agents/docs-tagger.agent.md     adds missing @docs tags from contexts.yml (comment lines only, one PR per context)
     .github/prompts/*.prompt.md             /explain-module (a context), /find-spec-code, /add-endpoint, /tag-docs
-    scripts/docs/tag-candidates.ps1         inventory for docs-tagger: manager / calculation -> current tag, proposed tag, status
-    .github/hooks/docs-maps.json            agentStop hook: gen-all.ps1 -Check
+    scripts/docs/tag-candidates.py         inventory for docs-tagger: manager / calculation -> current tag, proposed tag, status
+    .github/hooks/docs-maps.json            agentStop hook: gen-all.py --check
     .github/workflows/copilot-setup-steps.yml  JDK 21 + mvn -pl core -am generate-sources for the coding agent
-    scripts/docs/gen-*.ps1, gen-all.ps1     generators -> docs/_generated/*.md (+ -Check gate)
+    scripts/docs/gen-*.py, gen-all.py     generators -> docs/_generated/*.md (+ --check gate)
     templates/GraphExportTest.kt            precise graph export from the Spring context (test scope; template)
   fe/                     -> harbor-frontend (React / TypeScript / openapi-fetch)
     AGENTS.md, .github/...                  same pattern for feature folders (+ api-client instructions, Node 24 setup steps)
-    scripts/docs/gen-*.ps1                  codebase-map (features), routes, types-index, docs-tags
-    scripts/docs/tag-candidates.ps1         inventory for docs-tagger: barrel / types / hooks -> current tag, proposed tag, status
+    scripts/docs/gen-*.py                  codebase-map (features), routes, types-index, docs-tags
+    scripts/docs/tag-candidates.py         inventory for docs-tagger: barrel / types / hooks -> current tag, proposed tag, status
     scripts/docs/gen-graph-fe.ts            precise graph export via the TypeScript compiler API (existing devDependency)
   shared/
-    check-file-size.ps1                     line-cap gate with baseline (token hygiene)
+    check-file-size.py                     line-cap gate with baseline (token hygiene)
     copilot-content-exclusion.yml           what Copilot must never see (GitHub repo setting, every surface)
     workspaces/product1.code-workspace      per-context multi-root workspace (BE core sources + resources + FE feature + docs)
     ide-setup.md                            IntelliJ / VS Code settings
@@ -72,9 +72,9 @@ docs bundle's `generated/<be|fe>/` unchanged. CI also publishes the contracts:
 `core/src/main/resources/api/*.yaml` -> `generated/openapi/external/`.
 
 ## Architectural graph (docs repo joins the maps)
-The docs repo's `scripts/gen-graph.ps1` turns these maps (+ `@docs` tags, + optional precise exports
+The docs repo's `scripts/gen-graph.py` turns these maps (+ `@docs` tags, + optional precise exports
 `graph-export-be.json` / `graph-export-fe.json`) into `generated/graph/`: `REPO_MAP.md` (ranked, budgeted),
-one `<context>.md` neighbourhood each, and `graph.json` for `#impact` / `scripts/graph-query.ps1`.
+one `<context>.md` neighbourhood each, and `graph.json` for `#impact` / `scripts/graph-query.py`.
 Communities are the bounded contexts of `contexts.yml`: BE classes grouped by name prefix (node `context:<name>`,
 located at its manager) plus the FE feature of the same name (`product1`, `stress`, ...); `class:` nodes carry
 `depends-on` (constructor injection) and `persists-to` (tables) edges, and spec IDs (`P1-001`) link both sides to the docs.
@@ -83,25 +83,25 @@ See `INVESTIGATION.md` section 3.9 and `IMPLEMENTATION-PLAN.md` Step 4.
 ## Verified locally
 Run from `code-repo-kit/` against the sibling simulated repos:
 ```
-.\be\scripts\docs\gen-all.ps1 -Root ..\backend            # codebase-map (core + kafka_client, layers), components, api-index from openapi/harbor-api.yaml, events, db-schema, jobs, docs-tags
-.\be\scripts\docs\gen-all.ps1 -Root ..\backend -Check     # exit 1 when a map is stale (what CI and the agentStop hook run)
-.\fe\scripts\docs\gen-all.ps1 -Root ..\frontend           # 3 features, 12 routes, 31 types, 18 tags (state of the simulated frontend at the time of writing)
-.\fe\scripts\docs\gen-all.ps1 -Root ..\frontend -Check
-.\apply-kit.ps1 -Flavour be -Target ..\backend -WhatIf     # lists the files it would copy; drop -WhatIf to apply
+python3 be/scripts/docs/gen-all.py --root ../backend            # codebase-map (core + kafka_client, layers), components, api-index from openapi/harbor-api.yaml, events, db-schema, jobs, docs-tags
+python3 be/scripts/docs/gen-all.py --root ../backend --check     # exit 1 when a map is stale (what CI and the agentStop hook run)
+python3 fe/scripts/docs/gen-all.py --root ../frontend           # 3 features, 12 routes, 31 types, 18 tags (state of the simulated frontend at the time of writing)
+python3 fe/scripts/docs/gen-all.py --root ../frontend --check
+python3 apply-kit.py --flavour be --target ../backend --what-if     # lists the files it would copy; drop --what-if to apply
 cd vscode-extension; npm install; npm run compile          # tsc OK -> out/extension.js, out/knowledge.js
-cd ..\..\docs-repo; .\scripts\gen-graph.ps1 -BeMaps ..\backend\docs\_generated -FeMaps ..\frontend\docs\_generated
-                    .\scripts\graph-query.ps1 -Node spec:P1-001 -Depth 2
-cd ..\frontend;     npx tsc -p scripts/docs/tsconfig.gen.json; node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json
+cd ../../docs-repo; python3 scripts/gen-graph.py --be-maps ../backend/docs/_generated --fe-maps ../frontend/docs/_generated
+                    ./scripts/graph-query.py --node spec:P1-001 --depth 2
+cd ../frontend;     npx tsc -p scripts/docs/tsconfig.gen.json; node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json
 ```
 The generated outputs belong to the code repos (`backend/docs/_generated`, `frontend/docs/_generated`), not to the kit.
 
 ## Rollout order
-1. `apply-kit.ps1` per repo, content exclusion, `check-file-size.ps1 -WriteBaseline` (day 1, zero risk).
+1. `apply-kit.py` per repo, content exclusion, `check-file-size.py --write-baseline` (day 1, zero risk).
 2. Generators + `docs-maps.yml` freshness gate (warn-only for two sprints, then blocking); `copilot-setup-steps.yml` so the
-   coding agent can run `gen-all.ps1 -Check` in its own environment.
+   coding agent can run `gen-all.py --check` in its own environment.
 3. `@docs` tagging of managers, barrels and calculations during normal work; `docs-tags.md` fills up; contract changes go
    through `openapi/harbor-api.yaml` first (`/add-endpoint`); new class-name prefixes go into `contexts.yml`.
-4. Per-context workspaces + VS Code extension for frontend / QA / analyst roles; `graph-query.ps1` for IntelliJ users.
+4. Per-context workspaces + VS Code extension for frontend / QA / analyst roles; `graph-query.py` for IntelliJ users.
 5. Measure: Copilot usage metrics API (premium requests / user / week), share of `@workspace` vs `#file` references in prompts
    (survey), PR review time, number of `_not implemented_` rows in `api-index.md`.
 
@@ -115,7 +115,7 @@ The generated outputs belong to the code repos (`backend/docs/_generated`, `fron
 | `.github/agents/*.agent.md` | yes (custom agents) | yes | yes | yes (assignable) | `tools: ['read', 'search', 'edit', 'execute']` aliases; `handoffs` is VS Code-only |
 | `.github/prompts/*.prompt.md` | yes (`/name`) | yes | yes | - | `agent:` picks the custom agent, `argument-hint` shown in the picker |
 | `.github/skills/<name>/SKILL.md` | yes | preview | yes | yes | not used in the code repos; the docs repo ships skills |
-| `.github/hooks/*.json` | yes | preview | yes | yes | `docs-maps.json`: `agentStop` -> `gen-all.ps1 -Check` |
+| `.github/hooks/*.json` | yes | preview | yes | yes | `docs-maps.json`: `agentStop` -> `gen-all.py --check` |
 | `.github/workflows/copilot-setup-steps.yml` | - | - | - | yes | job name must be `copilot-setup-steps`; preinstalls JDK 21 / Node 24 |
 | Content exclusion (repo settings) | yes | yes | yes | yes | from `shared/copilot-content-exclusion.yml` |
-| `vscode-extension/` tools + `@docs` | yes | - | - | - | JetBrains users run `harbor-docs/scripts/graph-query.ps1` instead |
+| `vscode-extension/` tools + `@docs` | yes | - | - | - | JetBrains users run `harbor-docs/scripts/graph-query.py` instead |

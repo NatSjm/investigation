@@ -13,7 +13,7 @@ import { PresentationPage } from '@/features/presentation';
 
 /**
  * Object routes (react-router v6). Keep one route per line in the `{ path, element }` form:
- * `scripts/docs/gen-routes.ps1` builds `docs/_generated/routes.md` from it.
+ * `scripts/docs/gen-routes.py` builds `docs/_generated/routes.md` from it.
  * Session routes are absolute children of `SessionLayout`, which syncs `:sessionId` into the session store.
  * The client-facing window `/present/:sessionId` lives outside `RootLayout` (no navigation, no admin links).
  */

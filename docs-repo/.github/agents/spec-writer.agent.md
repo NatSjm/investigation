@@ -19,7 +19,7 @@ A spec ID to create or refresh (`P2-001`) and the community it belongs to (bound
 or a free-text feature description.
 
 ## Procedure
-1. `./scripts/context-pack.ps1 -Task <ID or community>`; read the pack. For a new spec the pack contains the
+1. `python3 scripts/context-pack.py --task <ID or community>`; read the pack. For a new spec the pack contains the
    graph neighbourhood of `context:<community>` / `feature:<community>` instead of a spec.
 2. Build the skeleton from `features/_template.md` with the graph (`generated/graph/<community>.md`):
    - **API / Events** <- `endpoint:*` nodes (method, path, `operationId`, handler `file:line`) and `topic:*` nodes with direction;
@@ -36,7 +36,7 @@ or a free-text feature description.
 5. Everything you could not source goes to **Open questions**. Set `status: draft`,
    `generated: { by: copilot/spec-writer, at: <ISO> }`, `stale_after` +90 days, no `verified`.
 6. Add / update the `docs-map.yml` mapping for every `code_refs` directory.
-7. Run `./scripts/validate-frontmatter.ps1 <file>`, `./scripts/okf-validate.ps1 -Strict`, `./scripts/build-index.ps1`;
+7. Run `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`;
    append a `## <date>` line to `log.md` ("created <ID>").
 
 ## Output

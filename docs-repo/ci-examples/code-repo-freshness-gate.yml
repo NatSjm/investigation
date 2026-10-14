@@ -13,8 +13,7 @@ jobs:
         uses: actions/checkout@v4
         with: { repository: harbor/harbor-docs, path: docs, token: "${{ secrets.DOCS_REPO_TOKEN }}" }
       - name: Check
-        shell: pwsh
         run: |
-          # prefix paths with repo root name used in docs-map.yml (be/ or fe/)
-          $changed = git diff --name-only origin/${{ github.base_ref }}...HEAD | ForEach-Object { "be/$_" }
-          ./docs/scripts/check-freshness.ps1 -ChangedPaths $changed -SinceDate (Get-Date).AddDays(-30) -AllowUnmapped
+          # prefix paths with repo root name used in docs-map.yml (be/ or fe/); --since-date defaults to 30 days ago
+          changed=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | sed 's#^#be/#')
+          python3 docs/scripts/check-freshness.py --changed-paths $changed --allow-unmapped

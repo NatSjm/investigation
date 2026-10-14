@@ -4,16 +4,16 @@
     "preToolUse": [
       {
         "type": "command",
-        "powershell": "pwsh -NoProfile -File scripts/hooks/guard-generated.ps1",
-        "bash": "pwsh -NoProfile -File scripts/hooks/guard-generated.ps1",
+        "powershell": "python scripts/hooks/guard-generated.py",
+        "bash": "python3 scripts/hooks/guard-generated.py",
         "timeoutSec": 20
       }
     ],
     "agentStop": [
       {
         "type": "command",
-        "powershell": "pwsh -NoProfile -Command \"./scripts/build-index.ps1; ./scripts/okf-validate.ps1 -Strict; ./scripts/validate-frontmatter.ps1; ./scripts/validate-work-items.ps1\"",
-        "bash": "pwsh -NoProfile -Command \"./scripts/build-index.ps1; ./scripts/okf-validate.ps1 -Strict; ./scripts/validate-frontmatter.ps1; ./scripts/validate-work-items.ps1\"",
+        "powershell": "python scripts/build-index.py; python scripts/okf-validate.py --strict; python scripts/validate-frontmatter.py; python scripts/validate-work-items.py",
+        "bash": "python3 scripts/build-index.py; python3 scripts/okf-validate.py --strict; python3 scripts/validate-frontmatter.py; python3 scripts/validate-work-items.py",
         "timeoutSec": 120
       }
     ]

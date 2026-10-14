@@ -10,7 +10,7 @@ The repository rules (read order, contracts, conventions, commands, where busine
 ## Output discipline
 - Return diffs / edited files, never whole-file dumps in chat.
 - "How does X work" answers: map + manager (+ its row in `components.md`), <= 15 lines, `file:line` links and the spec ID; expand only on request.
-- After touching an endpoint, topic, table, job or `@docs` tag: run `scripts/docs/gen-all.ps1` and include `docs/_generated/*` (incl. `components.md`).
+- After touching an endpoint, topic, table, job or `@docs` tag: run `scripts/docs/gen-all.py` and include `docs/_generated/*` (incl. `components.md`).
 
 ## Context references
 Prefer `#file`, `#sym`, `#selection` over `@workspace` / `#codebase`. Start from `#file:docs/_generated/index.md`.
@@ -19,10 +19,10 @@ Prefer `#file`, `#sym`, `#selection` over `@workspace` / `#codebase`. Start from
 - Agents (`.github/agents/`): `code-reader` (read-only navigator, max 3 files), `impact-analyst` (blast-radius checklist),
   `docs-tagger` (adds missing `@docs` KDoc tags from `contexts.yml`, comment lines only, one PR per context).
 - Prompts (`.github/prompts/`): `/explain-module` (explains a context: manager + its dependencies; default `product1`), `/find-spec-code` (default `P1-001`),
-  `/add-endpoint` (contract-first checklist), `/tag-docs <context|all>` (inventory from `scripts/docs/tag-candidates.ps1`, then the tags).
-- Hook `.github/hooks/docs-maps.json` runs `gen-all.ps1 -Check` when an agent session stops.
+  `/add-endpoint` (contract-first checklist), `/tag-docs <context|all>` (inventory from `scripts/docs/tag-candidates.py`, then the tags).
+- Hook `.github/hooks/docs-maps.json` runs `gen-all.py --check` when an agent session stops.
 
 ## Docs-repo tools
 - VS Code with the "Harbor Docs for Copilot" extension: `#docsLookup:P1-001`, `#codeMap`, `#specToCode`, `#impact <node|file>`,
   participant `@docs /spec | /where | /impact`.
-- JetBrains: `pwsh ../harbor-docs/scripts/graph-query.ps1 -Node spec:P1-001 -Depth 2` and attach `docs/_generated/<map>.md` to the chat.
+- JetBrains: `python3 ../harbor-docs/scripts/graph-query.py --node spec:P1-001 --depth 2` and attach `docs/_generated/<map>.md` to the chat.

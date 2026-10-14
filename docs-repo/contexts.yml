@@ -5,7 +5,7 @@
 # is the LONGEST match at the start of its simple class name; classes matching no prefix are `shared`.
 # The FE is package-by-feature: `fe` is the folder under src/features/. `spec` is the spec ID prefix (CLI-001, ...).
 #
-# Used by scripts/gen-graph.ps1 (graph communities), scripts/context-pack.ps1 and docs-map.yml authors.
+# Used by scripts/gen-graph.py (graph communities), scripts/context-pack.py and docs-map.yml authors.
 # Keep one line per context; edit when a new class-name prefix appears (the graph lists unmatched classes as `shared`).
 
 contexts:

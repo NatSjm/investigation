@@ -13,10 +13,10 @@ description, or a list of changed file paths (`git diff --name-only`).
 
 ## Procedure
 1. Read `.github/skills/code-graph/SKILL.md` (short). Do **not** open BE/FE source code.
-2. Resolve the subject: exact node id, else `./scripts/graph-query.ps1 -Find <text>` or `generated/graph/REPO_MAP.md`.
+2. Resolve the subject: exact node id, else `python3 scripts/graph-query.py --find <text>` or `generated/graph/REPO_MAP.md`.
    If still unresolved, stop with the two best candidate ids.
 3. Neighbourhood at depth 2: `generated/graph/<community>.md` (one read) or
-   `./scripts/graph-query.ps1 -Node <id> -Depth 2` / `-Files <paths> -Depth 2`.
+   `python3 scripts/graph-query.py --node <id> --depth 2` / `--files <paths> --depth 2`.
 4. Classify every node in the radius by kind; collect `spec:*` nodes and `(-> other-community)` edges.
 5. Flag `(heuristic)` edges and `url:` nodes as "verify"; flag maps whose `generated.at` is older than the change.
 
