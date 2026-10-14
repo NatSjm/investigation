@@ -64,8 +64,16 @@ permissions, and review of what gets committed.
 ## 1. Decisions before you start (one meeting)
 
 1. **Repositories.** Frontend, backend, tests, and a new docs repository. Decide its name and who owns it.
-2. **Pilot context.** One business area with one backend entry point, one frontend feature and at least one
-   calculation. Everything below is done for this context first, then repeated.
+2. **Scope: a slice, not the product.** Write down the first tasks the analyst should get, and list the bounded
+   contexts they touch, usually one to three. That list is the scope of phase 1; everything else stays "code only"
+   on the migration board with an owner and a date. Two kinds of work behave differently here:
+   - **generated, whole product for free:** code maps, graph, contracts, parameter and dataset catalogues, indexes.
+     The generators scan the entire repository; there is no cheaper partial run and the full result is what makes
+     "what else touches this table" answerable.
+   - **written and reviewed, per context:** specs (Runs 1 to 4), calculations, flows, glossary rows, Confluence
+     pages, test designs. Done only for the contexts in scope; the board shows the rest as due.
+   The first context in scope is the pilot: one backend entry point, one frontend feature, at least one
+   calculation. Everything below is done for it first, then for the other contexts in scope.
 3. **IDs.** Spec IDs `<CTX>-<NNN>` (for example `P1-001`), rules `BR-<ID>-<n>`, calculations `snake_case`. If the
    enterprise already has feature IDs, keep them; the scripts only need the pattern in `features/conventions.md`.
 4. **Context list.** The business areas and, per area, the backend class-name prefixes or packages, the frontend
@@ -377,7 +385,9 @@ source-language wording so searches still find the concept.
 
 ## 12. The analyst
 
-Phase 2 of the plan (section 16): run the analyst on real tasks only after the "documentation ready" gate is passed.
+Phase 2 of the plan (section 16): run the analyst on real tasks only after the "documentation ready" gate is passed
+for the contexts those tasks touch (the scope of section 1). A task that crosses into an out-of-scope context is
+the signal to bring that context through Runs 1 to 4 next, not to let the analyst guess.
 
 What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: build the pack, read it top to bottom (spec, calculations, flows,
 graph, contracts, tables, related work), check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
@@ -495,16 +505,17 @@ about the wrong thing.
 |---|---|---|
 | 1 | Sections 1 to 4; section 6 for the pilot repositories; section 8. Run 1 for the pilot context. | validators green; maps correct for the pilot; `REPO_MAP.md` shows the pilot community; one draft spec exists |
 | 2 | Section 5 (contracts in place); section 9 (first Confluence space imported); Run 2 and Run 3 for the pilot; Run 4 by the owner. Parameter and dataset headers in the pilot repositories (17.7). | pilot spec human-reviewed, calculations audited; the two catalogues collected; `validate-frontmatter.ps1` green with the parameter cross-check |
-| 3 | Section 7 (collector in CI); section 13 (doc-sync on the first collector PR); Run 1 for all remaining contexts; section 6 for the remaining repositories. | one collector PR merged; every context has at least a draft spec; the freshness gate is warn-only |
-| 4 | Run 2 and 3 for two more contexts; remaining Confluence spaces; glossary and flows; freshness gate blocking; the reader test of 17.3. | three contexts human-reviewed; the board shows the rest with owners and dates; one designer's five questions on github.com answered with rule IDs and badges |
+| 3 | Section 7 (collector in CI); section 13 (doc-sync on the first collector PR); Run 1 for the other contexts in scope (and, if cheap, skeletons for the rest); section 6 for the remaining repositories. | one collector PR merged; every context in scope has at least a draft spec; the freshness gate is warn-only |
+| 4 | Run 2 and 3 for the other contexts in scope; the Confluence spaces those contexts need; glossary and flows; freshness gate blocking; the reader test of 17.3. | every context in scope human-reviewed; the board shows the rest with owners and dates; one designer's five questions on github.com answered with rule IDs and badges |
 
 **Gate: documentation ready.** All of these, checked by the documentation maintainer and one context owner:
 
 - `okf-validate.ps1 -Strict`, `validate-frontmatter.ps1`, `gen-graph.ps1 -Check`, `build-index.ps1 -Check` green on `main`,
   and the code repositories' `gen-all.ps1 -Check` green on their `main`.
 - The collector runs on schedule and its PRs are reviewed and merged; the manifest names the commits it collected.
-- Every context has a spec; the pilot and at least two more are human-reviewed (`verified`, `stale_after` set); every
-  calculation they link is audited (status not `draft`) or carries an open question with an owner.
+- Every context **in scope** has a human-reviewed spec (`verified`, `stale_after` set) and every calculation it links
+  is audited (status not `draft`) or carries an open question with an owner. Contexts out of scope have a Run 1
+  skeleton at most and appear on the board as due; a spec the first tasks will cite must not be out of scope.
 - The migration board (`migration/all.md`) has an owner and a date for every remaining run.
 - `generated/be/parameters.md` and `generated/be/datasets.md` exist and the two-way parameter check passes.
 - A reader who is not an analyst (designer, owner) gets correct answers with rule IDs and badges from Copilot chat on
