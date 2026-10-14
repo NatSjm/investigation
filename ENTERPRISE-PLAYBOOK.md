@@ -3,7 +3,8 @@
 What you are building: a documentation repository that GitHub Copilot can read instead of your code, fed by small
 generated maps from the frontend and backend, by the OpenAPI and Kafka contracts you already have, and by the
 Confluence pages you will export. The target state is "an analyst agent reads one context pack per task and
-produces stories, test designs and analytics with trust labels", with a person verifying every document once.
+produces stories, test designs and analytics with trust labels", with a person verifying every document once. The order of work is documentation first (phase 1, sections 1 to 11
+and 13), then the analyst (phase 2, section 12); section 16 has the plan and the gate between the two.
 
 This playbook is written for your situation: IntelliJ plus the Copilot CLI (no VS Code required, no MCP, no
 third-party agent frameworks), PowerShell 7 scripts only, OpenAPI documents for the frontend API and for the other
@@ -16,7 +17,7 @@ is the meeting checklist; [GUIDE.md](GUIDE.md) is the tour of this prototype. Th
 Contents: 0 Ground rules and safety · 1 Decisions before you start · 2 Docs repository skeleton · 3 AGENTS.md and the
 Copilot files · 4 Contexts and the mapping file · 5 Contracts you already have · 6 Code repositories · 7 Collector ·
 8 Graph and indexes · 9 Confluence import · 10 Specs, run by run · 11 Calculations and flows · 12 The analyst ·
-13 Maintenance · 14 Scripts catalogue · 15 Agents catalogue · 16 Four-week plan and acceptance
+13 Maintenance · 14 Scripts catalogue · 15 Agents catalogue · 16 Plan: documentation first, analyst second · 17 Lessons from the first trial · 18 Human-owned documents an agent may draft · 19 Several repositories in IntelliJ · 20 Workstations: Windows and macOS
 
 ---
 
@@ -376,6 +377,8 @@ source-language wording so searches still find the concept.
 
 ## 12. The analyst
 
+Phase 2 of the plan (section 16): run the analyst on real tasks only after the "documentation ready" gate is passed.
+
 What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: build the pack, read it top to bottom (spec, calculations, flows,
 graph, contracts, tables, related work), check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
 per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when blocking, into the
@@ -479,17 +482,47 @@ validators, the indexes and a log line.
 
 ---
 
-## 16. Four-week plan and acceptance
+## 16. Plan: documentation first, analyst second
+
+The work has two phases with a gate between them. Phase 1 builds the documentation and proves it on readers who
+are not agents. Phase 2 puts the analyst agent on it. Nothing in phase 1 depends on the analyst, and starting the
+analyst on documentation that is not ready produces exactly the result of the first trial (section 17): valid files
+about the wrong thing.
+
+### Phase 1 - documentation ready (weeks 1 to 4)
 
 | Week | Work | Done when |
 |---|---|---|
-| 1 | Sections 1 to 4, 6 for the pilot repos, 8. Run 1 for the pilot context. | validators green; maps correct for the pilot; `REPO_MAP.md` shows the pilot community; one draft spec exists |
-| 2 | Section 5 (contracts in place), 9 (first space imported), Run 2 and Run 3 for the pilot, Run 4 by the owner. First analyst run. | pilot spec human-reviewed, calculations audited; `work-items/<ID>.yml` validated; a human analyst has judged the stories |
-| 3 | Section 7 (collector in CI), 13 (doc-sync on the first collector PR), Run 1 for all remaining contexts. | one collector PR merged; every context has at least a draft spec; the freshness gate is warn-only |
-| 4 | Run 2 and 3 for two more contexts, test designs, coverage report to the team, freshness gate blocking. | three contexts ready for the analyst; the board shows the rest with owners and dates |
+| 1 | Sections 1 to 4; section 6 for the pilot repositories; section 8. Run 1 for the pilot context. | validators green; maps correct for the pilot; `REPO_MAP.md` shows the pilot community; one draft spec exists |
+| 2 | Section 5 (contracts in place); section 9 (first Confluence space imported); Run 2 and Run 3 for the pilot; Run 4 by the owner. Parameter and dataset headers in the pilot repositories (17.7). | pilot spec human-reviewed, calculations audited; the two catalogues collected; `validate-frontmatter.ps1` green with the parameter cross-check |
+| 3 | Section 7 (collector in CI); section 13 (doc-sync on the first collector PR); Run 1 for all remaining contexts; section 6 for the remaining repositories. | one collector PR merged; every context has at least a draft spec; the freshness gate is warn-only |
+| 4 | Run 2 and 3 for two more contexts; remaining Confluence spaces; glossary and flows; freshness gate blocking; the reader test of 17.3. | three contexts human-reviewed; the board shows the rest with owners and dates; one designer's five questions on github.com answered with rule IDs and badges |
 
-Before week 2 read section 17; the acceptance of week 2 includes one analyst run on a change request (delta stories
-only) and one designer transcript from github.com (17.3).
+**Gate: documentation ready.** All of these, checked by the documentation maintainer and one context owner:
+
+- `okf-validate.ps1 -Strict`, `validate-frontmatter.ps1`, `gen-graph.ps1 -Check`, `build-index.ps1 -Check` green on `main`,
+  and the code repositories' `gen-all.ps1 -Check` green on their `main`.
+- The collector runs on schedule and its PRs are reviewed and merged; the manifest names the commits it collected.
+- Every context has a spec; the pilot and at least two more are human-reviewed (`verified`, `stale_after` set); every
+  calculation they link is audited (status not `draft`) or carries an open question with an owner.
+- The migration board (`migration/all.md`) has an owner and a date for every remaining run.
+- `generated/be/parameters.md` and `generated/be/datasets.md` exist and the two-way parameter check passes.
+- A reader who is not an analyst (designer, owner) gets correct answers with rule IDs and badges from Copilot chat on
+  github.com, and the Confluence publish of the human-reviewed specs is in place.
+- Costs of phase 1 are known: premium requests per run per agent (spec-writer, migrator, auditor, doc-sync).
+
+Until the gate is passed, the analyst agent is not run on real tasks. It may be run once, in week 4, on the pilot
+context with a change request, only to calibrate the pack budget and the step vocabulary, and its output is discarded.
+
+### Phase 2 - the analyst (weeks 5 and 6)
+
+| Week | Work | Done when |
+|---|---|---|
+| 5 | Section 12 and 17.1, 17.2: the analyst on change requests for the human-reviewed contexts, interactively in the IDE or CLI (section 19). A human analyst reviews every file. Test designs for the same stories (`test-designer`). | stories accepted unchanged by the human analyst above an agreed share; every story cites existing rule IDs; `needs-spec-review` appears only on draft specs |
+| 6 | Coverage report to the team (`/coverage-report`); headless runs only in CI (17.4); API design skill and Spectral ruleset if proposals are being written (17.8); decide the analyst's standing tasks. | the coverage matrix is read in the sprint review; premium requests per story are known; the next contexts for Run 2 and 3 are chosen from the analyst's gaps |
+
+Read section 17 before week 5; the acceptance of week 5 is one analyst run on a change request producing delta
+stories only, judged by a human analyst.
 
 The success criterion is not the number of files or agents. It is: an analyst question answered from the docs with
 rule IDs and a trust badge, and a code change that correctly triggers a documentation review.
