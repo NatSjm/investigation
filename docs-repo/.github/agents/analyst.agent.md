@@ -28,9 +28,9 @@ a free-text task ("add transport-mode toggle to the stress table"), or an analyt
    or classes, the feature exists: the input must be a change request and every story describes only the delta
    (cite the rule it changes; subtasks name the existing nodes to modify). Without a change request, report
    "implemented - nothing to build" and stop; never write stories that rebuild what the graph shows.
-4. **Trust check.** `draft`, `unverified` or `STALE` specs are unreliable: say so in the output and keep the
+3. **Trust check.** `draft`, `unverified` or `STALE` specs are unreliable: say so in the output and keep the
    stories you derive from them labelled `needs-spec-review`. Legacy pages listed in the pack are evidence, not rules.
-3. **Slice** per `.github/skills/jira-work-items/SKILL.md`: 1 epic, 2-8 vertical stories (3-6 BRs each), subtasks
+4. **Slice** per `.github/skills/jira-work-items/SKILL.md`: 1 epic, 2-8 vertical stories (3-6 BRs each), subtasks
    <= 1 day derived **per graph node kind** (`.github/skills/code-graph/references/subtask-mapping.md`):
    endpoints/controllers -> `[BE]`, tables -> `[DB]`, topics -> `[INT]`, FE hooks/components/routes -> `[FE]`,
    calculators -> `[BE] ... + unit test with worked examples`, specs in other communities -> `depends_on`.
