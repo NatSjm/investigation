@@ -1,12 +1,12 @@
 ---
 name: okf-validate
 description: Validate the OKF documentation bundle and fix conformance errors.
-argument-hint: "[path] [-Strict]"
+argument-hint: "[path] [--strict]"
 agent: agent
 tools: ['read', 'edit', 'execute']
 ---
 Path: ${input:path:.}
-Strictness: ${input:strict:-Strict}
+Strictness: ${input:strict:--strict}
 
 1. Run `python3 scripts/okf-validate.py --path ${input:path} ${input:strict}` (fallback: the Python checker in
    `.github/skills/okf-validate/scripts/`). Also run `python3 scripts/validate-frontmatter.py` and `python3 scripts/validate-work-items.py`.

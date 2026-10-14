@@ -48,6 +48,6 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
 3. Numbers covered by an `Attested Computation` come from its worked examples / executor — never re-derive.
 
 ## Validate before finishing
-- Dev machine (no Python): `scripts/okf-validate.py --strict`
+- Dev machine (no pyyaml): `scripts/okf-validate.py --strict`
 - CI / full checker: `python3 .github/skills/okf-validate/scripts/okf_validate.py . --strict` (see `okf-validate` skill).
 Fix every ERROR; under `--strict` fix warnings too.

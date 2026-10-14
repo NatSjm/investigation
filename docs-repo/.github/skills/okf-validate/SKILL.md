@@ -12,7 +12,7 @@ Pick the checker by environment:
 
 | Where | Command |
 |---|---|
-| Windows dev machine (no Python) | `scripts/okf-validate.py [--path .] [--strict] [--max-warnings N]` |
+| Dev machine (no pyyaml) | `scripts/okf-validate.py [--path .] [--strict] [--max-warnings N]` |
 | CI / full checker | `python3 .github/skills/okf-validate/scripts/okf_validate.py <bundle> --strict` (needs `pyyaml`; `--json` for machine output). It has **no exclude list**, so point it at a staged copy of `index.md log.md README.md architecture domain features generated` (see `.github/workflows/docs-quality.yml`), not at the repo root. |
 
 Template files (`_template.md`, `template.md`) are checked for §11 only; placeholder values do not raise warnings.
@@ -28,4 +28,4 @@ Interpret the result:
 `--migrate` (Python only) **rewrites files in place** (`timestamp` → `generated.at`, `# Citations` → `sources`);
 tell the user before running it on content they did not ask to migrate.
 
-Exit code non-zero on any ERROR, or when warnings exceed the gate (`--strict` = 0, `-MaxWarnings N`).
+Exit code non-zero on any ERROR, or when warnings exceed the gate (`--strict` = 0, `--max-warnings N`).
