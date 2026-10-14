@@ -24,23 +24,27 @@ a free-text task ("add transport-mode toggle to the stress table"), or an analyt
    bottom. It contains the spec with its trust badge, calculations with worked examples, the depth-2 graph
    neighbourhood, contracts, tables, existing work items/tests and legacy pages. If the pack says
    `candidates:` (free text matched several specs), pick one and rebuild, or ask the user.
-2. **Trust check.** `draft`, `unverified` or `STALE` specs are unreliable: say so in the output and keep the
+2. **Implemented or new?** If the pack's graph neighbourhood already contains the spec's endpoints, hooks, components
+   or classes, the feature exists: the input must be a change request and every story describes only the delta
+   (cite the rule it changes; subtasks name the existing nodes to modify). Without a change request, report
+   "implemented - nothing to build" and stop; never write stories that rebuild what the graph shows.
+4. **Trust check.** `draft`, `unverified` or `STALE` specs are unreliable: say so in the output and keep the
    stories you derive from them labelled `needs-spec-review`. Legacy pages listed in the pack are evidence, not rules.
 3. **Slice** per `.github/skills/jira-work-items/SKILL.md`: 1 epic, 2-8 vertical stories (3-6 BRs each), subtasks
    <= 1 day derived **per graph node kind** (`.github/skills/code-graph/references/subtask-mapping.md`):
    endpoints/controllers -> `[BE]`, tables -> `[DB]`, topics -> `[INT]`, FE hooks/components/routes -> `[FE]`,
    calculators -> `[BE] ... + unit test with worked examples`, specs in other communities -> `depends_on`.
-4. Every acceptance criterion is Gherkin and cites at least one `BR-<ID>-<n>` that exists in the pack. Set the scene with a named dataset from the pack's **Datasets touching these tables** (`Given dataset "<name>" is loaded`) when one fits; describe rows only for values the criterion asserts on. When a story
+5. Every acceptance criterion is Gherkin and cites at least one `BR-<ID>-<n>` that exists in the pack. Set the scene with a named dataset from the pack's **Datasets touching these tables** (`Given dataset "<name>" is loaded`) when one fits; describe rows only for values the criterion asserts on. When a story
    needs an operation or topic the contracts in the pack do not contain, draft it under `contracts/proposed/<ID>.openapi.yaml`
    (or `.asyncapi.yaml`) from `_template.openapi.yaml`, cite it by `operationId` as **proposed**, add the row to the
    spec's API / Events table with the proposal link, and label the story `needs-contract` (`contracts/conventions.md`).
    Gaps go to `questions[]` - never guess; if a gap blocks estimation, append it to the spec's **Open questions**
    and stop.
-5. Write `work-items/<ID>.yml` per `work-items/_schema.yml`; run `./scripts/validate-work-items.ps1 work-items/<ID>.yml`.
-6. **Analytics mode** (coverage / status / freshness questions): run `./scripts/coverage-matrix.ps1` and answer from
+6. Write `work-items/<ID>.yml` per `work-items/_schema.yml`; run `./scripts/validate-work-items.ps1 work-items/<ID>.yml`.
+7. **Analytics mode** (coverage / status / freshness questions): run `./scripts/coverage-matrix.ps1` and answer from
    `generated/analytics/coverage-matrix.md` plus the index badges (`index.md` files) - counts, gaps, stale items,
    `code only` entries from `generated/graph/REPO_MAP.md` spec coverage. Skill: `.github/skills/docs-analytics/SKILL.md`.
-7. Only if the pack leaves a question that blocks the task AND names a `file:line`, open exactly that range in
+8. Only if the pack leaves a question that blocks the task AND names a `file:line`, open exactly that range in
    `../backend` or `../frontend`; record what you learned as an open question in the spec, not as a silent assumption.
 
 ## Output

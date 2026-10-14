@@ -101,6 +101,7 @@ confluence-import/README.md    keep the quarantine rules; empty the inventory ta
 generated/                     empty except the folders be/, fe/, openapi/, asyncapi/, graph/, analytics/
 migration/, work-items/_schema.yml, work-items/README.md, test-design/README.md
 scripts/                       all of it, including scripts/hooks/
+.github/skills/*/references/   keep the pointer files too (17.6): every reference a skill names is reachable from that skill
 ci-examples/                   collect-evidence.yml, code-repo-freshness-gate.yml
 third-party/                   the vendored OKF skills and licences
 .github/                       agents, instructions, hooks, prompts, skills, workflows (section 3)
@@ -359,6 +360,9 @@ The `agentStop` hook runs the validators anyway.
 they are read from, outputs with rounding, the formula, a step list with footnotes to the source, the sanctioned code
 shape, conventions, worked examples copied from the test with the test method named, an audit table, open questions.
 Agents bind parameters; they never re-derive a formula. `calculation-spec` and `legacy-page-audit` are the skills.
+The `## Parameters` table names keys exactly as in `generated/be/parameters.md`; the admin spec maps each key to the
+calculation that owns its meaning, and `validate-frontmatter.ps1` checks both directions (17.7). Worked examples come
+from unit tests; scenario setups cite named datasets from `generated/be/datasets.md` (17.7).
 
 **Flows** (`flows/<name>.md`, `type: Flow`) exist only for behaviour that crosses contexts or windows: trigger,
 participants, steps with `file:line`, invariants, source map. The spec-writer creates one during Run 1 when the graph
@@ -376,7 +380,8 @@ What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: bu
 graph, contracts, tables, related work), check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
 per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when blocking, into the
 spec's Open questions. Never read source; only when the pack leaves a question and names a `file:line`, open that
-range and record the fact as an open question.
+range and record the fact as an open question (decision and setup: 17.2 and section 19). On a finished feature the
+input is a change request and the output is delta stories only (17.1).
 
 The everyday sequence:
 
@@ -483,5 +488,155 @@ validators, the indexes and a log line.
 | 3 | Section 7 (collector in CI), 13 (doc-sync on the first collector PR), Run 1 for all remaining contexts. | one collector PR merged; every context has at least a draft spec; the freshness gate is warn-only |
 | 4 | Run 2 and 3 for two more contexts, test designs, coverage report to the team, freshness gate blocking. | three contexts ready for the analyst; the board shows the rest with owners and dates |
 
+Before week 2 read section 17; the acceptance of week 2 includes one analyst run on a change request (delta stories
+only) and one designer transcript from github.com (17.3).
+
 The success criterion is not the number of files or agents. It is: an analyst question answered from the docs with
 rule IDs and a trust badge, and a code change that correctly triggers a documentation review.
+
+---
+
+## 17. Lessons from the first trial (read before week 2)
+
+The first headless analyst run on a finished spec (ADM-001, Copilot CLI, 67 seconds, about 7.5 premium requests)
+produced a valid file and four honest open questions, and taught the following. Each item is a rule in the
+repository now; this section says why, so you keep it when you adapt the files.
+
+**17.1 Brownfield: the analyst produces delta stories.** `jira-from-spec` on a spec whose graph neighbourhood is already
+implemented produced stories to build what exists. The analyst agent now checks the pack's graph section first: when
+the endpoints, hooks and components of the spec are present, the input must be a change request and the stories
+describe only the delta; without a change request the agent says "implemented, nothing to build" and stops. Give
+the analyst tasks like "ADM-001: warn when a parameter an open session has snapshotted is edited", not bare IDs,
+unless the feature is new. Example of a delta story: `work-items/ADM-001.yml`, story S4.
+
+**17.2 Code access for the analyst: allowed locally, absent on the web.** Decision: the analyst may open exactly the
+`file:line` a pack names in `../backend` or `../frontend`, when a question blocks the task, and must record what it
+learned as an open question in the spec. The code repositories are sibling checkouts (section 19). Where they are
+not available, for example Copilot chat on github.com or a machine with the docs repo only, the agent records the
+question and stops; nothing else in the procedure depends on code access, so the web experience is not broken.
+Headless runs that should have this access pass `--add-dir ../backend --add-dir ../frontend`; runs that should not,
+simply omit the flags and the CLI refuses the path.
+
+**17.3 Readers who are not analysts.** Product designers, owners and support read on github.com. There, nothing runs:
+no pack, no hooks, no validators. Copilot chat on the repository reads the files and applies
+`.github/copilot-instructions.md` (start at `index.md`, cite spec and rule IDs, name the badge, never present a draft
+as verified); prompt files and custom agents are not available there. For a curated entry point use Copilot Spaces
+(Business and Enterprise): one space per product with `features/`, `domain/`, `flows/`, `architecture/`,
+`generated/graph/REPO_MAP.md` and the contracts, shared with designers. Keep the Confluence publish
+(`translate-for-publish`) as the fallback reading surface. Before the first demo, have one designer ask five real
+questions on github.com and keep the transcript; a thin answer is almost always a missing description, alias or badge.
+
+**17.4 Headless runs and cost.** A headless agent run is for CI and acceptance tests, not everyday work: about a
+minute and 7 to 8 premium requests per analyst run. Everyday use is the IDE (section 19) or the CLI interactively,
+where the user approves tool calls and the pack is reused across questions. Budget premium requests per agent per
+week and show them in the coverage report.
+
+**17.5 Links.** Specs link with root-relative paths (`/features/<ctx>/<ID>.md`). GitHub resolves them against the
+repository root, so they are clickable only when the docs repo is its own repository. Never nest it in a monorepo.
+`file:line` references and `#/paths/...` anchors are search keys for agents, not links; leave them as code.
+
+**17.6 Where the skill references live.** The subtask mapping used by the analyst lives under the `code-graph` skill;
+the model looked for it under `jira-work-items` and gave up. A one-line pointer file now sits in
+`.github/skills/jira-work-items/references/subtask-mapping.md`. Rule: every reference a skill names is either in that
+skill's `references/` folder or has a pointer there.
+
+**17.7 Parameters and datasets, adoption steps.** Two catalogues came out of the question "how does an admin value
+reach a calculation on the screen". Both are generated in the backend and collected like every other map:
+- `parameters.md`: keep the parameter keys in one enum and the defaults in the migrations; the generator reads both.
+  Every calculation that reads a key fills its `## Parameters` table with the key exactly as in the catalogue; the
+  admin spec maps each key to the document that owns its meaning (`features/admin/ADM-001.md` is the model).
+  `validate-frontmatter.ps1` fails on a key the catalogue lacks and on a catalogue key no document explains, so
+  expect red CI until the mapping is complete. The rule in one sentence: the calculation owns the meaning, the admin
+  spec owns scope, versioning and validation, the key string is the join.
+- `datasets.md`: add the five header lines (`-- dataset:`, `-- purpose:`, `-- tables:`, `-- depends:`,
+  `-- synthetic:`) to every existing seed and integration-fixture SQL file; the generator counts inserted rows per
+  table, finds who loads the dataset and takes the first row of each table as a sample, values only when the header
+  says `synthetic: yes`. The pack lists the datasets that touch a spec's tables; analysts and test designers write
+  `Given dataset "<name>" is loaded` and describe rows only for values a scenario asserts on. Loaders that are not
+  SQL (CSV, DbUnit XML) need one more reader in `gen-datasets.ps1`. Check what your seeds contain before the first
+  run: if they hold production or UAT extracts, mark them `synthetic: no` so no value is ever copied.
+
+**17.8 API design rules.** Reserved: `.github/skills/api-design/` for your enterprise API conventions and a Spectral
+ruleset under `contracts/`, linted by `docs-quality.yml` for both `generated/openapi/` and `contracts/proposed/`.
+Until it exists, proposals are reviewed by a human against the written conventions.
+
+---
+
+## 18. Human-owned documents an agent may draft
+
+Several documents are owned by humans because they encode decisions, not code: the context map, the mapping file,
+the glossary seed, the architecture pages, ADRs, conventions. Nothing stops you from asking an agent for the first
+draft. The rule that keeps this safe is the same as for specs: the draft carries `status: draft` and
+`generated: { by: copilot/<agent>, at }`, a human edits and adds `verified`, and the validators treat it as
+unverified until then. Point the model at the reference copy in this investigation repository and at the evidence
+it may use; forbid invention explicitly.
+
+| Document | Reference in this repository | Give the model | Human confirms |
+|---|---|---|---|
+| `contexts.yml` (bounded contexts, class prefixes, FE features) | `docs-repo/contexts.yml` | `generated/be/codebase-map.md`, `generated/fe/codebase-map.md`, the team's own context names | the list is complete and the prefixes do not overlap |
+| `docs-map.yml` (code paths to spec IDs) | `docs-repo/docs-map.yml` | `contexts.yml`, `generated/be/components.md`, `generated/fe/codebase-map.md` | every path pattern matches at least one file; `map-paths.ps1` agrees |
+| `domain/context-map.md` | `docs-repo/domain/context-map.md` | `contexts.yml`, `generated/graph/REPO_MAP.md` (cross-community edges), `generated/be/events.md` | the relationships are the real ones; direction of each dependency |
+| `domain/glossary.md` seed | `docs-repo/domain/glossary.md` | `generated/be/db-schema.md`, enum files named in `components.md`, the Confluence inventory | definitions; aliases in the source language |
+| `architecture/overview.md`, `integrations.md` | `docs-repo/architecture/overview.md`, `integrations.md` | `generated/be/codebase-map.md`, `api-index.md`, `events.md`, `generated/openapi/external/*.yaml` | boundaries, ownership, anything the maps cannot show (hosting, auth) |
+| `architecture/adr/*.md` | `docs-repo/architecture/adr/template.md`, `0002-openapi-first-contracts.md` | the decision as you would say it in one paragraph, plus the alternatives considered | the decision itself; an ADR is never generated from code |
+| `flows/*.md` | `docs-repo/flows/client-presentation.md` | the pack of each spec involved, `generated/graph/<community>.md` | steps and invariants; participants |
+| `features/conventions.md`, `contracts/conventions.md` | the files of the same name | your existing team rules (naming, ID scheme, review) | they match how the team works, not how the model thinks it should |
+| `confluence-import/README.md` inventory | `docs-repo/confluence-import/README.md` | the export folder listing | which pages are in scope and who owns them |
+| `test-design/README.md` step vocabulary | `docs-repo/test-design/README.md` | the step definitions of the tests repository | one meaning per step; no synonyms |
+| `work-items/_schema.yml` | `docs-repo/work-items/_schema.yml` | your Jira field names and story template | field names match Jira |
+| `AGENTS.md`, `.github/copilot-instructions.md`, agent files | `docs-repo/AGENTS.md`, `docs-repo/.github/**` | the rendered versions here, your product name and context list | every hard rule; the never-open list; the safety section |
+| `migration/` owners and dates | `docs-repo/migration/all.md` (generated board) | the board, the team list | owner per context and the Run 4 dates |
+
+How to ask, in the CLI or the IDE, from the docs repo root:
+
+```text
+Draft domain/context-map.md for <product>. Evidence: contexts.yml, generated/graph/REPO_MAP.md, generated/be/events.md.
+Follow the structure of this file exactly: <paste or attach docs-repo/domain/context-map.md from the investigation repo>.
+Frontmatter status: draft, generated.by: copilot/architect. Where the evidence does not show a relationship, write
+"unknown" and add an open question; do not infer from names. Finish with ./scripts/okf-validate.ps1 -Strict.
+```
+
+Two documents must not be drafted by an agent: the safety section of `AGENTS.md` (section 0) and the content
+exclusion list. Write those yourself.
+
+---
+
+## 19. Several repositories in IntelliJ with the Copilot CLI agent
+
+The analyst's exception (17.2), the spec-writer's `file:line` reads and `doc-sync` all assume the code repositories are
+reachable from the docs repo as `../backend` and `../frontend`. Set it up once per machine.
+
+1. **Layout.** Clone side by side: `C:\work\<product>-docs`, `C:\work\<product>-backend`,
+   `C:\work\<product>-frontend`. The scripts use relative paths from the docs repo root; the collector takes the
+   paths as parameters, so other layouts work for the collector but not for the agents' conventions.
+2. **IntelliJ project.** Open the docs repo as the project. Attach the code repositories so they are visible in the
+   same window: `File > Open`, choose the backend folder, answer **Attach** in the dialog (not New Window); repeat
+   for the frontend. They appear as separate modules in the Project view and in Copilot's workspace. Do the same in
+   reverse for developers: code repo as project, docs repo attached.
+3. **Copilot plugin, CLI agent.** In the Copilot tool window select the CLI agent (preview; it must be enabled by a
+   Copilot Business or Enterprise administrator under editor preview features). Choose **workspace isolation** so the
+   agent writes into the checkout you see, not into a separate worktree; the hooks in `.github/hooks` then run on the
+   files you commit.
+4. **Directory access.** The CLI trusts the project folder. For the attached repositories either answer the trust
+   prompt when the agent first reaches `../backend`, or grant access up front in the chat with the slash commands:
+
+   ```text
+   /add-dir ../backend
+   /add-dir ../frontend
+   /list-dirs
+   ```
+
+   `/add-dir` also loads that repository's `.github/skills` and `.github/agents`, which is what you want: the
+   backend's `code-reader` and `docs-tagger` agents become available from the docs repo session. The equivalent for a
+   terminal or headless run is `--add-dir ../backend --add-dir ../frontend`; `/cwd` changes the working directory
+   inside a session when a prompt must run from a code repo root.
+5. **Verify** with one question that needs both sides: "which backend class implements spec <ID> and which frontend
+   hook calls its endpoint" should be answered from `generated/graph/<community>.md` without a permission prompt;
+   then "show me the file:line the pack names for open question 1" should open the range in the attached repo.
+6. **What to expect to change.** The CLI agent in JetBrains is a public preview; the plugin manages the working
+   directory and the isolation mode, and the plugin release notes are the place to confirm whether `/add-dir` and
+   trust prompts behave as in the terminal. Keep step 4 as the fallback: it is documented for the CLI itself and the
+   plugin runs the same CLI.
+
+Sources: GitHub changelog, "Introducing Copilot CLI agent and unified sessions view in GitHub Copilot for JetBrains
+IDEs" (2026-05-13); GitHub Docs, Copilot CLI command reference (`/add-dir`, `/list-dirs`, `/cwd`, `--add-dir`).
