@@ -59,7 +59,7 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
 | Validate bundle | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
 | Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |
 | Graph | `python3 scripts/gen-graph.py [--check]`; `python3 scripts/graph-query.py --node spec:P1-001 --depth 2` / `--files <paths>` / `--find <text>` |
-| Changed code -> specs | `git -C ../backend diff --name-only main | % { "be/$_" } | python3 scripts/map-paths.py` |
+| Changed code -> specs | `git -C ../backend diff --name-only main | sed 's#^#be/#' | python3 scripts/map-paths.py` |
 | Analytics | `python3 scripts/coverage-matrix.py` (BR <-> story <-> scenario matrix into `generated/analytics/`) |
 
 Before finishing any edit: `okf-validate.py --strict`, `build-index.py`, and a dated entry in `log.md` for
