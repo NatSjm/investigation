@@ -131,16 +131,16 @@ status: stable
 - `endpoint:POST /api/v1/clients/{clientId}/sessions` -handled-by-> `class:SessionController`
 - `endpoint:POST /api/v1/sessions/{sessionId}/close` -handled-by-> `class:SessionController`
 - `endpoint:PUT /api/v1/sessions/{sessionId}/role` -handled-by-> `class:SessionController`
-- `spec:MTG-001` -implemented-by-> `class:MeetingManager` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:MeetingReportDao` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:MeetingSessionDao` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:RoleOverrideValidator` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:SessionClientConfigDao` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:SessionController` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:SessionEventsPublisher` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:SessionHeaderFilter` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:SessionScopeService` (-> docs)
-- `spec:MTG-001` -implemented-by-> `feature:meetings` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:MeetingManager` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:MeetingReportDao` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:MeetingSessionDao` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:RoleOverrideValidator` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:SessionClientConfigDao` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:SessionController` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:SessionEventsPublisher` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:SessionHeaderFilter` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:SessionScopeService` (-> docs)
+- `spec:SES-001` -implemented-by-> `feature:meetings` (-> docs)
 - `context:meetings` -owns-> `table:meeting_report`
 - `context:meetings` -owns-> `table:meeting_session`
 - `context:meetings` -owns-> `table:session_client_config`
@@ -160,4 +160,4 @@ status: stable
 - `component:SessionSummaryPage` -uses-> `hook:useCloseSession` (exact)
 
 ## Specs touching this community
-- `spec:MTG-001` - `features/meetings/MTG-001.md` - status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7
+- `spec:SES-001` - `features/meetings/SES-001.md` - status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7

@@ -178,7 +178,7 @@ stories:
       Change request on the implemented admin page (delta story; S1-S3 describe what already exists).
       When the administrator saves a value for a key that an OPEN session has copied into its
       parameter_snapshot, the page says so: the edit is stored, but those sessions keep working on the
-      snapshot (BR-ADM-001-9, MTG-001 BR-2). Scene set with the named dataset `mtg-session-snapshot`:
+      snapshot (BR-ADM-001-9, SES-001 BR-2). Scene set with the named dataset `ses-session-snapshot`:
       BOREAL-SYN has an open Product 1 session whose snapshot holds tariff.rate.NRL = 0.04 while the live
       value is already 0.045.
       Needs a contract change: the upsert response (or a new read) must carry the count of open sessions
@@ -187,7 +187,7 @@ stories:
     acceptance_criteria:
       - rule: BR-ADM-001-9
         gherkin: |
-          Given dataset "mtg-session-snapshot" is loaded
+          Given dataset "ses-session-snapshot" is loaded
           And I am logged in as admin
           When the admin saves tariff.rate for product group product1 and country NRL with value 0.05
           Then the response status is 200
@@ -195,7 +195,7 @@ stories:
           And the parameter page shows the warning "1 open session keeps its snapshot of tariff.rate"
       - rule: BR-ADM-001-9
         gherkin: |
-          Given dataset "mtg-session-snapshot" is loaded
+          Given dataset "ses-session-snapshot" is loaded
           When the admin saves tariff.rate for product group product1 and country NRL with value 0.05
           Then the projection of session "11111111-1111-4111-8111-222222222222" is unchanged
       - rule: BR-ADM-001-4
@@ -214,7 +214,7 @@ stories:
         estimate_hours: 3
       - summary: "[FE] ParameterRow: show the warning returned by useUpsertParameter after save"
         estimate_hours: 3
-      - summary: "[BE] Integration test on dataset mtg-session-snapshot: 1 session for tariff.rate/NRL, 0 after the session is closed"
+      - summary: "[BE] Integration test on dataset ses-session-snapshot: 1 session for tariff.rate/NRL, 0 after the session is closed"
         estimate_hours: 3
 
 questions:

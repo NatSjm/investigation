@@ -49,7 +49,7 @@ status: stable
 - 7.66 `context:admin` [admin] deg 10 - `core/src/main/kotlin/harbor/manager/AdminManager.kt`
 - 7.53 `spec:MKT-001` [docs] deg 11 - `features/market/MKT-001.md`
 - 7.48 `feature:reports` [reports] deg 9 - `src/features/reports/index.ts`
-- 7.14 `spec:MTG-001` [docs] deg 12 - `features/meetings/MTG-001.md`
+- 7.14 `spec:SES-001` [docs] deg 12 - `features/meetings/SES-001.md`
 - 7.03 `spec:P1-001` [docs] deg 13 - `features/product1/P1-001.md`
 - 7.03 `spec:P1-002` [docs] deg 13 - `features/product1/P1-002.md`
 - 7.03 `spec:P1-003` [docs] deg 13 - `features/product1/P1-003.md`
@@ -168,7 +168,6 @@ status: stable
 - `spec:IMP-001`: code only - no spec file in docs repo (be core/src/main/kotlin/harbor/manager/ImportManager.kt:19)
 - `spec:MKT-001`: spec + code (status draft; be core/src/main/kotlin/harbor/manager/MarketManager.kt:22; fe src/features/market/api/useBaselinePrices.ts:11; fe src/features/market/api/useScenarios.ts:10; fe src/features/market/api/useScenarios.ts:24; fe src/features/market/index.ts:6; fe src/features/market/market.types.ts:11)
 - `spec:monthly_projection`: spec + code (status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36)
-- `spec:MTG-001`: spec + code (status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7)
 - `spec:P1-001`: spec + code (status draft; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18)
 - `spec:P1-002`: spec + code (status draft; be core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:19; fe src/features/product1/api/useProduct1Movements.ts:11)
 - `spec:P1-003`: spec + code (status draft; be core/src/main/kotlin/harbor/service/PeerSimulationService.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11)
@@ -179,5 +178,6 @@ status: stable
 - `spec:PRS-001`: spec + code (status draft; fe src/app/PresentationLayout.tsx:13; fe src/features/presentation/channel.ts:16; fe src/features/presentation/channel.ts:55; fe src/features/presentation/channel.ts:95; fe src/features/presentation/index.ts:6; fe src/features/presentation/presentation.types.ts:9; fe src/features/presentation/ui/PresentationPage.tsx:20; fe src/features/presentation/ui/ProductMirror.tsx:21; fe src/features/presentation/ui/ScenariosMirror.tsx:9; fe src/features/presentation/ui/StressMirror.tsx:14)
 - `spec:RPT-001`: spec + code (status draft; be core/src/main/kotlin/harbor/manager/ReportManager.kt:27; fe src/features/reports/api/useDownloadReportPdf.ts:10; fe src/features/reports/api/useReport.ts:12; fe src/features/reports/api/useReport.ts:28; fe src/features/reports/index.ts:6; fe src/features/reports/reports.types.ts:9)
 - `spec:scenario_price_path`: spec + code (status draft; be core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19)
+- `spec:SES-001`: spec + code (status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7)
 - `spec:STR-001`: spec + code (status draft; be core/src/main/kotlin/harbor/manager/StressManager.kt:31; fe src/features/stress/api/useRunStressTest.ts:11; fe src/features/stress/api/useStressTest.ts:11; fe src/features/stress/index.ts:6; fe src/features/stress/stress.types.ts:11)
 - `spec:stress_test_monthly`: spec + code (status stable; be core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23)

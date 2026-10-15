@@ -32,7 +32,7 @@ import java.util.UUID
  * `harbor.meetings.session-closed`, which triggers the report and the role override propagation.
  * Session-scoped endpoints (`/session` sub-paths) rely on `SessionHeaderFilter` and `SessionContext`, not on this manager.
  *
- * @docs MTG-001
+ * @docs SES-001
  */
 @Service
 class MeetingManager(

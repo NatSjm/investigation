@@ -1,7 +1,7 @@
 /**
  * View-model types for meeting sessions. Aliases of `Session`, `CreateSessionRequest`, `SessionCreated` and
  * `RoleOverrideRequest` from the backend contract (`meetings` module, `SessionController`); `SessionFilter` is FE-only.
- * @docs MTG-001
+ * @docs SES-001
  */
 import type { components } from '@/api/generated/schema';
 

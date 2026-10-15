@@ -10,7 +10,7 @@
 
 contexts:
   clients:  { spec: CLI, fe: clients,  be: [Client, Role] }
-  meetings: { spec: MTG, fe: meetings, be: [Session, Meeting, RoleOverride, SessionClientConfig] }
+  meetings: { spec: SES, fe: meetings, be: [Session, Meeting, RoleOverride, SessionClientConfig] }
   imports:  { spec: IMP, fe: "",       be: [Import, FileExchange, Movement, Movements, GoodsMovement, Xls, Workbook, DailyMovement, MonthlySnapshot] }
   product1: { spec: P1,  fe: product1, be: [Product1, Projection, Peer, MovementInput, SessionMovementInput, SessionPeerSimulation] }
   product2: { spec: P2,  fe: product2, be: [Product2] }

@@ -4,7 +4,7 @@ import type { Session, SessionFilter } from '../meetings.types';
 
 /**
  * Session list for the Meetings page (`listSessions`), filterable by client, status and kind.
- * @docs MTG-001
+ * @docs SES-001
  */
 export function useSessions(filter: SessionFilter = {}) {
   return useQuery<Session[]>({
@@ -15,7 +15,7 @@ export function useSessions(filter: SessionFilter = {}) {
 
 /**
  * One session by id (`getSession`); used by `SessionLayout` to populate the session store.
- * @docs MTG-001
+ * @docs SES-001
  */
 export function useSession(sessionId: string) {
   return useQuery<Session>({

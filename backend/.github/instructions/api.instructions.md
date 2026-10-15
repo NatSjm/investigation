@@ -17,4 +17,4 @@ description: "Contract-first REST API: edit openapi/harbor-api.yaml first, regen
 5. **Maps.** Run `scripts/docs/gen-all.py`; `api-index.md` lists operations from `harbor-api.yaml` joined to the `override fun`
    implementation - an operation without implementation shows as `_not implemented_` and must not be left that way.
 6. Errors: RFC 7807 `application/problem+json` via `advice/GlobalExceptionAdvice`; no controller-local error formats.
-7. Cite the spec ID (`P1-001`, `MTG-001`, ...) in the manager KDoc (`@docs`) and in the change description.
+7. Cite the spec ID (`P1-001`, `SES-001`, ...) in the manager KDoc (`@docs`) and in the change description.

@@ -36,16 +36,6 @@ status: stable
 | `MKT-001` | `export function useScenarioMutations()` | Create / update / delete scenarios (`createScenario`, `updateScenario`, `deleteScenario`). | `src/features/market/api/useScenarios.ts:24` |
 | `MKT-001` | `(module) index.ts` | Market scenarios of a session: price and transport price shocks on top of the baseline curve, with live path preview. | `src/features/market/index.ts:6` |
 | `MKT-001` | `export type Shock` | View-model types for market scenarios. Aliases of `Scenario`, `ScenarioInput`, `Shock` and `BaselinePrices` | `src/features/market/market.types.ts:11` |
-| `MTG-001` | `export function useCloseSession(sessionId: string)` | Closes a meeting session (`closeSession`). The backend stores the report payload and emits | `src/features/meetings/api/useCloseSession.ts:12` |
-| `MTG-001` | `export function useCreateSession(clientId: string)` | Creates a meeting session for a client and product group (`createSession`). | `src/features/meetings/api/useCreateSession.ts:11` |
-| `MTG-001` | `export function useRoleOverride(sessionId: string)` | Manual role override during a meeting (`setRoleOverride`): replaces the algorithm result | `src/features/meetings/api/useRoleOverride.ts:10` |
-| `MTG-001` | `export function useSession(sessionId: string)` | One session by id (`getSession`); used by `SessionLayout` to populate the session store. | `src/features/meetings/api/useSessions.ts:20` |
-| `MTG-001` | `export function useSessions(filter: SessionFilter` | Session list for the Meetings page (`listSessions`), filterable by client, status and kind. | `src/features/meetings/api/useSessions.ts:9` |
-| `MTG-001` | `(module) index.ts` | Meeting session lifecycle: create CLIENT or PREPARATION sessions, list and close them, override the client role, show the session summary. | `src/features/meetings/index.ts:6` |
-| `MTG-001` | `export interface SessionFilter` | View-model types for meeting sessions. Aliases of `Session`, `CreateSessionRequest`, `SessionCreated` and | `src/features/meetings/meetings.types.ts:25` |
-| `MTG-001` | `export function ClientMeetingsPage()` | `/meetings/client` - sessions of kind `CLIENT` (real meetings), with status filter and PDF download for closed ones. | `src/features/meetings/ui/ClientMeetingsPage.tsx:7` |
-| `MTG-001` | `export function MeetingsListPage(` | Fixed session kind of the page (`ClientMeetingsPage`, `PreparationSessionsPage`); the kind filter is hidden then. */ | `src/features/meetings/ui/MeetingsListPage.tsx:44` |
-| `MTG-001` | `export function PreparationSessionsPage()` | `/meetings/preparation` - sessions of kind `PREPARATION` (dry runs by the representative), same list and actions. | `src/features/meetings/ui/PreparationSessionsPage.tsx:7` |
 | `P1-001` | `export function useProduct1Overview(city?: string)` | Product 1 overview (`getProduct1Overview`): the four projection tables filtered by city hub | `src/features/product1/api/useProduct1Overview.ts:11` |
 | `P1-001` | `export function useProduct1Projection()` | Product 1 projection only (`getProduct1Projection`): the four tables without chart series, | `src/features/product1/api/useProduct1Overview.ts:26` |
 | `P1-001` | `(module) index.ts` | Product 1 overview per city hub: the four cumulative projection tables, cover ratio chart, movement input and peer simulation modals. | `src/features/product1/index.ts:6` |
@@ -73,6 +63,16 @@ status: stable
 | `RPT-001` | `export function useRegenerateReport(sessionId: string)` | Requests a fresh render of the report (`regenerateReport`), e.g. after a failed document-service run. | `src/features/reports/api/useReport.ts:28` |
 | `RPT-001` | `(module) index.ts` | Meeting report of a closed session: payload preview, PDF download and regeneration. | `src/features/reports/index.ts:6` |
 | `RPT-001` | `export type Report` | View-model types for meeting reports. Alias of `Report` from the contract | `src/features/reports/reports.types.ts:9` |
+| `SES-001` | `export function useCloseSession(sessionId: string)` | Closes a meeting session (`closeSession`). The backend stores the report payload and emits | `src/features/meetings/api/useCloseSession.ts:12` |
+| `SES-001` | `export function useCreateSession(clientId: string)` | Creates a meeting session for a client and product group (`createSession`). | `src/features/meetings/api/useCreateSession.ts:11` |
+| `SES-001` | `export function useRoleOverride(sessionId: string)` | Manual role override during a meeting (`setRoleOverride`): replaces the algorithm result | `src/features/meetings/api/useRoleOverride.ts:10` |
+| `SES-001` | `export function useSession(sessionId: string)` | One session by id (`getSession`); used by `SessionLayout` to populate the session store. | `src/features/meetings/api/useSessions.ts:20` |
+| `SES-001` | `export function useSessions(filter: SessionFilter` | Session list for the Meetings page (`listSessions`), filterable by client, status and kind. | `src/features/meetings/api/useSessions.ts:9` |
+| `SES-001` | `(module) index.ts` | Meeting session lifecycle: create CLIENT or PREPARATION sessions, list and close them, override the client role, show the session summary. | `src/features/meetings/index.ts:6` |
+| `SES-001` | `export interface SessionFilter` | View-model types for meeting sessions. Aliases of `Session`, `CreateSessionRequest`, `SessionCreated` and | `src/features/meetings/meetings.types.ts:25` |
+| `SES-001` | `export function ClientMeetingsPage()` | `/meetings/client` - sessions of kind `CLIENT` (real meetings), with status filter and PDF download for closed ones. | `src/features/meetings/ui/ClientMeetingsPage.tsx:7` |
+| `SES-001` | `export function MeetingsListPage(` | Fixed session kind of the page (`ClientMeetingsPage`, `PreparationSessionsPage`); the kind filter is hidden then. */ | `src/features/meetings/ui/MeetingsListPage.tsx:44` |
+| `SES-001` | `export function PreparationSessionsPage()` | `/meetings/preparation` - sessions of kind `PREPARATION` (dry runs by the representative), same list and actions. | `src/features/meetings/ui/PreparationSessionsPage.tsx:7` |
 | `STR-001` | `export function useRunStressTest()` | Recomputes the stress test for all scenarios of the session (`runStressTest`, calculation | `src/features/stress/api/useRunStressTest.ts:11` |
 | `STR-001` | `export function useStressTest(dimension: Dimension)` | Stress test results of the session (`getStressTest`) for one dimension (`CITY` \| `TRANSPORT_MODE`). | `src/features/stress/api/useStressTest.ts:11` |
 | `STR-001` | `(module) index.ts` | Stress test per scenario: monthly exposure table by city or transport mode plus the transport price chart. | `src/features/stress/index.ts:6` |

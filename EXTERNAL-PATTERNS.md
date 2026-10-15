@@ -31,7 +31,7 @@ read them (too long, wrong repo). Distil each context into one short checklist t
 automatically:
 
 - `docs-repo/distilled/<context>.md`: 30-80 imperative lines ("DO NOT round before summing (BR-P1-001-4)",
-  "Use `X-Harbor-Session` on every session endpoint (MTG-001)"), each line traceable to a BR, a calculation
+  "Use `X-Harbor-Session` on every session endpoint (SES-001)"), each line traceable to a BR, a calculation
   concept or an ADR; nothing that is not checkable in code; US/UK spelling fixed; size budget enforced.
 - Published into the code repos as `.github/instructions/<context>.instructions.md` with
   `applyTo: "**/harbor/**/{Product1,Projection,Peer}*.kt"` (BE, prefixes from `contexts.yml`) and

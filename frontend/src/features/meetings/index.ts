@@ -1,7 +1,7 @@
 /**
  * @module meetings — Meeting session lifecycle: create (CLIENT / PREPARATION), list, close, role override, session summary.
  * Meeting session lifecycle: create CLIENT or PREPARATION sessions, list and close them, override the client role, show the session summary.
- * @docs MTG-001
+ * @docs SES-001
  */
 export { MeetingsListPage } from './ui/MeetingsListPage';
 export { ClientMeetingsPage } from './ui/ClientMeetingsPage';

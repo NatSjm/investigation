@@ -7,7 +7,7 @@ import type { Session } from '../meetings.types';
  * Closes a meeting session (`closeSession`). The backend stores the report payload and emits
  * `session-closed`, which triggers PDF rendering and the role override write-back.
  * Also tells an open client screen that the session is over (`session-closed` on the presentation channel).
- * @docs MTG-001
+ * @docs SES-001
  */
 export function useCloseSession(sessionId: string) {
   const queryClient = useQueryClient();

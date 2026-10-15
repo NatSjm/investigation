@@ -6,7 +6,7 @@ import type { CreateSessionRequest, CreateSessionResponse } from '../meetings.ty
  * Creates a meeting session for a client and product group (`createSession`).
  * `kind = CLIENT` for a real meeting, `PREPARATION` for a dry run by the representative.
  * Resolves with the new `sessionId`; the caller stores it and navigates into the session.
- * @docs MTG-001
+ * @docs SES-001
  */
 export function useCreateSession(clientId: string) {
   const queryClient = useQueryClient();

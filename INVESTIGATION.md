@@ -45,7 +45,7 @@ flowchart LR
 ### 3.1 Content model
 - **`features/<ctx>/<ID>.md`** - functional spec with YAML frontmatter (id, context, status, `code_refs`, api, events,
   tables, calculations, jira, tests, `last_verified`, `stale_after`, `lang`, `source_lang`, `aliases`). Numbered business
-  rules `BR-<ID>-n` are the traceability atoms cited by stories and test scenarios. Prefixes: `CLI MTG IMP P1 P2 COV MKT STR RPT ADM`.
+  rules `BR-<ID>-n` are the traceability atoms cited by stories and test scenarios. Prefixes: `CLI SES IMP P1 P2 COV MKT STR RPT ADM`.
 - **`domain/calculations/*.md`** - formula + conventions (month grid, rounding `HALF_EVEN`, scale, sign conventions) +
   **worked examples copied from the BE unit tests**. The key asset for a computation-heavy app: once written, analysts,
   testers and agents never open Kotlin; the `calc-auditor` keeps it true (§3.7).
@@ -306,7 +306,7 @@ names, values or identifiers. Everything is standard-library Python 3.11+; nothi
 ### 8.2 Docs repo (`docs-repo/`)
 | Item | State |
 |---|---|
-| Specs | `CLI-001`, `MTG-001`, `P1-001` stable (human-reviewed); `STR-001` draft whose legacy page contradicts the code; `MKT-001`, `RPT-001` skeletons; `P2-001`, `COV-001`, `IMP-001`, `ADM-001` **deliberately missing** (`code only` in `REPO_MAP.md`) |
+| Specs | `CLI-001`, `SES-001`, `P1-001` stable (human-reviewed); `STR-001` draft whose legacy page contradicts the code; `MKT-001`, `RPT-001` skeletons; `P2-001`, `COV-001`, `IMP-001`, `ADM-001` **deliberately missing** (`code only` in `REPO_MAP.md`) |
 | Calculations | `client_role_classification`, `monthly_projection`, `stress_test_monthly` with worked examples; `cover_ratio`, `scenario_price_path` draft; `peer_benchmark_simulation` missing on purpose |
 | Legacy pages | `confluence-import/HARBOR/stress-test-calculation.md` **deliberately outdated** (threshold, missing transport delta); two partly correct pages |
 | Worked examples | `work-items/P1-001.yml`, `test-design/features/STR-001.feature` + fixture; `generated/analytics/coverage-matrix.md` |

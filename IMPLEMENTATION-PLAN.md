@@ -50,7 +50,7 @@ page to audit), repo names.
 3. Keep: `index.md`, `log.md`, `architecture/`, `domain/glossary.md` (with its `Aliases` column), `domain/context-map.md`,
    `features/conventions.md`, `work-items/_schema.yml`, `test-design/README.md`, `docs-map.yml`, `.github/**`, `scripts/**`,
    `third-party/**` (licences), `.gitignore` (`.context/`, `.publish/`).
-4. Sample content (`features/*/CLI-001|MTG-001|P1-001|STR-001|MKT-001|RPT-001.md`, `domain/calculations/*.md`,
+4. Sample content (`features/*/CLI-001|SES-001|P1-001|STR-001|MKT-001|RPT-001.md`, `domain/calculations/*.md`,
    `work-items/P1-001.yml`, `test-design/features/STR-001.feature`, `confluence-import/HARBOR/*`): keep until your pilot
    spec, work items and audit exist (they are the worked examples the agents and skills quote), then delete.
 5. Run locally: `scripts/okf-validate.py --strict`, `scripts/build-index.py`, `scripts/validate-frontmatter.py`,
@@ -244,7 +244,7 @@ Jira subtasks produced in < 10 minutes per story with no source files read, ever
 
 ### Fixtures to test against before touching the real repos
 The simulated repos `backend/` and `frontend/` (naming contract `BLUEPRINT.md`): layered BE (`core` + `kafka_client` in `pom.xml`, 10 contexts by class-name prefix in `contexts.yml`),
-34 operations in `core/src/main/resources/openapi/harbor-api.yaml`, 5 topics, 5 external contracts, 9 FE feature folders; specs `CLI-001` / `MTG-001` / `P1-001`
+34 operations in `core/src/main/resources/openapi/harbor-api.yaml`, 5 topics, 5 external contracts, 9 FE feature folders; specs `CLI-001` / `SES-001` / `P1-001`
 stable, `STR-001` draft with a deliberately outdated legacy page, `MKT-001` / `RPT-001` skeletons, `P2-001` / `COV-001` /
 `IMP-001` / `ADM-001` deliberately missing. Run every generator, the publish, the graph joiner, the packs and the coverage
 matrix here (`README.md` "Try it"); counts and spec coverage: see `docs-repo/generated/graph/REPO_MAP.md`. Then exercise the agents on

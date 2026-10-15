@@ -39,7 +39,7 @@ export interface MeetingsListPageProps {
 /**
  * Shared session list with filters; closed sessions expose the report PDF download.
  * Rendered by `/meetings/client` (kind CLIENT) and `/meetings/preparation` (kind PREPARATION).
- * @docs MTG-001
+ * @docs SES-001
  */
 export function MeetingsListPage({ kind, title = 'Meetings' }: MeetingsListPageProps) {
   const [params, setParams] = useSearchParams();

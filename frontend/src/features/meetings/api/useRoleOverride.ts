@@ -5,7 +5,7 @@ import type { RoleOverrideRequest, Session } from '../meetings.types';
 /**
  * Manual role override during a meeting (`setRoleOverride`): replaces the algorithm result
  * (`client_role_classification`) for this session with a reason; written back on session close.
- * @docs MTG-001
+ * @docs SES-001
  */
 export function useRoleOverride(sessionId: string) {
   const queryClient = useQueryClient();

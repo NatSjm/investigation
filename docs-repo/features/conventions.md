@@ -25,7 +25,7 @@ old rule keeps its number with the text "withdrawn, moved to BR-<new>".
 | Context | Prefix | Folder | BE class-name prefixes (`contexts.yml`) / FE feature |
 |---|---|---|---|
 | Clients | `CLI` | `clients/` | `Client*` / `clients` |
-| Meetings | `MTG` | `meetings/` | `Session*`, `Meeting*`, `RoleOverride*` / `meetings` |
+| Meetings | `SES` | `meetings/` | `Session*`, `Meeting*`, `RoleOverride*` / `meetings` |
 | Imports | `IMP` | `imports/` | `Import*`, `Movement*`, `GoodsMovement*`, `Xls*`, `Workbook*`, `DailyMovement*`, `MonthlySnapshot*` / — |
 | Product 1 | `P1` | `product1/` | `Product1*`, `Projection*`, `Peer*`, `MovementInput*` / `product1` |
 | Product 2 | `P2` | `product2/` | `Product2*` / `product2` |

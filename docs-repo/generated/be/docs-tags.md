@@ -24,7 +24,6 @@ status: stable
 | `IMP-001` | `class ImportManager(` | Daily XLS movement import and monthly snapshot (entry point of `DailyMovementImportJob` and `MonthlySnapshotJob`). | `core/src/main/kotlin/harbor/manager/ImportManager.kt:19` |
 | `MKT-001` | `class MarketManager(` | Market scenarios of the current session (create / update / delete, with shocks validated against the | `core/src/main/kotlin/harbor/manager/MarketManager.kt:22` |
 | `monthly_projection` | `object ProjectionAggregator` | Monthly projection: values every movement row of a session over the planning horizon and groups the | `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36` |
-| `MTG-001` | `class MeetingManager(` | Meeting session lifecycle: create (CLIENT or PREPARATION), list, read, manual role override and close. | `core/src/main/kotlin/harbor/manager/MeetingManager.kt:38` |
 | `P1-001` | `class Product1Manager(` | Product 1 overview page of the current session: the four cumulative projection tables (by sub-product, | `core/src/main/kotlin/harbor/manager/Product1Manager.kt:27` |
 | `P1-002` | `class MovementInputValidator` | Rules for the modelled movements of the movement modal (`putProduct1Movements`, `putProduct2Movements`): | `core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:19` |
 | `P1-003` | `class PeerSimulationService(` | Peer simulation modal (modal 2, calculation `peer_benchmark_simulation`): median monthly quantity of the | `core/src/main/kotlin/harbor/service/PeerSimulationService.kt:27` |
@@ -34,5 +33,6 @@ status: stable
 | `peer_benchmark_simulation` | `object PeerBenchmark` | Peer benchmark simulation (modal 2 on the product pages): models the movements of similar products | `core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19` |
 | `RPT-001` | `class ReportManager(` | Meeting report: builds the JSON payload from the projection tables, `stress_test_result` and the scenarios | `core/src/main/kotlin/harbor/manager/ReportManager.kt:27` |
 | `scenario_price_path` | `object ScenarioPricePath` | Scenario price path: applies the shocks of a market scenario to a baseline curve. | `core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19` |
+| `SES-001` | `class MeetingManager(` | Meeting session lifecycle: create (CLIENT or PREPARATION), list, read, manual role override and close. | `core/src/main/kotlin/harbor/manager/MeetingManager.kt:38` |
 | `STR-001` | `class StressManager(` | Stress test of the current session: runs calculation `stress_test_monthly` for every scenario of the | `core/src/main/kotlin/harbor/manager/StressManager.kt:31` |
 | `stress_test_monthly` | `object StressTestCalculator` | Monthly stress test per scenario and dimension value (city for Product 1, transport mode for Product 2). | `core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23` |

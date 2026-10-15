@@ -2,7 +2,7 @@ import { MeetingsListPage } from './MeetingsListPage';
 
 /**
  * `/meetings/client` - sessions of kind `CLIENT` (real meetings), with status filter and PDF download for closed ones.
- * @docs MTG-001
+ * @docs SES-001
  */
 export function ClientMeetingsPage() {
   return <MeetingsListPage kind="CLIENT" title="Client meetings" />;

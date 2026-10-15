@@ -18,7 +18,7 @@ Runs due: skeleton 2, legacy merge 2, calculation 4, owner decision 14. Contexts
 | Context | Spec prefix | Specs | Calculations | Legacy pages pending | State |
 |---|---|---|---|---|---|
 | clients | CLI | `CLI-001` (stable, verified) | `client_role_classification` (stable, unaudited) | 0 | 1 run(s) due |
-| meetings | MTG | `MTG-001` (stable, verified) | none | 1 | 1 run(s) due |
+| meetings | SES | `SES-001` (stable, verified) | none | 1 | 1 run(s) due |
 | imports | IMP | none | none | 0 | 1 run(s) due |
 | product1 | P1 | `P1-001` (draft), `P1-002` (draft), `P1-003` (draft) | `horizon_totals` (draft), `monthly_projection` (draft), `peer_benchmark_simulation` (draft); uses `cover_ratio` | 0 | 6 run(s) due |
 | product2 | P2 | `P2-001` (draft), `P2-002` (draft), `P2-003` (draft) | none; uses `cover_ratio`, `horizon_totals`, `monthly_projection`, `peer_benchmark_simulation` | 0 | 3 run(s) due |
@@ -39,7 +39,7 @@ Spec prefix `CLI`; BE class prefixes `Client`, `Role`; FE feature `src/features/
 
 ## meetings
 
-Spec prefix `MTG`; BE class prefixes `Session`, `Meeting`, `RoleOverride`, `SessionClientConfig`; FE feature `src/features/meetings`. Graph: `generated/graph/meetings.md`.
+Spec prefix `SES`; BE class prefixes `Session`, `Meeting`, `RoleOverride`, `SessionClientConfig`; FE feature `src/features/meetings`. Graph: `generated/graph/meetings.md`.
 
 - [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/meeting-flow.md` (last_modified 2025-09-02, status imported): `@confluence-migrator confluence-import/HARBOR/meeting-flow.md`
 

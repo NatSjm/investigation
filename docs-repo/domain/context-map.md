@@ -22,7 +22,7 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
 | Context | Spec prefix | BE class-name prefixes | Backend entry point | FE feature / routes | Specs |
 |---|---|---|---|---|---|
 | clients | `CLI` | `Client` | `manager/ClientManager.kt` | `clients`: `/clients`, `/clients/:clientId` | [CLI-001](/features/clients/CLI-001.md) |
-| meetings | `MTG` | `Session`, `Meeting`, `RoleOverride`, `SessionClientConfig` | `manager/MeetingManager.kt` | `meetings`: `/meetings`, `/session/:sessionId/summary` | [MTG-001](/features/meetings/MTG-001.md) |
+| meetings | `SES` | `Session`, `Meeting`, `RoleOverride`, `SessionClientConfig` | `manager/MeetingManager.kt` | `meetings`: `/meetings`, `/session/:sessionId/summary` | [SES-001](/features/meetings/SES-001.md) |
 | imports | `IMP` | `Import`, `Movement`, `Movements`, `GoodsMovement`, `Xls`, `Workbook`, `DailyMovement`, `MonthlySnapshot` | `manager/ImportManager.kt` | — (jobs; monitored via admin) | missing (`IMP-001` backlog) |
 | product1 | `P1` | `Product1`, `Projection`, `Peer`, `MovementInput`, `SessionMovementInput`, `SessionPeerSimulation` | `manager/Product1Manager.kt` | `product1`: `/session/:sessionId/product1` | [P1-001](/features/product1/P1-001.md) (screen), [P1-002](/features/product1/P1-002.md), [P1-003](/features/product1/P1-003.md) (modals) |
 | product2 | `P2` | `Product2` | `manager/Product2Manager.kt` | `product2`: `/session/:sessionId/product2` | [P2-001](/features/product2/P2-001.md), [P2-002](/features/product2/P2-002.md), [P2-003](/features/product2/P2-003.md) (mirrors of P1, draft) |
@@ -49,8 +49,8 @@ flowchart LR
     MKT[market · MKT]
     STR[stress · STR]
   end
-  CLI[clients · CLI] -- "selects product group → createSession" --> MTG[meetings · MTG]
-  MTG -- "session context" --> session
+  CLI[clients · CLI] -- "selects product group → createSession" --> SES[meetings · SES]
+  SES -- "session context" --> session
   IMP[imports · IMP] -- "harbor.imports.movements-loaded" --> P1
   IMP -- "harbor.imports.movements-loaded" --> P2
   IMP -- "movement_monthly (12 months)" --> CLI
@@ -60,10 +60,10 @@ flowchart LR
   MKT -- "scenario price paths" --> STR
   P1 -- "projection by dimension" --> STR
   P2 -- "projection by dimension" --> STR
-  MTG -- "harbor.meetings.session-closed" --> RPT[reports · RPT]
-  MTG -- "harbor.meetings.session-closed (roleOverride)" --> CLI
+  SES -- "harbor.meetings.session-closed" --> RPT[reports · RPT]
+  SES -- "harbor.meetings.session-closed (roleOverride)" --> CLI
   session -- "report payload" --> RPT
-  ADM[admin · ADM] -. "parameter_set snapshot" .-> MTG
+  ADM[admin · ADM] -. "parameter_set snapshot" .-> SES
   ADM -. "import batches" .-> IMP
   EXT[External services] -. "client-registry" .-> CLI
   EXT -. "market-data (prices-updated)" .-> MKT

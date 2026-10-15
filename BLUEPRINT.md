@@ -93,7 +93,7 @@ Layers in `core/src/main/kotlin/harbor/` (folder = package `harbor.<layer>`):
 | `event` | Kafka listeners and publishers (topics + payloads come from `kafka_client`) | `MovementsLoadedPublisher`, `SessionEventsPublisher`, `ReportRenderRequester`, `Product1ProjectionRefreshListener`, `Product2ProjectionRefreshListener`, `MarketPricesListener`, `ReportSessionClosedListener`, `ClientRoleSessionClosedListener`, `ReportRenderedListener` |
 | `exception` | exceptions | `NotFoundException`, `SessionHeaderMissingException`, `SessionClosedException`, `ValidationException` |
 | `job` | `@Scheduled` jobs | `DailyMovementImportJob` (`0 0 2 * * *`), `MonthlySnapshotJob` (`0 0 3 1 * *`) |
-| `manager` | orchestration per bounded context, transactional boundary, KDoc + `@docs <spec ID>` (the entry point an agent reads first) | `ClientManager` (CLI-001), `MeetingManager` (MTG-001), `ImportManager` (IMP-001), `Product1Manager` (P1-001), `Product2Manager` (P2-001), `CoverManager` (COV-001), `MarketManager` (MKT-001), `StressManager` (STR-001), `ReportManager` (RPT-001), `AdminManager` (ADM-001) |
+| `manager` | orchestration per bounded context, transactional boundary, KDoc + `@docs <spec ID>` (the entry point an agent reads first) | `ClientManager` (CLI-001), `MeetingManager` (SES-001), `ImportManager` (IMP-001), `Product1Manager` (P1-001), `Product2Manager` (P2-001), `CoverManager` (COV-001), `MarketManager` (MKT-001), `StressManager` (STR-001), `ReportManager` (RPT-001), `AdminManager` (ADM-001) |
 | `mapper` | entity/DTO mappers | `ClientMapper`, `SessionMapper`, `ProjectionMapper`, `CoverMapper`, `ScenarioMapper`, `StressMapper`, `ReportMapper`, `ParameterMapper` |
 | `model` | JPA entities and internal models | `ClientProfile`, `ClientRoleDecision`, `MeetingSession`, `SessionClientConfig`, `ImportBatch`, `GoodsMovement`, `MovementMonthly`, `SessionMovementInput`, `SessionPeerSimulation`, `ProjectionRow`, `CoverPolicy`, `CoverQuote`, `MarketScenario`, `BaselinePrice`, `StressTestResult`, `MeetingReport`, `Parameter` |
 | `service` | business services used by managers | `ClientRoleService`, `ClientOverviewService`, `SessionScopeService`, `MovementImportService`, `ProjectionService`, `PeerSimulationService`, `CoverRatioService`, `CoverQuoteService`, `ScenarioService`, `StressTestService`, `ReportPayloadService`, `ParameterService` |
@@ -227,7 +227,7 @@ is what the FE codebase map and the graph join on.
 
 ## 6. Docs repo (`docs-repo/`)
 
-Bounded contexts and spec ID prefixes (one per BE class-name prefix group in `contexts.yml` / FE feature): `clients=CLI`, `meetings=MTG`, `imports=IMP`, `product1=P1`,
+Bounded contexts and spec ID prefixes (one per BE class-name prefix group in `contexts.yml` / FE feature): `clients=CLI`, `meetings=SES`, `imports=IMP`, `product1=P1`,
 `product2=P2`, `cover=COV`, `market=MKT`, `stress=STR`, `reports=RPT`, `admin=ADM`.
 
 Deliberate state of the sample content (so the agents have real work to do):
@@ -235,7 +235,7 @@ Deliberate state of the sample content (so the agents have real work to do):
 | Artefact | State |
 |---|---|
 | `features/clients/CLI-001.md` Client search, overview and role classification | complete, `stable`, human-verified |
-| `features/meetings/MTG-001.md` Meeting session lifecycle and session header | complete, `stable` |
+| `features/meetings/SES-001.md` Meeting session lifecycle and session header | complete, `stable` |
 | `features/product1/P1-001.md` Product 1 overview: four projection tables, cover charts, movement and peer modals | complete, `stable` |
 | `features/stress/STR-001.md` Stress test per scenario and dimension | complete, `draft` (awaiting verification against code) |
 | `features/market/MKT-001.md` Market scenarios | draft skeleton with open questions |

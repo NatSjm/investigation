@@ -32,7 +32,7 @@ payload classes in `harbor.kafka.events`); producers and consumers live in the `
 |---|---|---|---|---|---|---|---|
 | `MOVEMENTS_LOADED` | `harbor.imports.movements-loaded` | `event/MovementsLoadedPublisher` | `event/Product1ProjectionRefreshListener`, `event/Product2ProjectionRefreshListener` | `MovementsLoadedEvent(batchId, clientIds, periodFrom, periodTo)` | `generated/asyncapi/backend.yaml#/channels/harbor.imports.movements-loaded` | IMP-001, P1-001, P2-001 | gen |
 | `PRICES_UPDATED` | `harbor.market.prices-updated` | external (`market-data`) | `event/MarketPricesListener` | `PricesUpdatedEvent(productGroup, corridor, asOf)` | `generated/asyncapi/backend.yaml#/channels/harbor.market.prices-updated` | MKT-001 | gen |
-| `SESSION_CLOSED` | `harbor.meetings.session-closed` | `event/SessionEventsPublisher` | `event/ReportSessionClosedListener`, `event/ClientRoleSessionClosedListener` | `SessionClosedEvent(sessionId, clientId, productGroup, kind, roleOverride?)` | `generated/asyncapi/backend.yaml#/channels/harbor.meetings.session-closed` | MTG-001, RPT-001, CLI-001 | gen |
+| `SESSION_CLOSED` | `harbor.meetings.session-closed` | `event/SessionEventsPublisher` | `event/ReportSessionClosedListener`, `event/ClientRoleSessionClosedListener` | `SessionClosedEvent(sessionId, clientId, productGroup, kind, roleOverride?)` | `generated/asyncapi/backend.yaml#/channels/harbor.meetings.session-closed` | SES-001, RPT-001, CLI-001 | gen |
 | `REPORT_RENDER_REQUESTED` | `harbor.reports.render-requested` | `event/ReportRenderRequester` | external (`document-service`) | `ReportRenderRequested(sessionId, payloadRef)` | `generated/asyncapi/backend.yaml#/channels/harbor.reports.render-requested` | RPT-001 | gen |
 | `REPORT_RENDERED` | `harbor.reports.rendered` | external (`document-service`) | `event/ReportRenderedListener` | `ReportRendered(sessionId, pdfPath)` | `generated/asyncapi/backend.yaml#/channels/harbor.reports.rendered` | RPT-001 | gen |
 
@@ -43,14 +43,14 @@ sequenceDiagram
   participant FX as file-exchange
   participant IMP as imports
   participant P1 as product1 / product2
-  participant MTG as meetings
+  participant SES as meetings
   participant RPT as reports
   participant CLI as clients
   participant DOC as document-service
   FX-->>IMP: GET /files?since (daily 02:00)
   IMP->>P1: harbor.imports.movements-loaded
-  MTG->>RPT: harbor.meetings.session-closed
-  MTG->>CLI: harbor.meetings.session-closed (roleOverride?)
+  SES->>RPT: harbor.meetings.session-closed
+  SES->>CLI: harbor.meetings.session-closed (roleOverride?)
   RPT->>DOC: harbor.reports.render-requested
   DOC->>RPT: harbor.reports.rendered
 ```
@@ -75,7 +75,7 @@ back-off on 5xx; `market-data` and `client-registry` responses are cached per co
 ## REST (inbound, own API)
 
 `generated/openapi/backend.yaml`[^openapi], server base `/api/v1`, tags = bounded contexts. Every `/session/**`
-path requires header `X-Harbor-Session` (`component/SessionHeaderFilter`, see [MTG-001](/features/meetings/MTG-001.md)).
+path requires header `X-Harbor-Session` (`component/SessionHeaderFilter`, see [SES-001](/features/meetings/SES-001.md)).
 
 | Context (tag) | operationIds |
 |---|---|

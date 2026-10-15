@@ -2885,18 +2885,6 @@
       "degree": 1
     },
     {
-      "id": "spec:MTG-001",
-      "kind": "spec",
-      "label": "MTG-001",
-      "community": "docs",
-      "repo": "docs",
-      "location": "features/meetings/MTG-001.md",
-      "note": "status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7",
-      "component": 1,
-      "rank": 7.14,
-      "degree": 12
-    },
-    {
       "id": "spec:P1-001",
       "kind": "spec",
       "label": "P1-001",
@@ -3015,6 +3003,18 @@
       "component": 1,
       "rank": 1.36,
       "degree": 1
+    },
+    {
+      "id": "spec:SES-001",
+      "kind": "spec",
+      "label": "SES-001",
+      "community": "docs",
+      "repo": "docs",
+      "location": "features/meetings/SES-001.md",
+      "note": "status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7",
+      "component": 1,
+      "rank": 7.14,
+      "degree": 12
     },
     {
       "id": "spec:STR-001",
@@ -6649,78 +6649,6 @@
       "source": "regex-map"
     },
     {
-      "from": "spec:MTG-001",
-      "to": "class:MeetingManager",
-      "rel": "implemented-by",
-      "source": "regex-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:MeetingReportDao",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:MeetingSessionDao",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:RoleOverrideValidator",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:SessionClientConfigDao",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:SessionController",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:SessionEventsPublisher",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:SessionHeaderFilter",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:SessionMovementInputDao",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:SessionPeerSimulationDao",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "class:SessionScopeService",
-      "rel": "implemented-by",
-      "source": "docs-map"
-    },
-    {
-      "from": "spec:MTG-001",
-      "to": "feature:meetings",
-      "rel": "implemented-by",
-      "source": "regex-map"
-    },
-    {
       "from": "spec:P1-001",
       "to": "class:MovementInputValidator",
       "rel": "implemented-by",
@@ -7107,6 +7035,78 @@
     {
       "from": "spec:scenario_price_path",
       "to": "class:ScenarioPricePath",
+      "rel": "implemented-by",
+      "source": "regex-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:MeetingManager",
+      "rel": "implemented-by",
+      "source": "regex-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:MeetingReportDao",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:MeetingSessionDao",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:RoleOverrideValidator",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:SessionClientConfigDao",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:SessionController",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:SessionEventsPublisher",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:SessionHeaderFilter",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:SessionMovementInputDao",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:SessionPeerSimulationDao",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "class:SessionScopeService",
+      "rel": "implemented-by",
+      "source": "docs-map"
+    },
+    {
+      "from": "spec:SES-001",
+      "to": "feature:meetings",
       "rel": "implemented-by",
       "source": "regex-map"
     },

@@ -18,7 +18,6 @@ stale_after: 2026-10-29T00:00:00Z
 | ADM-001 | admin | 11 | 9 (4 stories) | 0 (0 scenarios) | 4 | draft · unverified |  | 7, 8 | all |
 | CLI-001 | clients | 9 | 0 (0 stories) | 0 (0 scenarios) | 1 | human-reviewed | 2027-01-06T00:00:00Z | all | all |
 | MKT-001 | market | 3 | 0 (0 stories) | 0 (0 scenarios) | 3 | draft · unverified | 2027-01-07T00:00:00Z | all | all |
-| MTG-001 | meetings | 10 | 0 (0 stories) | 0 (0 scenarios) | 1 | human-reviewed | 2027-01-06T00:00:00Z | all | all |
 | P1-001 | product1 | 11 | 8 (4 stories) | 0 (0 scenarios) | 2 | draft · unverified | 2027-01-06T00:00:00Z | 5, 6, 7 | all |
 | P1-002 | product1 | 5 | 5 (2 stories) | 0 (0 scenarios) | 2 | draft · unverified | 2027-01-13T00:00:00Z | - | all |
 | P1-003 | product1 | 3 | 3 (1 stories) | 0 (0 scenarios) | 4 | draft · unverified | 2027-01-13T00:00:00Z | - | all |
@@ -27,6 +26,7 @@ stale_after: 2026-10-29T00:00:00Z
 | P2-003 | product2 | 3 | 0 (0 stories) | 0 (0 scenarios) | 1 | draft · unverified | 2027-01-13T00:00:00Z | all | all |
 | PRS-001 | presentation | 10 | 0 (0 stories) | 0 (0 scenarios) | 3 | draft · unverified | 2027-01-10T00:00:00Z | all | all |
 | RPT-001 | reports | 3 | 0 (0 stories) | 0 (0 scenarios) | 3 | draft · unverified | 2027-01-07T00:00:00Z | all | all |
+| SES-001 | meetings | 10 | 0 (0 stories) | 0 (0 scenarios) | 1 | human-reviewed | 2027-01-06T00:00:00Z | all | all |
 | STR-001 | stress | 8 | 0 (0 stories) | 6 (9 scenarios) | 2 | draft · unverified | 2027-01-07T00:00:00Z | all | 4, 7 |
 
 ## Calculations

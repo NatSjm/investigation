@@ -85,42 +85,6 @@
     ]
   },
   {
-    "id": "MTG-001",
-    "context": "meetings",
-    "rules": 10,
-    "rulesWithStory": 0,
-    "rulesWithScenario": 0,
-    "stories": 0,
-    "scenarios": 0,
-    "openQuestions": 1,
-    "badge": "human-reviewed",
-    "staleAfter": "2027-01-06T00:00:00Z",
-    "rulesWithoutStory": [
-      "BR-MTG-001-1",
-      "BR-MTG-001-2",
-      "BR-MTG-001-3",
-      "BR-MTG-001-4",
-      "BR-MTG-001-5",
-      "BR-MTG-001-6",
-      "BR-MTG-001-7",
-      "BR-MTG-001-8",
-      "BR-MTG-001-9",
-      "BR-MTG-001-10"
-    ],
-    "rulesWithoutScenario": [
-      "BR-MTG-001-1",
-      "BR-MTG-001-2",
-      "BR-MTG-001-3",
-      "BR-MTG-001-4",
-      "BR-MTG-001-5",
-      "BR-MTG-001-6",
-      "BR-MTG-001-7",
-      "BR-MTG-001-8",
-      "BR-MTG-001-9",
-      "BR-MTG-001-10"
-    ]
-  },
-  {
     "id": "P1-001",
     "context": "product1",
     "rules": 11,
@@ -326,6 +290,42 @@
       "BR-RPT-001-1",
       "BR-RPT-001-2",
       "BR-RPT-001-3"
+    ]
+  },
+  {
+    "id": "SES-001",
+    "context": "meetings",
+    "rules": 10,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 1,
+    "badge": "human-reviewed",
+    "staleAfter": "2027-01-06T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-SES-001-1",
+      "BR-SES-001-2",
+      "BR-SES-001-3",
+      "BR-SES-001-4",
+      "BR-SES-001-5",
+      "BR-SES-001-6",
+      "BR-SES-001-7",
+      "BR-SES-001-8",
+      "BR-SES-001-9",
+      "BR-SES-001-10"
+    ],
+    "rulesWithoutScenario": [
+      "BR-SES-001-1",
+      "BR-SES-001-2",
+      "BR-SES-001-3",
+      "BR-SES-001-4",
+      "BR-SES-001-5",
+      "BR-SES-001-6",
+      "BR-SES-001-7",
+      "BR-SES-001-8",
+      "BR-SES-001-9",
+      "BR-SES-001-10"
     ]
   },
   {

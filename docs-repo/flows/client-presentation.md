@@ -13,7 +13,7 @@ sources:
 # --- repo extensions ---
 id: FLOW-client-presentation
 contexts: [meetings, presentation, product1, product2, market, stress]
-specs: [MTG-001, PRS-001, P1-001, STR-001]
+specs: [SES-001, PRS-001, P1-001, STR-001]
 code_refs:
   - fe/src/app/SessionLayout.tsx
   - fe/src/features/presentation/channel.ts
@@ -27,7 +27,7 @@ channels: ["harbor.session.{sessionId}"]
 ## Purpose
 A meeting has two audiences in one browser: the representative, who navigates and models, and the client, who must
 see the results on a second screen without the internal controls. This flow describes how the two windows stay in
-step without any backend involvement. Rules live in PRS-001; this document composes them with MTG-001 (session
+step without any backend involvement. Rules live in PRS-001; this document composes them with SES-001 (session
 lifecycle) and the product and stress pages that publish their filters.
 
 ## Questions this document answers
@@ -38,7 +38,7 @@ lifecycle) and the product and stress pages that publish their filters.
 
 ## Trigger
 The representative is inside an OPEN CLIENT session (`/session/:sessionId/*`) and presses "Open client screen" in
-`SessionLayout`. Precondition: the session exists and is OPEN (MTG-001).
+`SessionLayout`. Precondition: the session exists and is OPEN (SES-001).
 
 ## Participants
 | Participant | Kind | Role in the flow |

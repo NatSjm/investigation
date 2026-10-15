@@ -93,7 +93,7 @@ C4Container
 | Layer | Role | Examples |
 |---|---|---|
 | `api` | REST controllers implementing the generated `*Api` interfaces | `Product1Controller`, `SessionController` |
-| `manager` | one per context: orchestration, transaction boundary, KDoc + `@docs <ID>` | `Product1Manager` (P1-001), `MeetingManager` (MTG-001) |
+| `manager` | one per context: orchestration, transaction boundary, KDoc + `@docs <ID>` | `Product1Manager` (P1-001), `MeetingManager` (SES-001) |
 | `service` | business services used by managers | `ProjectionService`, `StressTestService` |
 | `dao` | repositories (tables per class in `generated/be/components.md`) | `ProjectionDao`, `MeetingSessionDao` |
 | `utils` | pure Kotlin calculations (`@docs <calculation>`) | `ProjectionAggregator`, `StressTestCalculator` |
@@ -106,7 +106,7 @@ C4Container
 | Context (BE prefixes) | Entry point (`@docs`) | Owns tables | Produces / consumes |
 |---|---|---|---|
 | `clients` (`Client*`) | `ClientManager.kt` (CLI-001) | `client_profile`, `client_role` | consumes `harbor.meetings.session-closed` |
-| `meetings` (`Session*`, `Meeting*`) | `MeetingManager.kt` (MTG-001) | `meeting_session`, `session_client_config` | produces `harbor.meetings.session-closed` |
+| `meetings` (`Session*`, `Meeting*`) | `MeetingManager.kt` (SES-001) | `meeting_session`, `session_client_config` | produces `harbor.meetings.session-closed` |
 | `imports` (`Import*`, `Movement*`, ...) | `ImportManager.kt` (IMP-001) | `import_batch`, `goods_movement`, `movement_monthly` | produces `harbor.imports.movements-loaded` |
 | `product1` / `product2` (`Product1*`, `Projection*`, `Peer*` / `Product2*`) | `Product1Manager.kt` (P1-001) / `Product2Manager.kt` (P2-001) | `session_movement_input`, `session_peer_simulation`, `projection_*` | consume `harbor.imports.movements-loaded` |
 | `cover` (`Cover*`) | `CoverManager.kt` (COV-001) | `cover_policy`, `cover_quote` | — |
@@ -120,7 +120,7 @@ C4Container
 - **OpenAPI-first** ([ADR-0002](/architecture/adr/0002-openapi-first-contracts.md)): `backend/core/src/main/resources/openapi/harbor-api.yaml`
   is the contract; controllers implement generated `*Api` interfaces; the frontend uses the generated client.
 - **Session scoping**: selecting a product group on the client overview creates a `meeting_session`; every
-  `/session/**` request carries `X-Harbor-Session` (see [MTG-001](/features/meetings/MTG-001.md)).
+  `/session/**` request carries `X-Harbor-Session` (see [SES-001](/features/meetings/SES-001.md)).
 - **Grouping in Kotlin, not SQL** ([ADR-0003](/architecture/adr/0003-grouping-in-kotlin-not-sql.md)): the four
   projection tables are aggregated by `utils/ProjectionAggregator.kt` and reused by cover, stress and reports.
 - **Calculations** are pure Kotlin in `core/src/main/kotlin/harbor/utils/`, each attested in `domain/calculations/` with

@@ -139,8 +139,6 @@ status: stable
 - `endpoint:PUT /api/v1/session/product1/movements` -handled-by-> `class:Product1Controller`
 - `spec:horizon_totals` -implemented-by-> `class:ProjectionAggregator` (-> docs)
 - `spec:monthly_projection` -implemented-by-> `class:ProjectionAggregator` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:SessionMovementInputDao` (-> docs)
-- `spec:MTG-001` -implemented-by-> `class:SessionPeerSimulationDao` (-> docs)
 - `spec:P1-001` -implemented-by-> `class:MovementInputValidator` (-> docs)
 - `spec:P1-001` -implemented-by-> `class:PeerBenchmark` (-> docs)
 - `spec:P1-001` -implemented-by-> `class:PeerSimulationService` (-> docs)
@@ -183,6 +181,8 @@ status: stable
 - `spec:P2-002` -implemented-by-> `class:MovementInputValidator` (-> docs)
 - `spec:P2-003` -implemented-by-> `class:PeerSimulationService` (-> docs)
 - `spec:peer_benchmark_simulation` -implemented-by-> `class:PeerBenchmark` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:SessionMovementInputDao` (-> docs)
+- `spec:SES-001` -implemented-by-> `class:SessionPeerSimulationDao` (-> docs)
 - `context:product1` -owns-> `table:projection_by_dimension`
 - `context:product1` -owns-> `table:projection_by_direction`
 - `context:product1` -owns-> `table:projection_by_subproduct`
@@ -212,10 +212,10 @@ status: stable
 ## Specs touching this community
 - `spec:horizon_totals` - `domain/calculations/horizon_totals.md` - status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:166; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
 - `spec:monthly_projection` - `domain/calculations/monthly_projection.md` - status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
-- `spec:MTG-001` - `features/meetings/MTG-001.md` - status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7
 - `spec:P1-001` - `features/product1/P1-001.md` - status draft; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18
 - `spec:P1-002` - `features/product1/P1-002.md` - status draft; be core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:19; fe src/features/product1/api/useProduct1Movements.ts:11
 - `spec:P1-003` - `features/product1/P1-003.md` - status draft; be core/src/main/kotlin/harbor/service/PeerSimulationService.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11
 - `spec:P2-002` - `features/product2/P2-002.md` - status draft; be core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:19; fe src/features/product2/api/useProduct2Movements.ts:11
 - `spec:P2-003` - `features/product2/P2-003.md` - status draft; be core/src/main/kotlin/harbor/service/PeerSimulationService.kt:27; fe src/features/product2/api/usePeerSimulation2.ts:10
 - `spec:peer_benchmark_simulation` - `domain/calculations/peer_benchmark_simulation.md` - status draft; be core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19
+- `spec:SES-001` - `features/meetings/SES-001.md` - status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7
