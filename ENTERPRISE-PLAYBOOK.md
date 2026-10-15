@@ -94,7 +94,7 @@ Create the repository and copy these from `docs-repo/` of this investigation rep
 ```
 AGENTS.md                      adapt: product name, context list, agent list (section 3)
 README.md                      adapt: names
-index.md                       keep the "Start here" block; the section list is regenerated
+index.md                       edit the `# <Product> documentation bundle` heading once, keep the "Start here" block; the section list is regenerated
 log.md                         empty it except the header
 contexts.yml                   rewrite (section 4)
 docs-map.yml                   rewrite (section 4)
@@ -116,7 +116,10 @@ third-party/                   the vendored OKF skills and licences
 .github/                       agents, instructions, hooks, prompts, skills, workflows (section 3)
 ```
 
-Delete the Harbor specs, calculations, flows, ADRs and work items; they are examples, not content. Run once:
+Delete the Harbor specs, calculations, flows, ADRs, work items, test fixtures (`test-design/fixtures/*.json`) and the
+legacy pages under `confluence-import/HARBOR/`; they are examples, not content. Rewrite `architecture/overview.md`,
+`architecture/integrations.md` and `domain/context-map.md` before validating: their links point at the deleted examples
+and `--strict` turns broken links into failures. Run once:
 
 ```bash
 python3 scripts/build-index.py; python3 scripts/okf-validate.py --strict; python3 scripts/validate-frontmatter.py
