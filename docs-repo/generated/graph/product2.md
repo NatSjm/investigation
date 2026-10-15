@@ -4,7 +4,7 @@ title: "Graph: product2 (be+fe)"
 description: "Product 2 overview per transport mode, reusing the projection tables, cover chart and modals of product1."
 generated:
   by: process:gen-graph
-  at: 2026-10-14
+  at: 2026-10-15
 status: stable
 ---
 # Graph: product2 (be+fe)
@@ -34,8 +34,8 @@ status: stable
 - `route:/session/:sessionId/product2` - `src/app/routes.tsx:35` - renders Product2OverviewPage
 
 ## classes
-- `class:Product2Manager` - `core/src/main/kotlin/harbor/manager/Product2Manager.kt:26` - manager; Service
 - `class:Product2Controller` - `core/src/main/kotlin/harbor/api/Product2Controller.kt:22` - api; RestController
+- `class:Product2Manager` - `core/src/main/kotlin/harbor/manager/Product2Manager.kt:26` - manager; Service
 - `class:Product2ProjectionRefreshListener` - `core/src/main/kotlin/harbor/event/Product2ProjectionRefreshListener.kt:17` - event; Component, KafkaListener
 
 ## components
@@ -79,8 +79,18 @@ status: stable
 - `endpoint:GET /api/v1/session/product2/projection` -handled-by-> `class:Product2Controller`
 - `endpoint:POST /api/v1/session/product2/peer-simulation` -handled-by-> `class:Product2Controller`
 - `endpoint:PUT /api/v1/session/product2/movements` -handled-by-> `class:Product2Controller`
+- `spec:P2-001` -implemented-by-> `class:Product2Controller` (-> docs)
 - `spec:P2-001` -implemented-by-> `class:Product2Manager` (-> docs)
+- `spec:P2-001` -implemented-by-> `class:Product2ProjectionRefreshListener` (-> docs)
 - `spec:P2-001` -implemented-by-> `feature:product2` (-> docs)
+- `spec:P2-002` -implemented-by-> `class:Product2Controller` (-> docs)
+- `spec:P2-002` -implemented-by-> `class:Product2Manager` (-> docs)
+- `spec:P2-002` -implemented-by-> `class:Product2ProjectionRefreshListener` (-> docs)
+- `spec:P2-002` -implemented-by-> `feature:product2` (-> docs)
+- `spec:P2-003` -implemented-by-> `class:Product2Controller` (-> docs)
+- `spec:P2-003` -implemented-by-> `class:Product2Manager` (-> docs)
+- `spec:P2-003` -implemented-by-> `class:Product2ProjectionRefreshListener` (-> docs)
+- `spec:P2-003` -implemented-by-> `feature:product2` (-> docs)
 - `feature:product2` -produces-> `channel:harbor.session.{*}` (-> presentation)
 - `component:Product2OverviewPage` -renders-> `component:TransportModeSelector` (exact)
 - `route:/session/:sessionId/product2` -renders-> `feature:product2`
@@ -89,4 +99,6 @@ status: stable
 - `component:Product2OverviewPage` -uses-> `hook:useProduct2Overview` (exact)
 
 ## Specs touching this community
-- `spec:P2-001` - be core/src/main/kotlin/harbor/manager/Product2Manager.kt:27; fe src/features/product2/api/usePeerSimulation2.ts:10; fe src/features/product2/api/useProduct2Movements.ts:11; fe src/features/product2/api/useProduct2Overview.ts:12; fe src/features/product2/api/useProduct2Overview.ts:30; fe src/features/product2/index.ts:6; fe src/features/product2/product2.types.ts:15
+- `spec:P2-001` - `features/product2/P2-001.md` - status draft; be core/src/main/kotlin/harbor/manager/Product2Manager.kt:27; fe src/features/product2/api/useProduct2Overview.ts:12; fe src/features/product2/api/useProduct2Overview.ts:30; fe src/features/product2/index.ts:6; fe src/features/product2/product2.types.ts:15
+- `spec:P2-002` - `features/product2/P2-002.md` - status draft; be core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:19; fe src/features/product2/api/useProduct2Movements.ts:11
+- `spec:P2-003` - `features/product2/P2-003.md` - status draft; be core/src/main/kotlin/harbor/service/PeerSimulationService.kt:27; fe src/features/product2/api/usePeerSimulation2.ts:10

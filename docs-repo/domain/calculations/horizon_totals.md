@@ -28,7 +28,7 @@ sources:
     title: Rounding.kt
 # --- repo extensions ---
 name: horizon_totals
-used_by: [P1-001]
+used_by: [P1-001, P2-001]
 code_refs:
   - backend/core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt
   - backend/core/src/main/kotlin/harbor/utils/Rounding.kt

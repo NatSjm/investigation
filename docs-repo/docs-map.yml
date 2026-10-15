@@ -13,7 +13,7 @@ mappings:
   - paths: ["be/core/src/main/kotlin/harbor/**/Session*.kt", "be/core/src/main/kotlin/harbor/**/Meeting*.kt", "be/core/src/main/kotlin/harbor/**/RoleOverride*.kt", "fe/src/features/meetings/**", "fe/src/api/sessionStore.ts"]
     specs: ["features/meetings/MTG-001.md"]
   - paths: ["be/core/src/main/kotlin/harbor/**/Product1*.kt", "be/core/src/main/kotlin/harbor/**/Projection*.kt", "be/core/src/main/kotlin/harbor/**/Peer*.kt", "be/core/src/main/kotlin/harbor/**/MovementInput*.kt", "be/core/src/main/kotlin/harbor/**/SessionMovementInput*.kt", "be/core/src/main/kotlin/harbor/**/SessionPeerSimulation*.kt", "fe/src/features/product1/**"]
-    specs: ["features/product1/P1-001.md"]
+    specs: ["features/product1/P1-001.md", "features/product1/P1-002.md", "features/product1/P1-003.md"]
   - paths: ["be/core/src/main/kotlin/harbor/**/Stress*.kt", "fe/src/features/stress/**"]
     specs: ["features/stress/STR-001.md"]
   - paths: ["be/core/src/main/kotlin/harbor/**/Market*.kt", "be/core/src/main/kotlin/harbor/**/Scenario*.kt", "be/core/src/main/kotlin/harbor/**/BaselinePrice*.kt", "fe/src/features/market/**"]
@@ -23,7 +23,7 @@ mappings:
 
   # --- bounded contexts without a spec yet (appear as `code only` in generated/graph/REPO_MAP.md) ---
   - paths: ["be/core/src/main/kotlin/harbor/**/Product2*.kt", "fe/src/features/product2/**"]
-    specs: []  # TODO: P2-001
+    specs: ["features/product2/P2-001.md", "features/product2/P2-002.md", "features/product2/P2-003.md"]
   - paths: ["be/core/src/main/kotlin/harbor/**/Cover*.kt", "fe/src/features/cover/**"]
     specs: []  # TODO: COV-001
   - paths: ["be/core/src/main/kotlin/harbor/**/Import*.kt", "be/core/src/main/kotlin/harbor/**/Movement*.kt", "be/core/src/main/kotlin/harbor/**/GoodsMovement*.kt", "be/core/src/main/kotlin/harbor/**/Xls*.kt", "be/core/src/main/kotlin/harbor/**/Workbook*.kt", "be/core/src/main/kotlin/harbor/**/DailyMovement*.kt", "be/core/src/main/kotlin/harbor/**/MonthlySnapshot*.kt"]
@@ -41,7 +41,7 @@ mappings:
   - paths: ["be/core/src/main/kotlin/harbor/client/**", "be/core/src/main/resources/api/**"]
     specs: ["architecture/integrations.md"]
   - paths: ["be/core/src/main/resources/openapi/**"]
-    specs: ["architecture/adr/0002-openapi-first-contracts.md", "features/clients/CLI-001.md", "features/meetings/MTG-001.md", "features/product1/P1-001.md", "features/stress/STR-001.md", "features/market/MKT-001.md", "features/reports/RPT-001.md"]
+    specs: ["architecture/adr/0002-openapi-first-contracts.md", "features/clients/CLI-001.md", "features/meetings/MTG-001.md", "features/product1/P1-001.md", "features/product1/P1-002.md", "features/product1/P1-003.md", "features/product2/P2-001.md", "features/product2/P2-002.md", "features/product2/P2-003.md", "features/stress/STR-001.md", "features/market/MKT-001.md", "features/reports/RPT-001.md"]
 
 ignore:
   - "**/*Test.kt"

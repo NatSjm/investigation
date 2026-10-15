@@ -4,7 +4,7 @@ title: "Graph: product1 (be+fe)"
 description: "Product 1 overview per city hub: the four cumulative projection tables, cover ratio chart, movement input and peer simulation modals."
 generated:
   by: process:gen-graph
-  at: 2026-10-14
+  at: 2026-10-15
 status: stable
 ---
 # Graph: product1 (be+fe)
@@ -37,15 +37,15 @@ status: stable
 - `class:ProjectionService` - `core/src/main/kotlin/harbor/service/ProjectionService.kt:27` - service; Service
 - `class:ProjectionInputAssembler` - `core/src/main/kotlin/harbor/service/ProjectionInputAssembler.kt:30` - service; Component
 - `class:ProjectionDao` - `core/src/main/kotlin/harbor/dao/ProjectionDao.kt:23` - dao; Repository
-- `class:Product1Manager` - `core/src/main/kotlin/harbor/manager/Product1Manager.kt:26` - manager; Service
+- `class:PeerSimulationService` - `core/src/main/kotlin/harbor/service/PeerSimulationService.kt:26` - service; Service
 - `class:Product1Controller` - `core/src/main/kotlin/harbor/api/Product1Controller.kt:21` - api; RestController
-- `class:PeerSimulationService` - `core/src/main/kotlin/harbor/service/PeerSimulationService.kt:24` - service; Service
+- `class:Product1Manager` - `core/src/main/kotlin/harbor/manager/Product1Manager.kt:26` - manager; Service
 - `class:ProjectionAggregator` - `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36` - utils; object
 - `class:SessionMovementInputDao` - `core/src/main/kotlin/harbor/dao/SessionMovementInputDao.kt:10` - dao; Repository
 - `class:Product1ProjectionRefreshListener` - `core/src/main/kotlin/harbor/event/Product1ProjectionRefreshListener.kt:17` - event; Component, KafkaListener
 - `class:SessionPeerSimulationDao` - `core/src/main/kotlin/harbor/dao/SessionPeerSimulationDao.kt:9` - dao; Repository
+- `class:MovementInputValidator` - `core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:18` - validator; Component
 - `class:PeerBenchmark` - `core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19` - utils; object
-- `class:MovementInputValidator` - `core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:16` - validator; Component
 
 ## components
 - `component:Product1OverviewPage` - `src/features/product1/ui/Product1OverviewPage.tsx:22`
@@ -56,11 +56,11 @@ status: stable
 - `component:ProjectionTables` - `src/features/product1/ui/ProjectionTables.tsx:41`
 
 ## tables
-- `table:session_peer_simulation` - `core/src/main/resources/db/migration/V4__session_inputs.sql` - 5 columns: id, session_id, peer_segment, scaling_factor, generated_at
 - `table:projection_by_dimension` - `core/src/main/resources/db/migration/V5__projection.sql` - 9 columns: id, session_id, period, dimension_kind, dimension_value, quantity, value, landed_cost, cumulative_value
 - `table:projection_by_direction` - `core/src/main/resources/db/migration/V5__projection.sql` - 8 columns: id, session_id, period, direction, quantity, value, landed_cost, cumulative_value
 - `table:projection_by_subproduct` - `core/src/main/resources/db/migration/V5__projection.sql` - 8 columns: id, session_id, period, sub_product, quantity, value, landed_cost, cumulative_value
 - `table:projection_summary` - `core/src/main/resources/db/migration/V5__projection.sql` - 8 columns: id, session_id, period, total_quantity, total_value, total_landed_cost, cover_ratio, cumulative_value
+- `table:session_peer_simulation` - `core/src/main/resources/db/migration/V4__session_inputs.sql` - 5 columns: id, session_id, peer_segment, scaling_factor, generated_at
 - `table:session_movement_input` - `core/src/main/resources/db/migration/V4__session_inputs.sql` - 9 columns: id, session_id, period, sub_product, city, transport_mode, direction, quantity, unit_price
 
 ## Edges
@@ -154,6 +154,34 @@ status: stable
 - `spec:P1-001` -implemented-by-> `class:SessionMovementInputDao` (-> docs)
 - `spec:P1-001` -implemented-by-> `class:SessionPeerSimulationDao` (-> docs)
 - `spec:P1-001` -implemented-by-> `feature:product1` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:MovementInputValidator` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:PeerBenchmark` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:PeerSimulationService` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:Product1Controller` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:Product1Manager` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:Product1ProjectionRefreshListener` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:ProjectionAggregator` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:ProjectionDao` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:ProjectionInputAssembler` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:ProjectionService` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:SessionMovementInputDao` (-> docs)
+- `spec:P1-002` -implemented-by-> `class:SessionPeerSimulationDao` (-> docs)
+- `spec:P1-002` -implemented-by-> `feature:product1` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:MovementInputValidator` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:PeerBenchmark` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:PeerSimulationService` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:Product1Controller` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:Product1Manager` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:Product1ProjectionRefreshListener` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:ProjectionAggregator` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:ProjectionDao` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:ProjectionInputAssembler` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:ProjectionService` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:SessionMovementInputDao` (-> docs)
+- `spec:P1-003` -implemented-by-> `class:SessionPeerSimulationDao` (-> docs)
+- `spec:P1-003` -implemented-by-> `feature:product1` (-> docs)
+- `spec:P2-002` -implemented-by-> `class:MovementInputValidator` (-> docs)
+- `spec:P2-003` -implemented-by-> `class:PeerSimulationService` (-> docs)
 - `spec:peer_benchmark_simulation` -implemented-by-> `class:PeerBenchmark` (-> docs)
 - `context:product1` -owns-> `table:projection_by_dimension`
 - `context:product1` -owns-> `table:projection_by_direction`
@@ -185,5 +213,9 @@ status: stable
 - `spec:horizon_totals` - `domain/calculations/horizon_totals.md` - status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:166; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
 - `spec:monthly_projection` - `domain/calculations/monthly_projection.md` - status draft; be core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt:36
 - `spec:MTG-001` - `features/meetings/MTG-001.md` - status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7
-- `spec:P1-001` - `features/product1/P1-001.md` - status draft; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11; fe src/features/product1/api/useProduct1Movements.ts:11; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18
+- `spec:P1-001` - `features/product1/P1-001.md` - status draft; be core/src/main/kotlin/harbor/manager/Product1Manager.kt:27; fe src/features/product1/api/useProduct1Overview.ts:11; fe src/features/product1/api/useProduct1Overview.ts:26; fe src/features/product1/index.ts:6; fe src/features/product1/product1.types.ts:18
+- `spec:P1-002` - `features/product1/P1-002.md` - status draft; be core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:19; fe src/features/product1/api/useProduct1Movements.ts:11
+- `spec:P1-003` - `features/product1/P1-003.md` - status draft; be core/src/main/kotlin/harbor/service/PeerSimulationService.kt:27; fe src/features/product1/api/usePeerSimulation1.ts:11
+- `spec:P2-002` - `features/product2/P2-002.md` - status draft; be core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:19; fe src/features/product2/api/useProduct2Movements.ts:11
+- `spec:P2-003` - `features/product2/P2-003.md` - status draft; be core/src/main/kotlin/harbor/service/PeerSimulationService.kt:27; fe src/features/product2/api/usePeerSimulation2.ts:10
 - `spec:peer_benchmark_simulation` - `domain/calculations/peer_benchmark_simulation.md` - status draft; be core/src/main/kotlin/harbor/utils/PeerBenchmark.kt:19

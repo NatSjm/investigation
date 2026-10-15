@@ -6,7 +6,7 @@ import type { PeerSimulationRequest, PeerSimulationResult } from '../product1.ty
 /**
  * Peer simulation for Product 1 (`postProduct1PeerSimulation`, modal 2): monthly series of
  * similar products at peer firms (segment median x scaling factor), stored per session.
- * @docs P1-001
+ * @docs P1-003
  */
 export function usePeerSimulation1() {
   const sessionId = useSessionStore((s) => s.sessionId);

@@ -1,0 +1,81 @@
+feature: P1-002
+project: HRB
+epic:
+  jira_key: null
+  summary: "Movement modal: replace the modelled set, validate rows, recompute the projection"
+  description: |
+    The "Model movements" modal of the Product 1 overview: one row per month of the projection grid,
+    PUT semantics on the session's modelled movements, validation of every row, synchronous recompute
+    of the four projection tables, error shown in the modal.
+    Spec: features/product1/P1-002.md (carved out of P1-001 on 2026-10-15)
+  labels: [product1, docs-generated, needs-spec-review]
+stories:
+  - id: S1
+    jira_key: null
+    summary: "Model movements per month in the movement modal"
+    component: vertical
+    description: |
+      PUT /session/product1/movements replaces the session's modelled movements, validates rows and
+      recomputes the four tables before responding. Depends on P1-001 S1 (projection tables).
+    acceptance_criteria:
+      - rule: BR-P1-002-1
+        gherkin: |
+          Given an open product1 session "S-1" with 3 modelled movement rows
+          When the representative saves 2 modelled movement rows
+          Then the session has exactly 2 modelled movement rows
+      - rule: BR-P1-002-2
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative saves a modelled movement with city "Nowhere"
+          Then the response status is 400
+          And no modelled movement row of the session was changed
+      - rule: BR-P1-002-3
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative saves a modelled movement 2027-02 P1-PRM Dunmere OUT quantity 50 unit price 20.00
+          Then the Product 1 projection returned immediately afterwards reflects quantity 50 for 2027-02 P1-PRM
+    estimate: 5
+    labels: [product1]
+    depends_on: []
+    subtasks:
+      - summary: "[DB] Flyway V4__session_inputs.sql: session_movement_input"
+        estimate_hours: 2
+      - summary: "[BE] putProduct1Movements: validator/MovementInputValidator, replace-all via dao/SessionMovementInputDao, synchronous recompute in Product1Manager"
+        estimate_hours: 6
+      - summary: "[FE] MovementInputModal (month × grade × city × direction) via useProduct1Movements"
+        estimate_hours: 8
+      - summary: "[TEST] replace-all and validation scenarios"
+        estimate_hours: 3
+  - id: S2
+    jira_key: null
+    summary: "Offer only the grid months and show a rejected save in the modal"
+    component: fe
+    description: |
+      The movement modal offers exactly the months of the projection grid (first month = the month after the
+      current one, as the backend builds it) and, when the backend rejects the request, keeps the modal open
+      and shows the problem detail instead of failing silently.
+    acceptance_criteria:
+      - rule: BR-P1-002-4
+        gherkin: |
+          Given an open product1 session "S-1" and today is 2026-10-12
+          When the representative opens "Model movements"
+          Then the first month row is "Nov 2026" and the last is the 24th month of the horizon
+      - rule: BR-P1-002-5
+        gherkin: |
+          Given the representative entered a movement with sub-product "P2-S" for a product1 session
+          When the representative clicks "Save and recompute"
+          Then the backend answers 400 with a problem detail
+          And the modal stays open and shows that detail
+    estimate: 2
+    labels: [product1, ui, needs-spec-review]
+    depends_on: [S1]
+    subtasks:
+      - summary: "[FE] shared/utils/months.projectionGrid(horizon) mirroring MonthGrid.startingAfter; used by Product1OverviewPage and Product2OverviewPage"
+        estimate_hours: 2
+      - summary: "[FE] MovementInputModal: catch the mutation error, render role=alert with api/client.errorMessage"
+        estimate_hours: 2
+      - summary: "[TEST] unit test for projectionGrid; UI scenario for the rejected save"
+        estimate_hours: 2
+questions:
+  - "Is a modelled row with quantity 0 a deletion of the actual row or a zero movement? The validator rejects 0 (P1-002 open question)."
+  - "Replacement granularity and grid start (monthly_projection audit Q1/Q2): BR-P1-001-3 says per key, the code replaces the whole month and starts the grid the month after today. S1 criteria follow BR-P1-001-3 as written and will need re-checking."

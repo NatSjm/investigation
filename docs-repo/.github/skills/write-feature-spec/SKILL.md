@@ -7,7 +7,7 @@ description: How to write or update a functional feature spec in this repo (stru
 
 1. `python3 scripts/context-pack.py --task <ID or community>`; read the pack. For a new spec the graph neighbourhood of
    the community is your structure (see `references/source-priority.md`).
-2. Copy `features/_template.md` -> `features/<ctx>/<CTX>-<NNN>.md`. Next free number: `search` for `id: <CTX>-`.
+2. Copy `features/_template.md` -> `features/<ctx>/<CTX>-<NNN>.md`. Next free number: `search` for `id: <CTX>-`. One spec per screen (the first of a context is its main screen); a modal or sub-capability with rules of its own gets its own number and is cited from the screen spec, never restated (`features/conventions.md`, "Shaping specs").
 3. Fill **API / Events / Data / UI flow / Calculations** from the graph and contracts in the pack
    (`operationId`, exact topic and table names); class-level detail from `generated/be/components.md`.
    Stop reading once every template section can be filled.

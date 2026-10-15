@@ -4,7 +4,7 @@ title: "Graph: shared-ui (fe)"
 description: "Neighbourhood of shared-ui"
 generated:
   by: process:gen-graph
-  at: 2026-10-14
+  at: 2026-10-15
 status: stable
 ---
 # Graph: shared-ui (fe)

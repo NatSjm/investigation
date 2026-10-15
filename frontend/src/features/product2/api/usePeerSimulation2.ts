@@ -5,7 +5,7 @@ import type { PeerSimulationRequest, PeerSimulationResult } from '../../product1
 
 /**
  * Peer simulation for Product 2 (`postProduct2PeerSimulation`, modal 2).
- * @docs P2-001
+ * @docs P2-003
  */
 export function usePeerSimulation2() {
   const sessionId = useSessionStore((s) => s.sessionId);

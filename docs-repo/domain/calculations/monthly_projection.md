@@ -32,7 +32,7 @@ sources:
     title: Rounding.kt
 # --- repo extensions ---
 name: monthly_projection
-used_by: [P1-001, P2-001, COV-001, STR-001, RPT-001]
+used_by: [P1-001, P1-002, P2-001, P2-002, COV-001, STR-001, RPT-001]
 code_refs:
   - backend/core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt
   - backend/core/src/main/kotlin/harbor/utils/Rounding.kt

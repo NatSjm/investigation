@@ -6,7 +6,7 @@ import type { MovementInput, Projection } from '../../product1';
 /**
  * Modelled movements per month for Product 2 (`putProduct2Movements`, modal 1).
  * Rows carry `transportMode` instead of `city`; returns the recomputed projection.
- * @docs P2-001
+ * @docs P2-002
  */
 export function useProduct2Movements() {
   const sessionId = useSessionStore((s) => s.sessionId);

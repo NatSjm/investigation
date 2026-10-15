@@ -1,0 +1,55 @@
+feature: P1-003
+project: HRB
+epic:
+  jira_key: null
+  summary: "Peer simulation modal: record the run, return the segment series"
+  description: |
+    The "Peer simulation" modal of the Product 1 overview: segment and scaling factor are recorded per run,
+    the simulated monthly series of the segment is returned as a separate series and shown in the modal.
+    Spec: features/product1/P1-003.md (carved out of P1-001 on 2026-10-15)
+  labels: [product1, docs-generated, needs-spec-review]
+stories:
+  - id: S1
+    jira_key: null
+    summary: "Run the peer simulation modal"
+    component: vertical
+    description: |
+      POST /session/product1/peer-simulation stores segment + scaling factor and returns a separate peer series.
+      Depends on P1-001 S1 (the screen that renders the modal).
+    acceptance_criteria:
+      - rule: BR-P1-003-1
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative runs the peer simulation for segment "SEG-A" with scaling factor 1.5
+          Then a session_peer_simulation row with scaling factor 1.5 exists for "S-1"
+      - rule: BR-P1-003-1
+        gherkin: |
+          Given an open product1 session "S-1" and the parameter peer.scaling_default is 1.0
+          When the representative runs the peer simulation for segment "SEG-A" without a scaling factor
+          Then a session_peer_simulation row with scaling factor 1.0 exists for "S-1"
+      - rule: BR-P1-003-2
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative runs the peer simulation for segment "SEG-A" with scaling factor 0
+          Then the request is rejected
+          And no session_peer_simulation row was added for "S-1"
+      - rule: BR-P1-003-3
+        gherkin: |
+          Given an open product1 session "S-1"
+          When the representative runs the peer simulation for segment "SEG-A" with scaling factor 1.5
+          Then the response contains a peer series
+          And the four projection tables are unchanged
+    estimate: 3
+    labels: [product1]
+    depends_on: []
+    subtasks:
+      - summary: "[BE] postProduct1PeerSimulation: service/PeerSimulationService + utils/PeerBenchmark, dao/SessionPeerSimulationDao"
+        estimate_hours: 5
+      - summary: "[FE] PeerSimulationModal via usePeerSimulation1; series shown in the modal"
+        estimate_hours: 5
+      - summary: "[TEST] peer simulation scenarios"
+        estimate_hours: 2
+questions:
+  - "Allowed range of the scaling factor: the former spec claimed 0.1-5.0, the contract and the code only require a positive value (P1-003 open question); the rejection status for an invalid factor is not specified."
+  - "Peer benchmark definition (peer_benchmark_simulation Q2): median × factor, quantities only, is the current code, not an approved rule; S1 stays needs-spec-review."
+  - "Should the peer simulation series be included in the report payload (RPT-001)?"

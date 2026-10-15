@@ -34,9 +34,9 @@ and are quoted verbatim.
 | Landed cost | Value plus tariff, handling cost per city and transport cost per mode for one projection row | total cost, delivered cost | `monthly_projection`, P1-001 |
 | Meeting | A real appointment between a representative and a client, held as a session of kind `CLIENT` | client meeting, appointment | MTG-001 |
 | Mixed | Client role when the inbound share lies strictly between the exporter and importer thresholds | `ClientRole.MIXED`, two-way | `client_role_classification`, STR-001 |
-| Modelled movement | A movement entered per month in the movement modal during a session (`session_movement_input`); overrides the actual movement of the same key | what-if movement, manual movement | P1-001, P2-001 |
+| Modelled movement | A movement entered per month in the movement modal during a session (`session_movement_input`); overrides the actual movement of the same key | what-if movement, manual movement | P1-002, P2-002 |
 | Parameter set | Admin-maintained numeric parameters (`parameter_set.key`, e.g. `role.min_volume`, `tariff.rate`, `handling.cost`); snapshotted into `meeting_session.parameter_snapshot` at session start | parameters, settings | ADM-001, MTG-001 |
-| Peer simulation | Modelled movements of similar products at peer firms: segment median monthly quantity × `scaling_factor` (`session_peer_simulation`) | peer benchmark, peer series | P1-001, P2-001 |
+| Peer simulation | Modelled movements of similar products at peer firms: segment median monthly quantity × `scaling_factor` (`session_peer_simulation`) | peer benchmark, peer series | P1-003, P2-003 |
 | Premium rate | `cover_policy.premium_rate` — price of cover as a fraction of covered value; default `cover.default_premium_rate` (0.012) | premium | COV-001 |
 | Preparation session | A dry run of a meeting by the representative alone (`kind = PREPARATION`); never changes the client role | dry run, prep session | MTG-001, CLI-001 |
 | Price basis | The country whose price applies to a product group's values: `VLD` or `NRL` for Product 1, `CST` or `MRD` for Product 2 (`PriceBasis`) | pricing country | P1-001, MTG-001 |

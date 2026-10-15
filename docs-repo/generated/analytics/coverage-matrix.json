@@ -124,14 +124,18 @@
     "id": "P1-001",
     "context": "product1",
     "rules": 11,
-    "rulesWithStory": 11,
+    "rulesWithStory": 8,
     "rulesWithScenario": 0,
-    "stories": 7,
+    "stories": 4,
     "scenarios": 0,
-    "openQuestions": 4,
+    "openQuestions": 2,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-06T00:00:00Z",
-    "rulesWithoutStory": [],
+    "rulesWithoutStory": [
+      "BR-P1-001-5",
+      "BR-P1-001-6",
+      "BR-P1-001-7"
+    ],
     "rulesWithoutScenario": [
       "BR-P1-001-1",
       "BR-P1-001-2",
@@ -144,6 +148,126 @@
       "BR-P1-001-9",
       "BR-P1-001-10",
       "BR-P1-001-11"
+    ]
+  },
+  {
+    "id": "P1-002",
+    "context": "product1",
+    "rules": 5,
+    "rulesWithStory": 5,
+    "rulesWithScenario": 0,
+    "stories": 2,
+    "scenarios": 0,
+    "openQuestions": 2,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-13T00:00:00Z",
+    "rulesWithoutStory": [],
+    "rulesWithoutScenario": [
+      "BR-P1-002-1",
+      "BR-P1-002-2",
+      "BR-P1-002-3",
+      "BR-P1-002-4",
+      "BR-P1-002-5"
+    ]
+  },
+  {
+    "id": "P1-003",
+    "context": "product1",
+    "rules": 3,
+    "rulesWithStory": 3,
+    "rulesWithScenario": 0,
+    "stories": 1,
+    "scenarios": 0,
+    "openQuestions": 4,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-13T00:00:00Z",
+    "rulesWithoutStory": [],
+    "rulesWithoutScenario": [
+      "BR-P1-003-1",
+      "BR-P1-003-2",
+      "BR-P1-003-3"
+    ]
+  },
+  {
+    "id": "P2-001",
+    "context": "product2",
+    "rules": 9,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 2,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-13T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-P2-001-1",
+      "BR-P2-001-2",
+      "BR-P2-001-3",
+      "BR-P2-001-4",
+      "BR-P2-001-5",
+      "BR-P2-001-6",
+      "BR-P2-001-7",
+      "BR-P2-001-8",
+      "BR-P2-001-9"
+    ],
+    "rulesWithoutScenario": [
+      "BR-P2-001-1",
+      "BR-P2-001-2",
+      "BR-P2-001-3",
+      "BR-P2-001-4",
+      "BR-P2-001-5",
+      "BR-P2-001-6",
+      "BR-P2-001-7",
+      "BR-P2-001-8",
+      "BR-P2-001-9"
+    ]
+  },
+  {
+    "id": "P2-002",
+    "context": "product2",
+    "rules": 5,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 1,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-13T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-P2-002-1",
+      "BR-P2-002-2",
+      "BR-P2-002-3",
+      "BR-P2-002-4",
+      "BR-P2-002-5"
+    ],
+    "rulesWithoutScenario": [
+      "BR-P2-002-1",
+      "BR-P2-002-2",
+      "BR-P2-002-3",
+      "BR-P2-002-4",
+      "BR-P2-002-5"
+    ]
+  },
+  {
+    "id": "P2-003",
+    "context": "product2",
+    "rules": 3,
+    "rulesWithStory": 0,
+    "rulesWithScenario": 0,
+    "stories": 0,
+    "scenarios": 0,
+    "openQuestions": 1,
+    "badge": "draft · unverified",
+    "staleAfter": "2027-01-13T00:00:00Z",
+    "rulesWithoutStory": [
+      "BR-P2-003-1",
+      "BR-P2-003-2",
+      "BR-P2-003-3"
+    ],
+    "rulesWithoutScenario": [
+      "BR-P2-003-1",
+      "BR-P2-003-2",
+      "BR-P2-003-3"
     ]
   },
   {

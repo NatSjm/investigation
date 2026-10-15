@@ -339,6 +339,18 @@ One spec is written in four runs; one Copilot run, one human review of the diff,
 (`.github/skills/spec-lifecycle/SKILL.md`) and its review checklist (`references/run-checklist.md`) are the reference.
 All commands are typed in the Copilot CLI opened in the docs repo.
 
+**Before Run 1, shape the spec list of the context** (migration lead with a developer, one hour per context;
+the rules are in `features/conventions.md`, section "Shaping specs"). Contexts follow the code seams, never the
+menu or the Confluence tree. The first spec of a context is its main screen; every modal or sub-capability with
+rules of its own gets the next number (`P1-001` screen, `P1-002` movement modal, `P1-003` peer modal). A
+component shared by two screens is described once, in the UI flow of the screen that renders it, and each half of
+its behaviour is a rule of the context that owns it, cited by ID. A product type is a dimension inside a
+capability spec (`STR-001` BR-5), unless the code has a class family for that product only; then the product is a
+context and a mirrored spec restates nothing (`P2-002` reads "as BR-P1-002-1, with transport mode as dimension").
+Behaviour across contexts is a flow (`flows/meeting-journey.md`, `flows/session-inputs-recalculation.md`), and every
+table column or chart series names a calculation document instead of carrying a formula. Write the list down as the
+first rows of the migration board; it is cheaper to split a spec on paper than after stories cite its rule IDs.
+
 **Run 1, skeleton from the code.** `/spec-skeleton-from-graph billing BIL-001`. The `spec-writer` reads the context's
 graph file, the contracts and the components map, plus exactly one source file, the context's entry point, and writes
 `features/billing/BIL-001.md`: API, events, data and UI flow from the graph with exact names; summary, actors and

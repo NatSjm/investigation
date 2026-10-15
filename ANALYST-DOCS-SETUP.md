@@ -31,7 +31,7 @@ packages, no npm needed for the core flow.
      v
  gen-graph.py (contexts.yml + docs-map.yml + maps)                -> generated/graph/REPO_MAP.md, <context>.md, graph.json
      v
- Run 1  spec-writer       skeleton spec per context from graph      -> features/<ctx>/<CTX>-001.md  (draft)
+ Run 1  spec-writer       skeleton spec per screen, then per modal     -> features/<ctx>/<CTX>-NNN.md  (draft)
  Run 2  confluence-migrator  one exported page per run, merged      -> same spec + glossary, page -> _done/
  Run 3  calc-auditor      formula vs calculator + its unit test     -> domain/calculations/<name>.md (Audit table)
  Run 4  human owner       answers open questions, marks verified    -> status: stable

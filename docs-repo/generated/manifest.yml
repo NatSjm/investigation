@@ -1,26 +1,26 @@
 # Evidence snapshot manifest - written by scripts/collect-evidence.py; do not edit.
 # Records which source commits the collector-owned files under generated/ describe (be, fe, openapi, asyncapi).
-collector: { version: '1.0', at: 2026-10-14T16:35:50Z }
+collector: { version: '1.0', at: 2026-10-15T10:07:35Z }
 sources:
-  backend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 9366b1a3a2528d1a6dcbac40dfaaf15fcd55f002, dirty: true }
-  frontend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 9366b1a3a2528d1a6dcbac40dfaaf15fcd55f002, dirty: true }
+  backend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 77185f7702c857a2f69ec07692ce3b83ba313c8b, dirty: true }
+  frontend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 77185f7702c857a2f69ec07692ce3b83ba313c8b, dirty: true }
 artifacts:
   - { path: generated/asyncapi/backend.yaml, source: backend, sha256: c52beffd8a28f5ab785252a16afc4a5cf671bc706a5c17af8999d7004dcc961b }
-  - { path: generated/be/api-index.md, source: backend, sha256: 976b773154ec991b7c9f0877a1e3fb99ab9f0908bd25849b8d92045c20b94af5 }
-  - { path: generated/be/codebase-map.md, source: backend, sha256: 60a75b0d83a229da40d4250c7ca39fa23c58f2609d7bc6fb7303731c28b170b5 }
-  - { path: generated/be/components.md, source: backend, sha256: 3c9d48ea7efd4eade7ebc803873641da9c0979b17074aea57457cc7e2664e5f5 }
-  - { path: generated/be/datasets.md, source: backend, sha256: 1ee4ff1c282bda469478aa4c3d1f9fc31cd8200159b0f28808a1730c5c144a9c }
-  - { path: generated/be/db-schema.md, source: backend, sha256: ec96c6f7e8d4af021fd554d503ba83f49c83d4a453488e4950d446e96de1f399 }
-  - { path: generated/be/docs-tags.md, source: backend, sha256: c388a86ed2c0ac42613e8d464a9bcb5f82495b2cadba7c0d1030a63c0b8574ca }
-  - { path: generated/be/events.md, source: backend, sha256: 573d189ff552d3cebb997f722cc3a02c1ba43285025901f9d0aa29bd34e4b34d }
-  - { path: generated/be/jobs.md, source: backend, sha256: 8d5e079fc4f4d09e215b64570bc3d073bd11d01839fb67b70d3d57b48ec0cacf }
-  - { path: generated/be/parameters.md, source: backend, sha256: 62a13fcd2a9a6bde38766e540144751816432d4d37bce59f103295a4c98104ef }
-  - { path: generated/fe/codebase-map.md, source: frontend, sha256: 1d088dc7dfe9b97a8177a57dee8c28d1c5757d61a373f8f49731f79f7f068aaa }
-  - { path: generated/fe/components.md, source: frontend, sha256: 2287d04040a5f6f1aa2197530b76d2dcc402f476b3c99a4f54ba830a2bbe498e }
-  - { path: generated/fe/docs-tags.md, source: frontend, sha256: 70bc7fef54721c6f9e32c1eaf572ba126db2f64df3b160b62ee30170a39db908 }
+  - { path: generated/be/api-index.md, source: backend, sha256: b5f1c61648dec76bd4355d54b109c3fcd5cec073c1b670d5a22f55db0f05cc8d }
+  - { path: generated/be/codebase-map.md, source: backend, sha256: 453a1b0d911232d3081b83a0a94eccaa8147f21f3230bd0da12f1596981db7f0 }
+  - { path: generated/be/components.md, source: backend, sha256: 1385389ef0d22ce1f76180ec24c091f7f2dde7c3156aa6ef6a7a499299451a4a }
+  - { path: generated/be/datasets.md, source: backend, sha256: 166d1af369372f87b993309e13474322f695756dc056d3e0b9e471a8c6f40543 }
+  - { path: generated/be/db-schema.md, source: backend, sha256: 947cacd5b659ece8d0cc4bb05cb5c46a88f2a2bdd93493ce4cca7b76ab14f1b6 }
+  - { path: generated/be/docs-tags.md, source: backend, sha256: 7be20f20ddb29b6e1cd81c34f6f498038f1b9b24422e4e2555a4e68f083abe29 }
+  - { path: generated/be/events.md, source: backend, sha256: 13e1c13191a130b91bfed87fe8c38dc0abfa2cae6b2a6f1f7a348bf8834d8450 }
+  - { path: generated/be/jobs.md, source: backend, sha256: 7ad94d59d8d3081392185bde71498330228c9c6eb6bc4dea09d43eed1bcd75a0 }
+  - { path: generated/be/parameters.md, source: backend, sha256: ddd66e32b34b6774f5357efe7e14bca7bef90d3c9c72b62e886e69e191c57a70 }
+  - { path: generated/fe/codebase-map.md, source: frontend, sha256: 81743bc4be1f3b75e5af21b21f926fa8c3951dbc439056c3f01ca66118b82d22 }
+  - { path: generated/fe/components.md, source: frontend, sha256: 2e9829e71dbc72cd78817c743e10324842d25d8885aeebce2e737575bb2d2d7a }
+  - { path: generated/fe/docs-tags.md, source: frontend, sha256: 47046e7a00a0d1d50450695b942b119a86d733c65477b56f5ff8d6e383edcc15 }
   - { path: generated/fe/graph-export-fe.json, source: frontend, sha256: 5f6794836924d63da1bd4c125e6a42e37a433bda400de880ca2eb2563f80ce3a }
-  - { path: generated/fe/routes.md, source: frontend, sha256: 6f56d5be6c3c3fe79eefc669a8db0149586be5463ba97d003d0699b6188c0944 }
-  - { path: generated/fe/types-index.md, source: frontend, sha256: e24e49b9723f310bae827b6df9465e33b48e86e7aed2fce7dc498ce5c8e5fd3c }
+  - { path: generated/fe/routes.md, source: frontend, sha256: ae9ed56a13363c55e7457192a2f0a4a0454489548acb6949389fef23bd1cba6e }
+  - { path: generated/fe/types-index.md, source: frontend, sha256: 9a456202930fa78a39f95498ac1beda38ff696dbcbff552bb9fb2fe7b770cfb8 }
   - { path: generated/openapi/backend.yaml, source: backend, sha256: b57353da0e0257acb4676d81fca34d381f7f4c18f2971205e05396f4ae1c7069 }
   - { path: generated/openapi/external/client-registry.yaml, source: backend, sha256: 537f1bfaf6ebaab3e0a3470b45d23e1664b0af50fb3a846069f286a614c2996b }
   - { path: generated/openapi/external/cover-provider.yaml, source: backend, sha256: fc9b5098605adb5478ae738262bd83530a852e53cda3e16a7b6330dba691b49a }

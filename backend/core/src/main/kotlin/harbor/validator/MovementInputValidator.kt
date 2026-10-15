@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component
  * - the sub-product belongs to the product group of the session,
  * - quantity > 0 and unit price >= 0,
  * - Product 1 rows carry a known city hub, Product 2 rows a transport mode (the breakdown dimension).
+ * @docs P1-002
+ * @docs P2-002
  */
 @Component
 class MovementInputValidator {

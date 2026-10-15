@@ -24,8 +24,8 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
 | clients | `CLI` | `Client` | `manager/ClientManager.kt` | `clients`: `/clients`, `/clients/:clientId` | [CLI-001](/features/clients/CLI-001.md) |
 | meetings | `MTG` | `Session`, `Meeting`, `RoleOverride`, `SessionClientConfig` | `manager/MeetingManager.kt` | `meetings`: `/meetings`, `/session/:sessionId/summary` | [MTG-001](/features/meetings/MTG-001.md) |
 | imports | `IMP` | `Import`, `Movement`, `Movements`, `GoodsMovement`, `Xls`, `Workbook`, `DailyMovement`, `MonthlySnapshot` | `manager/ImportManager.kt` | — (jobs; monitored via admin) | missing (`IMP-001` backlog) |
-| product1 | `P1` | `Product1`, `Projection`, `Peer`, `MovementInput`, `SessionMovementInput`, `SessionPeerSimulation` | `manager/Product1Manager.kt` | `product1`: `/session/:sessionId/product1` | [P1-001](/features/product1/P1-001.md) |
-| product2 | `P2` | `Product2` | `manager/Product2Manager.kt` | `product2`: `/session/:sessionId/product2` | missing (`P2-001` backlog) |
+| product1 | `P1` | `Product1`, `Projection`, `Peer`, `MovementInput`, `SessionMovementInput`, `SessionPeerSimulation` | `manager/Product1Manager.kt` | `product1`: `/session/:sessionId/product1` | [P1-001](/features/product1/P1-001.md) (screen), [P1-002](/features/product1/P1-002.md), [P1-003](/features/product1/P1-003.md) (modals) |
+| product2 | `P2` | `Product2` | `manager/Product2Manager.kt` | `product2`: `/session/:sessionId/product2` | [P2-001](/features/product2/P2-001.md), [P2-002](/features/product2/P2-002.md), [P2-003](/features/product2/P2-003.md) (mirrors of P1, draft) |
 | cover | `COV` | `Cover` | `manager/CoverManager.kt` | `cover`: widgets inside product pages | missing (`COV-001` backlog) |
 | market | `MKT` | `Market`, `Scenario`, `BaselinePrice` | `manager/MarketManager.kt` | `market`: `/session/:sessionId/scenarios` | [MKT-001](/features/market/MKT-001.md) (skeleton) |
 | stress | `STR` | `Stress` | `manager/StressManager.kt` | `stress`: `/session/:sessionId/stress-test` | [STR-001](/features/stress/STR-001.md) (draft) |

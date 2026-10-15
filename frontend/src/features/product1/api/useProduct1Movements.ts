@@ -6,7 +6,7 @@ import type { MovementInput, Projection } from '../product1.types';
 /**
  * Modelled movements per month for Product 1 (`putProduct1Movements`, modal 1).
  * Replaces the session's `session_movement_input` rows and returns the recomputed projection.
- * @docs P1-001
+ * @docs P1-002
  */
 export function useProduct1Movements() {
   const sessionId = useSessionStore((s) => s.sessionId);

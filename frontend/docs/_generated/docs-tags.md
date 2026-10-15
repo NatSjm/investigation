@@ -4,7 +4,7 @@ title: "Spec-to-code traceability (@docs tags)"
 description: "Generated map: Spec-to-code traceability (@docs tags), derived from @docs <ID> tags in KDoc/JSDoc; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-14
+  at: 2026-10-15
 status: stable
 ---
 # Spec-to-code traceability (@docs tags)
@@ -46,18 +46,18 @@ status: stable
 | `MTG-001` | `export function ClientMeetingsPage()` | `/meetings/client` - sessions of kind `CLIENT` (real meetings), with status filter and PDF download for closed ones. | `src/features/meetings/ui/ClientMeetingsPage.tsx:7` |
 | `MTG-001` | `export function MeetingsListPage(` | Fixed session kind of the page (`ClientMeetingsPage`, `PreparationSessionsPage`); the kind filter is hidden then. */ | `src/features/meetings/ui/MeetingsListPage.tsx:44` |
 | `MTG-001` | `export function PreparationSessionsPage()` | `/meetings/preparation` - sessions of kind `PREPARATION` (dry runs by the representative), same list and actions. | `src/features/meetings/ui/PreparationSessionsPage.tsx:7` |
-| `P1-001` | `export function usePeerSimulation1()` | Peer simulation for Product 1 (`postProduct1PeerSimulation`, modal 2): monthly series of | `src/features/product1/api/usePeerSimulation1.ts:11` |
-| `P1-001` | `export function useProduct1Movements()` | Modelled movements per month for Product 1 (`putProduct1Movements`, modal 1). | `src/features/product1/api/useProduct1Movements.ts:11` |
 | `P1-001` | `export function useProduct1Overview(city?: string)` | Product 1 overview (`getProduct1Overview`): the four projection tables filtered by city hub | `src/features/product1/api/useProduct1Overview.ts:11` |
 | `P1-001` | `export function useProduct1Projection()` | Product 1 projection only (`getProduct1Projection`): the four tables without chart series, | `src/features/product1/api/useProduct1Overview.ts:26` |
 | `P1-001` | `(module) index.ts` | Product 1 overview per city hub: the four cumulative projection tables, cover ratio chart, movement input and peer simulation modals. | `src/features/product1/index.ts:6` |
 | `P1-001` | `export type ProjectionRow` | View-model types for Product 1 (also consumed by `product2`, which shares the projection shape). | `src/features/product1/product1.types.ts:18` |
-| `P2-001` | `export function usePeerSimulation2()` | Peer simulation for Product 2 (`postProduct2PeerSimulation`, modal 2). | `src/features/product2/api/usePeerSimulation2.ts:10` |
-| `P2-001` | `export function useProduct2Movements()` | Modelled movements per month for Product 2 (`putProduct2Movements`, modal 1). | `src/features/product2/api/useProduct2Movements.ts:11` |
+| `P1-002` | `export function useProduct1Movements()` | Modelled movements per month for Product 1 (`putProduct1Movements`, modal 1). | `src/features/product1/api/useProduct1Movements.ts:11` |
+| `P1-003` | `export function usePeerSimulation1()` | Peer simulation for Product 1 (`postProduct1PeerSimulation`, modal 2): monthly series of | `src/features/product1/api/usePeerSimulation1.ts:11` |
 | `P2-001` | `export function useProduct2Overview(transportMode?: TransportMode)` | Product 2 overview (`getProduct2Overview`): four projection tables filtered by transport mode | `src/features/product2/api/useProduct2Overview.ts:12` |
 | `P2-001` | `export function useProduct2Projection()` | Product 2 projection only (`getProduct2Projection`). | `src/features/product2/api/useProduct2Overview.ts:30` |
 | `P2-001` | `(module) index.ts` | Product 2 overview per transport mode, reusing the projection tables, cover chart and modals of product1. | `src/features/product2/index.ts:6` |
 | `P2-001` | `export type Product2Overview` | View-model types for Product 2. The projection shape is identical to Product 1 | `src/features/product2/product2.types.ts:15` |
+| `P2-002` | `export function useProduct2Movements()` | Modelled movements per month for Product 2 (`putProduct2Movements`, modal 1). | `src/features/product2/api/useProduct2Movements.ts:11` |
+| `P2-003` | `export function usePeerSimulation2()` | Peer simulation for Product 2 (`postProduct2PeerSimulation`, modal 2). | `src/features/product2/api/usePeerSimulation2.ts:10` |
 | `PRS-001` | `export function PresentationLayout()` | Minimal layout for the client-facing window `/present/:sessionId`: no main navigation, no admin links, | `src/app/PresentationLayout.tsx:13` |
 | `PRS-001` | `export function sessionChannelName(sessionId: string): string` | Cross-window synchronisation between the representative's session window and the client-facing | `src/features/presentation/channel.ts:16` |
 | `PRS-001` | `export function usePresentationPublisher(sessionId: string): (message: PresentationMessage)` | Representative side. Returns `publish(message)`; the channel is opened once per `sessionId` | `src/features/presentation/channel.ts:55` |

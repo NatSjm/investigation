@@ -4,7 +4,7 @@ title: "Graph: clients (be+fe)"
 description: "Client search, client overview with product group cards (key indicators, sparklines, Start meeting / Prepare) and role classification."
 generated:
   by: process:gen-graph
-  at: 2026-10-14
+  at: 2026-10-15
 status: stable
 ---
 # Graph: clients (be+fe)
@@ -49,8 +49,8 @@ status: stable
 ## components
 - `component:ClientOverviewPage` - `src/features/clients/ui/ClientOverviewPage.tsx:16`
 - `component:ClientInfoPanel` - `src/features/clients/ui/ClientInfoPanel.tsx:11`
-- `component:ProductGroupCard` - `src/features/clients/ui/ProductGroupCard.tsx:20`
 - `component:ClientSearchPage` - `src/features/clients/ui/ClientSearchPage.tsx:15`
+- `component:ProductGroupCard` - `src/features/clients/ui/ProductGroupCard.tsx:20`
 
 ## tables
 - `table:client_profile` - `core/src/main/resources/db/migration/V1__clients.sql` - 6 columns: id, external_ref, name, country, segment, created_at

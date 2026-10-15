@@ -27,7 +27,7 @@ sources:
     title: Rounding.kt
 # --- repo extensions ---
 name: peer_benchmark_simulation
-used_by: [P1-001]
+used_by: [P1-003, P2-003]
 code_refs:
   - backend/core/src/main/kotlin/harbor/utils/PeerBenchmark.kt
   - backend/core/src/main/kotlin/harbor/utils/Rounding.kt
@@ -38,7 +38,7 @@ last_verified: null
 # Peer benchmark simulation (segment median × scaling factor)
 
 ## Purpose
-Modal 2 of the product pages ("Peer simulation", P1-001 BR-P1-001-7) answers "what do similar firms move?". For
+Modal 2 of the product pages ("Peer simulation", P1-003 BR-P1-003-3; P2-003 for Product 2) answers "what do similar firms move?". For
 every month the calculation takes the **median** monthly quantity of all clients of the chosen peer segment and
 multiplies it by a **scaling factor**. The result is a separate chart series; it is never merged into the projection
 tables.[^impl]
@@ -51,7 +51,7 @@ owner's decision (see Open questions), not an approved business rule.[^impl]
 | Name | Type | Unit | Source | Constraints |
 |---|---|---|---|---|
 | segmentQuantities(m) | list of Decimal | units | monthly quantities of every client of the peer segment, per month `m` (assembled by `PeerSimulationService` from `movement_monthly`, last 12 full months) | may be empty for a month |
-| scalingFactor | Decimal | ratio | request `scalingFactor`, default parameter `peer.scaling_default` | 0.1-5.0 (BR-P1-001-7) |
+| scalingFactor | Decimal | ratio | request `scalingFactor`, default parameter `peer.scaling_default` | positive (BR-P1-003-2; the former 0.1-5.0 claim is an open question of P1-003) |
 
 ## Parameters
 | Key (`parameter_set.key`) | Default | Scope |
@@ -129,7 +129,7 @@ in the same run so that the concept has an executor).
 
 ## Performance notes
 At most 12 months × clients of the segment; computed in memory on `postProduct1PeerSimulation` and stored as
-`session_peer_simulation` (BR-P1-001-7).
+`session_peer_simulation` (BR-P1-003-1).
 
 ## Change log
 | Date | Change | Ref |

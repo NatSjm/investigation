@@ -20,6 +20,8 @@ import java.time.LocalDate
  * Peer simulation modal (modal 2, calculation `peer_benchmark_simulation`): median monthly quantity of the
  * peer segment over the last 12 full months scaled by `scalingFactor` (default parameter `peer.scaling_default`).
  * Each run is recorded in `session_peer_simulation`; the series is not stored.
+ * @docs P1-003
+ * @docs P2-003
  */
 @Service
 class PeerSimulationService(

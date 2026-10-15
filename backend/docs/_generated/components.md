@@ -4,7 +4,7 @@ title: "Components (BE)"
 description: "One row per class: layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix."
 generated:
   by: process:gen-docs
-  at: 2026-10-14
+  at: 2026-10-15
 status: stable
 ---
 # Components (BE)
@@ -149,7 +149,7 @@ status: stable
 | `CoverRatioService` | service | core | Service | `CoverPolicyDao`, `MovementMonthlyDao` |  |  | `core/src/main/kotlin/harbor/service/CoverRatioService.kt:26` |
 | `MovementImportService` | service | core | Service | `ImportBatchDao`, `GoodsMovementDao`, `MovementMonthlyDao`, `FileExchangeClient`, `WorkbookReaderFactory`, `XlsMovementParser`, `MovementsLoadedPublisher`, `ClientProfileService` |  |  | `core/src/main/kotlin/harbor/service/MovementImportService.kt:31` |
 | `ParameterService` | service | core | Service | `ParameterDao` |  |  | `core/src/main/kotlin/harbor/service/ParameterService.kt:23` |
-| `PeerSimulationService` | service | core | Service | `MovementMonthlyDao`, `SessionPeerSimulationDao`, `ParameterService` |  |  | `core/src/main/kotlin/harbor/service/PeerSimulationService.kt:24` |
+| `PeerSimulationService` | service | core | Service | `MovementMonthlyDao`, `SessionPeerSimulationDao`, `ParameterService` |  | `P1-003`, `P2-003` | `core/src/main/kotlin/harbor/service/PeerSimulationService.kt:26` |
 | `ProjectionInputAssembler` | service | core | Component | `MovementMonthlyDao`, `SessionMovementInputDao`, `ParameterService`, `BaselinePriceService` |  |  | `core/src/main/kotlin/harbor/service/ProjectionInputAssembler.kt:30` |
 | `ProjectionService` | service | core | Service | `ProjectionInputAssembler`, `ProjectionDao`, `SessionMovementInputDao`, `CoverRatioService` |  |  | `core/src/main/kotlin/harbor/service/ProjectionService.kt:27` |
 | `ReportPayloadService` | service | core | Service | `MeetingSessionDao`, `SessionClientConfigDao`, `ClientProfileService`, `ProjectionDao`, `MarketScenarioDao`, `StressTestResultDao` |  |  | `core/src/main/kotlin/harbor/service/ReportPayloadService.kt:22` |
@@ -164,7 +164,7 @@ status: stable
 | `Rounding` | utils | core | object |  |  |  | `core/src/main/kotlin/harbor/utils/Rounding.kt:16` |
 | `ScenarioPricePath` | utils | core | object |  |  | `scenario_price_path` | `core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19` |
 | `StressTestCalculator` | utils | core | object |  |  | `stress_test_monthly` | `core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23` |
-| `MovementInputValidator` | validator | core | Component |  |  |  | `core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:16` |
+| `MovementInputValidator` | validator | core | Component |  |  | `P1-002`, `P2-002` | `core/src/main/kotlin/harbor/validator/MovementInputValidator.kt:18` |
 | `ParameterValidator` | validator | core | Component |  |  |  | `core/src/main/kotlin/harbor/validator/ParameterValidator.kt:16` |
 | `RoleOverrideValidator` | validator | core | Component |  |  |  | `core/src/main/kotlin/harbor/validator/RoleOverrideValidator.kt:15` |
 | `ScenarioValidator` | validator | core | Component |  |  |  | `core/src/main/kotlin/harbor/validator/ScenarioValidator.kt:15` |

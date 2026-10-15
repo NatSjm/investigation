@@ -1,5 +1,20 @@
 # Update Log
 
+## 2026-10-15
+* **Specs cut by screen and modal; product mirrors; two flows.** `features/conventions.md` gains the section
+  "Shaping specs" (contexts follow the code, first spec = screen, modals with own rules = own spec, ownership by
+  rule, product types as a dimension or a mirrored context, flows for cross-context behaviour, formulas as
+  calculations, optional screenshots). [P1-001](/features/product1/P1-001.md) is now the screen only; its modal
+  rules moved to [P1-002](/features/product1/P1-002.md) (modelled movements, former BR-5/6 withdrawn with pointers)
+  and [P1-003](/features/product1/P1-003.md) (peer simulation, former BR-7; the 0.1-5.0 factor range became an
+  open question because neither the contract nor the code enforces it). Product 2 documented as mirrors
+  [P2-001](/features/product2/P2-001.md), [P2-002](/features/product2/P2-002.md), [P2-003](/features/product2/P2-003.md).
+  New flows [meeting-journey](/flows/meeting-journey.md) and
+  [session-inputs-recalculation](/flows/session-inputs-recalculation.md) (the stress test is not rerun
+  automatically). Work items split accordingly (`P1-002.yml`, `P1-003.yml`); `docs-map.yml`, the context map,
+  the glossary references, the calculations' `used_by` and the `@docs` tags of the validator, the peer service and
+  the four modal hooks updated; generated maps, graph, indexes, coverage matrix and migration boards regenerated.
+
 ## 2026-10-14
 * **Scripts ported from PowerShell to Python (standard library, 3.11+).** Every `scripts/*.py`, `scripts/hooks/guard-generated.py`
   and the code-repo generators (`scripts/docs/*.py`, `check-file-size.py`, `seed-local.py`, `apply-kit.py`) replace the former
