@@ -19,5 +19,5 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - name: Generate *Api interfaces from core/src/main/resources/openapi/harbor-api.yaml and resolve dependencies
-        run: mvn -q -pl core -am -DskipTests generate-sources
+      - name: Generate *Api interfaces from harbor-core/src/main/resources/openapi/harbor-api.yaml and resolve dependencies
+        run: mvn -q -pl harbor-core -am -DskipTests generate-sources

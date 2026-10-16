@@ -49,7 +49,7 @@ stories:
     subtasks:
       - summary: "[DB] Flyway V5__projection.sql: projection_by_subproduct, projection_by_dimension, projection_by_direction, projection_summary"
         estimate_hours: 3
-      - summary: "[BE] Product1Manager -> service/ProjectionService: merge actual + modelled rows, call utils/ProjectionAggregator, persist via dao/ProjectionDao"
+      - summary: "[BE] Product1Manager -> service/ProjectionService: merge actual + modelled rows, call utils/ProjectionAggregator, persist via dao/ProjectionRepository"
         estimate_hours: 8
       - summary: "[BE] getProduct1Overview / getProduct1Projection in api/Product1Controller (generated Product1Api) delegating to manager/Product1Manager"
         estimate_hours: 5

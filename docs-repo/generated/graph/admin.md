@@ -19,28 +19,28 @@ status: stable
 - `hook:useTriggerImport` - `src/pages/ImportsPage/hook/useImportBatches.ts:22`
 
 ## contexts
-- `context:admin` - `core/src/main/kotlin/harbor/manager/AdminManager.kt` - entry point AdminManager (manager)
+- `context:admin` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/AdminManager.kt` - entry point AdminManager (manager)
 
 ## features
 - `feature:ParametersPage` - `src/pages/ParametersPage/ParametersPage.tsx` - /admin/parameters` - parameter sets with product group filter and inline editing.
 - `feature:ImportsPage` - `src/pages/ImportsPage/ImportsPage.tsx` - /admin/imports` - monitor of the daily XLS movement imports with a manual trigger.
 
 ## endpoints
-- `endpoint:GET /api/v1/admin/parameters` - `core/src/main/kotlin/harbor/api/AdminController.kt:20` - operationId listParameters; handler AdminController.listParameters; params 
-- `endpoint:PUT /api/v1/admin/parameters/{key}` - `core/src/main/kotlin/harbor/api/AdminController.kt:23` - operationId upsertParameter; handler AdminController.upsertParameter; params key
-- `endpoint:GET /api/v1/admin/imports` - `core/src/main/kotlin/harbor/api/AdminController.kt:26` - operationId listImportBatches; handler AdminController.listImportBatches; params 
-- `endpoint:POST /api/v1/admin/imports/run` - `core/src/main/kotlin/harbor/api/AdminController.kt:29` - operationId triggerImport; handler AdminController.triggerImport; params 
+- `endpoint:GET /api/v1/admin/parameters` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:20` - operationId listParameters; handler AdminController.listParameters; params 
+- `endpoint:PUT /api/v1/admin/parameters/{key}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:23` - operationId upsertParameter; handler AdminController.upsertParameter; params key
+- `endpoint:GET /api/v1/admin/imports` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:26` - operationId listImportBatches; handler AdminController.listImportBatches; params 
+- `endpoint:POST /api/v1/admin/imports/run` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:29` - operationId triggerImport; handler AdminController.triggerImport; params 
 
 ## routes
 - `route:/admin/parameters` - `src/routing/Routing.tsx:36` - renders ParametersPage
 - `route:/admin/imports` - `src/routing/Routing.tsx:37` - renders ImportsPage
 
 ## classes
-- `class:ParameterService` - `core/src/main/kotlin/harbor/service/ParameterService.kt:23` - service; Service
-- `class:AdminController` - `core/src/main/kotlin/harbor/api/AdminController.kt:17` - api; RestController
-- `class:AdminManager` - `core/src/main/kotlin/harbor/manager/AdminManager.kt:24` - manager; Service
-- `class:ParameterDao` - `core/src/main/kotlin/harbor/dao/ParameterDao.kt:12` - dao; Repository
-- `class:ParameterValidator` - `core/src/main/kotlin/harbor/validator/ParameterValidator.kt:16` - validator; Component
+- `class:ParameterService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ParameterService.kt:23` - service; Service
+- `class:AdminController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:17` - api; RestController
+- `class:AdminManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/AdminManager.kt:24` - manager; Service
+- `class:ParameterRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ParameterRepository.kt:12` - dao/repository; Repository
+- `class:ParameterValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/ParameterValidator.kt:16` - validator; Component
 
 ## components
 - `component:ParameterRow` - `src/pages/ParametersPage/components/ParameterRow/ParameterRow.tsx:14`
@@ -48,7 +48,7 @@ status: stable
 - `component:ImportsPage` - `src/pages/ImportsPage/ImportsPage.tsx:22`
 
 ## tables
-- `table:parameter_set` - `core/src/main/resources/db/migration/V9__parameters.sql` - 9 columns: id, key, scope_product_group, scope_country, scope_value, value, valid_from, updated_by, updated_at
+- `table:parameter_set` - `harbor-core/src/main/resources/db/migration/V9__parameters.sql` - 9 columns: id, key, scope_product_group, scope_country, scope_value, value, valid_from, updated_by, updated_at
 
 ## Edges
 - `feature:ImportsPage` -calls-> `endpoint:GET /api/v1/admin/imports`
@@ -61,7 +61,7 @@ status: stable
 - `hook:useUpsertParameter` -calls-> `endpoint:PUT /api/v1/admin/parameters/{key}` (exact)
 - `context:admin` -contains-> `class:AdminController`
 - `context:admin` -contains-> `class:AdminManager`
-- `context:admin` -contains-> `class:ParameterDao`
+- `context:admin` -contains-> `class:ParameterRepository`
 - `context:admin` -contains-> `class:ParameterService`
 - `context:admin` -contains-> `class:ParameterValidator`
 - `feature:ImportsPage` -contains-> `component:ImportsPage` (exact)
@@ -78,7 +78,7 @@ status: stable
 - `class:ClientRoleService` -depends-on-> `class:ParameterService` (-> clients)
 - `class:CoverQuoteService` -depends-on-> `class:ParameterService` (-> cover)
 - `class:MeetingManager` -depends-on-> `class:ParameterService` (-> meetings)
-- `class:ParameterService` -depends-on-> `class:ParameterDao`
+- `class:ParameterService` -depends-on-> `class:ParameterRepository`
 - `class:PeerSimulationService` -depends-on-> `class:ParameterService` (-> product1)
 - `class:ProjectionInputAssembler` -depends-on-> `class:ParameterService` (-> product1)
 - `feature:fe-app` -depends-on-> `feature:ImportsPage` (-> fe-app) (exact)
@@ -97,10 +97,10 @@ status: stable
 - `spec:ADM-001` -implemented-by-> `feature:ImportsPage` (-> docs)
 - `spec:ADM-001` -implemented-by-> `feature:ParametersPage` (-> docs)
 - `context:admin` -owns-> `table:parameter_set`
-- `class:ParameterDao` -persists-to-> `table:parameter_set`
+- `class:ParameterRepository` -persists-to-> `table:parameter_set`
 - `feature:ImportsPage` -renders-> `component:DataTable` (-> shared-ui)
 - `route:/admin/imports` -renders-> `feature:ImportsPage`
 - `route:/admin/parameters` -renders-> `feature:ParametersPage`
 
 ## Specs touching this community
-- `spec:ADM-001` - `features/admin/ADM-001.md` - status draft; be core/src/main/kotlin/harbor/manager/AdminManager.kt:25; fe src/pages/ImportsPage/hook/useImportBatches.ts:10; fe src/pages/ImportsPage/hook/useImportBatches.ts:22; fe src/pages/ImportsPage/ImportsPage.tsx:22; fe src/pages/ParametersPage/hook/useParameters.ts:20; fe src/pages/ParametersPage/hook/useParameters.ts:9; fe src/pages/ParametersPage/ParametersPage.tsx:9; fe src/routing/AdminRoutesGuard.tsx:16; fe src/types/admin.ts:11
+- `spec:ADM-001` - `features/admin/ADM-001.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/manager/AdminManager.kt:25; fe src/pages/ImportsPage/hook/useImportBatches.ts:10; fe src/pages/ImportsPage/hook/useImportBatches.ts:22; fe src/pages/ImportsPage/ImportsPage.tsx:22; fe src/pages/ParametersPage/hook/useParameters.ts:20; fe src/pages/ParametersPage/hook/useParameters.ts:9; fe src/pages/ParametersPage/ParametersPage.tsx:9; fe src/routing/AdminRoutesGuard.tsx:16; fe src/types/admin.ts:11

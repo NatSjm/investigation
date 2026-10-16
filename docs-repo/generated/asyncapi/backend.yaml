@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: >-
     Kafka topics used by harbor-backend. Topic names are declared once in
-    `kafka_client/src/main/kotlin/harbor/kafka/Topics.kt` (event payloads in `harbor.kafka.events`). In AsyncAPI 2.x `publish` describes
+    `kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt` (event payloads in `com.acme.harbor.kafka.events`). In AsyncAPI 2.x `publish` describes
     messages the application RECEIVES and `subscribe` describes messages it SENDS; the `x-producer` /
     `x-consumers` extensions name the concrete classes.
 servers:
@@ -17,8 +17,8 @@ channels:
   harbor.imports.movements-loaded:
     description: A daily import batch has been loaded into goods_movement.
     x-topic-constant: Topics.MOVEMENTS_LOADED
-    x-producer: harbor.event.MovementsLoadedPublisher
-    x-consumers: [harbor.event.Product1ProjectionRefreshListener, harbor.event.Product2ProjectionRefreshListener]
+    x-producer: com.acme.harbor.event.MovementsLoadedPublisher
+    x-consumers: [com.acme.harbor.event.Product1ProjectionRefreshListener, com.acme.harbor.event.Product2ProjectionRefreshListener]
     subscribe:
       operationId: movementsLoaded
       message: { $ref: '#/components/messages/MovementsLoadedEvent' }
@@ -27,7 +27,7 @@ channels:
     description: The external market-data service published a new baseline curve.
     x-topic-constant: Topics.PRICES_UPDATED
     x-producer: external (market-data)
-    x-consumers: [harbor.event.MarketPricesListener]
+    x-consumers: [com.acme.harbor.event.MarketPricesListener]
     publish:
       operationId: pricesUpdated
       message: { $ref: '#/components/messages/PricesUpdatedEvent' }
@@ -35,8 +35,8 @@ channels:
   harbor.meetings.session-closed:
     description: A meeting session was closed by the representative.
     x-topic-constant: Topics.SESSION_CLOSED
-    x-producer: harbor.event.SessionEventsPublisher
-    x-consumers: [harbor.event.ReportSessionClosedListener, harbor.event.ClientRoleSessionClosedListener]
+    x-producer: com.acme.harbor.event.SessionEventsPublisher
+    x-consumers: [com.acme.harbor.event.ReportSessionClosedListener, com.acme.harbor.event.ClientRoleSessionClosedListener]
     subscribe:
       operationId: sessionClosed
       message: { $ref: '#/components/messages/SessionClosedEvent' }
@@ -44,7 +44,7 @@ channels:
   harbor.reports.render-requested:
     description: Ask document-service to render the report payload as PDF.
     x-topic-constant: Topics.REPORT_RENDER_REQUESTED
-    x-producer: harbor.event.ReportRenderRequester
+    x-producer: com.acme.harbor.event.ReportRenderRequester
     x-consumers: [external (document-service)]
     subscribe:
       operationId: reportRenderRequested
@@ -54,7 +54,7 @@ channels:
     description: document-service finished rendering a PDF.
     x-topic-constant: Topics.REPORT_RENDERED
     x-producer: external (document-service)
-    x-consumers: [harbor.event.ReportRenderedListener]
+    x-consumers: [com.acme.harbor.event.ReportRenderedListener]
     publish:
       operationId: reportRendered
       message: { $ref: '#/components/messages/ReportRendered' }

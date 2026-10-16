@@ -98,7 +98,7 @@ export function activate(ctx: vscode.ExtensionContext) {
   );
 
   // @docs participant: retrieval first, then one bounded model call with only the retrieved context.
-  const participant = vscode.chat.createChatParticipant('harbor.docs', async (request, _chatCtx, stream, token) => {
+  const participant = vscode.chat.createChatParticipant('com.acme.harbor.docs', async (request, _chatCtx, stream, token) => {
     const q = request.prompt.trim();
     let context = '';
     switch (request.command) {

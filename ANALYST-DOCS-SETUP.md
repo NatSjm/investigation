@@ -10,7 +10,7 @@ Assumptions (adjust the names, keep the shape):
 | Placeholder | Meaning |
 |---|---|
 | `<docs>` | your docs repository (already has the FE-facing Swagger, other services' Swagger and the Kafka schema) |
-| `<be>`, `<fe>` | backend (Kotlin/Spring, layered `core/src/main/kotlin/<project>/<layer>/`) and frontend repositories |
+| `<be>`, `<fe>` | backend (Kotlin/Spring, layered `<module>/src/main/kotlin/<project>/<layer>/`) and frontend repositories |
 | `<project>` | the Kotlin root package |
 | `<CTX>` | spec ID prefix of one bounded context (e.g. `P1`, `CLI`) |
 | `C:/src\` | the folder where `<docs>`, `<be>`, `<fe>` are checked out side by side |
@@ -55,9 +55,9 @@ into two groups first:
 
 | Contract | Where it really comes from | Put it in `<docs>` at |
 |---|---|---|
-| Own REST contract (the one FE and BE are generated from) | `<be>/core/src/main/resources/openapi/<name>.yaml` | `generated/openapi/backend.yaml` - **collector-owned**, do not keep a hand copy |
-| External services consumed by BE | `<be>/core/src/main/resources/api/*.yaml` | `generated/openapi/external/*.yaml` - **collector-owned** |
-| Kafka schema, if it is AsyncAPI and lives in `<be>` | `<be>/core/src/main/resources/openapi/<events>.yaml` | `generated/asyncapi/backend.yaml` - **collector-owned** |
+| Own REST contract (the one FE and BE are generated from) | `<be>/<module>/src/main/resources/openapi/<name>.yaml` | `generated/openapi/backend.yaml` - **collector-owned**, do not keep a hand copy |
+| External services consumed by BE | `<be>/<module>/src/main/resources/api/*.yaml` | `generated/openapi/external/*.yaml` - **collector-owned** |
+| Kafka schema, if it is AsyncAPI and lives in `<be>` | `<be>/<module>/src/main/resources/openapi/<events>.yaml` | `generated/asyncapi/backend.yaml` - **collector-owned** |
 | Anything that is **not** in `<be>` (other teams' Swagger, Avro/JSON schemas from a registry, Swagger 2.0 you cannot convert) | uploaded by hand | `contracts/openapi/`, `contracts/kafka/` - **hand-maintained**, never under `generated/` |
 
 Checks before you move anything:
@@ -105,7 +105,7 @@ Everything named "Harbor", `harbor`, `HARBOR`, `P1`, `CLI`, ... is sample vocabu
 | `scripts/context-pack.py`, `graph-query.py`, `gen-graph.py`, `build-index.py`, `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py`, `map-paths.py`, `coverage-matrix.py`, `migration-status.py`, `hooks/guard-generated.py` | `build-index.py` line ~78: bundle title. `context-pack.py` lines ~163-177: if you keep hand-maintained contracts in `contracts/`, add them to the "Contracts" section (it only reads `generated/openapi/backend.yaml` today). `validate-frontmatter.py` checks the generic ID pattern `^[A-Z][A-Z0-9]*-\d{3}$` and the required keys (line 17); change only if your IDs look different. |
 | `scripts/collect-evidence.py` | Lines 99-101: replace `openapi/harbor-api.yaml` and `openapi/harbor-events.yaml` with your file names. Remove the `asyncapi` line if your events contract is not AsyncAPI. Line 76: temp folder prefix. |
 | `.github/agents/analyst.agent.md` | Replace with the version in Step 14 (adds a question-answering mode). |
-| `.github/agents/spec-writer.agent.md`, `confluence-migrator.agent.md`, `calc-auditor.agent.md`, `doc-sync.agent.md`, `migration-lead.agent.md` | Replace `harbor` paths with `<project>`. In `calc-auditor` replace `V9__parameters.sql` / `parameter_set` / `.../calc/<Class>Test.kt` with where your parameters and calculator tests really live. In `doc-sync` step 5 replace `core/src/main/kotlin/harbor/utils/**` with your calculation package. |
+| `.github/agents/spec-writer.agent.md`, `confluence-migrator.agent.md`, `calc-auditor.agent.md`, `doc-sync.agent.md`, `migration-lead.agent.md` | Replace `harbor` paths with `<project>`. In `calc-auditor` replace `V9__parameters.sql` / `parameter_set` / `.../calc/<Class>Test.kt` with where your parameters and calculator tests really live. In `doc-sync` step 5 replace `harbor-core/src/main/kotlin/com/acme/harbor/utils/**` with your calculation package. |
 | `.github/prompts/*.prompt.md` | Replace sample defaults in `${input:...:default}` (e.g. `product2 P2-001`). |
 | `.github/skills/spec-lifecycle`, `task-context`, `write-feature-spec`, `calculation-spec`, `legacy-page-audit`, `jira-work-items`, `gherkin-test-design`, `docs-analytics`, `code-graph` | Replace sample names and paths. |
 | `.github/instructions/*.instructions.md` | Keep `applyTo` globs; replace sample names. |
@@ -220,7 +220,7 @@ assumptions; an empty or wrong map means the generator must be adapted, never th
 |---|---|---|
 | `components.md` | Spring stereotypes, constructor injection, `JpaRepository<Entity>` / `@Table` | adapt the regex in `gen-components.py` |
 | `api-index.md` | contract-first: `operationId` implemented as `override fun <operationId>(` in a `@RestController` | otherwise it falls back to `@*Mapping` annotations; check `_not implemented_` rows |
-| `events.md` | `@KafkaListener` + `KafkaTemplate.send(Topics.X, ...)`, constants in `kafka_client` | adapt `gen-events.py` |
+| `events.md` | `@KafkaListener` + `KafkaTemplate.send(Topics.X, ...)`, constants in `kafka-client` | adapt `gen-events.py` |
 | `db-schema.md` | Flyway `db/migration/V*.sql` | Liquibase -> rewrite `gen-db-schema.py` |
 | `jobs.md` | `@Scheduled` | - |
 | `parameters.md` | enum `ParameterKey(val key)` + `INSERT INTO parameter_set` seeds in Flyway migrations | other names via `--enum-name` / `--table`; otherwise adapt `gen-parameters.py` |
@@ -280,8 +280,8 @@ Read `generated/graph/REPO_MAP.md`: every community is a future spec; the "code 
 - `domain/glossary.md`: one line per term taken from the contracts and entity names (code vocabulary). Leave the
   `Aliases` column for Confluence wording and other languages - `confluence-migrator` fills it.
 - `docs-map.yml`: one mapping per context, even before the spec exists (`specs: []  # TODO: <CTX>-001`). BE globs select
-  by prefix: `be/core/src/main/kotlin/<project>/**/<Prefix>*.kt`. Add calculations
-  (`be/core/src/main/kotlin/<project>/utils/**` -> `domain/calculations/**`) and messaging paths.
+  by prefix: `be/<module>/src/main/kotlin/<project>/**/<Prefix>*.kt`. Add calculations
+  (`be/<module>/src/main/kotlin/<project>/utils/**` -> `domain/calculations/**`) and messaging paths.
 
 ### Step 10. Bring in the Confluence export
 

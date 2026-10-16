@@ -36,13 +36,13 @@ refers to the real application or its industry.
 - Closing a meeting stores the report payload as JSON (`meeting_report.payload`), requests PDF rendering via Kafka from the external
   `document-service`; the **Meetings** page lists sessions with a **Download PDF** button.
 - **Admin** (outside meetings): parameters (`parameter_set`) such as tariff rates, handling costs, thresholds; import batch monitor.
-- Everything is **OpenAPI-first**: `backend/core/src/main/resources/openapi/harbor-api.yaml` is the contract; BE server interfaces and the FE client are generated from it.
-  External service contracts live in `backend/core/src/main/resources/api/*.yaml`. Copies of all contracts are published to `docs-repo/generated/openapi/`.
+- Everything is **OpenAPI-first**: `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml` is the contract; BE server interfaces and the FE client are generated from it.
+  External service contracts live in `backend/harbor-core/src/main/resources/api/*.yaml`. Copies of all contracts are published to `docs-repo/generated/openapi/`.
 
 ## 2. Repositories and layout
 
 ```
-backend/        Kotlin 1.9 / Spring Boot 3 / Maven (root pom + core + kafka_client) / PostgreSQL (Flyway) / Kafka   (simulated repo "harbor-backend")
+backend/        Kotlin 1.9 / Spring Boot 3 / Maven (root pom + harbor-core + kafka-client) / PostgreSQL (Flyway) / Kafka   (simulated repo "harbor-backend")
 frontend/       React 18 / TypeScript / react-router / openapi-fetch client                         (simulated repo "harbor-frontend")
 docs-repo/      OKF v0.2 docs bundle + Copilot customisation + Python scripts                       (simulated repo "harbor-docs")
 code-repo-kit/  reusable kit copied into the code repos (apply-kit.py)
@@ -56,20 +56,20 @@ project under `src/main/kotlin/`); FE package name `harbor-frontend`. Git remote
 
 ```
 backend/
-  pom.xml                      root (parent) pom; <modules>: core, kafka_client
+  pom.xml                      root (parent) pom; <modules>: harbor-core, kafka-client
   core/                        the Spring Boot application (all business code)
     pom.xml
-    src/main/kotlin/harbor/    one folder per technical layer (below)
+    src/main/kotlin/com/acme/harbor/  one folder per technical layer (below)
     src/main/resources/
       api/                     contracts of the EXTERNAL services (client-registry.yaml, market-data.yaml, cover-provider.yaml,
-                               document-service.yaml, file-exchange.yaml) -> generated REST clients wrapped in client/
+                               document-service.yaml, file-exchange.yaml) -> generated REST clients wrapped in client/rest/
       openapi/                 OUR contract: harbor-api.yaml (OpenAPI; BE server interfaces + FE client generated from it)
                                and harbor-events.yaml (AsyncAPI for the Kafka topics)
       db/migration/            Flyway V1__..V9__*.sql
       pdf/                     meeting report template (meeting-report.html, report.css) sent with the payload to document-service
       application.yml
     src/test/kotlin/harbor/    unit tests (utils/*Test.kt hold the worked examples)
-  kafka_client/                Maven module: Kafka topic constants, event payload classes, serde + producer helper (shared library)
+  kafka-client/                Maven module: Kafka topic constants, event payload classes, serde + producer helper (shared library)
     pom.xml
     src/main/kotlin/harbor/kafka/   Topics.kt, events/*.kt, HarborKafkaClient.kt, JsonSerde.kt
   init_docker_compose/         local environment: docker-compose.yml (postgres, kafka, wiremock for the 5 external services),
@@ -77,7 +77,7 @@ backend/
   README.md, .gitignore
 ```
 
-Layers in `core/src/main/kotlin/harbor/` (folder = package `harbor.<layer>`):
+Layers in `harbor-core/src/main/kotlin/com/acme/harbor/` (folder = package `com.acme.harbor.<layer>`; sub-packages `dao/{model,repository,service,mapper,specification,converter}`, `api/{error,technical}`, `client/{rest,kafka}`):
 
 | Layer | Role | Classes (business prefix = bounded context, see `docs-repo/contexts.yml`) |
 |---|---|---|
@@ -85,12 +85,12 @@ Layers in `core/src/main/kotlin/harbor/` (folder = package `harbor.<layer>`):
 | `api` | REST controllers implementing the generated `*Api` interfaces (`override fun <operationId>`, no mapping annotations) | `ClientController`, `SessionController`, `Product1Controller`, `Product2Controller`, `CoverController`, `ScenarioController`, `StressTestController`, `ReportController`, `AdminController` |
 | `client` | thin `@Component` wrappers over generated clients of the external services | `ClientRegistryClient`, `MarketDataClient`, `CoverProviderClient`, `DocumentServiceClient`, `FileExchangeClient` |
 | `component` | infrastructure components | `SessionHeaderFilter`, `XlsMovementParser`, `WorkbookReader`, `ReportTemplateLoader` |
-| `config` | Spring configuration | `HarborApplication` (in package root `harbor`), `KafkaConfig`, `WebConfig`, `JacksonConfig`, `SchedulingConfig` |
+| `config` | Spring configuration | `HarborBackendApplication` (in package root `harbor`), `KafkaConfig`, `WebConfig`, `JacksonConfig`, `SchedulingConfig` |
 | `context` | request/session context | `SessionContext`, `SessionScope`, `CurrentUser` |
-| `dao` | Spring Data / JDBC repositories | `ClientProfileDao`, `ClientRoleDao`, `MeetingSessionDao`, `SessionClientConfigDao`, `ImportBatchDao`, `GoodsMovementDao`, `MovementMonthlyDao`, `SessionMovementInputDao`, `SessionPeerSimulationDao`, `ProjectionDao`, `CoverPolicyDao`, `CoverQuoteDao`, `MarketScenarioDao`, `BaselinePriceDao`, `StressTestResultDao`, `MeetingReportDao`, `ParameterDao` |
+| `dao/repository` (entities in `dao/model`, persistence services in `dao/service`) | Spring Data / JDBC repositories | `ClientProfileRepository`, `ClientRoleRepository`, `MeetingSessionRepository`, `SessionClientConfigRepository`, `ImportBatchRepository`, `GoodsMovementRepository`, `MovementMonthlyRepository`, `SessionMovementInputRepository`, `SessionPeerSimulationRepository`, `ProjectionRepository`, `CoverPolicyRepository`, `CoverQuoteRepository`, `MarketScenarioRepository`, `BaselinePriceRepository`, `StressTestResultRepository`, `MeetingReportRepository`, `ParameterRepository` |
 | `databind` | Jackson (de)serializers | `MoneySerializer`, `PeriodDeserializer` |
 | `enums` | enums | `ProductGroup`, `Direction`, `ClientRole`, `TransportMode`, `PriceBasis`, `SessionKind`, `SessionStatus`, `StressDimension` |
-| `event` | Kafka listeners and publishers (topics + payloads come from `kafka_client`) | `MovementsLoadedPublisher`, `SessionEventsPublisher`, `ReportRenderRequester`, `Product1ProjectionRefreshListener`, `Product2ProjectionRefreshListener`, `MarketPricesListener`, `ReportSessionClosedListener`, `ClientRoleSessionClosedListener`, `ReportRenderedListener` |
+| `event` | Kafka listeners and publishers (topics + payloads come from `kafka-client`) | `MovementsLoadedPublisher`, `SessionEventsPublisher`, `ReportRenderRequester`, `Product1ProjectionRefreshListener`, `Product2ProjectionRefreshListener`, `MarketPricesListener`, `ReportSessionClosedListener`, `ClientRoleSessionClosedListener`, `ReportRenderedListener` |
 | `exception` | exceptions | `NotFoundException`, `SessionHeaderMissingException`, `SessionClosedException`, `ValidationException` |
 | `job` | `@Scheduled` jobs | `DailyMovementImportJob` (`0 0 2 * * *`), `MonthlySnapshotJob` (`0 0 3 1 * *`) |
 | `manager` | orchestration per bounded context, transactional boundary, KDoc + `@docs <spec ID>` (the entry point an agent reads first) | `ClientManager` (CLI-001), `MeetingManager` (SES-001), `ImportManager` (IMP-001), `Product1Manager` (P1-001), `Product2Manager` (P2-001), `CoverManager` (COV-001), `MarketManager` (MKT-001), `StressManager` (STR-001), `ReportManager` (RPT-001), `AdminManager` (ADM-001) |
@@ -103,11 +103,11 @@ Layers in `core/src/main/kotlin/harbor/` (folder = package `harbor.<layer>`):
 Every manager file starts with a KDoc block (`/** ... @docs <ID> */`) directly above `@Service class XxxManager(...)`.
 Controllers are `@RestController class XxxController(...) : XxxApi` and implement `override fun <operationId>(...)` **without**
 mapping annotations (they are on the generated interface). The API index is produced from `openapi/harbor-api.yaml` + `override fun` lookup.
-Calculations live in `utils/` with a unit test in `core/src/test/kotlin/harbor/utils/` whose cases are the **worked examples**
+Calculations live in `utils/` with a unit test in `harbor-core/src/test/kotlin/com/acme/harbor/utils/` whose cases are the **worked examples**
 quoted in `docs-repo/domain/calculations/*.md`. Business context of a class = its name prefix (`Product1*`, `Stress*`, ...),
 mapped in `docs-repo/contexts.yml` (contexts: clients, meetings, imports, product1, product2, cover, market, stress, reports, admin, and the FE-only presentation).
 
-### 3.1 Kafka topics (`kafka_client/src/main/kotlin/harbor/kafka/Topics.kt`, `object Topics { const val ... }`)
+### 3.1 Kafka topics (`kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt`, `object Topics { const val ... }`)
 
 | Constant | Topic | Producer (`core/.../event/`) | Consumers (`core/.../event/`) |
 |---|---|---|---|
@@ -118,11 +118,11 @@ mapped in `docs-repo/contexts.yml` (contexts: clients, meetings, imports, produc
 | `REPORT_RENDERED` | `harbor.reports.rendered` | external (document-service) | `ReportRenderedListener` |
 
 Producers call `kafkaTemplate.send(Topics.X, key, payload)`; consumers use `@KafkaListener(topics = [Topics.X], groupId = "harbor-<context>")`.
-Event payload classes (`kafka_client/.../events/`): `MovementsLoadedEvent(batchId, clientIds, periodFrom, periodTo)`, `PricesUpdatedEvent(productGroup, corridor, asOf)`,
+Event payload classes (`kafka-client/.../events/`): `MovementsLoadedEvent(batchId, clientIds, periodFrom, periodTo)`, `PricesUpdatedEvent(productGroup, corridor, asOf)`,
 `SessionClosedEvent(sessionId, clientId, productGroup, kind, roleOverride?)`, `ReportRenderRequested(sessionId, payloadRef, template)`, `ReportRendered(sessionId, pdfPath)`.
-AsyncAPI description: `core/src/main/resources/openapi/harbor-events.yaml`.
+AsyncAPI description: `harbor-core/src/main/resources/openapi/harbor-events.yaml`.
 
-### 3.2 Database (Flyway, `core/src/main/resources/db/migration`)
+### 3.2 Database (Flyway, `harbor-core/src/main/resources/db/migration`)
 
 | Migration | Tables |
 |---|---|
@@ -136,7 +136,7 @@ AsyncAPI description: `core/src/main/resources/openapi/harbor-events.yaml`.
 | `V8__reports.sql` | `meeting_report(session_id PK FK, payload jsonb, pdf_path, status, rendered_at)` |
 | `V9__parameters.sql` | `parameter_set(id, key, scope_product_group, scope_country, scope_value, value numeric, valid_from, updated_by, updated_at)` + `ALTER TABLE meeting_session ADD COLUMN report_requested_at timestamp` |
 
-### 3.3 REST API (`core/src/main/resources/openapi/harbor-api.yaml`, server base `/api/v1`)
+### 3.3 REST API (`harbor-core/src/main/resources/openapi/harbor-api.yaml`, server base `/api/v1`)
 
 | operationId | Method + path | Context | Notes |
 |---|---|---|---|
@@ -175,7 +175,7 @@ AsyncAPI description: `core/src/main/resources/openapi/harbor-events.yaml`.
 | `listImportBatches` | `GET /admin/imports` | admin | |
 | `triggerImport` | `POST /admin/imports/run` | admin | |
 
-External contracts (`core/src/main/resources/api/`): `client-registry.yaml` (`GET /registry/clients?q`, `GET /registry/clients/{ref}`),
+External contracts (`harbor-core/src/main/resources/api/`): `client-registry.yaml` (`GET /registry/clients?q`, `GET /registry/clients/{ref}`),
 `market-data.yaml` (`GET /prices/{productGroup}/{corridor}?from&to`, `GET /transport-prices/{productGroup}/{corridor}`),
 `cover-provider.yaml` (`POST /quotes`), `document-service.yaml` (`POST /render`, `GET /documents/{id}`), `file-exchange.yaml` (`GET /files?since`, `GET /files/{id}/content`).
 
@@ -185,7 +185,7 @@ External contracts (`core/src/main/resources/api/`): `client-registry.yaml` (`GE
 `handling.cost` (per city), `transport.cost` (per transport mode), `cover.default_premium_rate` (0.012), `projection.horizon_months_default` (24),
 `stress.rounding_scale` (2), `peer.scaling_default` (1.0).
 
-## 4. Calculations (`docs-repo/domain/calculations/<name>.md`, code in `backend/core/src/main/kotlin/harbor/utils/`)
+## 4. Calculations (`docs-repo/domain/calculations/<name>.md`, code in `backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/`)
 
 | Name | Class | Definition (authoritative in code; docs quote worked examples from the unit test) |
 |---|---|---|

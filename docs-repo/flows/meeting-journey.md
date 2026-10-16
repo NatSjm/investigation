@@ -14,7 +14,7 @@ sources:
     resource: fe/src/components/layout/SessionLayout.tsx
     title: SessionLayout.tsx
   - id: report
-    resource: be/core/src/main/kotlin/harbor/manager/ReportManager.kt
+    resource: be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt
     title: ReportManager.kt
 # --- repo extensions ---
 id: FLOW-meeting-journey
@@ -24,8 +24,8 @@ code_refs:
   - fe/src/pages/ClientOverviewPage/ClientOverviewPage.tsx
   - fe/src/components/layout/SessionLayout.tsx
   - fe/src/routing/Routing.tsx
-  - be/core/src/main/kotlin/harbor/manager/MeetingManager.kt
-  - be/core/src/main/kotlin/harbor/manager/ReportManager.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/manager/MeetingManager.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt
 channels: ["harbor.meetings.session-closed", "harbor.session.{sessionId}"]
 ---
 
@@ -96,7 +96,7 @@ sequenceDiagram
    describes how it follows the steps.
 7. Step 4 closes the session (SES-001 BR-7): one `harbor.meetings.session-closed` event. Reports build the payload
    from the projection tables and the stored stress results and request the PDF
-   (`be/core/src/main/kotlin/harbor/manager/ReportManager.kt:42-49`, RPT-001); clients apply a role override from a
+   (`be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt:44-51`, RPT-001); clients apply a role override from a
    `CLIENT` session (CLI-001 BR-6 and BR-7).
 
 ## Data and state changes
@@ -124,10 +124,10 @@ rules are in PRS-001.
 ## Source map
 | Concern | Location |
 |---|---|
-| Product choice and session creation | `fe/src/pages/ClientOverviewPage/ClientOverviewPage.tsx`, `fe/src/pages/ClientOverviewPage/hook/useCreateSession.ts`, `be/core/src/main/kotlin/harbor/manager/MeetingManager.kt` |
+| Product choice and session creation | `fe/src/pages/ClientOverviewPage/ClientOverviewPage.tsx`, `fe/src/pages/ClientOverviewPage/hook/useCreateSession.ts`, `be/harbor-core/src/main/kotlin/com/acme/harbor/manager/MeetingManager.kt` |
 | Step navigation, header binding | `fe/src/components/layout/SessionLayout.tsx` |
 | Routes per step | `fe/src/routing/SessionRoutes.tsx:16-24` |
-| Close and downstream reactions | `be/core/src/main/kotlin/harbor/manager/MeetingManager.kt`, `be/core/src/main/kotlin/harbor/manager/ReportManager.kt`, `be/core/src/main/kotlin/harbor/event/ClientRoleSessionClosedListener.kt` |
+| Close and downstream reactions | `be/harbor-core/src/main/kotlin/com/acme/harbor/manager/MeetingManager.kt`, `be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt`, `be/harbor-core/src/main/kotlin/com/acme/harbor/event/ClientRoleSessionClosedListener.kt` |
 
 ## Open questions
 - [ ] Should the step navigation prevent "Run stress test" before scenarios exist, or is an empty run acceptable

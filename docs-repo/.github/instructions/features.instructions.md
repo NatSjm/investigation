@@ -19,7 +19,7 @@ description: Rules for feature specs (structure, numbering, traceability, proven
 - Reference endpoints as `METHOD /path` with the `operationId` from `generated/openapi/backend.yaml`; reference
   Kafka topics by exact name from `generated/asyncapi/backend.yaml`; reference tables by name from
   `generated/be/db-schema.md`. Session-scoped endpoints (`/session/**`) mention the `X-Harbor-Session` header once.
-- `code_refs` are paths relative to the code repo roots (`be/core/src/main/kotlin/harbor/<layer>/<Class>.kt`,
+- `code_refs` are paths relative to the code repo roots (`be/harbor-core/src/main/kotlin/com/acme/harbor/<layer>/<Class>.kt`,
   `fe/src/pages/<Page>/...`), taken from the graph neighbourhood (`generated/graph/<community>.md`),
   `generated/be/components.md` or `generated/*/docs-tags.md`.
 - Update `last_verified` (ISO date) only after you have checked the spec against current `generated/` artifacts.

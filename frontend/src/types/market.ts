@@ -29,7 +29,7 @@ export interface ScenarioPathPoint extends BaselinePoint {
 }
 
 /**
- * Client-side preview of calculation `scenario_price_path` (authoritative in backend `core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt`):
+ * Client-side preview of calculation `scenario_price_path` (authoritative in backend `harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt`):
  * `price_s(m) = baseline(m) * prod(1 + priceChangePct)` over shocks with `fromMonth <= m`; same for transport.
  */
 export function scenarioPricePath(baseline: BaselinePoint[], shocks: Shock[]): ScenarioPathPoint[] {

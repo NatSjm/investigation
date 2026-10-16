@@ -7,7 +7,7 @@ Companion to `docs-repo/` (the OKF docs bundle, simulated repo `harbor-docs`). E
 ```
 code-repo-kit/
   apply-kit.py           --flavour be|fe --target <repo> [--what-if]: copies .github/**, AGENTS.md, scripts/docs/**, check-file-size.py, docs-maps.yml
-  be/                     -> harbor-backend (Kotlin / Spring Boot / Maven core + kafka_client / PostgreSQL / Kafka; package-by-layer)
+  be/                     -> harbor-backend (Kotlin / Spring Boot / Maven harbor-core + kafka-client / PostgreSQL / Kafka; package-by-layer)
     AGENTS.md                               <= 60 lines: repo purpose, read order, contracts, conventions, commands, where rules live
     .github/copilot-instructions.md         Copilot-only supplement (never-open list, output discipline, agents/prompts/tools)
     .github/instructions/*.instructions.md  applyTo-scoped: api (contract-first), calculations (utils/), kafka, migrations, tests, layers
@@ -17,12 +17,12 @@ code-repo-kit/
     .github/prompts/*.prompt.md             /explain-module (a context), /find-spec-code, /add-endpoint, /tag-docs
     scripts/docs/tag-candidates.py         inventory for docs-tagger: manager / calculation -> current tag, proposed tag, status
     .github/hooks/docs-maps.json            agentStop hook: gen-all.py --check
-    .github/workflows/copilot-setup-steps.yml  JDK 21 + mvn -pl core -am generate-sources for the coding agent
+    .github/workflows/copilot-setup-steps.yml  JDK 21 + mvn -pl harbor-core -am generate-sources for the coding agent
     scripts/docs/gen-*.py, gen-all.py     generators -> docs/_generated/*.md (+ --check gate)
     templates/GraphExportTest.kt            precise graph export from the Spring context (test scope; template)
   fe/                     -> harbor-frontend (React / TypeScript / openapi-fetch)
     AGENTS.md, .github/...                  same pattern for page folders (+ pages / services instructions, Node 24 setup steps)
-    scripts/docs/docs-gen.json             the folder layout the FE generators read (pages dir, hooks, components, routing, excluded generated client)
+    scripts/docs/docs-gen.json             the repository layout the generators read (BE: modules, base package, layers and sub-packages, contract paths, annotations; FE: pages dir, hooks, components, routing, excluded generated client)
     scripts/docs/gen-*.py                  codebase-map (pages), components, routes, types-index, docs-tags
     scripts/docs/tag-candidates.py         inventory for docs-tagger: page component / types / hooks -> current tag, proposed tag, status
     scripts/docs/gen-graph-fe.ts            precise graph export via the TypeScript compiler API (existing devDependency)
@@ -40,11 +40,11 @@ Copilot spends tokens on *finding* and *reading*. We remove finding by giving ev
 always-fresh maps (`docs/_generated/`: layers, components, operations, topics, tables, jobs, routes, types, `@docs` tags)
 and an `AGENTS.md` that says "read the map, then the manager or barrel, then one range". We shrink reading by capping file
 size, excluding noise at the GitHub level, opening per-context workspaces instead of whole repos, keeping the REST
-contract (`core/src/main/resources/openapi/harbor-api.yaml`) as the single thing to read instead of generated interfaces
+contract (`harbor-core/src/main/resources/openapi/harbor-api.yaml`) as the single thing to read instead of generated interfaces
 and clients, and - in VS Code - replacing `@workspace` with four retrieval tools that return a few hundred tokens with `file:line`.
 
-**Layered backend.** `harbor-backend` is package-by-layer (`core/src/main/kotlin/harbor/<layer>/`: `api`, `manager`,
-`service`, `dao`, `event`, `job`, `utils`, `client`, ...; topics and payloads in the `kafka_client` module), so a folder
+**Layered backend.** `harbor-backend` is package-by-layer (`harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`: `api`, `manager`,
+`service`, `dao` with `model`/`repository`/`service`/`mapper`/`specification` sub-packages, `event`, `job`, `utils`, `client/rest`, `client/kafka`, ...; topics and payloads in the `kafka-client` module), so a folder
 holds every business area. The business context of a class is its **name prefix** (`Product1*`, `Projection*` ->
 `product1`), mapped once in the docs repo `contexts.yml`. `components.md` (one row per class: layer, stereotype, injected
 dependencies, tables, `@docs`, `file:line`) replaces "open the module folder": an agent goes map -> the context's
@@ -54,10 +54,10 @@ dependencies, tables, `@docs`, `file:line`) replaces "open the module folder": a
 
 | Map | BE source | FE source | Typical size |
 |---|---|---|---|
-| `codebase-map.md` | root `pom.xml` modules -> layers (package segment after `harbor`) -> classes, plus resource folders (`api`, `openapi`, `db/migration`, `pdf`) | `src/pages/<Page>/` folders (page JSDoc, hooks, components, `api.GET('<path>')` calls, BroadcastChannels; layout from `docs-gen.json`) | 1 line / module and layer, or 1 row / page |
+| `codebase-map.md` | root `pom.xml` modules -> layers (package segments after the base package; sub-packages listed in `docs-gen.json` such as `dao/model` are layers of their own) -> classes, plus resource folders (`api`, `openapi`, `db/migration`, `pdf`) | `src/pages/<Page>/` folders (page JSDoc, hooks, components, `api.GET('<path>')` calls, BroadcastChannels; layout from `docs-gen.json`) | 1 line / module and layer, or 1 row / page |
 | `components.md` | every top-level class: layer, Spring stereotype, constructor-injected deps, tables (`@Table`, SQL, `JpaRepository<Entity>`), `@docs`, `file:line` | - | 1 row / class |
 | `api-index.md` | **contract-first**: operations from `openapi/harbor-api.yaml` joined to `override fun <operationId>` in controllers (`_not implemented_` when missing); column `Tag` = context; annotation scan as fallback | - | 1 row / operation |
-| `events.md` | `@KafkaListener` + `KafkaTemplate.send` in `event/`, `Topics.<CONST>` resolved from `kafka_client` | - | 1 row / topic |
+| `events.md` | `@KafkaListener` + producer calls (`producer.send(Topics.X, ...)`) in `event/`, `Topics.<CONST>` resolved from `kafka-client`, `${property}` names from application.yml | - | 1 row / topic |
 | `db-schema.md` | Flyway `V*.sql` (CREATE/ALTER, inline `REFERENCES`), Mermaid ER; "Used in:" lists classes | - | 1 section / table |
 | `jobs.md` | `@Scheduled` methods: trigger (cron / fixedDelay), first KDoc line, `file:line` | - | 1 row / job |
 | `parameters.md` | `ParameterKey` enum constants + `INSERT INTO parameter_set` seeds per scope, readers (`ParameterKey.X` usages), validator (`validator/`) | - | 1 row / key |
@@ -68,9 +68,9 @@ dependencies, tables, `@docs`, `file:line`) replaces "open the module folder": a
 
 All maps carry OKF-style frontmatter (`type: Document`, `generated.by: process:gen-docs`) so CI can copy them into the
 docs bundle's `generated/<be|fe>/` unchanged. CI also publishes the contracts:
-`core/src/main/resources/openapi/harbor-api.yaml` -> `generated/openapi/backend.yaml`,
-`core/src/main/resources/openapi/harbor-events.yaml` -> `generated/asyncapi/backend.yaml`,
-`core/src/main/resources/api/*.yaml` -> `generated/openapi/external/`.
+`harbor-core/src/main/resources/openapi/harbor-api.yaml` -> `generated/openapi/backend.yaml`,
+`harbor-core/src/main/resources/openapi/harbor-events.yaml` -> `generated/asyncapi/backend.yaml`,
+`harbor-core/src/main/resources/api/*.yaml` -> `generated/openapi/external/`.
 
 ## Architectural graph (docs repo joins the maps)
 The docs repo's `scripts/gen-graph.py` turns these maps (+ `@docs` tags, + optional precise exports
@@ -84,7 +84,7 @@ See `INVESTIGATION.md` section 3.9 and `IMPLEMENTATION-PLAN.md` Step 4.
 ## Verified locally
 Run from `code-repo-kit/` against the sibling simulated repos:
 ```
-python3 be/scripts/docs/gen-all.py --root ../backend            # codebase-map (core + kafka_client, layers), components, api-index from openapi/harbor-api.yaml, events, db-schema, jobs, docs-tags
+python3 be/scripts/docs/gen-all.py --root ../backend            # codebase-map (harbor-core + kafka-client, layers), components, api-index from openapi/harbor-api.yaml, events, db-schema, jobs, docs-tags
 python3 be/scripts/docs/gen-all.py --root ../backend --check     # exit 1 when a map is stale (what CI and the agentStop hook run)
 python3 fe/scripts/docs/gen-all.py --root ../frontend           # 13 pages + fe-app, 7 shared components, 15 routes, 66 types, 71 tags (simulated frontend, page layout)
 python3 fe/scripts/docs/gen-all.py --root ../frontend --check

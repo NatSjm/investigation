@@ -13,22 +13,22 @@ status: stable
 14 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## contexts
-- `context:reports` - `core/src/main/kotlin/harbor/manager/ReportManager.kt` - entry point ReportManager (manager)
+- `context:reports` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt` - entry point ReportManager (manager)
 
 ## endpoints
-- `endpoint:GET /api/v1/sessions/{sessionId}/report` - `core/src/main/kotlin/harbor/api/ReportController.kt:24` - operationId getReport; handler ReportController.getReport; params sessionId
-- `endpoint:GET /api/v1/sessions/{sessionId}/report.pdf` - `core/src/main/kotlin/harbor/api/ReportController.kt:30` - operationId downloadReportPdf; handler ReportController.downloadReportPdf; params sessionId
-- `endpoint:POST /api/v1/sessions/{sessionId}/report` - `core/src/main/kotlin/harbor/api/ReportController.kt:27` - operationId regenerateReport; handler ReportController.regenerateReport; params sessionId
+- `endpoint:GET /api/v1/sessions/{sessionId}/report` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:21` - operationId getReport; handler ReportController.getReport; params sessionId
+- `endpoint:GET /api/v1/sessions/{sessionId}/report.pdf` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:27` - operationId downloadReportPdf; handler ReportController.downloadReportPdf; params sessionId
+- `endpoint:POST /api/v1/sessions/{sessionId}/report` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:24` - operationId regenerateReport; handler ReportController.regenerateReport; params sessionId
 
 ## classes
-- `class:ReportManager` - `core/src/main/kotlin/harbor/manager/ReportManager.kt:26` - manager; Service
-- `class:ReportPayloadService` - `core/src/main/kotlin/harbor/service/ReportPayloadService.kt:22` - service; Service
-- `class:ReportController` - `core/src/main/kotlin/harbor/api/ReportController.kt:21` - api; RestController
-- `class:ReportRenderRequester` - `core/src/main/kotlin/harbor/event/ReportRenderRequester.kt:16` - event; Component, KafkaProducer
-- `class:ReportRenderedListener` - `core/src/main/kotlin/harbor/event/ReportRenderedListener.kt:10` - event; Component, KafkaListener
-- `class:ReportSessionClosedListener` - `core/src/main/kotlin/harbor/event/ReportSessionClosedListener.kt:14` - event; Component, KafkaListener
-- `class:ReportTemplateLoader` - `core/src/main/kotlin/harbor/component/ReportTemplateLoader.kt:15` - component; Component
-- `class:DocumentServiceClient` - `core/src/main/kotlin/harbor/client/DocumentServiceClient.kt:17` - client; Component
+- `class:ReportManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt:27` - manager; Service
+- `class:ReportPayloadService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ReportPayloadService.kt:22` - service; Service
+- `class:ReportRenderRequester` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderRequester.kt:16` - event; Component, KafkaProducer
+- `class:ReportController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:18` - api; RestController
+- `class:ReportRenderedListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderedListener.kt:10` - event; Component, KafkaListener
+- `class:ReportSessionClosedListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportSessionClosedListener.kt:14` - event; Component, KafkaListener
+- `class:ReportTemplateLoader` - `harbor-core/src/main/kotlin/com/acme/harbor/component/ReportTemplateLoader.kt:15` - component; Component
+- `class:DocumentServiceClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/DocumentServiceClient.kt:17` - client/rest; Component
 
 ## topics
 - `topic:harbor.reports.rendered` - produced outside this repo
@@ -53,17 +53,19 @@ status: stable
 - `context:reports` -contains-> `class:ReportTemplateLoader`
 - `class:ReportController` -depends-on-> `class:ReportManager`
 - `class:ReportManager` -depends-on-> `class:DocumentServiceClient`
-- `class:ReportManager` -depends-on-> `class:MeetingReportDao` (-> meetings)
-- `class:ReportManager` -depends-on-> `class:MeetingSessionDao` (-> meetings)
+- `class:ReportManager` -depends-on-> `class:MeetingReportRepository` (-> meetings)
+- `class:ReportManager` -depends-on-> `class:MeetingSessionDaoService` (-> meetings)
+- `class:ReportManager` -depends-on-> `class:MeetingSessionRepository` (-> meetings)
 - `class:ReportManager` -depends-on-> `class:ReportPayloadService`
 - `class:ReportManager` -depends-on-> `class:ReportRenderRequester`
 - `class:ReportPayloadService` -depends-on-> `class:ClientProfileService` (-> clients)
-- `class:ReportPayloadService` -depends-on-> `class:MarketScenarioDao` (-> market)
-- `class:ReportPayloadService` -depends-on-> `class:MeetingSessionDao` (-> meetings)
-- `class:ReportPayloadService` -depends-on-> `class:ProjectionDao` (-> product1)
-- `class:ReportPayloadService` -depends-on-> `class:SessionClientConfigDao` (-> meetings)
-- `class:ReportPayloadService` -depends-on-> `class:StressTestResultDao` (-> stress)
+- `class:ReportPayloadService` -depends-on-> `class:MarketScenarioRepository` (-> market)
+- `class:ReportPayloadService` -depends-on-> `class:MeetingSessionDaoService` (-> meetings)
+- `class:ReportPayloadService` -depends-on-> `class:ProjectionRepository` (-> product1)
+- `class:ReportPayloadService` -depends-on-> `class:SessionClientConfigRepository` (-> meetings)
+- `class:ReportPayloadService` -depends-on-> `class:StressTestResultRepository` (-> stress)
 - `class:ReportRenderedListener` -depends-on-> `class:ReportManager`
+- `class:ReportRenderRequester` -depends-on-> `class:EventProducer` (-> shared)
 - `class:ReportRenderRequester` -depends-on-> `class:ReportTemplateLoader`
 - `class:ReportSessionClosedListener` -depends-on-> `class:ReportManager`
 - `context:reports` -exposes-> `endpoint:GET /api/v1/sessions/{sessionId}/report`
@@ -82,4 +84,4 @@ status: stable
 - `class:ReportRenderRequester` -produces-> `topic:harbor.reports.render-requested`
 
 ## Specs touching this community
-- `spec:RPT-001` - `features/reports/RPT-001.md` - status draft; be core/src/main/kotlin/harbor/manager/ReportManager.kt:27; fe src/pages/shared/components/DownloadPdfButton/DownloadPdfButton.tsx:12; fe src/pages/shared/components/ReportPreview/ReportPreview.tsx:19; fe src/pages/shared/hook/useDownloadReportPdf.ts:10; fe src/pages/shared/hook/useReport.ts:12; fe src/pages/shared/hook/useReport.ts:28; fe src/types/reports.ts:9
+- `spec:RPT-001` - `features/reports/RPT-001.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt:28; fe src/pages/shared/components/DownloadPdfButton/DownloadPdfButton.tsx:12; fe src/pages/shared/components/ReportPreview/ReportPreview.tsx:19; fe src/pages/shared/hook/useDownloadReportPdf.ts:10; fe src/pages/shared/hook/useReport.ts:12; fe src/pages/shared/hook/useReport.ts:28; fe src/types/reports.ts:9

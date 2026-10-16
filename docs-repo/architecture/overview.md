@@ -1,7 +1,7 @@
 ---
 type: Document
 title: Architecture overview (arc42-lite, C4 context and containers)
-description: How architecture documentation is organised plus the C4 context and container diagrams of Harbor (frontend, layered backend core with kafka_client library, PostgreSQL, Kafka, five external services).
+description: How architecture documentation is organised plus the C4 context and container diagrams of Harbor (frontend, layered backend harbor-core with kafka-client library, PostgreSQL, Kafka, five external services).
 tags: [architecture, c4]
 status: stable
 generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
@@ -29,7 +29,7 @@ arc42-lite structure. Diagrams are Mermaid (renders in GitHub/GitLab/IDE; no bin
 | `hld/<ID>.md` | high-level designs per feature/epic (agent `architect`) |
 | `adr/` | Architecture Decision Records: [ADR-0001](/architecture/adr/0001-docs-as-code.md), [ADR-0002](/architecture/adr/0002-openapi-first-contracts.md), [ADR-0003](/architecture/adr/0003-grouping-in-kotlin-not-sql.md), [ADR-0004](/architecture/adr/0004-layered-backend-and-context-prefixes.md) |
 
-Repositories: `harbor-backend` (Kotlin 1.9 / Spring Boot 3 / Maven `core` + `kafka_client` / PostgreSQL with Flyway / Kafka),
+Repositories: `harbor-backend` (Kotlin 1.9 / Spring Boot 3 / Maven `harbor-core` + `kafka-client` / PostgreSQL with Flyway / Kafka),
 `harbor-frontend` (React 18 / TypeScript / react-router / openapi-fetch), `harbor-docs` (this bundle).
 Remotes: `https://git.example.com/harbor/<repo>`.
 
@@ -60,11 +60,11 @@ C4Context
 
 ## C4 level 2 — containers
 
-The backend is one Spring Boot application, Maven module `core`, organised **by technical layer**
-(`core/src/main/kotlin/harbor/<layer>/`). Kafka topic constants, event payloads and the serde live in the library
-module `kafka_client`, used by `core`. Bounded contexts of the [context map](/domain/context-map.md) are not folders:
+The backend is one Spring Boot application, Maven module `harbor-core`, organised **by technical layer**
+(`harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`). Kafka topic constants, event payloads and the serde live in the library
+module `kafka-client`, used by `harbor-core`. Bounded contexts of the [context map](/domain/context-map.md) are not folders:
 a class belongs to a context by its **name prefix** (`/contexts.yml`, see [ADR-0004](/architecture/adr/0004-layered-backend-and-context-prefixes.md)).
-Only `core` is deployed; `init_docker_compose/` starts PostgreSQL, Kafka and WireMock stubs of the external services for local runs.
+Only `harbor-core` is deployed; `init_docker_compose/` starts PostgreSQL, Kafka and WireMock stubs of the external services for local runs.
 
 ```mermaid
 C4Container
@@ -72,8 +72,8 @@ C4Container
   Person(rep, "Account representative")
   Container(fe, "harbor-frontend", "React 18 / TypeScript", "Routes per feature; openapi-fetch client adds X-Harbor-Session")
   Container_Boundary(be, "harbor-backend (base path /api/v1)") {
-    Container(core, "core", "Spring Boot / Kotlin", "Layers api -> manager -> service -> dao / utils / client; event, job, validator, mapper, model; Flyway V1..V9; contracts in resources/openapi and resources/api")
-    Container(kc, "kafka_client", "Kotlin library", "Topics constants, event payloads, JsonSerde, HarborKafkaClient")
+    Container(core, "harbor-core", "Spring Boot / Kotlin", "Layers api -> manager -> service -> dao / utils / client; event, job, validator, mapper, model; Flyway V1..V9; contracts in resources/openapi and resources/api")
+    Container(kc, "kafka-client", "Kotlin library", "Topics constants, event payloads, JsonSerde, HarborKafkaClient")
   }
   Container(local, "init_docker_compose", "docker compose", "Local env only: postgres, kafka, wiremock (5 external services)")
   ContainerDb(pg, "PostgreSQL", "Flyway-managed schema", "client_profile .. parameter_set")
@@ -88,17 +88,17 @@ C4Container
   Rel(ext, kafka, "prices-updated, rendered")
 ```
 
-### Layers of `core`
+### Layers of `harbor-core`
 
 | Layer | Role | Examples |
 |---|---|---|
 | `api` | REST controllers implementing the generated `*Api` interfaces | `Product1Controller`, `SessionController` |
 | `manager` | one per context: orchestration, transaction boundary, KDoc + `@docs <ID>` | `Product1Manager` (P1-001), `MeetingManager` (SES-001) |
 | `service` | business services used by managers | `ProjectionService`, `StressTestService` |
-| `dao` | repositories (tables per class in `generated/be/components.md`) | `ProjectionDao`, `MeetingSessionDao` |
+| `dao/model`, `dao/repository`, `dao/service`, `dao/specification`, `dao/mapper` | entities; repositories (tables per class in `generated/be/components.md`); persistence services, specifications, row mappers | `MeetingSession`, `ProjectionRepository`, `MeetingSessionDaoService` |
 | `utils` | pure Kotlin calculations (`@docs <calculation>`) | `ProjectionAggregator`, `StressTestCalculator` |
 | `event` / `job` | Kafka listeners and publishers / `@Scheduled` jobs | `SessionEventsPublisher`, `DailyMovementImportJob` |
-| `client` | wrappers over generated clients of the external services | `ClientRegistryClient`, `MarketDataClient` |
+| `client/rest`, `client/kafka` | wrappers over generated clients of the external services; the outbound Kafka producer | `ClientRegistryClient`, `MarketDataClient`, `EventProducer` |
 | `validator`, `mapper`, `model`, `component`, `context`, `config`, `advice`, ... | validation, DTO mapping, entities, filters, session context, configuration, error handling | `SessionHeaderFilter`, `SessionContext` |
 
 ### Contexts at a glance
@@ -114,16 +114,16 @@ C4Container
 | `stress` (`Stress*`) | `StressManager.kt` (STR-001) | `stress_test_result` | — |
 | `reports` (`Report*`) | `ReportManager.kt` (RPT-001) | `meeting_report` | consumes `session-closed`, `rendered`; produces `render-requested` |
 | `admin` (`Admin*`, `Parameter*`) | `AdminManager.kt` (ADM-001) | `parameter_set` | — |
-| `shared` (no prefix) | — | — | config, filters, `utils` helpers (`MonthGrid`, `Rounding`); `kafka_client` |
+| `shared` (no prefix) | — | — | config, filters, `utils` helpers (`MonthGrid`, `Rounding`); `kafka-client` |
 
 ## Cross-cutting rules
-- **OpenAPI-first** ([ADR-0002](/architecture/adr/0002-openapi-first-contracts.md)): `backend/core/src/main/resources/openapi/harbor-api.yaml`
+- **OpenAPI-first** ([ADR-0002](/architecture/adr/0002-openapi-first-contracts.md)): `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml`
   is the contract; controllers implement generated `*Api` interfaces; the frontend uses the generated client.
 - **Session scoping**: selecting a product group on the client overview creates a `meeting_session`; every
   `/session/**` request carries `X-Harbor-Session` (see [SES-001](/features/meetings/SES-001.md)).
 - **Grouping in Kotlin, not SQL** ([ADR-0003](/architecture/adr/0003-grouping-in-kotlin-not-sql.md)): the four
   projection tables are aggregated by `utils/ProjectionAggregator.kt` and reused by cover, stress and reports.
-- **Calculations** are pure Kotlin in `core/src/main/kotlin/harbor/utils/`, each attested in `domain/calculations/` with
+- **Calculations** are pure Kotlin in `harbor-core/src/main/kotlin/com/acme/harbor/utils/`, each attested in `domain/calculations/` with
   worked examples copied from its unit test.
 - **Layers and prefixes** ([ADR-0004](/architecture/adr/0004-layered-backend-and-context-prefixes.md)): `api` -> `manager`
   -> `service` -> `dao` / `utils` / `client`; the class-name prefix decides the context.

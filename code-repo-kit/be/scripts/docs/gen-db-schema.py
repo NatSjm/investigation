@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
-"""Approximate DB schema from Flyway SQL migrations (CREATE TABLE / ALTER TABLE ADD|DROP COLUMN). No database needed."""
+"""Approximate DB schema from Flyway SQL migrations (CREATE TABLE / ALTER TABLE ADD|DROP COLUMN). No database needed.
+Migrations are the SQL files matching `migrations.file_patterns` under a folder matching `migrations.dir_pattern`
+(docs-gen.json). Liquibase changelogs (XML/YAML) are not parsed; point the pattern at the SQL-formatted changelogs."""
 import argparse
 import os
 import re
 
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, header, escape_cell, posix,
-                     sort_key, utf8_stdout)
+                     sort_key, utf8_stdout, load_config, module_dirs, main_sources)
+
+DEFAULTS = {'modules': [], 'source_root': 'src/main/kotlin', 'test_pattern': '', 'exclude_paths': [],
+            'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql']}}
 
 
 def version_key(path):
@@ -24,11 +29,14 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--root', default='.')
     ap.add_argument('--out', default='docs/_generated/db-schema.md')
+    ap.add_argument('--config', default='')
     a = ap.parse_args()
     root = os.path.abspath(a.root)
+    cfg = load_config(root, DEFAULTS, a.config)
+    mig = cfg['migrations']
 
     tables = {}
-    migrations = sorted((f for f in source_files(root, ['V*.sql', 'R*.sql']) if re.search(r'/(migration|db)/', posix(f), re.I)),
+    migrations = sorted((f for f in source_files(root, mig['file_patterns']) if re.search(re.escape(mig['dir_pattern']), posix(f), re.I)),
                         key=version_key)
     for f in migrations:
         sql = read_text(f)
@@ -66,14 +74,14 @@ def main():
 
     # which classes reference each table in code (@Table(name = "x"), JPA/JDBC SQL strings) - lets the docs graph
     # attribute a table to the bounded context (class-name prefix) that owns it instead of where the migrations live
-    kt_files = [f for f in source_files(root, ['*.kt']) if re.search(r'/src/main/', posix(f), re.I)]
+    kt_files = main_sources(root, cfg, module_dirs(root, cfg))
     kt_text = {k: read_text(k) for k in kt_files}
     for tn in tables:
         rx = re.compile(r'(?i)["`\' ]' + re.escape(tn) + r'["`\' \s(,;]')
         mods = sorted(set(os.path.splitext(os.path.basename(k))[0] for k in kt_files if rx.search(kt_text[k])), key=sort_key)   # classes (one class per file)
         tables[tn]['usedIn'] = mods
 
-    sb = [header('DB schema (approximate, from migrations)', 'Flyway V*.sql')]
+    sb = [header('DB schema (approximate, from migrations)', f"migrations {', '.join(mig['file_patterns'])} under {mig['dir_pattern']}")]
     sb.append(f'{len(tables)} table(s). Derived by regex from migrations - types/constraints are indicative; verify against a real DB for DDL work.\n\n')
     sb.append('```mermaid\nerDiagram\n')
     for tn, tbl in tables.items():

@@ -8,13 +8,13 @@ and `.github/instructions/api.instructions.md`.
 
 Work through this checklist and report each step:
 
-1. **Contract** - edit `core/src/main/resources/openapi/harbor-api.yaml`: path item under the context tag, unique `operationId`, request/response schemas in
+1. **Contract** - edit `harbor-core/src/main/resources/openapi/harbor-api.yaml`: path item under the context tag, unique `operationId`, request/response schemas in
    `components/schemas`; `/session/**` paths reference `components/parameters/SessionHeader` (`X-Harbor-Session`).
    Reuse existing schemas before adding new ones.
-2. **Regenerate** - `mvn -q -pl core -am -DskipTests generate-sources`; confirm the new method appears on the `*Api` interface
+2. **Regenerate** - `mvn -q -pl harbor-core -am -DskipTests generate-sources`; confirm the new method appears on the `*Api` interface
    (do not open or edit `target/`).
-3. **Implement** - `override fun ${input:operationId:getProduct1Projection}(...)` in the context controller (`harbor/api/<Ctx>Controller.kt`)
-   (no mapping annotations), delegating to the context manager (`harbor/manager/<Ctx>Manager.kt`); add the manager method with KDoc.
+3. **Implement** - `override fun ${input:operationId:getProduct1Projection}(...)` in the context controller (`api/<Ctx>Controller.kt`)
+   (no mapping annotations), delegating to the context manager (`manager/<Ctx>Manager.kt`); add the manager method with KDoc.
 4. **Tests** - controller contract test through the generated interface (with the session header where required) and
    a manager unit test with synthetic data (mock the dependencies listed in `components.md`).
 5. **Maps** - run `python3 scripts/docs/gen-all.py`; check `docs/_generated/api-index.md` shows the operation with its handler

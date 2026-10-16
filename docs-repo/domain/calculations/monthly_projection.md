@@ -13,7 +13,7 @@ parameters:
   - { name: handlingCost, type: Decimal, required: true }
   - { name: transportCost, type: Decimal, required: true }
 executor:
-  resource: backend/core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt
+  resource: backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.py
@@ -22,21 +22,21 @@ generated: { by: copilot/calc-auditor, at: 2026-10-12T12:00:00Z }
 stale_after: 2027-01-06T00:00:00Z
 sources:
   - id: impl
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt
     title: ProjectionAggregator.kt
   - id: tests
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt
     title: ProjectionAggregatorTest.kt
   - id: rounding
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/Rounding.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt
     title: Rounding.kt
 # --- repo extensions ---
 name: monthly_projection
 used_by: [P1-001, P1-002, P2-001, P2-002, COV-001, STR-001, RPT-001]
 code_refs:
-  - backend/core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt
-  - backend/core/src/main/kotlin/harbor/utils/Rounding.kt
-  - backend/core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt
+  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt
 last_verified: null
 ---
 
@@ -138,8 +138,8 @@ Derivation of example 1: `100 × 12.50 × 1.04 = 1300.00`;
 `1300.00 × 1.05 + 100 × 0.80 + 100 × 1.20 = 1365.00 + 80.00 + 120.00 = 1565.00`.
 
 ## Audit 2026-10-12
-Auditor: copilot/calc-auditor (Run 3). Files opened: `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt`
-(L36-L230) and `core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt` (L1-L130); parameter defaults from
+Auditor: copilot/calc-auditor (Run 3). Files opened: `harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt`
+(L36-L230) and `harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt` (L1-L130); parameter defaults from
 `V9__parameters.sql` as listed in the pack. Items 8-11 concern the row assembly in `ProjectionInputAssembler.kt`,
 which the pack names as a code reference of P1-001; they were observed there, outside the two audited files, and
 need an owner decision rather than a documentation edit.

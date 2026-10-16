@@ -13,7 +13,7 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "generate:api": "openapi-typescript ../backend/core/src/main/resources/openapi/harbor-api.yaml -o src/services/openapi/schema.d.ts"
+    "generate:api": "openapi-typescript ../backend/harbor-core/src/main/resources/openapi/harbor-api.yaml -o src/services/openapi/schema.d.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.59.0",

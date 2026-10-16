@@ -1,4 +1,4 @@
-// TEMPLATE - copy to harbor-backend/core/src/test/kotlin/harbor/docs/GraphExportTest.kt
+// TEMPLATE - copy to harbor-backend/harbor-core/src/test/kotlin/com/acme/harbor/docs/GraphExportTest.kt
 // Not compiled in the investigation workspace (no Spring classpath here); verify on the real repo.
 //
 // Exports the *real* architectural graph from the running Spring context, which the regex maps can only
@@ -7,9 +7,9 @@
 // which a 2-year Spring Boot service already depends on. Output: docs/_generated/graph-export-be.json,
 // consumed by the docs repo `scripts/gen-graph.py` (edges tagged source=export win over regex edges).
 //
-// Run in CI after the unit tests:   mvn -pl core -am -Dtest=GraphExportTest -Ddocs.graph=true test
+// Run in CI after the unit tests:   mvn -pl harbor-core -am -Dtest=GraphExportTest -Ddocs.graph=true test
 // Guard: @EnabledIfSystemProperty so it never runs in the normal developer test loop.
-package harbor.docs
+package com.acme.harbor.docs
 
 import jakarta.persistence.EntityManager
 import jakarta.persistence.Table
@@ -48,7 +48,7 @@ class GraphExportTest {
             val type = bf.getType(name) ?: continue
         //    (community) is assigned by the docs repo from the class-name prefix (contexts.yml), so it is left empty here.
             node("class:${type.simpleName}", "class", type.simpleName, "", "be",
-                location = "core/src/main/kotlin/" + type.name.replace('.', '/') + ".kt", note = layerOf(type))
+                location = "harbor-core/src/main/kotlin/" + type.name.replace('.', '/') + ".kt", note = layerOf(type))
         }
         // 2. DI edges - the ones regex cannot see through interfaces
         for (name in appBeans) {
@@ -99,7 +99,7 @@ class GraphExportTest {
     private fun isOurs(bf: ConfigurableListableBeanFactory, name: String) =
         bf.getType(name)?.name?.startsWith("harbor.") == true
 
-    // layer = package segment after the base package (harbor.api.X -> api); empty for the package root
+    // layer = package segment after the base package (com.acme.harbor.api.X -> api); empty for the package root
     private fun layerOf(type: Class<*>): String =
         type.name.removePrefix("harbor.").substringBeforeLast('.', "").substringBefore('.')
 

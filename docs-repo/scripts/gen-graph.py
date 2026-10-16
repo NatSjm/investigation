@@ -31,6 +31,8 @@ from _common import (repo_root, read_text, read_text_or_empty, write_text, rel, 
                      walk_files, utf8_stdout)
 
 GRAPH_LAYERS = ('api', 'manager', 'service', 'dao', 'event', 'job', 'client', 'utils', 'validator', 'component')
+# layers (first segment or `first/second` as components.md prints them) that are data, not behaviour: no class node
+GRAPH_EXCLUDE = ('dao/model', 'api/model')
 KIND_ORDER = ('context', 'feature', 'endpoint', 'route', 'class', 'topic', 'channel', 'component', 'table', 'url', 'unknown')
 
 
@@ -192,7 +194,7 @@ def main():
         class_info[cls] = {'Layer': strip(r.get('Layer')), 'Loc': strip(r.get('Location')), 'Kind': strip(r.get('Kind')),
                            'Deps': re.findall(r'`(\w+)`', r.get('Depends on', '')), 'Tables': re.findall(r'`(\w+)`', r.get('Tables', ''))}
     for cls, ci in class_info.items():
-        if ci['Layer'].lower() not in GRAPH_LAYERS:
+        if ci['Layer'].lower() in GRAPH_EXCLUDE or ci['Layer'].lower().split('/')[0] not in GRAPH_LAYERS:
             continue
         ctx = context_of(cls)
         add_node(f'class:{cls}', 'class', cls, ctx, 'be', ci['Loc'], ci['Layer'] + ('; ' + ci['Kind'] if ci['Kind'] else ''))
@@ -269,7 +271,7 @@ def main():
         if not touch:
             um = re.search(r'(?m)^Used in:\s*(.+)$', sec)
             touch = re.findall(r'`(\w+)`', um.group(1) if um else '')
-        daos = [c for c in touch if c in class_info and class_info[c]['Layer'].lower() == 'dao']
+        daos = [c for c in touch if c in class_info and class_info[c]['Layer'].lower().split('/')[0] == 'dao']
         owner = next((c for c in daos + touch if context_of(c) != 'shared'), None)
         ctx = context_of(owner) if owner else 'shared'
         add_node(f'table:{t}', 'table', t, ctx, 'be', loc, f"{len(cols)} columns: {', '.join(cols)}")

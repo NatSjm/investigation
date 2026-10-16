@@ -268,14 +268,20 @@ Copy the kit flavour into each repository. `code-repo-kit/apply-kit.py --flavour
 everything at once; for the enterprise rollout copy selectively in this order and review each file:
 
 1. **`scripts/docs/`** with `gen-all.py`, `_common.py` and the generators (section 14 lists each). Run
-   `python3 scripts/docs/gen-all.py --root .` and read every table in `docs/_generated/`. The frontend generators read
-   the folder layout from `scripts/docs/docs-gen.json` (pages folder, hook and component folder names, shared
-   component library, routing files and route constants, type globs, generated client to exclude): fill that file
-   first, it is the whole adaptation for a page-per-folder React repository (`code-repo-kit/fe/scripts/docs/README.md`
-   lists every key). Where your code still differs from the simulated one (annotation names, package root, Flyway
-   folder, a router that is neither object routes nor `<Route>`), adjust the regular expression in the generator; the
-   tables carry `file:line`, so a wrong row is visible immediately. Target: every endpoint, topic, table, scheduled
-   job, route and hook of the pilot context appears once.
+   `python3 scripts/docs/gen-all.py --root .` and read every table in `docs/_generated/`. Both flavours read the
+   repository layout from `scripts/docs/docs-gen.json`: fill that file first, it is the whole adaptation.
+   Backend keys (`code-repo-kit/be/scripts/docs/README.md` lists every key): the Maven modules, the base package,
+   the layer list with the sub-packages that count as layers of their own (`dao/model`, `dao/repository`,
+   `dao/service`, `client/rest`, `api/technical`, ...), the OpenAPI, AsyncAPI and external-contract paths, how
+   controllers relate to the contract (`override fun <operationId>` on a generated interface, or hand-written
+   `@GetMapping` routes matched by verb and path), the Kafka listener annotation and the property files that resolve
+   `${...}` topic names, the migrations folder, the parameter-key enum and its table, the seed and fixture folders.
+   Frontend keys (`code-repo-kit/fe/scripts/docs/README.md`): pages folder, hook and component folder names, shared
+   component library, routing files and route constants, type globs, generated client to exclude. Where your code
+   still differs from the simulated one (a Liquibase changelog, a Quartz scheduler, a router that is neither object
+   routes nor `<Route>`), adjust the regular expression in the generator; the tables carry `file:line`, so a wrong
+   row is visible immediately. Target: every endpoint, topic, table, scheduled job, route and hook of the pilot
+   context appears once.
 2. **`AGENTS.md`** under 60 lines: purpose of the repo, read order (map, then the context's manager or page component, then
    one named range), the contracts and where they live, conventions, the commands. Adapt from `code-repo-kit/be/AGENTS.md`
    and `fe/AGENTS.md`.
@@ -295,10 +301,16 @@ everything at once; for the enterprise rollout copy selectively in this order an
    code repo reads the maps without running anything.
 
 **With an agent** (Copilot in the code repository, after the kit files are copied):
-1. `docs-gen.json` (frontend): paste the key table of `code-repo-kit/fe/scripts/docs/README.md` and ask for the value of
-   each key for this repository with one evidence path per key (the pages folder, a hook folder, a component folder, the
-   routing files, the route-constants file, the generated client folder). Run `gen-all.py` and read `codebase-map.md`
-   and `routes.md`; a page without purpose, a route left relative or an empty hooks column is a wrong key.
+1. `docs-gen.json` (both repositories): paste the key table of the flavour's `scripts/docs/README.md` and ask for the
+   value of each key for this repository with one evidence path per key. Backend: the root pom modules, the package
+   of the application class, one class per sub-package of `dao`, `api` and `client`, the OpenAPI file and one
+   controller (generated interface or hand-written mappings), one Kafka listener and the property file with the
+   topic names, one migration, the parameter enum, a seed and a fixture. Frontend: the pages folder, a hook folder, a
+   component folder, the routing files, the route-constants file, the generated client folder. Run `gen-all.py` and
+   read `codebase-map.md` (every layer with a role; business classes under `(root)` mean a wrong base package),
+   `api-index.md` (no `_not implemented_` row for an operation that exists; hand-written routes tagged
+   `(no contract)`), `events.md` (no `<expr>` topic) and `routes.md`; a page without purpose, a route left relative
+   or an empty hooks column is a wrong key.
 2. Generator regexes (both repositories): when a table misses a row, paste the declaration it missed (the controller
    annotation, the listener, the route object) together with the regex from the generator and ask for the smallest
    change that matches it; rerun `gen-all.py` and diff the table. Never let the agent widen a regex to match everything.
@@ -553,11 +565,11 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 
 | Generator | Backend output | Frontend output |
 |---|---|---|
-| `gen-codebase-map.py` | modules and layers with class counts | page folders with purpose, hooks, components, API calls, BroadcastChannels (layout from `docs-gen.json`) |
-| `gen-components.py` | one row per class: layer, annotations, injected dependencies, `file:line` | the shared component library: props, used-by pages |
+| `gen-codebase-map.py` | modules and layers with class counts, sub-packages such as `dao/model` as layers of their own (layout from `docs-gen.json`) | page folders with purpose, hooks, components, API calls, BroadcastChannels (layout from `docs-gen.json`) |
+| `gen-components.py` | one row per class: layer or sub-layer, annotations, injected dependencies, tables, `file:line` | the shared component library: props, used-by pages |
 | `gen-routes.py` | - | URL -> page component, nested routes joined, route constants resolved, enclosing layout |
-| `gen-api-index.py` | every OpenAPI operation with its handler method | - |
-| `gen-events.py` | topics with producers, consumers, payload classes | - |
+| `gen-api-index.py` | every OpenAPI operation with its handler (matched by operationId or by verb + path), plus hand-written routes outside the contract | - |
+| `gen-events.py` | topics with producers, consumers, payload classes (constants, literals and `${property}` names resolved) | - |
 | `gen-db-schema.py` | tables and columns from the migrations | - |
 | `gen-jobs.py` | scheduled jobs with cron and class | - |
 | `gen-parameters.py` | admin parameter catalogue: key, seeded defaults per scope, readers, validator (cross-checked against the calculations by `validate-frontmatter.py`) | - |

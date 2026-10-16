@@ -17,32 +17,32 @@ status: stable
 - `hook:useScenarios` - `src/pages/ScenariosPage/hook/useScenarios.ts:10`
 
 ## contexts
-- `context:market` - `core/src/main/kotlin/harbor/manager/MarketManager.kt` - entry point MarketManager (manager)
+- `context:market` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/MarketManager.kt` - entry point MarketManager (manager)
 
 ## features
 - `feature:ScenariosPage` - `src/pages/ScenariosPage/ScenariosPage.tsx` - /session/:sessionId/scenarios` - second meeting step: list of scenarios of the session, baseline curve info and the editor to add / change / remove scenarios.
 
 ## endpoints
-- `endpoint:GET /api/v1/session/scenarios` - `core/src/main/kotlin/harbor/api/ScenarioController.kt:23` - operationId listScenarios; handler ScenarioController.listScenarios; params 
-- `endpoint:GET /api/v1/session/market/baseline` - `core/src/main/kotlin/harbor/api/ScenarioController.kt:41` - operationId getBaselinePrices; handler ScenarioController.getBaselinePrices; params 
-- `endpoint:DELETE /api/v1/session/scenarios/{scenarioId}` - `core/src/main/kotlin/harbor/api/ScenarioController.kt:36` - operationId deleteScenario; handler ScenarioController.deleteScenario; params scenarioId
-- `endpoint:POST /api/v1/session/scenarios` - `core/src/main/kotlin/harbor/api/ScenarioController.kt:26` - operationId createScenario; handler ScenarioController.createScenario; params 
-- `endpoint:PUT /api/v1/session/scenarios/{scenarioId}` - `core/src/main/kotlin/harbor/api/ScenarioController.kt:31` - operationId updateScenario; handler ScenarioController.updateScenario; params scenarioId
+- `endpoint:GET /api/v1/session/scenarios` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:23` - operationId listScenarios; handler ScenarioController.listScenarios; params 
+- `endpoint:GET /api/v1/session/market/baseline` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:41` - operationId getBaselinePrices; handler ScenarioController.getBaselinePrices; params 
+- `endpoint:DELETE /api/v1/session/scenarios/{scenarioId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:36` - operationId deleteScenario; handler ScenarioController.deleteScenario; params scenarioId
+- `endpoint:POST /api/v1/session/scenarios` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:26` - operationId createScenario; handler ScenarioController.createScenario; params 
+- `endpoint:PUT /api/v1/session/scenarios/{scenarioId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:31` - operationId updateScenario; handler ScenarioController.updateScenario; params scenarioId
 
 ## routes
 - `route:/session/:sessionId/scenarios` - `src/routing/SessionRoutes.tsx:21` - renders ScenariosPage
 
 ## classes
-- `class:ScenarioController` - `core/src/main/kotlin/harbor/api/ScenarioController.kt:20` - api; RestController
-- `class:BaselinePriceService` - `core/src/main/kotlin/harbor/service/BaselinePriceService.kt:23` - service; Service
-- `class:MarketScenarioDao` - `core/src/main/kotlin/harbor/dao/MarketScenarioDao.kt:9` - dao; Repository
-- `class:ScenarioService` - `core/src/main/kotlin/harbor/service/ScenarioService.kt:20` - service; Service
-- `class:MarketManager` - `core/src/main/kotlin/harbor/manager/MarketManager.kt:21` - manager; Service
-- `class:MarketPricesListener` - `core/src/main/kotlin/harbor/event/MarketPricesListener.kt:18` - event; Component, KafkaListener
-- `class:BaselinePriceDao` - `core/src/main/kotlin/harbor/dao/BaselinePriceDao.kt:10` - dao; Repository
-- `class:ScenarioPricePath` - `core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19` - utils; object
-- `class:ScenarioValidator` - `core/src/main/kotlin/harbor/validator/ScenarioValidator.kt:15` - validator; Component
-- `class:MarketDataClient` - `core/src/main/kotlin/harbor/client/MarketDataClient.kt:19` - client; Component
+- `class:ScenarioController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:20` - api; RestController
+- `class:BaselinePriceService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/BaselinePriceService.kt:23` - service; Service
+- `class:MarketScenarioRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MarketScenarioRepository.kt:9` - dao/repository; Repository
+- `class:ScenarioService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ScenarioService.kt:20` - service; Service
+- `class:MarketManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/MarketManager.kt:21` - manager; Service
+- `class:MarketPricesListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MarketPricesListener.kt:18` - event; Component, KafkaListener
+- `class:BaselinePriceRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/BaselinePriceRepository.kt:10` - dao/repository; Repository
+- `class:ScenarioPricePath` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt:19` - utils; object
+- `class:ScenarioValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/ScenarioValidator.kt:15` - validator; Component
+- `class:MarketDataClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/MarketDataClient.kt:19` - client/rest; Component
 
 ## topics
 - `topic:harbor.market.prices-updated` - produced outside this repo
@@ -53,8 +53,8 @@ status: stable
 - `component:ShockRow` - `src/pages/ScenariosPage/components/ShockRow/ShockRow.tsx:12`
 
 ## tables
-- `table:market_scenario` - `core/src/main/resources/db/migration/V7__market_stress.sql` - 7 columns: id, session_id, name, kind, shocks, created_by, created_at
-- `table:baseline_price` - `core/src/main/resources/db/migration/V7__market_stress.sql` - 7 columns: id, product_group, corridor, period, price, transport_price, as_of
+- `table:market_scenario` - `harbor-core/src/main/resources/db/migration/V7__market_stress.sql` - 7 columns: id, session_id, name, kind, shocks, created_by, created_at
+- `table:baseline_price` - `harbor-core/src/main/resources/db/migration/V7__market_stress.sql` - 7 columns: id, product_group, corridor, period, price, transport_price, as_of
 
 ## Edges
 - `feature:ScenariosPage` -calls-> `endpoint:DELETE /api/v1/session/scenarios/{scenarioId}`
@@ -68,12 +68,12 @@ status: stable
 - `hook:useScenarioMutations` -calls-> `endpoint:PUT /api/v1/session/scenarios/{scenarioId}` (exact)
 - `hook:useScenarios` -calls-> `endpoint:GET /api/v1/session/scenarios` (exact)
 - `topic:harbor.market.prices-updated` -consumed-by-> `class:MarketPricesListener`
-- `context:market` -contains-> `class:BaselinePriceDao`
+- `context:market` -contains-> `class:BaselinePriceRepository`
 - `context:market` -contains-> `class:BaselinePriceService`
 - `context:market` -contains-> `class:MarketDataClient`
 - `context:market` -contains-> `class:MarketManager`
 - `context:market` -contains-> `class:MarketPricesListener`
-- `context:market` -contains-> `class:MarketScenarioDao`
+- `context:market` -contains-> `class:MarketScenarioRepository`
 - `context:market` -contains-> `class:ScenarioController`
 - `context:market` -contains-> `class:ScenarioPricePath`
 - `context:market` -contains-> `class:ScenarioService`
@@ -83,17 +83,17 @@ status: stable
 - `feature:ScenariosPage` -contains-> `component:ShockRow` (exact)
 - `feature:ScenariosPage` -contains-> `hook:useScenarioMutations` (exact)
 - `feature:ScenariosPage` -contains-> `hook:useScenarios` (exact)
-- `class:BaselinePriceService` -depends-on-> `class:BaselinePriceDao`
+- `class:BaselinePriceService` -depends-on-> `class:BaselinePriceRepository`
 - `class:BaselinePriceService` -depends-on-> `class:MarketDataClient`
 - `class:MarketManager` -depends-on-> `class:BaselinePriceService`
 - `class:MarketManager` -depends-on-> `class:ScenarioService`
 - `class:MarketPricesListener` -depends-on-> `class:BaselinePriceService`
 - `class:ProjectionInputAssembler` -depends-on-> `class:BaselinePriceService` (-> product1)
-- `class:ReportPayloadService` -depends-on-> `class:MarketScenarioDao` (-> reports)
+- `class:ReportPayloadService` -depends-on-> `class:MarketScenarioRepository` (-> reports)
 - `class:ScenarioController` -depends-on-> `class:MarketManager`
-- `class:ScenarioService` -depends-on-> `class:MarketScenarioDao`
+- `class:ScenarioService` -depends-on-> `class:MarketScenarioRepository`
 - `class:ScenarioService` -depends-on-> `class:ScenarioValidator`
-- `class:StressManager` -depends-on-> `class:MarketScenarioDao` (-> stress)
+- `class:StressManager` -depends-on-> `class:MarketScenarioRepository` (-> stress)
 - `class:StressTestService` -depends-on-> `class:BaselinePriceService` (-> stress)
 - `feature:fe-app` -depends-on-> `feature:ScenariosPage` (-> fe-app) (exact)
 - `feature:PresentationPage` -depends-on-> `feature:ScenariosPage` (-> presentation) (exact)
@@ -111,12 +111,12 @@ status: stable
 - `endpoint:GET /api/v1/session/scenarios` -handled-by-> `class:ScenarioController`
 - `endpoint:POST /api/v1/session/scenarios` -handled-by-> `class:ScenarioController`
 - `endpoint:PUT /api/v1/session/scenarios/{scenarioId}` -handled-by-> `class:ScenarioController`
-- `spec:MKT-001` -implemented-by-> `class:BaselinePriceDao` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:BaselinePriceRepository` (-> docs)
 - `spec:MKT-001` -implemented-by-> `class:BaselinePriceService` (-> docs)
 - `spec:MKT-001` -implemented-by-> `class:MarketDataClient` (-> docs)
 - `spec:MKT-001` -implemented-by-> `class:MarketManager` (-> docs)
 - `spec:MKT-001` -implemented-by-> `class:MarketPricesListener` (-> docs)
-- `spec:MKT-001` -implemented-by-> `class:MarketScenarioDao` (-> docs)
+- `spec:MKT-001` -implemented-by-> `class:MarketScenarioRepository` (-> docs)
 - `spec:MKT-001` -implemented-by-> `class:ScenarioController` (-> docs)
 - `spec:MKT-001` -implemented-by-> `class:ScenarioPricePath` (-> docs)
 - `spec:MKT-001` -implemented-by-> `class:ScenarioService` (-> docs)
@@ -125,11 +125,11 @@ status: stable
 - `spec:scenario_price_path` -implemented-by-> `class:ScenarioPricePath` (-> docs)
 - `context:market` -owns-> `table:baseline_price`
 - `context:market` -owns-> `table:market_scenario`
-- `class:BaselinePriceDao` -persists-to-> `table:baseline_price`
-- `class:MarketScenarioDao` -persists-to-> `table:market_scenario`
+- `class:BaselinePriceRepository` -persists-to-> `table:baseline_price`
+- `class:MarketScenarioRepository` -persists-to-> `table:market_scenario`
 - `feature:ScenariosPage` -renders-> `component:LineChart` (-> shared-ui)
 - `route:/session/:sessionId/scenarios` -renders-> `feature:ScenariosPage`
 
 ## Specs touching this community
-- `spec:MKT-001` - `features/market/MKT-001.md` - status draft; be core/src/main/kotlin/harbor/manager/MarketManager.kt:22; fe src/pages/ScenariosPage/hook/useScenarios.ts:10; fe src/pages/ScenariosPage/hook/useScenarios.ts:24; fe src/pages/ScenariosPage/ScenariosPage.tsx:17; fe src/pages/shared/hook/useBaselinePrices.ts:11; fe src/types/market.ts:11
-- `spec:scenario_price_path` - `domain/calculations/scenario_price_path.md` - status draft; be core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt:19
+- `spec:MKT-001` - `features/market/MKT-001.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/manager/MarketManager.kt:22; fe src/pages/ScenariosPage/hook/useScenarios.ts:10; fe src/pages/ScenariosPage/hook/useScenarios.ts:24; fe src/pages/ScenariosPage/ScenariosPage.tsx:17; fe src/pages/shared/hook/useBaselinePrices.ts:11; fe src/types/market.ts:11
+- `spec:scenario_price_path` - `domain/calculations/scenario_price_path.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt:19

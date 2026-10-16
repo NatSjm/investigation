@@ -23,8 +23,8 @@ publish target; Jira and the tests repo are outputs.
 
 | # | Check | Where | If false |
 |---|---|---|---|
-| 0.1 | `core/src/main/resources/openapi/harbor-api.yaml` is the BE contract and controllers implement generated `*Api` interfaces with `override fun <operationId>` | BE repo | `gen-api-index.py` falls back to annotation scan; the join to operations is lost |
-| 0.2 | External service contracts exist as OpenAPI files (`core/src/main/resources/api/`); Kafka topics are constants in one `Topics` object (`kafka_client`) | BE repo | add the files / constants before Step 3 (`events.md` cannot resolve literals) |
+| 0.1 | `harbor-core/src/main/resources/openapi/harbor-api.yaml` is the BE contract and controllers implement generated `*Api` interfaces with `override fun <operationId>` | BE repo | `gen-api-index.py` falls back to annotation scan; the join to operations is lost |
+| 0.2 | External service contracts exist as OpenAPI files (`harbor-core/src/main/resources/api/`); Kafka topics are constants in one `Topics` object (`kafka-client`) | BE repo | add the files / constants before Step 3 (`events.md` cannot resolve literals) |
 | 0.2a | Class-name prefixes cover the business contexts (layered `core`: `Product1*`, `Projection*`, `Stress*`, ...; one `<Ctx>Manager` per context) | BE repo, `components.md` | fill `docs-repo/contexts.yml` (context -> BE prefixes, FE feature, spec prefix); unmatched classes show as `shared` in the graph - rename or add a prefix line |
 | 0.3 | `spring-boot-starter-test` on the BE test classpath | BE `pom.xml` | skip `GraphExportTest.kt`; regex joiner alone (edges "approximate") |
 | 0.4 | `typescript` in FE `devDependencies`; API calls go through one generated client (`api.GET('<path>')` literals) | FE `package.json`, `src/api/` | skip `gen-graph-fe.ts`; FE regex maps alone |
@@ -68,14 +68,14 @@ page to audit), repo names.
 1. `code-repo-kit/apply-kit.py --flavour be --target <be-repo> --what-if`, review, drop `--what-if`; same with `fe`. Copies
    `AGENTS.md`, `.github/` (copilot-instructions, instructions, agents, prompts, hooks, `copilot-setup-steps.yml`),
    `scripts/docs/**`, `scripts/check-file-size.py`, `.github/workflows/docs-maps.yml`.
-2. Adjust in the copied files: base package (`harbor`), Maven modules (`core`, `kafka_client`), layer names, `applyTo` globs, feature folder root (`src/features`), the HTTP client wrapper name,
+2. Adjust in the copied files: base package (`harbor`), Maven modules (`core`, `kafka-client`), layer names, `applyTo` globs, feature folder root (`src/features`), the HTTP client wrapper name,
    header name (`X-Harbor-Session` -> yours), JDK / Node versions in `copilot-setup-steps.yml`.
 3. **Content exclusion**: apply `code-repo-kit/shared/copilot-content-exclusion.yml` in repo settings (`target/` incl.
    `generated-sources`, `build/`, `node_modules/`, lockfiles, generated clients and `schema.d.ts`, snapshots, fixtures, env configs).
 4. Legacy baseline once: `python3 scripts/check-file-size.py --root . --max-lines 400 --write-baseline .filesize-baseline.txt` (FE: 300).
 5. Distribute `code-repo-kit/shared/ide-setup.md` and one `*.code-workspace` per bounded context from
    `shared/workspaces/product1.code-workspace` (BE `core` sources + resources + FE feature + docs repo; IntelliJ scopes by
-   class-name prefix, e.g. `file:core/src/main/kotlin/harbor//Product1*.kt||file:core/src/main/kotlin/harbor//Projection*.kt`).
+   class-name prefix, e.g. `file:harbor-core/src/main/kotlin/com/acme/harbor//Product1*.kt||file:harbor-core/src/main/kotlin/com/acme/harbor//Projection*.kt`).
 
 **Done when:** Copilot in both IDEs shows `AGENTS.md`-driven answers; `@workspace` no longer indexes `target/` / `node_modules/`;
 the `agentStop` hook `docs-maps.json` runs `gen-all.py --check` at the end of a session.
@@ -96,7 +96,7 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.py --check` at the end of a 
    FE `src/features/<name>/index.ts` barrel with `/** @module ... */`, `<name>.types.ts`, object routes.
 3. Add `@docs <ID>` KDoc/JSDoc tags on managers, calculators, event classes, FE barrels/types (pilot context).
 4. Commit `docs/_generated/**`; `docs-maps.yml` runs the freshness + size gate on PR and, on `main`, publishes maps **and
-   contracts** (`core/src/main/resources/openapi/harbor-api.yaml` -> `generated/openapi/backend.yaml`,
+   contracts** (`harbor-core/src/main/resources/openapi/harbor-api.yaml` -> `generated/openapi/backend.yaml`,
    `.../openapi/harbor-events.yaml` -> `generated/asyncapi/backend.yaml`, `.../resources/api/*.yaml` -> `generated/openapi/external/`)
    as a PR into the docs repo.
 5. In the docs repo the PRs land in `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi`; agent
@@ -114,9 +114,9 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.py --check` at the end of a 
    (`context:<name>` node at its manager + BE classes by name prefix + the FE feature; `class:` nodes with `depends-on` /
    `persists-to` edges); the `shared` bucket lists classes without a known prefix; the
    **Spec coverage** list is your documentation backlog (`code only` -> `/spec-skeleton-from-graph`; `spec only` -> tag code).
-2. BE precise export (if 0.3 true): copy `code-repo-kit/be/templates/GraphExportTest.kt` into `core/src/test/kotlin/harbor/docs/`;
+2. BE precise export (if 0.3 true): copy `code-repo-kit/be/templates/GraphExportTest.kt` into `harbor-core/src/test/kotlin/com/acme/harbor/docs/`;
    create a `graph-export` Spring profile with embedded/mocked infra (or `init_docker_compose`). Run
-   `mvn -pl core -am -Dtest=GraphExportTest -Ddocs.graph=true test` -> `docs/_generated/graph-export-be.json`; add the
+   `mvn -pl harbor-core -am -Dtest=GraphExportTest -Ddocs.graph=true test` -> `docs/_generated/graph-export-be.json`; add the
    command to the code repo's CI as an artifact-producing step; the docs repo's collector downloads the artifact (comment block in `docs-maps.yml` / `collect-evidence.yml`).
 3. FE precise export (if 0.4 true): `npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js src
    docs/_generated/graph-export-fe.json`; adjust the client-wrapper regex in `gen-graph-fe.ts`.
@@ -243,8 +243,8 @@ Jira subtasks produced in < 10 minutes per story with no source files read, ever
 | extension | `vscode-extension/` (`#docsLookup`, `#codeMap`, `#specToCode`, `#impact`, `@docs`) | MCP-free retrieval in VS Code |
 
 ### Fixtures to test against before touching the real repos
-The simulated repos `backend/` and `frontend/` (naming contract `BLUEPRINT.md`): layered BE (`core` + `kafka_client` in `pom.xml`, 10 contexts by class-name prefix in `contexts.yml`),
-34 operations in `core/src/main/resources/openapi/harbor-api.yaml`, 5 topics, 5 external contracts, 9 FE feature folders; specs `CLI-001` / `SES-001` / `P1-001`
+The simulated repos `backend/` and `frontend/` (naming contract `BLUEPRINT.md`): layered BE (`core` + `kafka-client` in `pom.xml`, 10 contexts by class-name prefix in `contexts.yml`),
+34 operations in `harbor-core/src/main/resources/openapi/harbor-api.yaml`, 5 topics, 5 external contracts, 9 FE feature folders; specs `CLI-001` / `SES-001` / `P1-001`
 stable, `STR-001` draft with a deliberately outdated legacy page, `MKT-001` / `RPT-001` skeletons, `P2-001` / `COV-001` /
 `IMP-001` / `ADM-001` deliberately missing. Run every generator, the publish, the graph joiner, the packs and the coverage
 matrix here (`README.md` "Try it"); counts and spec coverage: see `docs-repo/generated/graph/REPO_MAP.md`. Then exercise the agents on

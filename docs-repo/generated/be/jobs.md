@@ -4,7 +4,7 @@ title: "Scheduled jobs (BE)"
 description: "Generated map: Scheduled jobs (BE), derived from @Scheduled scan; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-15
+  at: 2026-10-16
 status: stable
 ---
 # Scheduled jobs (BE)
@@ -14,5 +14,5 @@ status: stable
 
 | Job | Trigger | Summary | Location |
 |---|---|---|---|
-| `DailyMovementImportJob.run` | cron `0 0 2 * * *` | Daily import of the XLS movement files delivered by file-exchange. Runs at 02:00 server time; the same | `core/src/main/kotlin/harbor/job/DailyMovementImportJob.kt:19` |
-| `MonthlySnapshotJob.run` | cron `0 0 3 1 * *` | Rolls the previous calendar month of `goods_movement` up into `movement_monthly`. | `core/src/main/kotlin/harbor/job/MonthlySnapshotJob.kt:21` |
+| `DailyMovementImportJob.run` | cron `0 0 2 * * *` | Daily import of the XLS movement files delivered by file-exchange. Runs at 02:00 server time; the same | `harbor-core/src/main/kotlin/com/acme/harbor/job/DailyMovementImportJob.kt:19` |
+| `MonthlySnapshotJob.run` | cron `0 0 3 1 * *` | Rolls the previous calendar month of `goods_movement` up into `movement_monthly`. | `harbor-core/src/main/kotlin/com/acme/harbor/job/MonthlySnapshotJob.kt:21` |

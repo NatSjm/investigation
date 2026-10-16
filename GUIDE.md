@@ -15,7 +15,7 @@ repositories and a kit:
 
 | Folder | Plays | Contains |
 |---|---|---|
-| `backend/` | the real Kotlin/Spring backend | layered `core` (`harbor/<layer>/`), `kafka_client`, OpenAPI contract, migrations, calculations in `utils/` with tests, and the applied kit |
+| `backend/` | the real Kotlin/Spring backend | layered `core` (`harbor/<layer>/`), `kafka-client`, OpenAPI contract, migrations, calculations in `utils/` with tests, and the applied kit |
 | `frontend/` | the real React frontend | one folder per feature, a shared component library (`src/shared`), the client presentation window synchronised over `BroadcastChannel`, generated API client, routes, and the applied kit |
 | `docs-repo/` | the documentation repository agents work from | specs, calculations, glossary, architecture, generated maps and graph, Copilot agents / skills / prompts / hooks, Python scripts |
 | `code-repo-kit/` | what gets copied into each code repository | `AGENTS.md`, instructions, map generators, CI, `apply-kit.py` |
@@ -42,7 +42,7 @@ docker compose -f backend/init_docker_compose/docker-compose.yml up -d        # 
 cd backend; mvn -B -DskipTests package                                         # 27 unit tests with `mvn test`
 export HARBOR_CLIENT_REGISTRY_URL=http://localhost:8089 HARBOR_MARKET_DATA_URL=http://localhost:8089
 export HARBOR_COVER_PROVIDER_URL=http://localhost:8089 HARBOR_DOCUMENT_SERVICE_URL=http://localhost:8089 HARBOR_FILE_EXCHANGE_URL=http://localhost:8089
-java -jar core/target/core-1.0.0-SNAPSHOT.jar                                  # http://localhost:8080/api/v1, Flyway applies V1..V9
+java -jar harbor-core/target/core-1.0.0-SNAPSHOT.jar                                  # http://localhost:8080/api/v1, Flyway applies V1..V9
 cd ../frontend; npm install; npm run generate:api; npm run dev                 # http://localhost:5173, proxies /api to 8080
 ```
 Search a client, open its overview, create a session; `/meetings/client` and `/meetings/preparation` list the sessions; inside a
@@ -109,7 +109,7 @@ Up to 500 lines: subject and badge, the spec body, its calculations with worked 
 
 ```bash
 python3 docs-repo/scripts/graph-query.py --node spec:STR-001 --depth 2
-python3 docs-repo/scripts/graph-query.py --files be/core/src/main/kotlin/harbor/utils/StressTestCalculator.kt
+python3 docs-repo/scripts/graph-query.py --files be/harbor-core/src/main/kotlin/com/acme/harbor/utils/StressTestCalculator.kt
 ```
 The second form answers "which specs are affected if this file changes".
 
@@ -263,7 +263,7 @@ The full plan with risks is [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md); th
    `confluence-import/HARBOR/`, `work-items/*.yml`, `test-design/features/*`, `test-design/fixtures/*`, `migration/`, `.context/`.
 2. Replace the simulated names. Search the copied files for `harbor`, `Harbor`, the context names, the spec prefixes, the
    header name `X-Harbor-Session`, the topic prefix `harbor.`, the external service names, and the paths
-   `core/src/main/kotlin/harbor/`; replace with yours. [BLUEPRINT.md](BLUEPRINT.md) lists every name that was chosen.
+   `harbor-core/src/main/kotlin/com/acme/harbor/`; replace with yours. [BLUEPRINT.md](BLUEPRINT.md) lists every name that was chosen.
 3. Write `contexts.yml` from Day 0. Write `docs-map.yml` with one mapping per context (`specs: []` for now).
 4. Commit. Run `okf-validate.py --strict` and `build-index.py`: the empty bundle must validate.
 

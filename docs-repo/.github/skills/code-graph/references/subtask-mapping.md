@@ -9,7 +9,7 @@ Deterministic mapping used by `analyst` and `test-designer`. Start from `spec:<I
 | `class:*Manager`, `class:*Service` | `[BE] <Manager>: orchestration change` | `@api` (via endpoint) | - |
 | `class:*Validator`, `class:*Mapper` (not graph nodes - found via `generated/be/components.md` deps of the manager/service) | `[BE] <Class>: validation / mapping change` | `@api` (via endpoint) | invalid / edge-case request JSON |
 | `class:*Calculator`, `class:*Aggregator`, `class:*Classifier` (layer `utils/`) | `[BE] <Class>: formula + unit test cases (worked examples)` + `[DOC] domain/calculations/<id>.md` | `@calc` | rows from the calculation's Worked examples |
-| `class:*Dao`, `table:*` | `[DB] migration V<n>__<table>_<change>.sql` + `[BE] model/dao` | `@api` | table seed JSON/CSV (synthetic) |
+| `class:*Repository`, `table:*` | `[DB] migration V<n>__<table>_<change>.sql` + `[BE] model/dao` | `@api` | table seed JSON/CSV (synthetic) |
 | `class:*Job` | `[BE] <Job>: schedule / batch behaviour` | `@api` (trigger via admin endpoint) | import file sample |
 | `topic:*` produced | `[INT] <topic>: payload version + producer` | `@kafka` | event payload JSON |
 | `topic:*` consumed-by | `[INT] <topic>: consumer idempotency + retry` | `@kafka` | duplicate / out-of-order payloads |

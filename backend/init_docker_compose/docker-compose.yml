@@ -48,7 +48,7 @@ services:
       timeout: 10s
       retries: 20
 
-  # Creates the topics of kafka_client/src/main/kotlin/harbor/kafka/Topics.kt plus their dead-letter topics.
+  # Creates the topics of kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt plus their dead-letter topics.
   kafka-init:
     image: apache/kafka:3.7.2
     depends_on:

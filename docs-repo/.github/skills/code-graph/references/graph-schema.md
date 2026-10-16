@@ -5,7 +5,7 @@
   "generated": { "by": "process:gen-graph", "at": "YYYY-MM-DD" },
   "communities": [ { "id": "product1", "repo": "be+fe", "nodes": 24 } ],
   "nodes": [ { "id": "endpoint:GET /api/v1/session/product1/overview", "kind": "endpoint", "label": "...",
-               "community": "product1", "repo": "be", "location": "core/src/main/kotlin/harbor/api/Product1Controller.kt:21",
+               "community": "product1", "repo": "be", "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:21",
                "note": "handler Product1Controller.getProduct1Overview; params city?, X-Harbor-Session",
                "component": 1, "rank": 28.61, "degree": 3 } ],
   "edges": [ { "from": "feature:product1", "to": "endpoint:GET /api/v1/session/product1/overview",

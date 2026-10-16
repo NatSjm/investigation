@@ -12,7 +12,7 @@ benefit - retrieval instead of file dumps - through the public VS Code API (`vsc
 | `#codeMap` | `harbor-docs_codeMap` | matching rows from `docs/_generated/{api-index,events,db-schema,jobs,codebase-map,routes,types-index,docs-tags}.md` |
 | `#specToCode` | `harbor-docs_specToCode` | `@docs <ID>` locations across backend/frontend (`file:line`) |
 | `#impact` | `harbor-docs_impact` | BFS over `generated/graph/graph.json` (from docs repo `scripts/gen-graph.py`): neighbours by depth, edges, spec IDs in the blast radius. Input = node id, substring or changed file path |
-| `@docs /spec`, `/where`, `/impact` | chat participant `harbor.docs` | retrieval -> one bounded model call -> answer with citations; `/impact` = graph BFS + docs lookup |
+| `@docs /spec`, `/where`, `/impact` | chat participant `com.acme.harbor.docs` | retrieval -> one bounded model call -> answer with citations; `/impact` = graph BFS + docs lookup |
 
 Agent mode picks the tools automatically from `modelDescription`; users can also pin them, e.g.
 `#docsLookup:P1-001`, `#specToCode:monthly_projection`, `#codeMap:getProduct1Overview`, `#impact:topic:harbor.market.prices-updated`.

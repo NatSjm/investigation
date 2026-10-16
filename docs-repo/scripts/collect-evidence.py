@@ -8,8 +8,8 @@ file hashes. Replaces per-repository "publisher" CI jobs (one owner of publicati
 3. Stages the collector-owned artifact sets in a temporary directory:
      generated/be/*.md (+ graph-export-be.json)      from <backend>/docs/_generated
      generated/fe/*.md (+ graph-export-fe.json)      from <frontend>/docs/_generated
-     generated/openapi/backend.yaml, external/*.yaml  from <backend>/core/src/main/resources/{openapi,api}
-     generated/asyncapi/backend.yaml                  from <backend>/core/src/main/resources/openapi/harbor-events.yaml
+     generated/openapi/backend.yaml, external/*.yaml  from the backend contract paths of <backend>/scripts/docs/docs-gen.json
+     generated/asyncapi/backend.yaml                  (rest.open_api, external_contracts_dir, asyncapi; Harbor defaults otherwise)
 4. Validates the candidate snapshot (every map has frontmatter, every contract parses as an OpenAPI/AsyncAPI document,
    nothing empty). A failed validation publishes nothing; the previous snapshot stays.
 5. Compares the candidate with the current generated/ ignoring volatile timestamps; when nothing changed it stops
@@ -67,6 +67,24 @@ def git_info(path, name):
     remote = git(path, 'config', '--get', 'remote.origin.url')[1].strip()
     dirty = any(l.strip() for l in git(path, 'status', '--porcelain')[1].splitlines())
     return {'name': name, 'path': posix(path), 'remote': remote, 'branch': branch, 'commit': commit, 'dirty': dirty}
+
+
+def backend_contracts(backend):
+    """Contract paths (relative to the backend root) from its scripts/docs/docs-gen.json; Harbor defaults when absent."""
+    import json
+    out = {'open_api': 'harbor-core/src/main/resources/openapi/harbor-api.yaml',
+           'asyncapi': 'harbor-core/src/main/resources/openapi/harbor-events.yaml',
+           'external_contracts_dir': 'harbor-core/src/main/resources/api'}
+    cfg = os.path.join(backend, 'scripts', 'docs', 'docs-gen.json')
+    if os.path.isfile(cfg):
+        with open(cfg, 'r', encoding='utf-8-sig') as f:
+            data = json.load(f)
+        if data.get('rest', {}).get('open_api'):
+            out['open_api'] = data['rest']['open_api']
+        for k in ('asyncapi', 'external_contracts_dir'):
+            if data.get(k):
+                out[k] = data[k]
+    return out
 
 
 def main():
@@ -130,10 +148,10 @@ def main():
             full = os.path.join(d, f)
             if os.path.isfile(full) and ((f.lower().endswith('.md') and f.lower() != 'index.md') or like(f, 'graph-export-*.json')):
                 stage_file(set_, full, f)
-    res = os.path.join(backend, 'core/src/main/resources')
-    stage_file('openapi', os.path.join(res, 'openapi/harbor-api.yaml'), 'backend.yaml')
-    stage_file('asyncapi', os.path.join(res, 'openapi/harbor-events.yaml'), 'backend.yaml')
-    api_dir = os.path.join(res, 'api')
+    contracts = backend_contracts(backend)
+    stage_file('openapi', os.path.join(backend, contracts['open_api']), 'backend.yaml')
+    stage_file('asyncapi', os.path.join(backend, contracts['asyncapi']), 'backend.yaml')
+    api_dir = os.path.join(backend, contracts['external_contracts_dir'])
     if os.path.isdir(api_dir):
         for f in sorted(os.listdir(api_dir), key=str.lower):
             if f.lower().endswith('.yaml') and os.path.isfile(os.path.join(api_dir, f)):

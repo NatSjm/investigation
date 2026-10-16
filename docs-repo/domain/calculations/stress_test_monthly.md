@@ -14,7 +14,7 @@ parameters:
   - { name: scenarioTransport, type: Decimal, required: true }
   - { name: baselineTransport, type: Decimal, required: true }
 executor:
-  resource: backend/core/src/test/kotlin/harbor/utils/StressTestCalculatorTest.kt
+  resource: backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/StressTestCalculatorTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.py
@@ -23,17 +23,17 @@ verified: { by: human:example-reviewer, at: 2026-10-08T15:00:00Z }
 stale_after: 2027-01-06T00:00:00Z
 sources:
   - id: impl
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/StressTestCalculator.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/StressTestCalculator.kt
     title: StressTestCalculator.kt
   - id: tests
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/test/kotlin/harbor/utils/StressTestCalculatorTest.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/StressTestCalculatorTest.kt
     title: StressTestCalculatorTest.kt
 # --- repo extensions ---
 name: stress_test_monthly
 used_by: [STR-001]
 code_refs:
-  - backend/core/src/main/kotlin/harbor/utils/StressTestCalculator.kt
-  - backend/core/src/test/kotlin/harbor/utils/StressTestCalculatorTest.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/StressTestCalculator.kt
+  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/StressTestCalculatorTest.kt
 last_verified: 2026-10-08
 ---
 

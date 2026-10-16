@@ -4,7 +4,7 @@ description: "Unit and integration tests: worked-example naming, synthetic fixtu
 ---
 # Tests
 
-- Unit tests of calculations (`core/src/test/kotlin/harbor/utils/<Class>Test.kt`) are the canonical worked examples; name them `<calculation_id>__<case>`
+- Unit tests of calculations (`harbor-core/src/test/kotlin/com/acme/harbor/utils/<Class>Test.kt`) are the canonical worked examples; name them `<calculation_id>__<case>`
   (e.g. `monthly_projection__importer_two_cities`) so `harbor-docs/domain/calculations/*.md` can quote them.
 - Fixtures: synthetic clients only (`CLIENT-TEST-*`), quantities and prices in round numbers, corridor codes from the
   domain (`VLD`, `NRL`, `CST`, `MRD`), no real company names or prices.

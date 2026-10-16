@@ -11,7 +11,7 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
 
 - [Glossary](/domain/glossary.md) — canonical terminology.
 - `calculations/` — one **Attested Computation** per calculation in the backend `utils` layer
-  (`core/src/main/kotlin/harbor/utils/`): formula + conventions + worked examples copied from the unit test.
+  (`harbor-core/src/main/kotlin/com/acme/harbor/utils/`): formula + conventions + worked examples copied from the unit test.
   Skill: `.github/skills/calculation-spec/SKILL.md`.
 - The backend is layered ([ADR-0004](/architecture/adr/0004-layered-backend-and-context-prefixes.md)), so a bounded
   context is a **group of class-name prefixes** (`/contexts.yml`, longest prefix wins) = the frontend pages of that area
@@ -34,8 +34,8 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
 | presentation | `PRS` | — (FE-only) | — | `PresentationPage` `/present/:sessionId` (second window, BroadcastChannel `harbor.session.<id>` in `src/components/broadcast/`) | [PRS-001](/features/presentation/PRS-001.md) (draft), flow [client-presentation](/flows/client-presentation.md) |
 
 Classes matching no prefix are `shared` and are not a bounded context: configuration (`WebConfig`, `KafkaConfig`, ...),
-`enums`, the `utils` helpers (`MonthGrid`, `Rounding`), unprefixed `client/` wrappers (`DocumentServiceClient`,
-`FileExchangeClient`) and the `kafka_client` library (`Topics`, event payloads). They have no spec prefix and are documented in
+`enums`, the `utils` helpers (`MonthGrid`, `Rounding`), unprefixed `client/rest/` wrappers (`DocumentServiceClient`,
+`FileExchangeClient`) and the `kafka-client` library (`Topics`, event payloads). They have no spec prefix and are documented in
 `domain/calculations/` and [architecture/integrations.md](/architecture/integrations.md).
 
 ## Relationships

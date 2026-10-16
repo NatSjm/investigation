@@ -117,13 +117,13 @@ a `file:line`; free text matching several specs yields `candidates:`. Why a scri
 
 ### 3.6 Contract-led API index and jobs map (lever b)
 Because the real FE and BE are generated from the OpenAPI document, the controllers carry no mapping annotations.
-`gen-api-index.py` therefore reads `core/src/main/resources/openapi/harbor-api.yaml` (operations, parameters, the shared session-header parameter) and
+`gen-api-index.py` therefore reads `harbor-core/src/main/resources/openapi/harbor-api.yaml` (operations, parameters, the shared session-header parameter) and
 joins each `operationId` to `override fun <operationId>(` in a `@RestController`; operations without an implementation are
 listed `_not implemented_` (a useful backlog signal). Annotation scan remains the fallback for non-contract repos.
 `gen-jobs.py` lists every `@Scheduled` method with its trigger and one KDoc line, so the XLS import and monthly snapshot
 jobs are visible to analysts. `events.md` resolves `Topics.<CONST>`; `db-schema.md` is parsed from Flyway migrations, so the
 four cumulative projection tables and the `parameter_set` table appear with columns. CI copies `openapi/harbor-api.yaml`,
-`openapi/harbor-events.yaml` and `core/src/main/resources/api/*.yaml` next to the maps.
+`openapi/harbor-events.yaml` and `harbor-core/src/main/resources/api/*.yaml` next to the maps.
 
 ### 3.7 Calculation and legacy-page audit (lever c)
 Agent `calc-auditor` + skill `legacy-page-audit`: given a calculation name, a spec ID or a legacy page, build the pack,
@@ -177,7 +177,7 @@ subagents and `action.yml` not ported. `scripts/build-index.py` is new. Licences
 
 Constraint: no third-party libraries in the code repos; standard-library Python, Copilot customisation files and an in-house VS Code
 extension are allowed. `apply-kit.py --flavour be|fe --target <repo>` copies the flavour into a repo.
-The backend is **package-by-layer** (`core/src/main/kotlin/harbor/<layer>/` + `kafka_client`), so no folder names a
+The backend is **package-by-layer** (`harbor-core/src/main/kotlin/com/acme/harbor/<layer>/` + `kafka-client`), so no folder names a
 business area: the kit and the graph derive the bounded context from the class-name prefix (`docs-repo/contexts.yml`).
 
 | Lever | What ships | Effect |
@@ -296,9 +296,9 @@ names, values or identifiers. Everything is standard-library Python 3.11+; nothi
 ### 8.1 Simulated code repositories (`backend/`, `frontend/`)
 | Item | State |
 |---|---|
-| BE layout | `backend/pom.xml` modules `core` (package-by-layer `core/src/main/kotlin/harbor/<layer>/`, 18 layers, one `<Ctx>Manager` per bounded context) and `kafka_client`, plus `init_docker_compose/`; 10 bounded contexts by class-name prefix (`docs-repo/contexts.yml`); calculators in `utils/`, unit tests in `core/src/test/kotlin/harbor/utils/` |
-| REST contract | `backend/core/src/main/resources/openapi/harbor-api.yaml`: 34 operations, shared session-header parameter; `openapi/harbor-events.yaml`: 5 topics (`kafka_client/.../harbor/kafka/Topics.kt`) |
-| External contracts | `backend/core/src/main/resources/api/`: client-registry, market-data, cover-provider, document-service, file-exchange |
+| BE layout | `backend/pom.xml` modules `core` (package-by-layer `harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`, 18 layers, one `<Ctx>Manager` per bounded context) and `kafka-client`, plus `init_docker_compose/`; 10 bounded contexts by class-name prefix (`docs-repo/contexts.yml`); calculators in `utils/`, unit tests in `harbor-core/src/test/kotlin/com/acme/harbor/utils/` |
+| REST contract | `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml`: 34 operations, shared session-header parameter; `openapi/harbor-events.yaml`: 5 topics (`kafka-client/.../harbor/kafka/Topics.kt`) |
+| External contracts | `backend/harbor-core/src/main/resources/api/`: client-registry, market-data, cover-provider, document-service, file-exchange |
 | DB | 9 Flyway migrations `V1__..V9__` per the blueprint (four projection tables, `parameter_set`); counts: see `generated/be/db-schema.md` after `gen-all.py` |
 | FE | 9 feature folders mirroring the bounded contexts, `openapi-fetch` client with the session-header middleware, object routes; routes/types/tags counts: see `generated/fe/*.md` |
 | Kit applied | `AGENTS.md`, `.github/` (instructions, agents, prompts, hooks, setup steps), `scripts/docs/`; maps in `docs/_generated/` are build outputs (`gen-all.py`) |

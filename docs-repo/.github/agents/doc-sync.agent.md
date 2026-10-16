@@ -25,7 +25,7 @@ One of:
    label in `work-items/<ID>.yml`, and delete the proposal (or set `x-status: implemented`, `x-implemented-in`).
    Update the spec: business rules, API, data, edge cases; append a **Change log** row
    (`YYYY-MM-DD - <what> - <PR/commit>`); set `last_verified`.
-5. If a `core/src/main/kotlin/harbor/utils/**` path changed, do not edit the formula yourself: set the calculation concept to
+5. If a `harbor-core/src/main/kotlin/com/acme/harbor/utils/**` path changed, do not edit the formula yourself: set the calculation concept to
    `status: draft`, add an open question and hand over to `calc-auditor` (chat summary).
 6. Changed path with no mapping: add a `TODO` entry in `docs-map.yml` and, if the context has no spec at all,
    create a stub from `features/_template.md` (or hand over to `spec-writer`).

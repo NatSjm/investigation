@@ -40,7 +40,7 @@
     },
     "chatParticipants": [
       {
-        "id": "harbor.docs",
+        "id": "com.acme.harbor.docs",
         "name": "docs",
         "fullName": "Harbor Docs",
         "description": "Answer from specs and generated maps; cite spec IDs and file:line",

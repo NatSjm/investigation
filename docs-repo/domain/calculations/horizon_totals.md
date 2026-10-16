@@ -10,7 +10,7 @@ parameters:
   - { name: value, type: Decimal, required: true }
   - { name: landedCost, type: Decimal, required: true }
 executor:
-  resource: backend/core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt
+  resource: backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.py
@@ -18,21 +18,21 @@ generated: { by: copilot/calc-auditor, at: 2026-10-12T20:30:00Z }
 stale_after: 2027-01-10T00:00:00Z
 sources:
   - id: impl
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt
     title: ProjectionAggregator.kt
   - id: tests
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt
     title: ProjectionAggregatorTest.kt
   - id: rounding
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/Rounding.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt
     title: Rounding.kt
 # --- repo extensions ---
 name: horizon_totals
 used_by: [P1-001, P2-001]
 code_refs:
-  - backend/core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt
-  - backend/core/src/main/kotlin/harbor/utils/Rounding.kt
-  - backend/core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt
+  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt
 last_verified: null
 ---
 
@@ -48,7 +48,7 @@ and their Product 2 counterparts, and shown as three separate tables under the m
 mirrors them (PRS-001).[^impl]
 
 The totals are **derived, never persisted**: they are recomputed from the monthly lines wherever the tables are loaded
-(`projection_*` tables via `ProjectionDao`, or a fresh aggregation), so they cannot drift from the monthly figures.[^impl]
+(`projection_*` tables via `ProjectionRepository`, or a fresh aggregation), so they cannot drift from the monthly figures.[^impl]
 
 ## Inputs
 | Name | Type | Unit | Source | Constraints |
@@ -126,8 +126,8 @@ Derivation of #1 (test comment): `2625.00 / 3950.00 = 0.66456...` → `0.6646`. 
 distinguish HALF_EVEN from HALF_UP (see re-audit item 3).
 
 ## Audit 2026-10-12 (Run 3, superseded by the re-audit below)
-Auditor: copilot/calc-auditor (Run 3). Files opened: `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt`
-(L100-L200, `totals` / `totalsOf`) and `core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt` (L75-L110).
+Auditor: copilot/calc-auditor (Run 3). Files opened: `harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt`
+(L100-L200, `totals` / `totalsOf`) and `harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt` (L75-L110).
 
 | # | Item | Documentation says | Code/test says | Severity | Action |
 |---|---|---|---|---|---|
@@ -136,14 +136,14 @@ Auditor: copilot/calc-auditor (Run 3). Files opened: `core/src/main/kotlin/harbo
 | 3 | share of value | `value_k / overall.value`, scale 4 HALF_EVEN, 0.0000 on zero | `Rounding.divideAsRatio`; same test → 0.6646 | MATCH | — |
 | 4 | key order | as in the monthly tables | `toSortedMap()`; monthly keys are `sorted()` too | MATCH | — |
 | 5 | empty projection | overall 0.00 / 0.0000, no keys | test `horizon totals of an empty projection are zero` | MATCH | — |
-| 6 | derived, not persisted | recomputed from the loaded lines | `Tables.totals` is a computed property; `ProjectionDao` loads the four tables only | MATCH | — |
+| 6 | derived, not persisted | recomputed from the loaded lines | `Tables.totals` is a computed property; `ProjectionRepository` loads the four tables only | MATCH | — |
 
 Findings: 6 MATCH, no drift. Status stays `draft` until the owner's decision (Run 4).
 
 ## Audit 2026-10-12 (re-audit)
-Auditor: copilot/calc-auditor. Files opened: `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt`
-(L20-L36, L78-L216) and `core/src/test/kotlin/harbor/utils/ProjectionAggregatorTest.kt` (L1-L111). `Rounding.kt`
-and `ProjectionDao` were not opened; claims resting on them are marked. No `parameter_set` keys are read.
+Auditor: copilot/calc-auditor. Files opened: `harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt`
+(L20-L36, L78-L216) and `harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt` (L1-L111). `Rounding.kt`
+and `ProjectionRepository` were not opened; claims resting on them are marked. No `parameter_set` keys are read.
 
 | # | Item | Documentation says | Code/test says | Severity | Action |
 |---|---|---|---|---|---|
@@ -155,7 +155,7 @@ and `ProjectionDao` were not opened; claims resting on them are marked. No `para
 | 6 | key order | as in the monthly tables | L185 `toSortedMap()`; monthly keys L138 `sorted()` (natural string order) | MATCH | — |
 | 7 | `UNKNOWN` key | not mentioned | rows without a city / transport mode are grouped under `UNKNOWN` (L131-L134, L214) and appear as an ordinary sorted key in the `byDimension` totals | UNDOCUMENTED | spec-writer: add to Conventions |
 | 8 | empty projection | overall line of zeros, share `0.0000`, empty breakdowns | test L99-L102 asserts the overall value, the share and an empty `bySubProduct` only; empty `byDimension` / `byDirection` and zero quantity / landedCost follow from the code (L167-L173), not the test | MATCH | Q3: add assertions |
-| 9 | derived, not persisted | recomputed wherever the tables are loaded | `Tables.totals` is a computed getter (L103-L104). Run 3's "`ProjectionDao` loads the four tables only" is outside the two files and was not re-verified | MATCH | — |
+| 9 | derived, not persisted | recomputed wherever the tables are loaded | `Tables.totals` is a computed getter (L103-L104). Run 3's "`ProjectionRepository` loads the four tables only" is outside the two files and was not re-verified | MATCH | — |
 | 10 | dimension filter | Conventions: `?city=` restricts the monthly `byDimension` table "and therefore its totals" | `aggregate` / `totals` take no filter. P1-001's code-based conflict callout (`Product1Manager.overview` L39): rows are filtered **before** aggregation, so all four tables and the overall line shrink | DOC-STALE | Q2 (owner, same as P1-001 city-filter question) |
 | 11 | worked example 2 | P1-PRM value 1325.00, shareOfValue **0.3354** | the test asserts P1-PRM landedCost 1511.25 and Carrow / OUT value 1325.00; neither the P1-PRM value nor a share 0.3354 is asserted (0.3354 was hand-computed) | DOC-STALE | example restricted to test values (done); Q3 |
 | 12 | worked-example provenance | rows without test method names | procedure step 6 requires the method name in each row | DOC-STALE | method names added (done) |

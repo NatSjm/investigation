@@ -1,15 +1,15 @@
 ---
 type: Document
 title: "DB schema (approximate, from migrations)"
-description: "Generated map: DB schema (approximate, from migrations), derived from Flyway V*.sql; read instead of source files."
+description: "Generated map: DB schema (approximate, from migrations), derived from migrations V*.sql, R*.sql under /db/migration/; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-15
+  at: 2026-10-16
 status: stable
 ---
 # DB schema (approximate, from migrations)
 
-> Generated from `Flyway V*.sql` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
+> Generated from `migrations V*.sql, R*.sql under /db/migration/` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
 20 table(s). Derived by regex from migrations - types/constraints are indicative; verify against a real DB for DDL work.
 
 ```mermaid
@@ -35,8 +35,8 @@ erDiagram
 ```
 
 ## `client_profile`
-Created in `core/src/main/resources/db/migration/V1__clients.sql`
-Used in: `ClientManager`, `ClientProfile`, `ClientProfileDao`, `ClientProfileService`
+Created in `harbor-core/src/main/resources/db/migration/V1__clients.sql`
+Used in: `ClientManager`, `ClientProfile`, `ClientProfileRepository`, `ClientProfileService`
 
 | Column | Type / flags |
 |---|---|
@@ -48,8 +48,8 @@ Used in: `ClientManager`, `ClientProfile`, `ClientProfileDao`, `ClientProfileSer
 | `created_at` | timestamp NN |
 
 ## `client_role`
-Created in `core/src/main/resources/db/migration/V1__clients.sql`
-Used in: `ClientRoleDao`, `ClientRoleDecision`, `ClientRoleService`, `ClientRoleSessionClosedListener`
+Created in `harbor-core/src/main/resources/db/migration/V1__clients.sql`
+Used in: `ClientRoleDecision`, `ClientRoleRepository`, `ClientRoleService`, `ClientRoleSessionClosedListener`
 
 | Column | Type / flags |
 |---|---|
@@ -62,8 +62,8 @@ Used in: `ClientRoleDao`, `ClientRoleDecision`, `ClientRoleService`, `ClientRole
 | `decided_at` | timestamp NN |
 
 ## `meeting_session`
-Created in `core/src/main/resources/db/migration/V2__meetings.sql`
-Used in: `MeetingSession`, `MeetingSessionDao`
+Created in `harbor-core/src/main/resources/db/migration/V2__meetings.sql`
+Used in: `MeetingSession`, `MeetingSessionRepository`
 
 | Column | Type / flags |
 |---|---|
@@ -78,11 +78,11 @@ Used in: `MeetingSession`, `MeetingSessionDao`
 | `role_override` | varchar(16) |
 | `role_override_reason` | varchar(500) |
 | `parameter_snapshot` | jsonb |
-| `report_requested_at` | timestamp (+core/src/main/resources/db/migration/V9__parameters.sql) |
+| `report_requested_at` | timestamp (+harbor-core/src/main/resources/db/migration/V9__parameters.sql) |
 
 ## `session_client_config`
-Created in `core/src/main/resources/db/migration/V2__meetings.sql`
-Used in: `SessionClientConfig`, `SessionClientConfigDao`
+Created in `harbor-core/src/main/resources/db/migration/V2__meetings.sql`
+Used in: `SessionClientConfig`, `SessionClientConfigRepository`
 
 | Column | Type / flags |
 |---|---|
@@ -92,8 +92,8 @@ Used in: `SessionClientConfig`, `SessionClientConfigDao`
 | `cover_preference` | varchar(16) NN |
 
 ## `import_batch`
-Created in `core/src/main/resources/db/migration/V3__movements.sql`
-Used in: `ImportBatch`, `ImportBatchDao`, `ImportManager`, `MovementImportService`
+Created in `harbor-core/src/main/resources/db/migration/V3__movements.sql`
+Used in: `ImportBatch`, `ImportBatchRepository`, `ImportManager`, `MovementImportService`
 
 | Column | Type / flags |
 |---|---|
@@ -105,8 +105,8 @@ Used in: `ImportBatch`, `ImportBatchDao`, `ImportManager`, `MovementImportServic
 | `status` | varchar(16) NN |
 
 ## `goods_movement`
-Created in `core/src/main/resources/db/migration/V3__movements.sql`
-Used in: `DailyMovementImportJob`, `GoodsMovement`, `GoodsMovementDao`, `ImportManager`, `MonthlySnapshotJob`, `MovementImportService`, `MovementMonthly`, `MovementsLoadedEvent`
+Created in `harbor-core/src/main/resources/db/migration/V3__movements.sql`
+Used in: `DailyMovementImportJob`, `GoodsMovement`, `GoodsMovementRepository`, `ImportManager`, `MonthlySnapshotJob`, `MovementImportService`, `MovementMonthly`, `MovementsLoadedEvent`
 
 | Column | Type / flags |
 |---|---|
@@ -124,8 +124,8 @@ Used in: `DailyMovementImportJob`, `GoodsMovement`, `GoodsMovementDao`, `ImportM
 | `price_basis` | varchar(3) NN |
 
 ## `movement_monthly`
-Created in `core/src/main/resources/db/migration/V3__movements.sql`
-Used in: `ClientOverviewIndicators`, `ClientOverviewService`, `ClientRoleService`, `CoverRatioService`, `GoodsMovementDao`, `ImportManager`, `MonthlySnapshotJob`, `MovementImportService`, `MovementMonthly`, `MovementMonthlyDao`, `ProjectionInputAssembler`, `SessionPeerSimulation`
+Created in `harbor-core/src/main/resources/db/migration/V3__movements.sql`
+Used in: `ClientOverviewIndicators`, `ClientOverviewService`, `ClientRoleService`, `CoverRatioService`, `GoodsMovementRepository`, `ImportManager`, `MonthlySnapshotJob`, `MovementImportService`, `MovementMonthly`, `MovementMonthlyRepository`, `ProjectionInputAssembler`, `SessionPeerSimulation`
 
 | Column | Type / flags |
 |---|---|
@@ -141,8 +141,8 @@ Used in: `ClientOverviewIndicators`, `ClientOverviewService`, `ClientRoleService
 | `value` | numeric(18, 2) NN |
 
 ## `session_movement_input`
-Created in `core/src/main/resources/db/migration/V4__session_inputs.sql`
-Used in: `ProjectionInputAssembler`, `SessionMovementInput`, `SessionMovementInputDao`
+Created in `harbor-core/src/main/resources/db/migration/V4__session_inputs.sql`
+Used in: `ProjectionInputAssembler`, `SessionMovementInput`, `SessionMovementInputRepository`
 
 | Column | Type / flags |
 |---|---|
@@ -157,8 +157,8 @@ Used in: `ProjectionInputAssembler`, `SessionMovementInput`, `SessionMovementInp
 | `unit_price` | numeric(18, 4) NN |
 
 ## `session_peer_simulation`
-Created in `core/src/main/resources/db/migration/V4__session_inputs.sql`
-Used in: `PeerSimulationService`, `SessionPeerSimulation`, `SessionPeerSimulationDao`
+Created in `harbor-core/src/main/resources/db/migration/V4__session_inputs.sql`
+Used in: `PeerSimulationService`, `SessionPeerSimulation`, `SessionPeerSimulationRepository`
 
 | Column | Type / flags |
 |---|---|
@@ -169,8 +169,8 @@ Used in: `PeerSimulationService`, `SessionPeerSimulation`, `SessionPeerSimulatio
 | `generated_at` | timestamp NN |
 
 ## `projection_by_subproduct`
-Created in `core/src/main/resources/db/migration/V5__projection.sql`
-Used in: `ProjectionDao`, `ProjectionRow`
+Created in `harbor-core/src/main/resources/db/migration/V5__projection.sql`
+Used in: `ProjectionRepository`, `ProjectionRow`
 
 | Column | Type / flags |
 |---|---|
@@ -184,8 +184,8 @@ Used in: `ProjectionDao`, `ProjectionRow`
 | `cumulative_value` | numeric(18, 2) NN |
 
 ## `projection_by_dimension`
-Created in `core/src/main/resources/db/migration/V5__projection.sql`
-Used in: `ProjectionDao`, `ProjectionRow`
+Created in `harbor-core/src/main/resources/db/migration/V5__projection.sql`
+Used in: `ProjectionRepository`, `ProjectionRow`
 
 | Column | Type / flags |
 |---|---|
@@ -200,8 +200,8 @@ Used in: `ProjectionDao`, `ProjectionRow`
 | `cumulative_value` | numeric(18, 2) NN |
 
 ## `projection_by_direction`
-Created in `core/src/main/resources/db/migration/V5__projection.sql`
-Used in: `ProjectionDao`, `ProjectionRow`
+Created in `harbor-core/src/main/resources/db/migration/V5__projection.sql`
+Used in: `ProjectionRepository`, `ProjectionRow`
 
 | Column | Type / flags |
 |---|---|
@@ -215,8 +215,8 @@ Used in: `ProjectionDao`, `ProjectionRow`
 | `cumulative_value` | numeric(18, 2) NN |
 
 ## `projection_summary`
-Created in `core/src/main/resources/db/migration/V5__projection.sql`
-Used in: `ProjectionDao`, `ProjectionRow`
+Created in `harbor-core/src/main/resources/db/migration/V5__projection.sql`
+Used in: `ProjectionRepository`, `ProjectionRow`
 
 | Column | Type / flags |
 |---|---|
@@ -230,8 +230,8 @@ Used in: `ProjectionDao`, `ProjectionRow`
 | `cumulative_value` | numeric(18, 2) NN |
 
 ## `cover_policy`
-Created in `core/src/main/resources/db/migration/V6__cover.sql`
-Used in: `CoverPolicy`, `CoverPolicyDao`, `CoverRatioService`
+Created in `harbor-core/src/main/resources/db/migration/V6__cover.sql`
+Used in: `CoverPolicy`, `CoverPolicyRepository`, `CoverRatioService`
 
 | Column | Type / flags |
 |---|---|
@@ -245,8 +245,8 @@ Used in: `CoverPolicy`, `CoverPolicyDao`, `CoverRatioService`
 | `valid_to` | date |
 
 ## `cover_quote`
-Created in `core/src/main/resources/db/migration/V6__cover.sql`
-Used in: `CoverManager`, `CoverQuote`, `CoverQuoteDao`, `CoverQuoteService`
+Created in `harbor-core/src/main/resources/db/migration/V6__cover.sql`
+Used in: `CoverManager`, `CoverQuote`, `CoverQuoteRepository`, `CoverQuoteService`
 
 | Column | Type / flags |
 |---|---|
@@ -258,8 +258,8 @@ Used in: `CoverManager`, `CoverQuote`, `CoverQuoteDao`, `CoverQuoteService`
 | `provider_ref` | varchar(128) |
 
 ## `market_scenario`
-Created in `core/src/main/resources/db/migration/V7__market_stress.sql`
-Used in: `MarketScenario`, `MarketScenarioDao`, `ScenarioService`
+Created in `harbor-core/src/main/resources/db/migration/V7__market_stress.sql`
+Used in: `MarketScenario`, `MarketScenarioRepository`, `ScenarioService`
 
 | Column | Type / flags |
 |---|---|
@@ -272,8 +272,8 @@ Used in: `MarketScenario`, `MarketScenarioDao`, `ScenarioService`
 | `created_at` | timestamp NN |
 
 ## `baseline_price`
-Created in `core/src/main/resources/db/migration/V7__market_stress.sql`
-Used in: `BaselinePrice`, `BaselinePriceDao`, `BaselinePriceService`, `MarketManager`, `MarketPricesListener`, `ProjectionAggregator`
+Created in `harbor-core/src/main/resources/db/migration/V7__market_stress.sql`
+Used in: `BaselinePrice`, `BaselinePriceRepository`, `BaselinePriceService`, `MarketManager`, `MarketPricesListener`, `ProjectionAggregator`
 
 | Column | Type / flags |
 |---|---|
@@ -286,8 +286,8 @@ Used in: `BaselinePrice`, `BaselinePriceDao`, `BaselinePriceService`, `MarketMan
 | `as_of` | timestamp NN |
 
 ## `stress_test_result`
-Created in `core/src/main/resources/db/migration/V7__market_stress.sql`
-Used in: `ReportManager`, `ReportPayloadService`, `StressDimension`, `StressManager`, `StressTestResult`, `StressTestResultDao`
+Created in `harbor-core/src/main/resources/db/migration/V7__market_stress.sql`
+Used in: `ReportManager`, `ReportPayloadService`, `StressDimension`, `StressManager`, `StressTestResult`, `StressTestResultRepository`
 
 | Column | Type / flags |
 |---|---|
@@ -301,8 +301,8 @@ Used in: `ReportManager`, `ReportPayloadService`, `StressDimension`, `StressMana
 | `cumulative_exposure` | numeric(18, 2) NN |
 
 ## `meeting_report`
-Created in `core/src/main/resources/db/migration/V8__reports.sql`
-Used in: `MeetingReport`, `MeetingReportDao`, `ReportManager`
+Created in `harbor-core/src/main/resources/db/migration/V8__reports.sql`
+Used in: `MeetingReport`, `MeetingReportRepository`, `ReportManager`
 
 | Column | Type / flags |
 |---|---|
@@ -313,8 +313,8 @@ Used in: `MeetingReport`, `MeetingReportDao`, `ReportManager`
 | `rendered_at` | timestamp |
 
 ## `parameter_set`
-Created in `core/src/main/resources/db/migration/V9__parameters.sql`
-Used in: `ClientRoleService`, `MeetingManager`, `MeetingSession`, `MissingParameterException`, `Parameter`, `ParameterDao`, `ParameterService`, `ProjectionAggregator`, `ProjectionInputAssembler`, `RoleClassifier`
+Created in `harbor-core/src/main/resources/db/migration/V9__parameters.sql`
+Used in: `ClientRoleService`, `MeetingManager`, `MeetingSession`, `MissingParameterException`, `Parameter`, `ParameterRepository`, `ParameterService`, `ProjectionAggregator`, `ProjectionInputAssembler`, `RoleClassifier`
 
 | Column | Type / flags |
 |---|---|

@@ -51,7 +51,7 @@ repo can be verified against the code mechanically. The maps are checked for fre
 
 ### 2.3 Bounded contexts by name prefix (`contexts.yml`)
 The backend is layered (`api/`, `manager/`, `service/`, `dao/` ...), so a folder holds every business area. The
-business area of a class is therefore its **name prefix**: `Product1Manager`, `ProjectionService`, `ProjectionDao`
+business area of a class is therefore its **name prefix**: `Product1Manager`, `ProjectionService`, `ProjectionRepository`
 belong to `product1`. `docs-repo/contexts.yml` maps each context to its spec prefix (`P1`), its frontend feature
 folder (`src/features/product1`) and its backend prefixes. Longest prefix wins; unmatched classes are `shared`. The
 graph, the context pack, the migration board and the traceability globs all read this one file.

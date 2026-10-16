@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""Lists every manager and calculation class with its current `@docs` tag and, where it is missing, the tag it should get.
+"""Lists every entry-point class (layer `entry_layer`, default manager) and calculation class (layer `calculation_layer`,
+default utils) with its current `@docs` tag and, where it is missing, the tag it should get.
 Deterministic input for the `docs-tagger` agent (prompt /tag-docs): the agent adds the comment lines, a human reviews the table.
 
 Reads docs/_generated/components.md (run gen-all.py first) and the docs repo contexts.yml:
-  - layer `manager`: context = longest class-name prefix in contexts.yml; proposed tag = `<spec prefix>-<next free NNN>`
+  - entry layer: context = longest class-name prefix in contexts.yml (`be` list); proposed tag = `<spec prefix>-<next free NNN>`
     (NNN from the IDs already used in docs-tags.md, 001 when none). No matching prefix -> BLOCKED (add the prefix first).
-  - layer `utils`: proposed tag = snake_case of the class name; the agent refines it from the KDoc (e.g. `monthly_projection`).
-Status: tagged | PROPOSE | REVIEW (utils class without a context prefix: shared helper or calculation?) | BLOCKED.
-A second table lists the public functions of the `utils` classes: a reusable sub-calculation is an entry point and
+  - calculation layer: proposed tag = snake_case of the class name; the agent refines it from the KDoc (e.g. `monthly_projection`).
+Status: tagged | PROPOSE | REVIEW (calculation class without a context prefix: shared helper or calculation?) | BLOCKED.
+A second table lists the public functions of the calculation classes: a reusable sub-calculation is an entry point and
 needs its own tag (status REVIEW when it has none and the class has several public functions).
 Nothing is written to the source files.
 Examples:
@@ -19,11 +20,12 @@ import re
 import sys
 
 from _common import (read_text, write_text, resolve_out, rel_path, line_number, header, posix, like, sort_key,
-                     utf8_stdout)
+                     utf8_stdout, load_config, parse_contexts)
 
 FUN_RX = re.compile(r'(?s)(?:/\*\*(?P<doc>(?:(?!\*/).)*)\*/\s*)?(?:@\w+(?:\([^)]*\))?\s*)*'
                     r'(?P<mods>(?:(?:private|internal|protected|public|override|operator|inline|infix|suspend|tailrec|open|abstract)\s+)*)'
                     r'fun\s+(?:<[^>]*>\s*)?(?P<name>\w+)\s*\(')
+DEFAULTS = {'entry_layer': 'manager', 'calculation_layer': 'utils'}
 
 
 def to_snake(s):
@@ -34,12 +36,16 @@ def main():
     utf8_stdout()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--root', default='.')
+    ap.add_argument('--config', default='')
     ap.add_argument('--contexts', default='')
     ap.add_argument('--components', default='docs/_generated/components.md')
     ap.add_argument('--docs-tags', default='docs/_generated/docs-tags.md')
     ap.add_argument('--out', default='')
     a = ap.parse_args()
     root = os.path.abspath(a.root)
+    cfg = load_config(root, DEFAULTS, a.config)
+    entry_layer = cfg['entry_layer'].lower()
+    calc_layer = cfg['calculation_layer'].lower()
 
     contexts = a.contexts
     if not contexts:
@@ -54,9 +60,7 @@ def main():
         raise SystemExit(f'{a.components} missing; run scripts/docs/gen-all.py first')
 
     # ---- contexts.yml: name -> { Spec; Prefixes } (one line per context, flow style) ----
-    ctxs = {}
-    for m in re.finditer(r'(?m)^\s*([\w-]+):\s*\{\s*spec:\s*(\w+)\s*,\s*fe:\s*[^,]*,\s*be:\s*\[([^\]]*)\]', read_text(contexts)):
-        ctxs[m.group(1)] = {'Spec': m.group(2), 'Prefixes': [p.strip() for p in m.group(3).split(',') if p.strip()]}
+    ctxs = {name: {'Spec': spec, 'Prefixes': be} for name, spec, _fe, be in parse_contexts(read_text(contexts))}
 
     def resolve_context(class_name):
         best, best_len = '', 0
@@ -83,7 +87,7 @@ def main():
     # ---- components.md rows: | `Class` | Layer | Module | Kind | Depends on | Tables | @docs | `Location` | ----
     rows = []
     for line in re.split(r'\r?\n', read_text(comp_path)):
-        if not re.match(r'^\|\s*`([\w.]+)`\s*\|\s*(\w+|\(root\))\s*\|', line, re.I):
+        if not re.match(r'^\|\s*`([\w.]+)`\s*\|\s*([\w/]+|\(root\))\s*\|', line, re.I):
             continue
         cells = [c.strip() for c in line.strip('|').split('|')]
         if len(cells) < 8:
@@ -93,13 +97,13 @@ def main():
         kind = cells[3]
         tag = cells[6].replace('`', '')
         loc = cells[7].strip('`')
-        if layer.lower() not in ('manager', 'utils'):
+        if layer.lower() not in (entry_layer, calc_layer):
             continue
-        if layer.lower() == 'utils' and not re.match(r'^(object|class)$', kind, re.I):
+        if layer.lower() == calc_layer and not re.match(r'^(object|class)$', kind, re.I):
             continue   # enums, data classes, interfaces are not calculations
         ctx = resolve_context(name)
         proposed = ''
-        if layer.lower() == 'manager':
+        if layer.lower() == entry_layer:
             if tag:
                 status = 'tagged'
             elif not ctx:
@@ -120,7 +124,7 @@ def main():
 
     # ---- public functions of the calculation classes: a reusable sub-calculation is an entry point of its own ----
     funs = []
-    for r in (x for x in rows if x['Layer'].lower() == 'utils'):
+    for r in (x for x in rows if x['Layer'].lower() == calc_layer):
         file = r['Loc'].split(':')[0]
         src = read_text(os.path.join(root, file))
         public = [m for m in FUN_RX.finditer(src) if not re.search(r'private|internal|protected|override', m.group('mods'), re.I)]
@@ -139,7 +143,7 @@ def main():
                          'Status': status, 'Loc': f"{file}:{line_number(src, m.start('name'))}"})
 
     sb = [header('@docs tag candidates (BE)', f'{a.components} + contexts.yml',
-                 'Managers and calculations with their current @docs tag and the proposed one where missing; input for the docs-tagger agent.')]
+                 f'{entry_layer} and {calc_layer} classes with their current @docs tag and the proposed one where missing; input for the docs-tagger agent.')]
     n = len(rows)
     todo = sum(1 for r in rows if like(r['Status'], 'PROPOSE*'))
     blocked = sum(1 for r in rows if like(r['Status'], 'BLOCKED*'))

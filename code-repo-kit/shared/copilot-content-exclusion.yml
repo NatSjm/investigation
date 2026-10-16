@@ -10,7 +10,7 @@
   - "**/*.iml"
   - "**/generated/**"
   - "**/generated-sources/**"
-  - "init_docker_compose/wiremock/**"                  # stub payloads of the external services - read core/src/main/resources/api instead
+  - "init_docker_compose/wiremock/**"                  # stub payloads of the external services - read harbor-core/src/main/resources/api instead
   - "**/src/test/resources/**/*.json"
   - "**/src/test/resources/**/*.csv"
   - "**/src/test/resources/**/*.xls*"                  # movement import fixtures

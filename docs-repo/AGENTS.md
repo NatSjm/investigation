@@ -34,7 +34,7 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
 6. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` - contracts the
    code implements; `contracts/proposed/<ID>.*.yaml` - contracts still being designed (proposals, see `contracts/conventions.md`)
 7. Only then source code in `../backend` / `../frontend`, smallest possible range, located via the graph, `components.md` or
-   `docs-tags.md`. The backend is layered (`core/src/main/kotlin/harbor/<layer>/`): start at the context's `manager/<Ctx>Manager.kt`.
+   `docs-tags.md`. The backend is layered (`harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`): start at the context's `manager/<Ctx>Manager.kt`.
 
 ## Hard rules
 

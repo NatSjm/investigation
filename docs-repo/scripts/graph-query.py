@@ -4,7 +4,7 @@ for IntelliJ users (paste the output into Copilot chat) and for CI analytics (PR
 Examples:
   python3 scripts/graph-query.py --node topic:market.rates.updated              # neighbourhood, depth 2
   python3 scripts/graph-query.py --node spec:P1-001 --depth 3                   # spec -> code -> tables/topics/routes
-  python3 scripts/graph-query.py --files core/src/main/kotlin/harbor/api/Product1Controller.kt src/pages/Product1OverviewPage/Product1OverviewPage.tsx
+  python3 scripts/graph-query.py --files harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt src/pages/Product1OverviewPage/Product1OverviewPage.tsx
                                                                                 # git diff --name-only | impacted nodes + specs
   python3 scripts/graph-query.py --find proposal                                # fuzzy node search
   python3 scripts/graph-query.py --node feature:product1 --json                 # machine output"""

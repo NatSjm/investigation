@@ -13,26 +13,26 @@ status: stable
 14 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## contexts
-- `context:cover` - `core/src/main/kotlin/harbor/manager/CoverManager.kt` - entry point CoverManager (manager)
+- `context:cover` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt` - entry point CoverManager (manager)
 
 ## endpoints
-- `endpoint:GET /api/v1/clients/{clientId}/cover-policies` - `core/src/main/kotlin/harbor/api/CoverController.kt:31` - operationId listCoverPolicies; handler CoverController.listCoverPolicies; params clientId
-- `endpoint:GET /api/v1/session/cover/summary` - `core/src/main/kotlin/harbor/api/CoverController.kt:23` - operationId getCoverSummary; handler CoverController.getCoverSummary; params 
-- `endpoint:POST /api/v1/session/cover/quotes` - `core/src/main/kotlin/harbor/api/CoverController.kt:26` - operationId requestCoverQuote; handler CoverController.requestCoverQuote; params 
+- `endpoint:GET /api/v1/clients/{clientId}/cover-policies` - `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:31` - operationId listCoverPolicies; handler CoverController.listCoverPolicies; params clientId
+- `endpoint:GET /api/v1/session/cover/summary` - `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:23` - operationId getCoverSummary; handler CoverController.getCoverSummary; params 
+- `endpoint:POST /api/v1/session/cover/quotes` - `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:26` - operationId requestCoverQuote; handler CoverController.requestCoverQuote; params 
 
 ## classes
-- `class:CoverManager` - `core/src/main/kotlin/harbor/manager/CoverManager.kt:25` - manager; Service
-- `class:CoverRatioService` - `core/src/main/kotlin/harbor/service/CoverRatioService.kt:26` - service; Service
-- `class:CoverController` - `core/src/main/kotlin/harbor/api/CoverController.kt:20` - api; RestController
-- `class:CoverQuoteService` - `core/src/main/kotlin/harbor/service/CoverQuoteService.kt:23` - service; Service
-- `class:CoverPolicyDao` - `core/src/main/kotlin/harbor/dao/CoverPolicyDao.kt:10` - dao; Repository
-- `class:CoverRatioCalculator` - `core/src/main/kotlin/harbor/utils/CoverRatioCalculator.kt:23` - utils; object
-- `class:CoverQuoteDao` - `core/src/main/kotlin/harbor/dao/CoverQuoteDao.kt:9` - dao; Repository
-- `class:CoverProviderClient` - `core/src/main/kotlin/harbor/client/CoverProviderClient.kt:19` - client; Component
+- `class:CoverManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt:25` - manager; Service
+- `class:CoverRatioService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/CoverRatioService.kt:26` - service; Service
+- `class:CoverController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:20` - api; RestController
+- `class:CoverQuoteService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/CoverQuoteService.kt:23` - service; Service
+- `class:CoverPolicyRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/CoverPolicyRepository.kt:10` - dao/repository; Repository
+- `class:CoverRatioCalculator` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/CoverRatioCalculator.kt:23` - utils; object
+- `class:CoverQuoteRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/CoverQuoteRepository.kt:9` - dao/repository; Repository
+- `class:CoverProviderClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/CoverProviderClient.kt:19` - client/rest; Component
 
 ## tables
-- `table:cover_quote` - `core/src/main/resources/db/migration/V6__cover.sql` - 6 columns: id, session_id, requested_at, uncovered_value, premium, provider_ref
-- `table:cover_policy` - `core/src/main/resources/db/migration/V6__cover.sql` - 8 columns: id, client_id, product_group, sub_product, covered_share, premium_rate, valid_from, valid_to
+- `table:cover_quote` - `harbor-core/src/main/resources/db/migration/V6__cover.sql` - 6 columns: id, session_id, requested_at, uncovered_value, premium, provider_ref
+- `table:cover_policy` - `harbor-core/src/main/resources/db/migration/V6__cover.sql` - 8 columns: id, client_id, product_group, sub_product, covered_share, premium_rate, valid_from, valid_to
 
 ## Edges
 - `feature:shared` -calls-> `endpoint:GET /api/v1/clients/{clientId}/cover-policies` (-> fe-shared)
@@ -43,24 +43,24 @@ status: stable
 - `hook:useCoverSummary` -calls-> `endpoint:GET /api/v1/session/cover/summary` (-> fe-shared) (exact)
 - `context:cover` -contains-> `class:CoverController`
 - `context:cover` -contains-> `class:CoverManager`
-- `context:cover` -contains-> `class:CoverPolicyDao`
+- `context:cover` -contains-> `class:CoverPolicyRepository`
 - `context:cover` -contains-> `class:CoverProviderClient`
-- `context:cover` -contains-> `class:CoverQuoteDao`
+- `context:cover` -contains-> `class:CoverQuoteRepository`
 - `context:cover` -contains-> `class:CoverQuoteService`
 - `context:cover` -contains-> `class:CoverRatioCalculator`
 - `context:cover` -contains-> `class:CoverRatioService`
 - `class:ClientOverviewService` -depends-on-> `class:CoverRatioService` (-> clients)
 - `class:CoverController` -depends-on-> `class:CoverManager`
 - `class:CoverManager` -depends-on-> `class:ClientProfileService` (-> clients)
-- `class:CoverManager` -depends-on-> `class:CoverPolicyDao`
+- `class:CoverManager` -depends-on-> `class:CoverPolicyRepository`
 - `class:CoverManager` -depends-on-> `class:CoverQuoteService`
 - `class:CoverManager` -depends-on-> `class:CoverRatioService`
 - `class:CoverManager` -depends-on-> `class:ProjectionService` (-> product1)
 - `class:CoverQuoteService` -depends-on-> `class:CoverProviderClient`
-- `class:CoverQuoteService` -depends-on-> `class:CoverQuoteDao`
+- `class:CoverQuoteService` -depends-on-> `class:CoverQuoteRepository`
 - `class:CoverQuoteService` -depends-on-> `class:ParameterService` (-> admin)
-- `class:CoverRatioService` -depends-on-> `class:CoverPolicyDao`
-- `class:CoverRatioService` -depends-on-> `class:MovementMonthlyDao` (-> imports)
+- `class:CoverRatioService` -depends-on-> `class:CoverPolicyRepository`
+- `class:CoverRatioService` -depends-on-> `class:MovementMonthlyRepository` (-> imports)
 - `class:ProjectionService` -depends-on-> `class:CoverRatioService` (-> product1)
 - `class:StressTestService` -depends-on-> `class:CoverRatioService` (-> stress)
 - `context:cover` -exposes-> `endpoint:GET /api/v1/clients/{clientId}/cover-policies`
@@ -75,9 +75,9 @@ status: stable
 - `spec:cover_ratio` -implemented-by-> `class:CoverRatioCalculator` (-> docs)
 - `context:cover` -owns-> `table:cover_policy`
 - `context:cover` -owns-> `table:cover_quote`
-- `class:CoverPolicyDao` -persists-to-> `table:cover_policy`
-- `class:CoverQuoteDao` -persists-to-> `table:cover_quote`
+- `class:CoverPolicyRepository` -persists-to-> `table:cover_policy`
+- `class:CoverQuoteRepository` -persists-to-> `table:cover_quote`
 
 ## Specs touching this community
-- `spec:COV-001` - be core/src/main/kotlin/harbor/manager/CoverManager.kt:26; fe src/pages/shared/components/CoverQuotePanel/CoverQuotePanel.tsx:19; fe src/pages/shared/hook/useCoverQuote.ts:11; fe src/pages/shared/hook/useCoverSummary.ts:10; fe src/pages/shared/hook/useCoverSummary.ts:23; fe src/types/cover.ts:13
-- `spec:cover_ratio` - `domain/calculations/cover_ratio.md` - status draft; be core/src/main/kotlin/harbor/utils/CoverRatioCalculator.kt:23
+- `spec:COV-001` - be harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt:26; fe src/pages/shared/components/CoverQuotePanel/CoverQuotePanel.tsx:19; fe src/pages/shared/hook/useCoverQuote.ts:11; fe src/pages/shared/hook/useCoverSummary.ts:10; fe src/pages/shared/hook/useCoverSummary.ts:23; fe src/types/cover.ts:13
+- `spec:cover_ratio` - `domain/calculations/cover_ratio.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/utils/CoverRatioCalculator.kt:23

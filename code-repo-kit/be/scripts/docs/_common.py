@@ -145,16 +145,23 @@ CONFIG_FILE = 'docs-gen.json'
 
 def load_config(root, defaults, explicit=''):
     """Merges docs-gen.json over the generator's defaults. Looked up in this order: --config, <root>/scripts/docs/,
-    the generator's own folder. Keys unknown to the generator are kept (other generators read them)."""
+    the generator's own folder. Keys unknown to the generator are kept (other generators read them).
+    Nested objects (`rest`, `kafka`, ...) are merged key by key so a partial block keeps the other defaults."""
     import json
     here = os.path.dirname(os.path.abspath(sys.argv[0]))
     candidates = [explicit] if explicit else [os.path.join(root, 'scripts', 'docs', CONFIG_FILE), os.path.join(here, CONFIG_FILE)]
-    cfg = dict(defaults)
+    cfg = {k: (dict(v) if isinstance(v, dict) else v) for k, v in defaults.items()}
     for c in candidates:
         if c and os.path.isfile(c):
             with open(c, 'r', encoding='utf-8-sig') as f:
                 data = json.load(f)
-            cfg.update({k: v for k, v in data.items() if not k.startswith('_')})
+            for k, v in data.items():
+                if k.startswith('_'):
+                    continue
+                if isinstance(v, dict) and isinstance(cfg.get(k), dict):
+                    cfg[k].update(v)
+                else:
+                    cfg[k] = v
             cfg['_config_path'] = c
             break
     return cfg
@@ -194,3 +201,160 @@ def source_files_cfg(root, include, test_rx, exclude_paths=()):
     rx = re.compile(test_rx, re.I) if test_rx else None
     return [f for f in source_files(root, include)
             if not (rx and rx.search(os.path.basename(f))) and not under(f, exclude_paths)]
+
+
+# ---- JVM backend helpers (Maven modules, packages, layers, Kotlin constants, Spring properties) ----
+def pom_modules(root):
+    """<module> entries of the root pom.xml (Maven multi-module); [] when there is no pom or no modules."""
+    import xml.etree.ElementTree as ET
+    pom = os.path.join(root, 'pom.xml')
+    if not os.path.isfile(pom):
+        return []
+    ns = '{http://maven.apache.org/POM/4.0.0}'
+    x = ET.fromstring(read_text(pom))
+    return [m.text.strip() for m in x.findall(f'.//{ns}modules/{ns}module') if m.text and m.text.strip()]
+
+
+def module_dirs(root, cfg):
+    """Build modules: `modules` of the config, else the root pom, else the repo itself ('.')."""
+    return list(cfg.get('modules') or pom_modules(root) or ['.'])
+
+
+def module_of(root, path, modules):
+    rel = rel_path(root, path)
+    for m in modules:
+        if m != '.' and (rel == m or rel.startswith(m + '/')):
+            return m
+    return '.'
+
+
+def main_sources(root, cfg, modules=None):
+    """Kotlin/Java files under <module>/<source_root> of every module, minus tests and `exclude_paths`."""
+    modules = modules or module_dirs(root, cfg)
+    excl = [os.path.join(root, p) for p in cfg.get('exclude_paths', [])]
+    out = []
+    for m in modules:
+        d = os.path.join(root, m, cfg.get('source_root', 'src/main/kotlin'))
+        if os.path.isdir(d):
+            out += source_files_cfg(d, ['*.kt', '*.java'], cfg.get('test_pattern', ''), excl)
+    return out
+
+
+def package_of(text):
+    m = re.search(r'(?m)^package\s+([\w.]+)', text)
+    return m.group(1) if m else ''
+
+
+def base_package(cfg, packages):
+    """The configured `base_package` when the module uses it, else the shortest package of the module."""
+    pkgs = [p for p in packages if p]
+    cb = cfg.get('base_package', '')
+    if cb and any(p == cb or p.startswith(cb + '.') for p in pkgs):
+        return cb
+    return min(pkgs, key=len) if pkgs else ''
+
+
+def layer_of(pkg, base, layers):
+    """Layer of a package: its first segment after the base package, or `first/second` when that pair is a configured
+    layer (e.g. dao/model). Classes in the base package itself are `(root)`."""
+    if not base or pkg == base or not pkg.startswith(base + '.'):
+        return '(root)'
+    parts = pkg[len(base) + 1:].split('.')
+    if len(parts) > 1 and parts[0] + '/' + parts[1] in layers:
+        return parts[0] + '/' + parts[1]
+    return parts[0]
+
+
+def const_strings(files):
+    """`const val NAME = "value"` across files -> {NAME: value}; `$OTHER` references inside values are resolved."""
+    out = {}
+    for f in files:
+        for m in re.finditer(r'const\s+val\s+(\w+)\s*=\s*"((?:[^"\\]|\\.)*)"', read_text(f)):
+            out[m.group(1)] = m.group(2)
+    for _ in range(3):
+        for k, v in list(out.items()):
+            out[k] = re.sub(r'\$\{(\w+)\}|\$(\w+)', lambda m: out.get(m.group(1) or m.group(2), m.group(0)), v)
+    return out
+
+
+def load_properties(root, files):
+    """Flattened `a.b.c -> value` map of simple YAML / .properties files (scalars only, indentation based, no YAML
+    library). Enough to resolve `${app.kafka.topics.x}` placeholders in annotations."""
+    props = {}
+    for rel in files or []:
+        p = os.path.join(root, rel)
+        if not os.path.isfile(p):
+            continue
+        text = read_text(p)
+        if p.lower().endswith('.properties'):
+            for line in re.split(r'\r?\n', text):
+                m = re.match(r'^\s*([\w.\-\[\]]+)\s*[=:]\s*(.*?)\s*$', line)
+                if m and not line.lstrip().startswith(('#', '!')):
+                    props[m.group(1)] = m.group(2)
+            continue
+        stack = []
+        for line in re.split(r'\r?\n', text):
+            if not line.strip() or line.lstrip().startswith('#'):
+                continue
+            if line.strip() == '---':
+                stack = []
+                continue
+            m = re.match(r'^(\s*)([\w.\-]+)\s*:\s*(.*?)\s*$', line)
+            if not m:
+                continue
+            indent = len(m.group(1))
+            while stack and stack[-1][0] >= indent:
+                stack.pop()
+            key = '.'.join([k for _, k in stack] + [m.group(2)])
+            val = re.sub(r'\s+#.*$', '', m.group(3)).strip()
+            if val == '':
+                stack.append((indent, m.group(2)))
+            else:
+                props[key] = val.strip('"\'')
+    return props
+
+
+def resolve_string_expr(expr, consts, props=None):
+    """Value of a Kotlin string expression made of literals, `Object.CONST` references and `+`
+    ("a" + Topics.X, HarborConstants.API_BASE_PATH + "/x"), with `${property[:default]}` placeholders looked up in
+    props (application.yml) and `$CONST` templates in consts. Returns None when a reference is unknown."""
+    expr = expr.strip()
+    out = ''
+    for lit, ref in re.findall(r'"((?:[^"\\]|\\.)*)"|([\w.]+)', expr):
+        if ref:
+            name = ref.split('.')[-1]
+            if name not in consts:
+                return None
+            out += consts[name]
+        else:
+            out += lit.replace('\\$', '$')
+
+    def sub(m):
+        key = m.group(1) or m.group(2)
+        key, _, default = key.partition(':')
+        if key in consts:
+            return consts[key]
+        if props and key in props:
+            return props[key]
+        return default if default else m.group(0)
+    for _ in range(3):
+        out = re.sub(r'\$\{([^}]+)\}|\$(\w+)', sub, out)
+    return out
+
+
+def parse_contexts(text):
+    """contexts.yml one-line entries: name: { spec: X, fe: [...] | "x" | x, be: [...] } -> [(name, spec, fe list, be list)]."""
+    out = []
+    for m in re.finditer(r'(?m)^\s{2}([\w-]+):\s*\{(.*)\}', text):
+        name, body = m.group(1), m.group(2)
+        sm = re.search(r'spec:\s*(\w+)', body)
+
+        def lst(key):
+            lm = re.search(key + r':\s*(\[[^\]]*\]|"[^"]*"|\'[^\']*\'|[\w*?.-]*)', body)
+            if not lm:
+                return []
+            raw = lm.group(1).strip()
+            raw = raw[1:-1] if raw[:1] in '["\'' else raw
+            return [x.strip().strip('"\'') for x in raw.split(',') if x.strip().strip('"\'')]
+        out.append((name, sm.group(1) if sm else '', lst('fe'), lst('be')))
+    return out

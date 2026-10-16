@@ -10,8 +10,8 @@
 | 6 | `generated/be/*.md`, `generated/fe/*.md` | low | handlers, jobs, routes, types, `@docs` locations |
 | 7 | `confluence-import/` | medium | legacy intent (may be stale - cite, verify, never copy numbers) |
 | 8 | BE manager file (`manager/<Ctx>Manager.kt`, named on the `context:` node) | medium | responsibilities, orchestration, rule intent |
-| 9 | BE unit test next to a calculator (`core/src/test/kotlin/harbor/utils/<Class>Test.kt`) | medium | edge cases and worked examples |
-| 10 | BE controller / service / validator / dao, narrow ranges | high | validation details, error codes |
+| 9 | BE unit test next to a calculator (`harbor-core/src/test/kotlin/com/acme/harbor/utils/<Class>Test.kt`) | medium | edge cases and worked examples |
+| 10 | BE controller / service / validator / dao (repository, persistence service), narrow ranges | high | validation details, error codes |
 | 11 | FE page component (`src/pages/<Page>/<Page>.tsx`) -> its hooks (`hook/use*.ts`) -> components (`components/<Name>/`) | high | UI flow details, client-side validation |
 
 Rules of thumb:

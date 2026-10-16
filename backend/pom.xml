@@ -13,12 +13,12 @@
 
   <!--
     Two modules (BLUEPRINT.md section 3):
-    - kafka_client: Kafka topic constants, event payload classes, serde and producer helper (shared library)
-    - core:         the Spring Boot application, all business code in package-by-layer folders under harbor/
+    - kafka-client:  Kafka topic constants, event payload classes, serde and producer helper (shared library)
+    - harbor-core:  the Spring Boot application, all business code in package-by-layer folders under com/acme/harbor/
   -->
   <modules>
-    <module>core</module>
-    <module>kafka_client</module>
+    <module>harbor-core</module>
+    <module>kafka-client</module>
   </modules>
 
   <properties>
@@ -58,7 +58,7 @@
       <!-- in-reactor module -->
       <dependency>
         <groupId>com.harbor</groupId>
-        <artifactId>kafka_client</artifactId>
+        <artifactId>kafka-client</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

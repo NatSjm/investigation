@@ -9,7 +9,7 @@ parameters:
   - { name: segmentQuantities, type: Decimal, required: true }
   - { name: scalingFactor, type: Decimal, required: true }
 executor:
-  resource: backend/core/src/test/kotlin/harbor/utils/PeerBenchmarkTest.kt
+  resource: backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/PeerBenchmarkTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.py
@@ -17,21 +17,21 @@ generated: { by: copilot/calc-auditor, at: 2026-10-12T12:00:00Z }
 stale_after: 2027-01-10T00:00:00Z
 sources:
   - id: impl
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/PeerBenchmark.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt
     title: PeerBenchmark.kt
   - id: tests
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/test/kotlin/harbor/utils/PeerBenchmarkTest.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/PeerBenchmarkTest.kt
     title: PeerBenchmarkTest.kt
   - id: rounding
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/Rounding.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt
     title: Rounding.kt
 # --- repo extensions ---
 name: peer_benchmark_simulation
 used_by: [P1-003, P2-003]
 code_refs:
-  - backend/core/src/main/kotlin/harbor/utils/PeerBenchmark.kt
-  - backend/core/src/main/kotlin/harbor/utils/Rounding.kt
-  - backend/core/src/test/kotlin/harbor/utils/PeerBenchmarkTest.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt
+  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/PeerBenchmarkTest.kt
 last_verified: null
 ---
 
@@ -108,8 +108,8 @@ Copied from the executor test.[^tests]
 | 5 | month without peers | Jan: none, factor 2 | **0.00** | `a month without peer data yields zero` |
 
 ## Audit 2026-10-12
-Auditor: copilot/calc-auditor (Run 3, first concept). Files opened: `core/src/main/kotlin/harbor/utils/PeerBenchmark.kt`
-(L1-L45) and `core/src/test/kotlin/harbor/utils/PeerBenchmarkTest.kt` (L1-L55; the test did not exist and was added
+Auditor: copilot/calc-auditor (Run 3, first concept). Files opened: `harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt`
+(L1-L45) and `harbor-core/src/test/kotlin/com/acme/harbor/utils/PeerBenchmarkTest.kt` (L1-L55; the test did not exist and was added
 in the same run so that the concept has an executor).
 
 | # | Item | Documentation says | Code/test says | Severity | Action |

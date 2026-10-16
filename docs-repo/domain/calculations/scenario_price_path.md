@@ -11,7 +11,7 @@ parameters:
   - { name: shocks, type: List<Shock>, required: true }
   - { name: month, type: Int, required: true }
 executor:
-  resource: backend/core/src/test/kotlin/harbor/utils/ScenarioPricePathTest.kt
+  resource: backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/ScenarioPricePathTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.py
@@ -19,14 +19,14 @@ generated: { by: copilot/doc-sync, at: 2026-10-09T08:00:00Z }
 stale_after: 2027-01-07T00:00:00Z
 sources:
   - id: impl
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt
     title: ScenarioPricePath.kt
 # --- repo extensions ---
 name: scenario_price_path
 used_by: [MKT-001, STR-001]
 code_refs:
-  - backend/core/src/main/kotlin/harbor/utils/ScenarioPricePath.kt
-  - backend/core/src/test/kotlin/harbor/utils/ScenarioPricePathTest.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt
+  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/ScenarioPricePathTest.kt
 last_verified: null
 ---
 

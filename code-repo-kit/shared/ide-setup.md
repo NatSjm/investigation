@@ -4,8 +4,8 @@
 
 | Setting | Why |
 |---|---|
-| **File > Project Structure > Modules > Unload Modules** - keep `core` (+ `kafka_client` only for topic/payload changes) | Copilot's workspace context, symbol search and `@project` only see loaded modules |
-| **Settings > Appearance & Behavior > Scopes** - create `product1-src` = `file:core/src/main/kotlin/harbor//Product1*.kt||file:core/src/main/kotlin/harbor//Projection*.kt` (one scope per context, prefixes from the docs repo `contexts.yml`; layers are folders, contexts are name prefixes) | use the scope in *Find in Files* and when attaching context to chat |
+| **File > Project Structure > Modules > Unload Modules** - keep `core` (+ `kafka-client` only for topic/payload changes) | Copilot's workspace context, symbol search and `@project` only see loaded modules |
+| **Settings > Appearance & Behavior > Scopes** - create `product1-src` = `file:harbor-core/src/main/kotlin/com/acme/harbor//Product1*.kt||file:harbor-core/src/main/kotlin/com/acme/harbor//Projection*.kt` (one scope per context, prefixes from the docs repo `contexts.yml`; layers are folders, contexts are name prefixes) | use the scope in *Find in Files* and when attaching context to chat |
 | **Settings > Editor > File Types > Ignored Files and Folders** add `target;build;*.iml` | removes noise from indexing and Copilot file pickers |
 | **Copilot plugin** - `AGENTS.md` (since 2026-03), `.github/copilot-instructions.md`, `*.instructions.md`, `.prompt.md` and `.agent.md` are picked up automatically; `.github/hooks/*.json` and skills are preview in JetBrains | same rules in both IDEs |
 | Chat: attach `docs/_generated/<map>.md` + the context manager (`manager/<Ctx>Manager.kt`) and its `components.md` rows; avoid "whole project" context | the maps are ~300 tokens each |
@@ -29,4 +29,4 @@ so the retrieval helpers live in VS Code only (`vscode-extension/`).
 
 - Content exclusion is configured on GitHub (repo settings) - see `copilot-content-exclusion.yml`; it applies to every Copilot surface.
 - Run `scripts/docs/gen-all.py` before asking architecture questions if `docs/_generated/*` is older than your branch.
-- Contract changes start in `harbor-backend/core/src/main/resources/openapi/harbor-api.yaml`; the generated `*Api` interfaces and the FE client are never edited.
+- Contract changes start in `harbor-backend/harbor-core/src/main/resources/openapi/harbor-api.yaml`; the generated `*Api` interfaces and the FE client are never edited.

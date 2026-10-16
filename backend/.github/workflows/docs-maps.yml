@@ -9,7 +9,7 @@
 name: docs-maps
 on:
   pull_request:
-    paths: ["**/src/**", "**/pom.xml", "scripts/docs/**"]                 # contracts live under core/src/main/resources
+    paths: ["**/src/**", "**/pom.xml", "scripts/docs/**"]                 # contracts live under harbor-core/src/main/resources
 
 env:
   REPO_KIND: ${{ vars.REPO_KIND || 'be' }}        # be | fe

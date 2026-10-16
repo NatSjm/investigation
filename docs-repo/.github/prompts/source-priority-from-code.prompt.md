@@ -24,7 +24,7 @@ product's repositories. Keep the table shape, the column names and the "cheapest
 
 ## Investigation
 1. **Backend.** List the layer packages that actually exist under the main source root (`api`, `manager`,
-   `service`, `dao`, `event`, `job`, `utils`, `validator`, `mapper`, `client`, `config`, ...) with their paths and
+   `service`, `dao` and its sub-packages, `event`, `job`, `utils`, `validator`, `mapper`, `client`, `config`, ...) with their paths and
    what each holds in this code (one phrase each, from the classes in it, not from the folder name). Find where
    the entry point of a context lives (the class a spec's `context:` node names). Find where calculators live and
    where their unit tests live (test source root, package, naming pattern such as `<Class>Test.kt`). Find where
@@ -38,7 +38,7 @@ product's repositories. Keep the table shape, the column names and the "cheapest
 ## Output
 **A. The rewritten file.** Rows 1 to 7 unchanged. From row 8: one row per backend or frontend source kind,
 cheapest first, with the real path pattern of the repositories (for example
-`core/src/main/kotlin/<pkg>/manager/<Ctx>Manager.kt`, `src/pages/<Page>/hook/use*.ts`), a cost, and the
+`harbor-core/src/main/kotlin/<pkg>/manager/<Ctx>Manager.kt`, `src/pages/<Page>/hook/use*.ts`), a cost, and the
 "gives you" phrase naming the facts it is the best source for: rule intent, orchestration, edge cases and worked
 examples, validation and error codes, UI flow, client-side validation, cross-window or cross-feature channels.
 Tests come before services where the tests carry the examples. Keep the table under 15 rows.

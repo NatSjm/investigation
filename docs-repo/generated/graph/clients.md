@@ -20,33 +20,33 @@ status: stable
 - `hook:useCreateSession` - `src/pages/ClientOverviewPage/hook/useCreateSession.ts:11`
 
 ## contexts
-- `context:clients` - `core/src/main/kotlin/harbor/manager/ClientManager.kt` - entry point ClientManager (manager)
+- `context:clients` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ClientManager.kt` - entry point ClientManager (manager)
 
 ## features
 - `feature:ClientOverviewPage` - `src/pages/ClientOverviewPage/ClientOverviewPage.tsx` - /clients/:clientId` - client info panel plus one card per product group.
 - `feature:ClientSearchPage` - `src/pages/ClientSearchPage/ClientSearchPage.tsx` - /clients` - search box backed by the client registry; results link to the overview page.
 
 ## endpoints
-- `endpoint:GET /api/v1/clients` - `core/src/main/kotlin/harbor/api/ClientController.kt:23` - operationId searchClients; handler ClientController.searchClients; params 
-- `endpoint:GET /api/v1/clients/{clientId}` - `core/src/main/kotlin/harbor/api/ClientController.kt:26` - operationId getClient; handler ClientController.getClient; params clientId
-- `endpoint:GET /api/v1/clients/{clientId}/overview` - `core/src/main/kotlin/harbor/api/ClientController.kt:29` - operationId getClientOverview; handler ClientController.getClientOverview; params clientId
-- `endpoint:GET /api/v1/clients/{clientId}/role` - `core/src/main/kotlin/harbor/api/ClientController.kt:32` - operationId getClientRole; handler ClientController.getClientRole; params clientId
+- `endpoint:GET /api/v1/clients` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:23` - operationId searchClients; handler ClientController.searchClients; params 
+- `endpoint:GET /api/v1/clients/{clientId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:26` - operationId getClient; handler ClientController.getClient; params clientId
+- `endpoint:GET /api/v1/clients/{clientId}/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:29` - operationId getClientOverview; handler ClientController.getClientOverview; params clientId
+- `endpoint:GET /api/v1/clients/{clientId}/role` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:32` - operationId getClientRole; handler ClientController.getClientRole; params clientId
 
 ## routes
 - `route:/clients` - `src/routing/Routing.tsx:27` - renders ClientSearchPage
 - `route:/clients/:clientId` - `src/routing/Routing.tsx:28` - renders ClientOverviewPage
 
 ## classes
-- `class:ClientRoleService` - `core/src/main/kotlin/harbor/service/ClientRoleService.kt:28` - service; Service
-- `class:ClientProfileService` - `core/src/main/kotlin/harbor/service/ClientProfileService.kt:16` - service; Service
-- `class:ClientController` - `core/src/main/kotlin/harbor/api/ClientController.kt:20` - api; RestController
-- `class:ClientManager` - `core/src/main/kotlin/harbor/manager/ClientManager.kt:25` - manager; Service
-- `class:ClientOverviewService` - `core/src/main/kotlin/harbor/service/ClientOverviewService.kt:23` - service; Service
-- `class:ClientRoleDao` - `core/src/main/kotlin/harbor/dao/ClientRoleDao.kt:10` - dao; Repository
-- `class:ClientRoleSessionClosedListener` - `core/src/main/kotlin/harbor/event/ClientRoleSessionClosedListener.kt:18` - event; Component, KafkaListener
-- `class:ClientProfileDao` - `core/src/main/kotlin/harbor/dao/ClientProfileDao.kt:10` - dao; Repository
-- `class:RoleClassifier` - `core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24` - utils; object
-- `class:ClientRegistryClient` - `core/src/main/kotlin/harbor/client/ClientRegistryClient.kt:16` - client; Component
+- `class:ClientRoleService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientRoleService.kt:28` - service; Service
+- `class:ClientProfileService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientProfileService.kt:16` - service; Service
+- `class:ClientController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:20` - api; RestController
+- `class:ClientManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ClientManager.kt:25` - manager; Service
+- `class:ClientOverviewService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientOverviewService.kt:23` - service; Service
+- `class:ClientRoleRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ClientRoleRepository.kt:10` - dao/repository; Repository
+- `class:ClientRoleSessionClosedListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ClientRoleSessionClosedListener.kt:18` - event; Component, KafkaListener
+- `class:ClientProfileRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ClientProfileRepository.kt:10` - dao/repository; Repository
+- `class:RoleClassifier` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/RoleClassifier.kt:24` - utils; object
+- `class:ClientRegistryClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/ClientRegistryClient.kt:16` - client/rest; Component
 
 ## components
 - `component:ClientSearchPage` - `src/pages/ClientSearchPage/ClientSearchPage.tsx:17`
@@ -55,8 +55,8 @@ status: stable
 - `component:ProductGroupCard` - `src/pages/ClientOverviewPage/components/ProductGroupCard/ProductGroupCard.tsx:23`
 
 ## tables
-- `table:client_profile` - `core/src/main/resources/db/migration/V1__clients.sql` - 6 columns: id, external_ref, name, country, segment, created_at
-- `table:client_role` - `core/src/main/resources/db/migration/V1__clients.sql` - 7 columns: id, client_id, product_group, role, source, reason, decided_at
+- `table:client_profile` - `harbor-core/src/main/resources/db/migration/V1__clients.sql` - 6 columns: id, external_ref, name, country, segment, created_at
+- `table:client_role` - `harbor-core/src/main/resources/db/migration/V1__clients.sql` - 7 columns: id, client_id, product_group, role, source, reason, decided_at
 
 ## Edges
 - `feature:ClientOverviewPage` -calls-> `endpoint:GET /api/v1/clients/{clientId}/overview`
@@ -73,10 +73,10 @@ status: stable
 - `context:clients` -contains-> `class:ClientController`
 - `context:clients` -contains-> `class:ClientManager`
 - `context:clients` -contains-> `class:ClientOverviewService`
-- `context:clients` -contains-> `class:ClientProfileDao`
+- `context:clients` -contains-> `class:ClientProfileRepository`
 - `context:clients` -contains-> `class:ClientProfileService`
 - `context:clients` -contains-> `class:ClientRegistryClient`
-- `context:clients` -contains-> `class:ClientRoleDao`
+- `context:clients` -contains-> `class:ClientRoleRepository`
 - `context:clients` -contains-> `class:ClientRoleService`
 - `context:clients` -contains-> `class:ClientRoleSessionClosedListener`
 - `context:clients` -contains-> `class:RoleClassifier`
@@ -92,16 +92,16 @@ status: stable
 - `class:ClientController` -depends-on-> `class:ClientManager`
 - `class:ClientManager` -depends-on-> `class:ClientOverviewService`
 - `class:ClientManager` -depends-on-> `class:ClientProfileService`
-- `class:ClientManager` -depends-on-> `class:ClientRoleDao`
+- `class:ClientManager` -depends-on-> `class:ClientRoleRepository`
 - `class:ClientManager` -depends-on-> `class:ClientRoleService`
 - `class:ClientOverviewService` -depends-on-> `class:ClientRoleService`
 - `class:ClientOverviewService` -depends-on-> `class:CoverRatioService` (-> cover)
-- `class:ClientOverviewService` -depends-on-> `class:MeetingSessionDao` (-> meetings)
-- `class:ClientOverviewService` -depends-on-> `class:MovementMonthlyDao` (-> imports)
-- `class:ClientProfileService` -depends-on-> `class:ClientProfileDao`
+- `class:ClientOverviewService` -depends-on-> `class:MeetingSessionRepository` (-> meetings)
+- `class:ClientOverviewService` -depends-on-> `class:MovementMonthlyRepository` (-> imports)
+- `class:ClientProfileService` -depends-on-> `class:ClientProfileRepository`
 - `class:ClientProfileService` -depends-on-> `class:ClientRegistryClient`
-- `class:ClientRoleService` -depends-on-> `class:ClientRoleDao`
-- `class:ClientRoleService` -depends-on-> `class:MovementMonthlyDao` (-> imports)
+- `class:ClientRoleService` -depends-on-> `class:ClientRoleRepository`
+- `class:ClientRoleService` -depends-on-> `class:MovementMonthlyRepository` (-> imports)
 - `class:ClientRoleService` -depends-on-> `class:ParameterService` (-> admin)
 - `class:ClientRoleSessionClosedListener` -depends-on-> `class:ClientRoleService`
 - `class:CoverManager` -depends-on-> `class:ClientProfileService` (-> cover)
@@ -132,10 +132,10 @@ status: stable
 - `spec:CLI-001` -implemented-by-> `class:ClientController` (-> docs)
 - `spec:CLI-001` -implemented-by-> `class:ClientManager` (-> docs)
 - `spec:CLI-001` -implemented-by-> `class:ClientOverviewService` (-> docs)
-- `spec:CLI-001` -implemented-by-> `class:ClientProfileDao` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientProfileRepository` (-> docs)
 - `spec:CLI-001` -implemented-by-> `class:ClientProfileService` (-> docs)
 - `spec:CLI-001` -implemented-by-> `class:ClientRegistryClient` (-> docs)
-- `spec:CLI-001` -implemented-by-> `class:ClientRoleDao` (-> docs)
+- `spec:CLI-001` -implemented-by-> `class:ClientRoleRepository` (-> docs)
 - `spec:CLI-001` -implemented-by-> `class:ClientRoleService` (-> docs)
 - `spec:CLI-001` -implemented-by-> `class:ClientRoleSessionClosedListener` (-> docs)
 - `spec:CLI-001` -implemented-by-> `feature:ClientOverviewPage` (-> docs)
@@ -144,14 +144,14 @@ status: stable
 - `spec:SES-001` -implemented-by-> `feature:ClientOverviewPage` (-> docs)
 - `context:clients` -owns-> `table:client_profile`
 - `context:clients` -owns-> `table:client_role`
-- `class:ClientProfileDao` -persists-to-> `table:client_profile`
-- `class:ClientRoleDao` -persists-to-> `table:client_role`
+- `class:ClientProfileRepository` -persists-to-> `table:client_profile`
+- `class:ClientRoleRepository` -persists-to-> `table:client_role`
 - `feature:ClientOverviewPage` -renders-> `component:LineChart` (-> shared-ui)
 - `feature:ClientSearchPage` -renders-> `component:DataTable` (-> shared-ui)
 - `route:/clients` -renders-> `feature:ClientSearchPage`
 - `route:/clients/:clientId` -renders-> `feature:ClientOverviewPage`
 
 ## Specs touching this community
-- `spec:CLI-001` - `features/clients/CLI-001.md` - status stable; be core/src/main/kotlin/harbor/manager/ClientManager.kt:26; fe src/pages/ClientOverviewPage/ClientOverviewPage.tsx:18; fe src/pages/ClientOverviewPage/hook/useClientOverview.ts:10; fe src/pages/ClientOverviewPage/hook/useClientRole.ts:10; fe src/pages/ClientSearchPage/ClientSearchPage.tsx:17; fe src/pages/ClientSearchPage/hook/useClientSearch.ts:10; fe src/pages/ClientSearchPage/hook/useClientSearch.ts:24; fe src/types/clients.ts:17
-- `spec:client_role_classification` - `domain/calculations/client_role_classification.md` - status stable; be core/src/main/kotlin/harbor/utils/RoleClassifier.kt:24
-- `spec:SES-001` - `features/meetings/SES-001.md` - status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx:7; fe src/pages/ClientOverviewPage/hook/useCreateSession.ts:11; fe src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx:7; fe src/pages/SessionSummaryPage/hook/useCloseSession.ts:12; fe src/pages/SessionSummaryPage/hook/useRoleOverride.ts:10; fe src/pages/SessionSummaryPage/SessionSummaryPage.tsx:16; fe src/pages/shared/components/MeetingsListPage/MeetingsListPage.tsx:44; fe src/pages/shared/hook/useSessions.ts:20; fe src/pages/shared/hook/useSessions.ts:9; fe src/routing/SessionRoutes.tsx:15; fe src/types/meetings.ts:25
+- `spec:CLI-001` - `features/clients/CLI-001.md` - status stable; be harbor-core/src/main/kotlin/com/acme/harbor/manager/ClientManager.kt:26; fe src/pages/ClientOverviewPage/ClientOverviewPage.tsx:18; fe src/pages/ClientOverviewPage/hook/useClientOverview.ts:10; fe src/pages/ClientOverviewPage/hook/useClientRole.ts:10; fe src/pages/ClientSearchPage/ClientSearchPage.tsx:17; fe src/pages/ClientSearchPage/hook/useClientSearch.ts:10; fe src/pages/ClientSearchPage/hook/useClientSearch.ts:24; fe src/types/clients.ts:17
+- `spec:client_role_classification` - `domain/calculations/client_role_classification.md` - status stable; be harbor-core/src/main/kotlin/com/acme/harbor/utils/RoleClassifier.kt:24
+- `spec:SES-001` - `features/meetings/SES-001.md` - status stable; be harbor-core/src/main/kotlin/com/acme/harbor/manager/MeetingManager.kt:39; fe src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx:7; fe src/pages/ClientOverviewPage/hook/useCreateSession.ts:11; fe src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx:7; fe src/pages/SessionSummaryPage/hook/useCloseSession.ts:12; fe src/pages/SessionSummaryPage/hook/useRoleOverride.ts:10; fe src/pages/SessionSummaryPage/SessionSummaryPage.tsx:16; fe src/pages/shared/components/MeetingsListPage/MeetingsListPage.tsx:44; fe src/pages/shared/hook/useSessions.ts:20; fe src/pages/shared/hook/useSessions.ts:9; fe src/routing/SessionRoutes.tsx:15; fe src/types/meetings.ts:25

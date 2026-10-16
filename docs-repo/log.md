@@ -44,7 +44,7 @@
   [Integrations map](/architecture/integrations.md), ADR-0001..0003. Legacy pages quarantined under
   `confluence-import/HARBOR/`; work items `P1-001.yml`; test design `STR-001.feature` + fixture.
 * **Backend restructured to layered layout; docs paths and graph contexts updated.** `harbor-backend` is now
-  `core` (package-by-layer) + `kafka_client` + `init_docker_compose`; specs, calculations, `docs-map.yml`, agents and
-  skills point at `core/src/main/kotlin/harbor/<layer>/` paths, contexts come from `contexts.yml`
+  `core` (package-by-layer) + `kafka-client` + `init_docker_compose`; specs, calculations, `docs-map.yml`, agents and
+  skills point at `harbor-core/src/main/kotlin/com/acme/harbor/<layer>/` paths, contexts come from `contexts.yml`
   ([ADR-0004](/architecture/adr/0004-layered-backend-and-context-prefixes.md)), the BE map `components.md` was added
   and the per-module graph nodes became `context:<x>` nodes.

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Dataset catalogue: every named dataset (local seed under scripts/db/seed, integration-test fixture under
-src/test/resources/datasets) with its purpose, tables and row counts, dependencies, the tests that load it and
-one sample row per table. Lets analysts and test designers cite a setup by name ("Given dataset "x" is loaded")
+"""Dataset catalogue: every named dataset (local seeds under `datasets.seed_dirs`, integration-test fixtures under
+`datasets.fixture_dirs` - docs-gen.json) with its purpose, tables and row counts, dependencies, the tests that load it
+and one sample row per table. Lets analysts and test designers cite a setup by name ("Given dataset "x" is loaded")
 instead of describing rows, without opening the code repository. Names and shape only: the sample row is the
 first tuple of each table and is included only when the header declares `synthetic: yes`.
+SQL files elsewhere (outside the migrations) are catalogued too when they carry the header, as kind `other`.
 
 Header contract (first comment block of the .sql file):
   -- dataset: <kebab-name>      -- purpose: <one sentence>      -- tables: a, b (optional)
@@ -13,10 +14,14 @@ import os
 import re
 
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, header, escape_cell, posix,
-                     sort_key, utf8_stdout)
+                     sort_key, utf8_stdout, load_config, under)
 
 TUPLE_RX = re.compile(r'\((?P<tuple>(?:[^()]|\([^()]*\))*)\)')
 INSERT_RX = re.compile(r'(?is)INSERT\s+INTO\s+(?P<table>[a-z_][a-z0-9_]*)\s*\((?P<cols>[^)]*)\)\s*VALUES\s*(?P<vals>.*?);')
+DEFAULTS = {
+    'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql']},
+    'datasets': {'seed_dirs': ['scripts/db/seed'], 'fixture_dirs': ['src/test/resources/datasets']},
+}
 
 
 def main():
@@ -24,13 +29,19 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--root', default='.')
     ap.add_argument('--out', default='docs/_generated/datasets.md')
+    ap.add_argument('--config', default='')
     ap.add_argument('--sample-chars', type=int, default=140)
     a = ap.parse_args()
     root = os.path.abspath(a.root)
+    cfg = load_config(root, DEFAULTS, a.config)
+    ds = cfg['datasets']
+    mig_dir = re.escape(cfg['migrations']['dir_pattern'])
+    seed_dirs = [os.path.join(root, d) for d in ds['seed_dirs']]
+    fixture_dirs = [os.path.join(root, d) for d in ds['fixture_dirs']]
 
     rows = []
     unnamed = 0
-    sql_files = sorted((f for f in source_files(root, ['*.sql']) if not re.search(r'/db/migration/', posix(f), re.I)), key=sort_key)
+    sql_files = sorted((f for f in source_files(root, ['*.sql']) if not re.search(mig_dir, posix(f), re.I)), key=sort_key)
     for f in sql_files:
         t = read_text(f)
         rel = rel_path(root, f)
@@ -45,7 +56,7 @@ def main():
         if 'dataset' not in hdr:
             unnamed += 1
             continue
-        kind = 'fixture' if re.search(r'/test/', posix(f), re.I) else 'seed'
+        kind = 'fixture' if under(f, fixture_dirs) or re.search(r'/test/', posix(f), re.I) else 'seed' if under(f, seed_dirs) else 'other'
         synthetic = hdr.get('synthetic', '').lower() == 'yes'
 
         # tables and row counts from INSERT statements; DELETE/UPDATE targets count as touched
@@ -93,11 +104,13 @@ def main():
                 if who:
                     r['Users'][who] = True
 
-    sb = [header('Datasets (BE)', 'scripts/db/seed + src/test/resources/datasets headers',
+    seeds_desc = ', '.join(ds['seed_dirs'])
+    fix_desc = ', '.join(ds['fixture_dirs'])
+    sb = [header('Datasets (BE)', f'{seeds_desc} + {fix_desc} headers',
                  'Generated catalogue of the named synthetic datasets - local seeds and integration-test fixtures - with purpose, tables and row counts, dependencies, the tests that load them and one sample row per table; cite a dataset by name in Gherkin instead of describing rows.')]
     seeds = sum(1 for r in rows if r['Kind'] == 'seed')
     fix = sum(1 for r in rows if r['Kind'] == 'fixture')
-    sb.append(f'{len(rows)} dataset(s): {seeds} seed(s) for the developer database (`scripts/db/seed-local.py`), {fix} integration-test fixture(s) (`@Sql("/datasets/<name>.sql")`). Row counts are tuples in `INSERT` statements; samples are the first row per table, shown only for datasets declared `synthetic: yes`.\n')
+    sb.append(f'{len(rows)} dataset(s): {seeds} seed(s) for the developer database (`{seeds_desc}`), {fix} integration-test fixture(s) (`{fix_desc}`, loaded with `@Sql`). Row counts are tuples in `INSERT` statements; samples are the first row per table, shown only for datasets declared `synthetic: yes`.\n')
     sb.append('Use in test design: `Given dataset "<name>" is loaded` (step vocabulary in the docs repo, `test-design/README.md`); add explicit `Given` rows only for the values a scenario asserts on.\n\n')
     sb.append('| Dataset | Kind | Purpose | Tables (rows) | Depends on | Loaded by | Location |\n|---|---|---|---|---|---|---|\n')
     for r in sorted(rows, key=lambda r: sort_key(r['Name'])):

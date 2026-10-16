@@ -12,7 +12,7 @@ parameters:
   - { name: importerThreshold, type: Decimal, required: true }
   - { name: exporterThreshold, type: Decimal, required: true }
 executor:
-  resource: backend/core/src/test/kotlin/harbor/utils/RoleClassifierTest.kt
+  resource: backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/RoleClassifierTest.kt
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.py
@@ -21,17 +21,17 @@ verified: { by: human:example-reviewer, at: 2026-10-08T15:00:00Z }
 stale_after: 2027-01-06T00:00:00Z
 sources:
   - id: impl
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/main/kotlin/harbor/utils/RoleClassifier.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/RoleClassifier.kt
     title: RoleClassifier.kt
   - id: tests
-    resource: https://git.example.com/harbor/harbor-backend/blob/main/core/src/test/kotlin/harbor/utils/RoleClassifierTest.kt
+    resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/RoleClassifierTest.kt
     title: RoleClassifierTest.kt
 # --- repo extensions ---
 name: client_role_classification
 used_by: [CLI-001, STR-001]
 code_refs:
-  - backend/core/src/main/kotlin/harbor/utils/RoleClassifier.kt
-  - backend/core/src/test/kotlin/harbor/utils/RoleClassifierTest.kt
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/RoleClassifier.kt
+  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/RoleClassifierTest.kt
 last_verified: 2026-10-08
 ---
 

@@ -23,9 +23,9 @@ the cover ratio charts, the stress test (uncovered quantity per dimension value)
 is `HALF_EVEN`, scale 2, and must be applied at the same point everywhere, otherwise totals differ between pages.
 
 ## Decision
-Grouping and cumulative sums are implemented once in `core/src/main/kotlin/harbor/utils/ProjectionAggregator.kt` (pure Kotlin, no
+Grouping and cumulative sums are implemented once in `harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt` (pure Kotlin, no
 Spring, no SQL). `ProjectionService` (called by `Product1Manager` / `Product2Manager`) loads the input rows (actual
-`movement_monthly` merged with modelled `session_movement_input`), calls the aggregator and persists the result via `ProjectionDao` into
+`movement_monthly` merged with modelled `session_movement_input`), calls the aggregator and persists the result via `ProjectionRepository` into
 `projection_by_subproduct`, `projection_by_dimension`, `projection_by_direction`, `projection_summary`. Cover,
 stress and reports read those tables or call the aggregator on the same inputs; none of them writes its own
 `GROUP BY`.

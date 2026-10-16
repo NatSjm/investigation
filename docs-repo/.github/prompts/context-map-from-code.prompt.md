@@ -18,7 +18,8 @@ only what the evidence shows.
 - This repository: `AGENTS.md`, `features/conventions.md`, `contexts.yml` (may be a placeholder), `docs-map.yml`,
   `domain/glossary.md`, `architecture/overview.md`, `architecture/integrations.md`.
 - Backend repository: Kotlin/Spring, layered packages (`api`, `manager`, `service`, `dao`, `event`, `job`, `utils`,
-  `client`, `config`, `enums`, `model`, ...). The business area of a class is in its NAME PREFIX, not its folder.
+  `client`, `config`, `enums`, `model`, ...; sub-packages such as `dao/model`, `dao/repository`, `client/rest` belong
+  to their parent layer). The business area of a class is in its NAME PREFIX, not its folder.
 - Frontend repository: React/TypeScript, one folder per routed page (`src/pages/<Page>/` with `hook/` and `components/`), routes in `src/routing/`, shared pieces in `src/pages/shared/` and `src/components/`.
 - Optional: a Confluence export folder, for page titles only, never as a source of rules.
 - Reference format: copy the STRUCTURE of the reference file exactly (frontmatter keys, the intro bullets, the table
@@ -28,7 +29,7 @@ only what the evidence shows.
 ## Investigation (all of it, before writing)
 1. **Backend inventory.** Every class under the layered packages with simple name, layer and file path. Group
    classes by shared name prefix (longest meaningful prefix). Per group: the manager or service that is its entry
-   point, controllers and their routes, DAOs and the tables they touch, Kafka topics produced or consumed (event
+   point, controllers and their routes, repositories and the tables they touch, Kafka topics produced or consumed (event
    package, kafka client module, `resources/openapi` or asyncapi files), external clients.
 2. **Frontend inventory.** Every page folder under `src/pages/`, the JSDoc of its page component, the routes that
    render it (`src/routing/*.tsx`, route constants in `src/constants/`), the API hooks it owns (`hook/use*.ts`) and the backend routes they call, BroadcastChannel

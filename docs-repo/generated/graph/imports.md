@@ -13,43 +13,43 @@ status: stable
 19 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## contexts
-- `context:imports` - `core/src/main/kotlin/harbor/manager/ImportManager.kt` - entry point ImportManager (manager)
+- `context:imports` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ImportManager.kt` - entry point ImportManager (manager)
 
 ## classes
-- `class:MovementImportService` - `core/src/main/kotlin/harbor/service/MovementImportService.kt:31` - service; Service
-- `class:MovementMonthlyDao` - `core/src/main/kotlin/harbor/dao/MovementMonthlyDao.kt:13` - dao; Repository
-- `class:ImportManager` - `core/src/main/kotlin/harbor/manager/ImportManager.kt:18` - manager; Service
-- `class:GoodsMovementDao` - `core/src/main/kotlin/harbor/dao/GoodsMovementDao.kt:12` - dao; Repository
-- `class:MovementsLoadedPublisher` - `core/src/main/kotlin/harbor/event/MovementsLoadedPublisher.kt:15` - event; Component, KafkaProducer
-- `class:WorkbookReaderFactory` - `core/src/main/kotlin/harbor/component/WorkbookReaderFactory.kt:11` - component; Component
-- `class:DailyMovementImportJob` - `core/src/main/kotlin/harbor/job/DailyMovementImportJob.kt:12` - job; Component, Scheduled
-- `class:ImportBatchDao` - `core/src/main/kotlin/harbor/dao/ImportBatchDao.kt:9` - dao; Repository
-- `class:MonthlySnapshotJob` - `core/src/main/kotlin/harbor/job/MonthlySnapshotJob.kt:14` - job; Component, Scheduled
-- `class:XlsWorkbookOpener` - `core/src/main/kotlin/harbor/component/XlsWorkbookOpener.kt:8` - component; interface
-- `class:FileExchangeClient` - `core/src/main/kotlin/harbor/client/FileExchangeClient.kt:17` - client; Component
-- `class:XlsMovementParser` - `core/src/main/kotlin/harbor/component/XlsMovementParser.kt:32` - component; Component
-- `class:WorkbookDelimitedReader` - `core/src/main/kotlin/harbor/component/WorkbookDelimitedReader.kt:7` - component; class
-- `class:WorkbookReader` - `core/src/main/kotlin/harbor/component/WorkbookReader.kt:9` - component; interface
+- `class:MovementImportService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/MovementImportService.kt:31` - service; Service
+- `class:MovementMonthlyRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MovementMonthlyRepository.kt:13` - dao/repository; Repository
+- `class:ImportManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ImportManager.kt:18` - manager; Service
+- `class:MovementsLoadedPublisher` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt:15` - event; Component, KafkaProducer
+- `class:GoodsMovementRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/GoodsMovementRepository.kt:12` - dao/repository; Repository
+- `class:WorkbookReaderFactory` - `harbor-core/src/main/kotlin/com/acme/harbor/component/WorkbookReaderFactory.kt:11` - component; Component
+- `class:DailyMovementImportJob` - `harbor-core/src/main/kotlin/com/acme/harbor/job/DailyMovementImportJob.kt:12` - job; Component, Scheduled
+- `class:ImportBatchRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ImportBatchRepository.kt:9` - dao/repository; Repository
+- `class:MonthlySnapshotJob` - `harbor-core/src/main/kotlin/com/acme/harbor/job/MonthlySnapshotJob.kt:14` - job; Component, Scheduled
+- `class:XlsWorkbookOpener` - `harbor-core/src/main/kotlin/com/acme/harbor/component/XlsWorkbookOpener.kt:8` - component; interface
+- `class:FileExchangeClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/FileExchangeClient.kt:17` - client/rest; Component
+- `class:XlsMovementParser` - `harbor-core/src/main/kotlin/com/acme/harbor/component/XlsMovementParser.kt:32` - component; Component
+- `class:WorkbookDelimitedReader` - `harbor-core/src/main/kotlin/com/acme/harbor/component/WorkbookDelimitedReader.kt:7` - component; class
+- `class:WorkbookReader` - `harbor-core/src/main/kotlin/com/acme/harbor/component/WorkbookReader.kt:9` - component; interface
 
 ## topics
 - `topic:harbor.imports.movements-loaded`
 
 ## tables
-- `table:goods_movement` - `core/src/main/resources/db/migration/V3__movements.sql` - 12 columns: id, client_id, batch_id, product_group, sub_product, city, transport_mode, direction, period, quantity, unit_price, price_basis
-- `table:movement_monthly` - `core/src/main/resources/db/migration/V3__movements.sql` - 10 columns: id, client_id, product_group, sub_product, city, transport_mode, direction, period, quantity, value
-- `table:import_batch` - `core/src/main/resources/db/migration/V3__movements.sql` - 6 columns: id, source_file, received_at, rows_total, rows_rejected, status
+- `table:goods_movement` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - 12 columns: id, client_id, batch_id, product_group, sub_product, city, transport_mode, direction, period, quantity, unit_price, price_basis
+- `table:movement_monthly` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - 10 columns: id, client_id, product_group, sub_product, city, transport_mode, direction, period, quantity, value
+- `table:import_batch` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - 6 columns: id, source_file, received_at, rows_total, rows_rejected, status
 
 ## Edges
 - `topic:harbor.imports.movements-loaded` -consumed-by-> `class:Product1ProjectionRefreshListener` (-> product1)
 - `topic:harbor.imports.movements-loaded` -consumed-by-> `class:Product2ProjectionRefreshListener` (-> product2)
 - `context:imports` -contains-> `class:DailyMovementImportJob`
 - `context:imports` -contains-> `class:FileExchangeClient`
-- `context:imports` -contains-> `class:GoodsMovementDao`
-- `context:imports` -contains-> `class:ImportBatchDao`
+- `context:imports` -contains-> `class:GoodsMovementRepository`
+- `context:imports` -contains-> `class:ImportBatchRepository`
 - `context:imports` -contains-> `class:ImportManager`
 - `context:imports` -contains-> `class:MonthlySnapshotJob`
 - `context:imports` -contains-> `class:MovementImportService`
-- `context:imports` -contains-> `class:MovementMonthlyDao`
+- `context:imports` -contains-> `class:MovementMonthlyRepository`
 - `context:imports` -contains-> `class:MovementsLoadedPublisher`
 - `context:imports` -contains-> `class:WorkbookDelimitedReader`
 - `context:imports` -contains-> `class:WorkbookReader`
@@ -57,23 +57,24 @@ status: stable
 - `context:imports` -contains-> `class:XlsMovementParser`
 - `context:imports` -contains-> `class:XlsWorkbookOpener`
 - `class:AdminManager` -depends-on-> `class:MovementImportService` (-> admin)
-- `class:ClientOverviewService` -depends-on-> `class:MovementMonthlyDao` (-> clients)
-- `class:ClientRoleService` -depends-on-> `class:MovementMonthlyDao` (-> clients)
-- `class:CoverRatioService` -depends-on-> `class:MovementMonthlyDao` (-> cover)
+- `class:ClientOverviewService` -depends-on-> `class:MovementMonthlyRepository` (-> clients)
+- `class:ClientRoleService` -depends-on-> `class:MovementMonthlyRepository` (-> clients)
+- `class:CoverRatioService` -depends-on-> `class:MovementMonthlyRepository` (-> cover)
 - `class:DailyMovementImportJob` -depends-on-> `class:ImportManager`
 - `class:ImportManager` -depends-on-> `class:MovementImportService`
 - `class:MonthlySnapshotJob` -depends-on-> `class:ImportManager`
 - `class:MovementImportService` -depends-on-> `class:ClientProfileService` (-> clients)
 - `class:MovementImportService` -depends-on-> `class:FileExchangeClient`
-- `class:MovementImportService` -depends-on-> `class:GoodsMovementDao`
-- `class:MovementImportService` -depends-on-> `class:ImportBatchDao`
-- `class:MovementImportService` -depends-on-> `class:MovementMonthlyDao`
+- `class:MovementImportService` -depends-on-> `class:GoodsMovementRepository`
+- `class:MovementImportService` -depends-on-> `class:ImportBatchRepository`
+- `class:MovementImportService` -depends-on-> `class:MovementMonthlyRepository`
 - `class:MovementImportService` -depends-on-> `class:MovementsLoadedPublisher`
 - `class:MovementImportService` -depends-on-> `class:WorkbookReaderFactory`
 - `class:MovementImportService` -depends-on-> `class:XlsMovementParser`
-- `class:MovementsLoadedPublisher` -depends-on-> `class:GoodsMovementDao`
-- `class:PeerSimulationService` -depends-on-> `class:MovementMonthlyDao` (-> product1)
-- `class:ProjectionInputAssembler` -depends-on-> `class:MovementMonthlyDao` (-> product1)
+- `class:MovementsLoadedPublisher` -depends-on-> `class:EventProducer` (-> shared)
+- `class:MovementsLoadedPublisher` -depends-on-> `class:GoodsMovementRepository`
+- `class:PeerSimulationService` -depends-on-> `class:MovementMonthlyRepository` (-> product1)
+- `class:ProjectionInputAssembler` -depends-on-> `class:MovementMonthlyRepository` (-> product1)
 - `class:WorkbookReaderFactory` -depends-on-> `class:XlsWorkbookOpener`
 - `table:goods_movement` -fk batch_id-> `table:import_batch`
 - `table:goods_movement` -fk client_id-> `table:client_profile` (-> clients)
@@ -83,11 +84,11 @@ status: stable
 - `context:imports` -owns-> `table:import_batch`
 - `context:imports` -owns-> `table:movement_monthly`
 - `class:DailyMovementImportJob` -persists-to-> `table:goods_movement`
-- `class:GoodsMovementDao` -persists-to-> `table:goods_movement`
-- `class:GoodsMovementDao` -persists-to-> `table:movement_monthly`
-- `class:ImportBatchDao` -persists-to-> `table:import_batch`
-- `class:MovementMonthlyDao` -persists-to-> `table:movement_monthly`
+- `class:GoodsMovementRepository` -persists-to-> `table:goods_movement`
+- `class:GoodsMovementRepository` -persists-to-> `table:movement_monthly`
+- `class:ImportBatchRepository` -persists-to-> `table:import_batch`
+- `class:MovementMonthlyRepository` -persists-to-> `table:movement_monthly`
 - `class:MovementsLoadedPublisher` -produces-> `topic:harbor.imports.movements-loaded`
 
 ## Specs touching this community
-- `spec:IMP-001` - be core/src/main/kotlin/harbor/manager/ImportManager.kt:19
+- `spec:IMP-001` - be harbor-core/src/main/kotlin/com/acme/harbor/manager/ImportManager.kt:19

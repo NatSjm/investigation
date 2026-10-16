@@ -9,20 +9,20 @@ stale_after: 2027-01-07T00:00:00Z
 sources:
   - id: asyncapi
     resource: /generated/asyncapi/backend.yaml
-    title: AsyncAPI (backend/core/src/main/resources/openapi/harbor-events.yaml)
+    title: AsyncAPI (backend/harbor-core/src/main/resources/openapi/harbor-events.yaml)
   - id: openapi
     resource: /generated/openapi/backend.yaml
-    title: OpenAPI (backend/core/src/main/resources/openapi/harbor-api.yaml)
+    title: OpenAPI (backend/harbor-core/src/main/resources/openapi/harbor-api.yaml)
   - id: topics
-    resource: be/kafka_client/src/main/kotlin/harbor/kafka/Topics.kt
+    resource: be/kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt
     title: Topics.kt
 ---
 
 # Integrations map
 
 Rows marked `gen` are refreshed by CI from `generated/asyncapi/backend.yaml` and `generated/openapi/`;
-rows marked `manual` are maintained by hand. Topic names are constants in `Topics.kt`[^topics] (library `kafka_client`,
-payload classes in `harbor.kafka.events`); producers and consumers live in the `event/` layer of `core`. Producers call
+rows marked `manual` are maintained by hand. Topic names are constants in `Topics.kt`[^topics] (library `kafka-client`,
+payload classes in `com.acme.harbor.kafka.events`); producers and consumers live in the `event/` layer of `core`. Producers call
 `kafkaTemplate.send(Topics.X, key, payload)`, consumers use
 `@KafkaListener(topics = [Topics.X], groupId = "harbor-<context>")`.
 
@@ -57,8 +57,8 @@ sequenceDiagram
 
 ## REST (outbound, external services)
 
-Client wrappers live in the `client/` layer of `core` (`core/src/main/kotlin/harbor/client/<Name>Client.kt`, a thin
-`@Component` wrapping the generated `*Api`). Contracts: `backend/core/src/main/resources/api/<name>.yaml`, published as
+Client wrappers live in the `client/` layer of `core` (`harbor-core/src/main/kotlin/com/acme/harbor/client/<Name>Client.kt`, a thin
+`@Component` wrapping the generated `*Api`). Contracts: `backend/harbor-core/src/main/resources/api/<name>.yaml`, published as
 `generated/openapi/external/<name>.yaml`.
 
 | System | Client | Endpoints | Purpose | Contract | Feature | Src |
@@ -96,5 +96,5 @@ path requires header `X-Harbor-Session` (`component/SessionHeaderFilter`, see [S
 | `DailyMovementImportJob` | `0 0 2 * * *` | imports | pulls new files from `file-exchange`, parses into `goods_movement`, emits `movements-loaded` |
 | `MonthlySnapshotJob` | `0 0 3 1 * *` | imports | rolls `goods_movement` up into `movement_monthly` |
 
-[^topics]: `Topics.kt` (`object Topics { const val ... }`, harbor-backend `kafka_client` module)
-[^openapi]: `generated/openapi/backend.yaml` (copy of `backend/core/src/main/resources/openapi/harbor-api.yaml`)
+[^topics]: `Topics.kt` (`object Topics { const val ... }`, harbor-backend `kafka-client` module)
+[^openapi]: `generated/openapi/backend.yaml` (copy of `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml`)

@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """Traceability index: every KDoc/JSDoc `@docs <ID>` tag -> declaration signature + first summary line + file:line.
-Lets agents jump from a spec ID (P1-001, monthly_projection) straight to the code without searching."""
+Lets agents jump from a spec ID (P1-001, monthly_projection) straight to the code without searching.
+Files scanned: `docs_tags_include` patterns (docs-gen.json, default *.kt *.java) under the whole repository minus
+`exclude_paths`; `--include` overrides the patterns."""
 import argparse
 import os
 import re
 
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, line_number, header,
-                     escape_cell, first_doc_line, split_list, sort_key, utf8_stdout)
+                     escape_cell, first_doc_line, split_list, sort_key, utf8_stdout, load_config, under)
 
 # KDoc/JSDoc block followed by the declaration line (annotations skipped)
 RX = re.compile(r'/\*\*(?P<doc>.*?)\*/\s*(?:@\w+(?:\([^)]*\))?\s*)*'
                 r'(?P<decl>[^\r\n{=]*?(?:fun|class|object|interface|function|const|export)\s[^\r\n{=]*)', re.S)
+DEFAULTS = {'docs_tags_include': ['*.kt', '*.java'], 'exclude_paths': []}
 
 
 def main():
@@ -18,13 +21,18 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--root', default='.')
     ap.add_argument('--out', default='docs/_generated/docs-tags.md')
-    ap.add_argument('--include', nargs='+', default=['*.kt', '*.java', '*.ts', '*.tsx'])
+    ap.add_argument('--config', default='')
+    ap.add_argument('--include', nargs='+', default=[])
     a = ap.parse_args()
     root = os.path.abspath(a.root)
-    include = split_list(a.include)
+    cfg = load_config(root, DEFAULTS, a.config)
+    include = split_list(a.include) or cfg['docs_tags_include']
+    excl = [os.path.join(root, p) for p in cfg['exclude_paths']]
 
     rows = []
     for f in source_files(root, include):
+        if under(f, excl):
+            continue
         t = read_text(f)
         if not re.search(r'@docs\s', t, re.I):
             continue

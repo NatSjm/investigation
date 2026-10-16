@@ -1,0 +1,132 @@
+asyncapi: 2.6.0
+info:
+  title: Harbor Backend events
+  version: 1.0.0
+  description: >-
+    Kafka topics used by harbor-backend. Topic names are declared once in
+    `kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt` (event payloads in `com.acme.harbor.kafka.events`). In AsyncAPI 2.x `publish` describes
+    messages the application RECEIVES and `subscribe` describes messages it SENDS; the `x-producer` /
+    `x-consumers` extensions name the concrete classes.
+servers:
+  local:
+    url: localhost:9092
+    protocol: kafka
+defaultContentType: application/json
+
+channels:
+  harbor.imports.movements-loaded:
+    description: A daily import batch has been loaded into goods_movement.
+    x-topic-constant: Topics.MOVEMENTS_LOADED
+    x-producer: com.acme.harbor.event.MovementsLoadedPublisher
+    x-consumers: [com.acme.harbor.event.Product1ProjectionRefreshListener, com.acme.harbor.event.Product2ProjectionRefreshListener]
+    subscribe:
+      operationId: movementsLoaded
+      message: { $ref: '#/components/messages/MovementsLoadedEvent' }
+
+  harbor.market.prices-updated:
+    description: The external market-data service published a new baseline curve.
+    x-topic-constant: Topics.PRICES_UPDATED
+    x-producer: external (market-data)
+    x-consumers: [com.acme.harbor.event.MarketPricesListener]
+    publish:
+      operationId: pricesUpdated
+      message: { $ref: '#/components/messages/PricesUpdatedEvent' }
+
+  harbor.meetings.session-closed:
+    description: A meeting session was closed by the representative.
+    x-topic-constant: Topics.SESSION_CLOSED
+    x-producer: com.acme.harbor.event.SessionEventsPublisher
+    x-consumers: [com.acme.harbor.event.ReportSessionClosedListener, com.acme.harbor.event.ClientRoleSessionClosedListener]
+    subscribe:
+      operationId: sessionClosed
+      message: { $ref: '#/components/messages/SessionClosedEvent' }
+
+  harbor.reports.render-requested:
+    description: Ask document-service to render the report payload as PDF.
+    x-topic-constant: Topics.REPORT_RENDER_REQUESTED
+    x-producer: com.acme.harbor.event.ReportRenderRequester
+    x-consumers: [external (document-service)]
+    subscribe:
+      operationId: reportRenderRequested
+      message: { $ref: '#/components/messages/ReportRenderRequested' }
+
+  harbor.reports.rendered:
+    description: document-service finished rendering a PDF.
+    x-topic-constant: Topics.REPORT_RENDERED
+    x-producer: external (document-service)
+    x-consumers: [com.acme.harbor.event.ReportRenderedListener]
+    publish:
+      operationId: reportRendered
+      message: { $ref: '#/components/messages/ReportRendered' }
+
+components:
+  messages:
+    MovementsLoadedEvent:
+      name: MovementsLoadedEvent
+      title: Movements loaded
+      headers: { $ref: '#/components/schemas/KeyHeader' }
+      payload: { $ref: '#/components/schemas/MovementsLoadedEvent' }
+    PricesUpdatedEvent:
+      name: PricesUpdatedEvent
+      title: Prices updated
+      payload: { $ref: '#/components/schemas/PricesUpdatedEvent' }
+    SessionClosedEvent:
+      name: SessionClosedEvent
+      title: Session closed
+      payload: { $ref: '#/components/schemas/SessionClosedEvent' }
+    ReportRenderRequested:
+      name: ReportRenderRequested
+      title: Report render requested
+      payload: { $ref: '#/components/schemas/ReportRenderRequested' }
+    ReportRendered:
+      name: ReportRendered
+      title: Report rendered
+      payload: { $ref: '#/components/schemas/ReportRendered' }
+
+  schemas:
+    KeyHeader:
+      type: object
+      description: The Kafka record key is the aggregate id (batchId / sessionId / productGroup).
+      properties:
+        key: { type: string }
+    ProductGroup: { type: string, enum: [product1, product2] }
+    ClientRole: { type: string, enum: [IMPORTER, EXPORTER, MIXED, UNDETERMINED] }
+    SessionKind: { type: string, enum: [CLIENT, PREPARATION] }
+
+    MovementsLoadedEvent:
+      type: object
+      required: [batchId, clientIds, periodFrom, periodTo]
+      properties:
+        batchId: { type: string, format: uuid }
+        clientIds: { type: array, items: { type: string, format: uuid } }
+        periodFrom: { type: string, format: date }
+        periodTo: { type: string, format: date }
+    PricesUpdatedEvent:
+      type: object
+      required: [productGroup, corridor, asOf]
+      properties:
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        corridor: { type: string, example: VLD-NRL }
+        asOf: { type: string, format: date-time }
+    SessionClosedEvent:
+      type: object
+      required: [sessionId, clientId, productGroup, kind]
+      properties:
+        sessionId: { type: string, format: uuid }
+        clientId: { type: string, format: uuid }
+        productGroup: { $ref: '#/components/schemas/ProductGroup' }
+        kind: { $ref: '#/components/schemas/SessionKind' }
+        roleOverride: { $ref: '#/components/schemas/ClientRole' }
+    ReportRenderRequested:
+      type: object
+      required: [sessionId, payloadRef, template]
+      properties:
+        sessionId: { type: string, format: uuid }
+        payloadRef: { type: string, description: Reference the renderer uses to fetch the JSON payload }
+        template: { type: string, description: "HTML template of the report (pdf/meeting-report.html with pdf/report.css inlined)" }
+    ReportRendered:
+      type: object
+      required: [sessionId, pdfPath]
+      properties:
+        sessionId: { type: string, format: uuid }
+        pdfPath: { type: string }

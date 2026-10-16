@@ -40,7 +40,7 @@ stories:
     subtasks:
       - summary: "[DB] Flyway V4__session_inputs.sql: session_movement_input"
         estimate_hours: 2
-      - summary: "[BE] putProduct1Movements: validator/MovementInputValidator, replace-all via dao/SessionMovementInputDao, synchronous recompute in Product1Manager"
+      - summary: "[BE] putProduct1Movements: validator/MovementInputValidator, replace-all via dao/SessionMovementInputRepository, synchronous recompute in Product1Manager"
         estimate_hours: 6
       - summary: "[FE] MovementInputModal (month × grade × city × direction) via useProduct1Movements"
         estimate_hours: 8

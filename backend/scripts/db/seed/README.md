@@ -18,7 +18,7 @@ Rules:
 - Synthetic only: fixed UUIDs, `<WORD>-SYN` client ids, round quantities, prices with 2 dp; never a production or
   UAT extract, even anonymised (`docs-repo/test-design/fixtures/README.md` has the patterns).
 - Files run in name order (`10-`, `20-`, ...); `depends:` is documentation for the catalogue, not a resolver.
-- Integration-test fixtures live in `core/src/test/resources/datasets/` with the same header and are listed in the
+- Integration-test fixtures live in `harbor-core/src/test/resources/datasets/` with the same header and are listed in the
   same catalogue (kind `fixture`); tests load them with `@Sql("/datasets/<name>.sql")`.
 
 Run: `scripts/db/seed-local.py` (all) or `scripts/db/seed-local.py --dataset p1-baseline-12m`.

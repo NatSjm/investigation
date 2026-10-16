@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Loads the named datasets of scripts/db/seed/*.sql into the local database (docker compose postgres by default).
 --dataset: one or more dataset names (`-- dataset:` header). Default: every seed file, in file-name order.
---fixtures: also load the integration-test fixtures from core/src/test/resources/datasets (same header convention).
+--fixtures: also load the integration-test fixtures from harbor-core/src/test/resources/datasets (same header convention).
 Examples:
   python3 scripts/db/seed-local.py
   python3 scripts/db/seed-local.py --dataset reference-clients p1-baseline-12m
@@ -36,7 +36,7 @@ def main():
 
     files = sql_files(os.path.join(HERE, 'seed'))
     if a.fixtures:
-        files += sql_files(os.path.join(root, 'core/src/test/resources/datasets'))
+        files += sql_files(os.path.join(root, 'harbor-core/src/test/resources/datasets'))
 
     selected = []
     for f in files:

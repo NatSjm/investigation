@@ -8,7 +8,7 @@ runtime: kotlin                 # required for this type
 parameters:                     # the only things an agent may bind — never re-derive the formula
   - { name: <param>, type: <Decimal|Int|LocalDate|Enum>, required: true }
 executor:
-  resource: backend/core/src/test/kotlin/harbor/utils/<X>Test.kt   # unit test running the sanctioned computation
+  resource: backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/<X>Test.kt   # unit test running the sanctioned computation
   receipt: [test_class, inputs, expected, actual]
 attester:
   resource: /scripts/attest-calculation.py          # compares worked-examples table with test output (stub)
@@ -23,8 +23,8 @@ sources:
 name: <snake_case_name>
 used_by: [CTX-000]
 code_refs:
-  - backend/core/src/main/kotlin/harbor/utils/<X>.kt#L10-L80
-  - backend/core/src/test/kotlin/harbor/utils/<X>Test.kt        # source of worked examples
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/<X>.kt#L10-L80
+  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/<X>Test.kt        # source of worked examples
 last_verified: null
 ---
 

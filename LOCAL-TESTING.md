@@ -24,7 +24,7 @@ C:/projects/tools/apache-maven-3.9.9/bin/mvn -B -DskipTests clean package   # ~2
 export HARBOR_CLIENT_REGISTRY_URL='http://localhost:8089'; export HARBOR_MARKET_DATA_URL='http://localhost:8089'
 export HARBOR_COVER_PROVIDER_URL='http://localhost:8089'; export HARBOR_DOCUMENT_SERVICE_URL='http://localhost:8089'
 export HARBOR_FILE_EXCHANGE_URL='http://localhost:8089'
-java -jar core/target/core-1.0.0-SNAPSHOT.jar          # "Started HarborApplicationKt", Flyway applies V1..V9
+java -jar harbor-core/target/core-1.0.0-SNAPSHOT.jar          # "Started HarborBackendApplicationKt", Flyway applies V1..V9
 cd ..
 
 # 3. frontend
@@ -38,9 +38,9 @@ Health: `http://localhost:8080/api/v1/actuator/health` returns `{"status":"UP"}`
 
 **IntelliJ instead of the java line.** Open `backend/pom.xml` as a Maven project (bundled Maven is fine, or point it at
 `C:/projects/tools/apache-maven-3.9.9`), JDK 21, run the Maven phase `generate-sources` once so the OpenAPI
-interfaces exist under `core/target/generated-sources/openapi/*/src/main/kotlin` (mark them as generated source
-roots if they stay red), then a run configuration with main class `harbor.HarborApplicationKt`, module `core`, and
-the five `HARBOR_*_URL` environment variables above. Unit tests: right-click `core/src/test/kotlin`.
+interfaces exist under `harbor-core/target/generated-sources/openapi/*/src/main/kotlin` (mark them as generated source
+roots if they stay red), then a run configuration with main class `harbor.HarborBackendApplicationKt`, module `core`, and
+the five `HARBOR_*_URL` environment variables above. Unit tests: right-click `harbor-core/src/test/kotlin`.
 
 ## 3. Load synthetic data (one call)
 

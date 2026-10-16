@@ -43,7 +43,7 @@ stories:
     labels: [product1]
     depends_on: []
     subtasks:
-      - summary: "[BE] postProduct1PeerSimulation: service/PeerSimulationService + utils/PeerBenchmark, dao/SessionPeerSimulationDao"
+      - summary: "[BE] postProduct1PeerSimulation: service/PeerSimulationService + utils/PeerBenchmark, dao/SessionPeerSimulationRepository"
         estimate_hours: 5
       - summary: "[FE] PeerSimulationModal via usePeerSimulation1; series shown in the modal"
         estimate_hours: 5

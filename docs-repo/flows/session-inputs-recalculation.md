@@ -8,27 +8,27 @@ generated: { by: copilot/spec-writer, at: 2026-10-15T09:30:00Z }
 stale_after: 2027-01-13T00:00:00Z
 sources:
   - id: projection
-    resource: be/core/src/main/kotlin/harbor/service/ProjectionService.kt
+    resource: be/harbor-core/src/main/kotlin/com/acme/harbor/service/ProjectionService.kt
     title: ProjectionService.kt
   - id: stress
-    resource: be/core/src/main/kotlin/harbor/service/StressTestService.kt
+    resource: be/harbor-core/src/main/kotlin/com/acme/harbor/service/StressTestService.kt
     title: StressTestService.kt
   - id: report
-    resource: be/core/src/main/kotlin/harbor/manager/ReportManager.kt
+    resource: be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt
     title: ReportManager.kt
 # --- repo extensions ---
 id: FLOW-session-inputs-recalculation
 contexts: [imports, product1, product2, cover, stress, reports]
 specs: [P1-001, P1-002, P2-001, P2-002, STR-001, RPT-001]
 code_refs:
-  - be/core/src/main/kotlin/harbor/event/MovementsLoadedPublisher.kt
-  - be/core/src/main/kotlin/harbor/event/Product1ProjectionRefreshListener.kt
-  - be/core/src/main/kotlin/harbor/event/Product2ProjectionRefreshListener.kt
-  - be/core/src/main/kotlin/harbor/service/ProjectionService.kt
-  - be/core/src/main/kotlin/harbor/manager/CoverManager.kt
-  - be/core/src/main/kotlin/harbor/manager/StressManager.kt
-  - be/core/src/main/kotlin/harbor/service/StressTestService.kt
-  - be/core/src/main/kotlin/harbor/manager/ReportManager.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/event/Product1ProjectionRefreshListener.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/event/Product2ProjectionRefreshListener.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/service/ProjectionService.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/manager/StressManager.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/service/StressTestService.kt
+  - be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt
 channels: ["harbor.imports.movements-loaded"]
 ---
 
@@ -49,7 +49,7 @@ cascade that does not exist.
 ## Trigger
 Either of:
 - **Import**: a batch with accepted rows is published as `harbor.imports.movements-loaded` with the affected
-  `clientIds` (`be/core/src/main/kotlin/harbor/event/MovementsLoadedPublisher.kt:22-35`).
+  `clientIds` (`be/harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt:22-35`).
 - **Modal save**: `PUT /session/product1/movements` or `PUT /session/product2/movements` with a valid set
   (P1-002 BR-1 and BR-2, P2-002).
 
@@ -100,7 +100,7 @@ sequenceDiagram
 6. The peer simulation is unaffected: it reads the segment's `movement_monthly` rows, not the session tables
    (P1-003 BR-3).
 7. The report payload is built at close or regenerate from the stored projection tables and the stored stress
-   rows (`ReportManager.kt:42-49`): it carries the latest projection and the **last** stress run, whatever its age.
+   rows (`ReportManager.kt:44-51`): it carries the latest projection and the **last** stress run, whatever its age.
 
 ## Data and state changes
 | When | Changed |
@@ -131,12 +131,12 @@ no client's rows leak into another session's tables.
 ## Source map
 | Concern | Location |
 |---|---|
-| Publisher | `be/core/src/main/kotlin/harbor/event/MovementsLoadedPublisher.kt` |
-| Listeners | `be/core/src/main/kotlin/harbor/event/Product1ProjectionRefreshListener.kt`, `Product2ProjectionRefreshListener.kt` |
-| Recompute, replace | `be/core/src/main/kotlin/harbor/service/ProjectionService.kt`, `ProjectionInputAssembler.kt` |
-| Cover reads | `be/core/src/main/kotlin/harbor/manager/CoverManager.kt` |
-| Stress run and stored run | `be/core/src/main/kotlin/harbor/manager/StressManager.kt`, `be/core/src/main/kotlin/harbor/service/StressTestService.kt` |
-| Report payload | `be/core/src/main/kotlin/harbor/manager/ReportManager.kt`, `ReportPayloadService.kt` |
+| Publisher | `be/harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt` |
+| Listeners | `be/harbor-core/src/main/kotlin/com/acme/harbor/event/Product1ProjectionRefreshListener.kt`, `Product2ProjectionRefreshListener.kt` |
+| Recompute, replace | `be/harbor-core/src/main/kotlin/com/acme/harbor/service/ProjectionService.kt`, `ProjectionInputAssembler.kt` |
+| Cover reads | `be/harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt` |
+| Stress run and stored run | `be/harbor-core/src/main/kotlin/com/acme/harbor/manager/StressManager.kt`, `be/harbor-core/src/main/kotlin/com/acme/harbor/service/StressTestService.kt` |
+| Report payload | `be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt`, `ReportPayloadService.kt` |
 | FE cache invalidation | `fe/src/pages/Product1OverviewPage/hook/useProduct1Movements.ts`, `fe/src/pages/Product2OverviewPage/hook/useProduct2Movements.ts` |
 
 ## Open questions

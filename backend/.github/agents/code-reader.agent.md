@@ -9,7 +9,7 @@ You answer questions about this codebase using the fewest tokens possible. You n
 
 ## Procedure
 1. Read `docs/_generated/index.md`, then the one map that matches the question:
-   - "which endpoint / what does the API look like" -> `api-index.md` (operations from `core/src/main/resources/openapi/harbor-api.yaml` + implementing `override fun`)
+   - "which endpoint / what does the API look like" -> `api-index.md` (operations from `harbor-core/src/main/resources/openapi/harbor-api.yaml` + implementing `override fun`)
    - "who publishes / who consumes" -> `events.md`
    - "which table / column / which class uses it" -> `db-schema.md`
    - "what runs when" -> `jobs.md`

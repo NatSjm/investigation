@@ -7,7 +7,7 @@ description: Document a business computation (monthly projection, cover ratio, s
 
 1. Copy `domain/calculations/_template.md` -> `<snake_case_name>.md` (the `@docs` tag in code is this name).
 2. Locate the implementation through `generated/be/docs-tags.md` (`@docs <name>` -> class `file:line`, layer `utils/`:
-   `be/core/src/main/kotlin/harbor/utils/<Class>.kt`, test `be/core/src/test/kotlin/harbor/utils/<Class>Test.kt`); read the
+   `be/harbor-core/src/main/kotlin/com/acme/harbor/utils/<Class>.kt`, test `be/harbor-core/src/test/kotlin/com/acme/harbor/utils/<Class>Test.kt`); read the
    class **only** for the formula body, parameters and rounding - and its unit test for the worked examples.
 3. Worked examples are **copied** from the test (inputs, expected outputs, test method name). Never invent or
    hand-compute rows; if the test lacks a case you need, write an open question "add test case for ...".

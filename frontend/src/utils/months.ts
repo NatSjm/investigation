@@ -1,6 +1,6 @@
 /**
  * Month grid helpers. A period is an ISO month string `YYYY-MM` - the same key the backend
- * (`core/src/main/kotlin/harbor/utils/MonthGrid.kt`) uses for every monthly table, so rows join on it without conversion.
+ * (`harbor-core/src/main/kotlin/com/acme/harbor/utils/MonthGrid.kt`) uses for every monthly table, so rows join on it without conversion.
  */
 
 export type Period = string;
