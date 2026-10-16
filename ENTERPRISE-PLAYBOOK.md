@@ -171,6 +171,12 @@ Then copy `.github/` as it is and adapt only names:
 **Acceptance:** in the Copilot CLI, opened in the docs repo, `/context-pack` and `/spec-skeleton-from-graph` appear
 as commands and `@analyst` is selectable.
 
+**With an agent.** One file of this step is written from your code rather than copied: the code rows of
+`.github/skills/write-feature-spec/references/source-priority.md`. Steps: 1. open the Copilot CLI in the docs repo with
+`--add-dir` for both code checkouts (section 19); 2. `/source-priority-from-code <product>` (agent `architect`, no scripts);
+3. check that every path pattern in the new rows matches a file you know, that the manager row comes before the unit-test
+row, and that the rules of thumb stay at seven or fewer; 4. commit. Rerun it whenever a repository moves folders.
+
 ---
 
 ## 4. Contexts and the mapping file (one hour with a developer who knows the code)
@@ -200,6 +206,18 @@ mappings:
     specs: ["domain/calculations/**"]
 ignore: ["**/*Test.kt", "**/src/test/**", "**/*.test.ts*", "fe/src/services/openapi/**"]
 ```
+
+**With an agent.** Both files are drafted from the source, then confirmed by the developer:
+1. `/context-map-from-code <product>` (agent `architect`, reads both checkouts, no scripts) writes `domain/context-map.md`
+   and proposes `contexts.yml` in chat: one line per context with `spec`, the `fe` list of page folders and the `be` prefixes.
+2. Review together: prefixes must not overlap ambiguously (longest match wins), every page folder named must exist,
+   `fe: []` where a context has no page of its own (its pieces sit under the shared folder and are reached by `@docs`
+   tags and `docs-map.yml`). Paste the result into `contexts.yml`.
+3. `/docs-map-from-contexts` (agent `architect`) drafts the `mappings` rows from `contexts.yml` and the file trees: one
+   row per context with a glob per class prefix, per page folder, the types file and the shared pieces the page imports,
+   then the cross-cutting rows (calculators, messaging, contracts); every glob verified against at least one file.
+4. Check: `python3 scripts/map-paths.py <one real path per context>` prints the expected spec (or the `specs: []` backlog
+   row); commit both files. The graph (section 8) is where wrong prefixes become visible.
 
 It is read by `map-paths.py` (changed paths to specs), `check-freshness.py` (CI gate), the collector's PR body, and
 `gen-graph.py`, which turns every row into `implemented-by` edges. That last point means you do not have to put
@@ -232,6 +250,11 @@ in the `info` block. The spec's API table links to it and says **proposed**; sto
 brings the implemented version back under `generated/`, and `doc-sync` switches the spec's links and closes the
 proposal. Nothing is ever copied from `contracts/proposed/` into `generated/` by hand. Rules: `contracts/conventions.md`,
 `.github/instructions/contracts.instructions.md`; CI lints both folders with the same linters.
+
+**With an agent.** None for placing the contracts; this is platform work and the collector's validation is the test.
+Two agent uses come later: `@architect` starts a proposed contract from `contracts/_template.openapi.yaml` when a spec
+needs an API before code exists (section 17.8), and `doc-sync` switches a spec from the proposal to the implemented
+contract once the collector brings it in (section 13).
 
 The API index generator (`gen-api-index.py`) is contract-first: it lists every operation of the OpenAPI document
 and finds the handler method by `operationId`. If your controllers are not generated from the contract, adapt the
@@ -271,6 +294,21 @@ everything at once; for the enterprise rollout copy selectively in this order an
 9. Commit `docs/_generated/` with the code. It is cheap, it gives the PR-time freshness check, and Copilot in the
    code repo reads the maps without running anything.
 
+**With an agent** (Copilot in the code repository, after the kit files are copied):
+1. `docs-gen.json` (frontend): paste the key table of `code-repo-kit/fe/scripts/docs/README.md` and ask for the value of
+   each key for this repository with one evidence path per key (the pages folder, a hook folder, a component folder, the
+   routing files, the route-constants file, the generated client folder). Run `gen-all.py` and read `codebase-map.md`
+   and `routes.md`; a page without purpose, a route left relative or an empty hooks column is a wrong key.
+2. Generator regexes (both repositories): when a table misses a row, paste the declaration it missed (the controller
+   annotation, the listener, the route object) together with the regex from the generator and ask for the smallest
+   change that matches it; rerun `gen-all.py` and diff the table. Never let the agent widen a regex to match everything.
+3. `/tag-docs <Page|all>` in the frontend and `/tag-docs <context|all>` in the backend (agent `docs-tagger`): it runs
+   `tag-candidates.py --contexts <docs repo>/contexts.yml`, adds `@docs <ID>` to comment lines only, one PR per page or
+   context; `BLOCKED` rows mean a page or prefix missing in `contexts.yml`, `SHARED` rows (frontend shared folder) are
+   yours to decide. Review the diff: comments only, IDs from the right context.
+4. The acceptance question below is asked to `@code-reader`; if it opens more than the map and one file, `AGENTS.md`
+   or the map is wrong, not the agent.
+
 **Acceptance:** `gen-all.py --check` passes on a clean checkout and fails when you rename an endpoint without
 regenerating; a Copilot question "where is the billing entry point" in the code repo is answered from the map.
 
@@ -299,6 +337,10 @@ One workflow in the docs repository pulls the evidence; the code repositories pu
 4. Precise graph exports (`be/templates/GraphExportTest.kt`, `fe/scripts/docs/gen-graph-fe.ts`) are optional; when you
    enable them, the code repo's CI produces the JSON as an artifact and the collector picks it up.
 
+**With an agent.** None for the setup; the two local runs are the test. Copilot can adapt `ci-examples/collect-evidence.yml`
+to your runner, token and artifact policy when you paste it with the constraints, nothing more. The first agent that
+touches a collector PR is `doc-sync` (section 13).
+
 **Acceptance:** an added, a changed and a deleted contract are reflected correctly; a failed validation publishes
 nothing; an unchanged run opens no PR.
 
@@ -318,6 +360,13 @@ without a document appears as "code only". That list is your backlog. Then:
   expect. Iterate `contexts.yml` until it does.
 - `python3 scripts/migration-status.py --scope all` writes `migration/all.md`: per context the runs due with the command.
 
+**With an agent.** 1. `/migration-plan all` (agent `migration-lead`) runs `migration-status.py`, reads `REPO_MAP.md` and
+appends `## Lead notes <date>` to `migration/all.md`: processing order, blockers, targets; that is the first version of
+the board. 2. `/impact-from-graph context:<name>` (agent `impact-analyst`, graph only) as the sanity check of a
+community: the checklist must name the classes, endpoints, tables and topics you expect; a missing or foreign node is a
+prefix or page to fix in `contexts.yml`, not a document to write. 3. `/context-pack <PREFIX>-001` for the pilot even
+before the spec exists: the pack's "missing" list is what Run 1 will have to produce.
+
 **Acceptance:** `gen-graph.py --check` and `build-index.py --check` pass twice in a row; the pilot context's community
 file names its entry point.
 
@@ -335,6 +384,12 @@ customer data are not imported; the folder is excluded from the validators.
 
 Triage the inventory with the analysts: for each page the target context and a known state (current, partly outdated,
 obsolete, formula page). Formula pages are routed to the calculation audit, never merged by hand.
+
+**With an agent.** The export and the import script are not agent work. The triage is: 1. `/migration-plan <SPACE>`
+(agent `migration-lead`) lists the imported pages per target context and the unassigned ones, and proposes a target from
+the title, the context map and the glossary; the analyst confirms or corrects in the inventory table. 2. A page the lead
+marks as a formula page goes to `/audit-calculation <path of the page>` (agent `calc-auditor` accepts a legacy page as
+input) instead of Run 2. 3. Everything else waits for Run 2 (`@confluence-migrator`, section 10), one page per run.
 
 ---
 
@@ -355,6 +410,13 @@ context and a mirrored spec restates nothing (`P2-002` reads "as BR-P1-002-1, wi
 Behaviour across contexts is a flow (`flows/meeting-journey.md`, `flows/session-inputs-recalculation.md`), and every
 table column or chart series names a calculation document instead of carrying a formula. Write the list down as the
 first rows of the migration board; it is cheaper to split a spec on paper than after stories cite its rule IDs.
+
+**With an agent, the shaping step.** Ask `@architect`: "From `generated/graph/<ctx>.md`, `generated/fe/routes.md`,
+`generated/fe/components.md` and the rules in `features/conventions.md` 'Shaping specs', propose the spec list of context
+<ctx>: one row per screen and per modal or sub-capability with rules of its own, with ID, title, the page or component
+that renders it, the backend operations it owns, and the behaviour that belongs to another context (cite that context).
+Evidence only, no rules written." The lead and the developer confirm the list; the rows go to the board. The four runs
+below are agent runs with a human review each; Run 4 is the only human-written step.
 
 **Run 1, skeleton from the code.** `/spec-skeleton-from-graph billing BIL-001`. The `spec-writer` reads the context's
 graph file, the contracts and the components map, plus exactly one source file, the context's entry point, and writes
@@ -400,6 +462,14 @@ that spawned them.
 
 **Glossary** rows are added by the migrator (Run 2) and the spec-writer; the Aliases column keeps legacy and
 source-language wording so searches still find the concept.
+
+**With an agent.** Calculations: `/audit-calculation <name>` per calculation named by a spec (Run 3); the auditor reports
+a calculator without a unit test as a finding and stops, a developer writes the test, then the audit is rerun. Flows: ask
+`@architect` (or `@spec-writer` during Run 1 when the graph neighbourhood crosses communities): "Write `flows/<name>.md`
+(`type: Flow`) for <behaviour> from `generated/graph/*.md` and the specs <IDs>: trigger, participants per community, steps
+with `file:line`, invariants, source map; cite rules by ID, restate none." Glossary: `@spec-writer` adds a row or an alias
+when a search term misses; `@confluence-migrator` adds the legacy wording during Run 2. Every result goes through
+`validate-frontmatter.py` (parameter cross-check) before the review.
 
 ---
 
@@ -447,6 +517,14 @@ questions per spec, Copilot premium requests per run.
 - **Confluence changes.** Re-export, re-import; the inventory shows pages newer than their `_done/` copy; Run 2 again.
 - **Drift found by a reader.** Open question in the spec, status back to draft, owner decides; never a silent edit.
 - **The board.** `migration-status.py --scope all` weekly; the `migration-lead` agent annotates order and blockers.
+
+**With an agent.** 1. On every collector PR: `@doc-sync` with the PR body (changed paths mapped to specs); it compares the
+API, events and data sections with the new contracts and maps, updates them, appends change-log rows and flags calculations
+whose calculator files changed for `/audit-calculation`; a person reviews and merges. 2. Before a risky code change:
+`/impact-from-graph` with the pasted `git diff --name-only` (agent `impact-analyst`) for the blast-radius checklist.
+3. Weekly: `/migration-plan all` (board notes) and `/coverage-report` (agent `analyst`) for the sprint review.
+4. A reader's drift report: a person adds the open question and sets `status: draft`; `/spec-from-code <ID>` (agent
+`spec-writer`) then refreshes the spec against the current contracts, maps and graph, opening source only for the rule in question.
 
 ---
 

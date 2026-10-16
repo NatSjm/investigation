@@ -49,9 +49,9 @@ only what the evidence shows.
 - frontmatter: `type: Document`, `title`, `description` (one sentence naming every context),
   `tags: [domain, architecture]`, `status: draft`, `generated: { by: copilot/architect, at: <ISO timestamp> }`.
   No other keys.
-- the table: Context | Spec prefix | BE class-name prefixes | Backend entry point | FE feature / routes | Specs.
+- the table: Context | Spec prefix | BE class-name prefixes | Backend entry point | FE pages / routes | Specs.
   Spec prefix: 2-3 uppercase letters, unique. Specs column: `missing (<PREFIX>-001 backlog)` for every context
-  without a spec. Backend entry point and FE feature cells are real file paths or route paths you saw.
+  without a spec. Backend entry point and FE pages cells are real file paths, page folder names or route paths you saw.
 - the `shared` paragraph listing the actual unprefixed classes.
 - the Mermaid flowchart: one node per context, one edge per relationship you have evidence for, the edge label
   naming the evidence (topic, table, header, injected class). Group session-scoped contexts in a subgraph if a
@@ -63,7 +63,7 @@ only what the evidence shows.
   by `Product1*` and `Stress*`; no manager of their own").
 
 **B. A proposed `contexts.yml`** in the format of this repository's current file: one line per context with `spec`,
-`fe` folder and the list of `be` prefixes. Prefixes must not overlap ambiguously; where two groups share a prefix
+the `fe` list of page folders (wildcards allowed, `[]` when the context has no page) and the list of `be` prefixes. Prefixes must not overlap ambiguously; where two groups share a prefix
 start, list the longer one so that longest-match wins. Present it as a proposal for section 4 of the playbook; do
 not overwrite the existing file.
 
