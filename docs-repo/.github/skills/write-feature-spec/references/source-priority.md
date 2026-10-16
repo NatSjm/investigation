@@ -5,7 +5,7 @@
 | 1 | the context pack (`.context/<task>.md`) | very low | everything below that already exists, budgeted |
 | 2 | `features/`, `domain/` | very low | existing rules, terms, formulas, worked examples |
 | 3 | `generated/graph/<community>.md` | very low | endpoints, classes, tables, topics, routes, hooks with `file:line` |
-| 4 | `generated/openapi/backend.yaml`, `asyncapi/backend.yaml`, `generated/be/db-schema.md` | low | contracts, schemas, topics, tables |
+| 4 | `generated/openapi/backend.yaml`, `asyncapi/backend.yaml`, `generated/be/db/schema/tables/<table>.md` (table and column comments, relations), `generated/be/db-schema.md` | low | contracts, schemas, topics, tables with their meaning |
 | 5 | `generated/be/components.md` | low | every class of the context: layer, injected deps (validators, mappers, clients), tables, `@docs`, `file:line` |
 | 6 | `generated/be/*.md`, `generated/fe/*.md` | low | handlers, jobs, routes, types, `@docs` locations |
 | 7 | `confluence-import/` | medium | legacy intent (may be stale - cite, verify, never copy numbers) |

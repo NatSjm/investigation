@@ -30,7 +30,7 @@ else is added when its absence hurts. Each section from 2 to 13 is marked **Pilo
 |---|---|---|---|
 | 1 | Docs repo skeleton, `AGENTS.md`, three agents (`analyst`, `spec-writer`, `calc-auditor`), the instructions and skills; prompt files are optional in the CLI (section 1, item 6) | 2, 3 | validators green on the empty repo; `/agent` lists the three agents |
 | 2 | Contracts copied by hand into `generated/openapi/` (own API, external services) with a line each in `generated/manifest.yml` | 5 | `okf-validate.py --strict` accepts them; `architecture/integrations.md` cites them |
-| 3 | Backend and frontend generators run once by hand in the pilot repositories (`docs-gen.json` through `/adapt-docs-scripts`, then `gen-all.py`), `docs/_generated/` committed | 6, items 1 and 9 | every endpoint, topic, table, job, route and hook of the pilot context appears once |
+| 3 | Backend and frontend generators run once by hand in the pilot repositories (`docs-gen.json` through `/adapt-docs-scripts`, then `gen-all.py`), `docs/_generated/` committed; the database documentation folder (`docs/db`, from your tool or from the kit) next to it | 6, items 1 and 9 | every endpoint, topic, table, job, route and hook of the pilot context appears once; every table page carries its comment |
 | 4 | `contexts.yml`, a `docs-map.yml` with one row per context, the maps copied into `generated/be` and `generated/fe` (by hand or by one local collector run), then `gen-graph.py` and `build-index.py` | 4, 7 (local run only), 8 | `REPO_MAP.md` shows the pilot community; its spec is listed as "code only" |
 | 5 | One context pack per task and Runs 1 to 4 for the pilot spec, with the calculations it links | 10, 11 | a spec with `file:line` citations, reviewed by its owner |
 
@@ -283,6 +283,7 @@ You already keep the OpenAPI documents in the docs repository. Put them where th
 | The API the frontend calls | `generated/openapi/backend.yaml` | the collector (copied from the backend repo) |
 | APIs of the other services your backend calls | `generated/openapi/external/<service>.yaml` (or `.json`) | the collector if they live in the backend repo (`src/main/resources/api/<service>/`, yaml or json; folder from the backend `docs-gen.json`), otherwise hand-placed with a note in `generated/manifest.yml` |
 | Kafka: AsyncAPI document | `generated/asyncapi/backend.yaml` | the collector |
+| Database documentation (`schema.json`, one page per table with the column comments and relations, ER diagram, index) | `generated/be/db/` | the collector, from the backend folder named by `db_docs.dir` (default `docs/db`); written there either by your database documentation tool (SchemaSpy with its converter script under `docs/db/scripts/`, tbls: set `db_docs.generate: false`; the collector copies pages, `schema.json` and diagrams, never the scripts) or by the kit's `gen-db-docs.py` from the migrations and their `COMMENT ON TABLE\|COLUMN` statements. Keep the comments in the migrations: they are the data dictionary agents cite |
 | Kafka: Avro or JSON schemas only (a `kafka-client` module with `avro/*.avsc` and `json_<service>/*.json`) | they stay in the backend; `generated/be/events.md` lists every topic with producer, consumer, payload type and the path of its schema file (`kafka.schema_dirs` in the backend `docs-gen.json`) | `events.md` by the generator; add an AsyncAPI document later only if you want the collector to publish one |
 
 Rules: keep the complete document and the files it references; an external `$ref` that does not resolve inside
@@ -326,7 +327,8 @@ everything at once; for the enterprise rollout copy selectively in this order an
    `dao/service`, `client/rest`, `api/technical`, ...), the OpenAPI, AsyncAPI and external-contract paths, how
    controllers relate to the contract (`override fun <operationId>` on a generated interface, or hand-written
    `@GetMapping` routes matched by verb and path), the Kafka listener annotation and the property files that resolve
-   `${...}` topic names, the migrations folder, the parameter-key enum and its table, the seed and fixture folders.
+   `${...}` topic names, the migrations folder, the parameter-key enum and its table, the seed and fixture folders,
+   and `db_docs` (the database documentation folder and whether the kit generates it or your database tool does).
    Frontend keys (`code-repo-kit/fe/scripts/docs/README.md`): pages folder, hook and component folder names, shared
    component library, routing files and route constants, type globs, generated client to exclude. Where your code
    still differs from the simulated one (a Liquibase changelog, a Quartz scheduler, a router that is neither object
@@ -389,7 +391,8 @@ One workflow in the docs repository pulls the evidence; the code repositories pu
    ./scripts/collect-evidence.py --backend ../backend --frontend ../frontend --generate --graph
    ./scripts/collect-evidence.py --backend ../backend --frontend ../frontend          # second run: "no change"
    ```
-   It stages maps and contracts, validates the candidate (frontmatter on every map, OpenAPI and AsyncAPI headers,
+   It stages maps, contracts and the database documentation folder (as `generated/be/db/`, frontmatter added to its
+   pages), validates the candidate (frontmatter on every map, OpenAPI and AsyncAPI headers,
    no unresolved external `$ref`), replaces the collector-owned sets under `generated/` including deletions, writes
    `generated/manifest.yml` with the source commits and a hash per file, then rebuilds graph and indexes. Nothing
    outside `generated/be|fe|openapi|asyncapi` and `manifest.yml` is touched.
@@ -638,6 +641,7 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 | `gen-api-index.py` | every OpenAPI operation with its handler (matched by operationId or by verb + path), plus hand-written routes outside the contract | - |
 | `gen-events.py` | topics with producers, consumers, payload type linked to its schema file (`TOPIC` constants of the declaring class, literals and `${property}` names resolved) | - |
 | `gen-db-schema.py` | tables and columns from the migrations, plus the views defined next to them | - |
+| `gen-db-docs.py` (via `gen-all.py`, off with `db_docs.generate: false`) | the database documentation folder: `schema.json`, one page per table (comment, columns with comments, relations, constraints), ER diagram, index; from the migrations and their `COMMENT ON` statements | - |
 | `gen-jobs.py` | scheduled jobs with cron, class and distributed-lock name (ShedLock) | - |
 | `gen-parameters.py` | admin parameter catalogue: key, seeded defaults per scope, readers, validator (cross-checked against the calculations by `validate-frontmatter.py`) | - |
 | `gen-datasets.py` | named synthetic datasets (seed scripts, integration fixtures): purpose, tables and row counts, loaders, one sample row - analysts cite setups by name instead of describing rows | - |

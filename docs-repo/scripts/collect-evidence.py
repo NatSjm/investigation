@@ -10,6 +10,10 @@ file hashes. Replaces per-repository "publisher" CI jobs (one owner of publicati
      generated/fe/*.md (+ graph-export-fe.json)      from <frontend>/docs/_generated
      generated/openapi/backend.yaml, external/*.yaml  from the backend contract paths of <backend>/scripts/docs/docs-gen.json
      generated/asyncapi/backend.yaml                  (rest.open_api, external_contracts_dir, asyncapi; Harbor defaults otherwise)
+     generated/be/db/**                               the backend's database documentation folder (db_docs.dir, default docs/db:
+                                                      readme.md, schema.json, schema/tables/*.md, schema/erd/*.mmd), whoever wrote it
+                                                      (a database tool plus its converter script, or gen-db-docs.py); scripts are not copied;
+                                                      markdown pages get OKF frontmatter, the tool's index.md files are left to build-index
 4. Validates the candidate snapshot (every map has frontmatter, every contract parses as an OpenAPI/AsyncAPI document,
    nothing empty). A failed validation publishes nothing; the previous snapshot stays.
 5. Compares the candidate with the current generated/ ignoring volatile timestamps; when nothing changed it stops
@@ -74,7 +78,7 @@ def backend_contracts(backend):
     import json
     out = {'open_api': 'harbor-core/src/main/resources/openapi/openapi_harbor.yaml',
            'asyncapi': 'harbor-core/src/main/resources/openapi/harbor-events.yaml',
-           'external_contracts_dir': 'harbor-core/src/main/resources/api'}
+           'external_contracts_dir': 'harbor-core/src/main/resources/api', 'db_docs_dir': 'docs/db'}
     cfg = os.path.join(backend, 'scripts', 'docs', 'docs-gen.json')
     if os.path.isfile(cfg):
         with open(cfg, 'r', encoding='utf-8-sig') as f:
@@ -84,7 +88,30 @@ def backend_contracts(backend):
         for k in ('asyncapi', 'external_contracts_dir'):
             if data.get(k):
                 out[k] = data[k]
+        if data.get('db_docs', {}).get('dir'):
+            out['db_docs_dir'] = data['db_docs']['dir']
     return out
+
+
+def with_frontmatter(text, rel_name):
+    """OKF frontmatter for a page of the database documentation (tools write plain markdown)."""
+    if re.match(r'^\ufeff?---\r?\n', text):
+        return text
+    body = text.lstrip('\ufeff')
+    hm = re.search(r'(?m)^#\s+(.+?)\s*$', body)
+    title = hm.group(1).strip() if hm else os.path.splitext(os.path.basename(rel_name))[0]
+    desc = ''
+    after = body[hm.end():] if hm else body
+    for para in re.split(r'\r?\n\s*\r?\n', after):
+        line = ' '.join(para.split())
+        if line and not line.startswith(('#', '|', '-', '*', '```', '<')):
+            desc = line[:300]
+            break
+    if not desc:
+        desc = f'Database documentation page {title} (collected from the backend repository).'
+    q = lambda s: s.replace('\\', '\\\\').replace('"', '\\"')
+    return ('---\ntype: Document\ntitle: "' + q(title) + '"\ndescription: "' + q(desc) + '"\n'
+            'generated:\n  by: process:db-docs\n  at: ' + datetime.now(timezone.utc).strftime('%Y-%m-%d') + '\nstatus: stable\n---\n' + body)
 
 
 def main():
@@ -129,15 +156,19 @@ def main():
         'fe': {'Dir': 'generated/fe', 'Source': 'frontend'},
         'openapi': {'Dir': 'generated/openapi', 'Source': 'backend'},
         'asyncapi': {'Dir': 'generated/asyncapi', 'Source': 'backend'},
+        'db': {'Dir': 'generated/be/db', 'Source': 'backend'},
     }
     staged = []   # {Set, Rel, Path}
 
-    def stage_file(set_, src, rel_name):
+    def stage_file(set_, src, rel_name, transform=None):
         if not os.path.isfile(src):
             return
         dst = os.path.join(stage, sets[set_]['Dir'], rel_name)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
-        shutil.copyfile(src, dst)
+        if transform:
+            write_text(dst, transform(read_text(src), rel_name))
+        else:
+            shutil.copyfile(src, dst)
         staged.append({'Set': set_, 'Rel': sets[set_]['Dir'] + '/' + rel_name, 'Path': dst})
 
     for set_, p in (('be', backend), ('fe', frontend)):
@@ -159,6 +190,21 @@ def main():
             for f in sorted(fn, key=str.lower):
                 if f.lower().endswith(('.yaml', '.yml', '.json')):
                     stage_file('openapi', os.path.join(dp, f), 'external/' + f)
+    db_dir = os.path.join(backend, contracts['db_docs_dir'])
+    if os.path.isdir(db_dir):
+        # documentation files only (pages, schema.json, diagrams), relative paths kept (table pages link to the ER
+        # diagram); the tool's own scripts (docs/db/scripts/*.py) and index.md files are not collected
+        for dp, dn, fn in os.walk(db_dir):
+            dn.sort(key=str.lower)
+            for f in sorted(fn, key=str.lower):
+                rel_name = posix(os.path.relpath(os.path.join(dp, f), db_dir))
+                if f.lower() == 'index.md' or not f.lower().endswith(('.md', '.json', '.mmd', '.svg', '.png')):
+                    continue
+                if f.lower() == 'readme.md':
+                    rel_name = rel_name[:-len(f)] + 'README.md'
+                stage_file('db', os.path.join(dp, f), rel_name, with_frontmatter if f.lower().endswith('.md') else None)
+    else:
+        print(f"note: no database documentation folder at {posix(db_dir)} (db_docs.dir); generated/be/db not collected")
 
     # ---------- 4. validate the candidate ----------
     problems = []
@@ -253,7 +299,7 @@ def main():
             os.remove(p)
 
     sb = ['# Evidence snapshot manifest - written by scripts/collect-evidence.py; do not edit.\n',
-          '# Records which source commits the collector-owned files under generated/ describe (be, fe, openapi, asyncapi).\n',
+          '# Records which source commits the collector-owned files under generated/ describe (be, fe, openapi, asyncapi, be/db).\n',
           f"collector: {{ version: '{COLLECTOR_VERSION}', at: {now} }}\n", 'sources:\n']
     for s in sources:
         sb.append(f"  {s['name']}: {{ remote: '{s['remote']}', branch: '{s['branch']}', commit: {s['commit']}, dirty: {'true' if s['dirty'] else 'false'} }}\n")

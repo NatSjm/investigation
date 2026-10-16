@@ -1,0 +1,23 @@
+# Tables of harbor
+
+- [baseline_price](tables/baseline_price.md): Baseline price and transport price per product group, corridor and month, as loaded from market data.
+- [client_profile](tables/client_profile.md): A client of the platform: master data merged from the client registry, one row per external reference.
+- [client_role](tables/client_role.md): Role of a client per product group (IMPORTER, EXPORTER, MIXED, UNDETERMINED) as decided from its movements or overridden in a session.
+- [cover_policy](tables/cover_policy.md): Cover policies of a client per product group and sub-product: covered share, premium rate, validity.
+- [cover_quote](tables/cover_quote.md): Quote requested from the cover provider for the uncovered value of a session.
+- [goods_movement](tables/goods_movement.md): Daily movements as imported from the file exchange, one row per line of the file after validation.
+- [import_batch](tables/import_batch.md): One received movement file: its status and row counts.
+- [market_scenario](tables/market_scenario.md): Market scenario defined in a session: named shocks on prices and transport prices used by the stress test.
+- [meeting_report](tables/meeting_report.md): The meeting report of a closed session: payload sent for rendering, PDF path and rendering status.
+- [meeting_session](tables/meeting_session.md): A meeting with a client (CLIENT) or a preparation dry run (PREPARATION) for one product group; every session-scoped table hangs off it.
+- [movement_monthly](tables/movement_monthly.md): Monthly aggregate of goods_movement per client, sub-product, city, transport mode and direction; the input of every projection.
+- [parameter_set](tables/parameter_set.md): Admin parameters: one value per key and scope (product group, country, value), valid from a date.
+- [projection_by_dimension](tables/projection_by_dimension.md): Monthly projection per dimension value: city for Product 1, transport mode for Product 2 (dimension_kind says which).
+- [projection_by_direction](tables/projection_by_direction.md): Monthly projection per direction (IN, OUT).
+- [projection_by_subproduct](tables/projection_by_subproduct.md): Monthly projection table per sub-product of the session (cumulative values over the horizon).
+- [projection_summary](tables/projection_summary.md): Monthly totals of the session projection with the cover ratio.
+- [session_client_config](tables/session_client_config.md): Per-session choices of the client: projection horizon, price basis and cover preference.
+- [session_movement_input](tables/session_movement_input.md): Movements modelled by hand during a session (the movement modal); they replace the imported history for the months they cover.
+- [session_peer_simulation](tables/session_peer_simulation.md): Peer simulation requested in a session: the peer segment and the scaling factor applied to the projection of the client.
+- [shedlock](tables/shedlock.md): ShedLock table: distributed locks of the scheduled jobs (one row per job name). Technical.
+- [stress_test_result](tables/stress_test_result.md): Stress test output per session, scenario, month and dimension value: exposure and cumulative exposure.

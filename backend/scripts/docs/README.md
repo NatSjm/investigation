@@ -4,6 +4,7 @@
 |---|---|---|
 | `gen-*.py`, `gen-all.py [--check]` | Python 3.11+ (standard library) | `docs/_generated/*.md` regex maps (`codebase-map`, `components`, `api-index`, `events`, `db-schema`, `jobs`, `docs-tags`, `parameters`, `datasets`, `index`) |
 | `tag-candidates.py --contexts <docs repo>/contexts.yml` | same | inventory for the docs-tagger agent (stdout or `--out`) |
+| `gen-db-docs.py` (run by `gen-all.py`) | same | `docs/db/`: `schema.json`, `schema/tables/<table>.md`, `schema/erd/overview.mmd`, `readme.md` from the migrations and their `COMMENT ON` statements; off when a database tool writes that folder |
 | `templates/GraphExportTest.kt` (kit) | the repo's Spring test classpath | `docs/_generated/graph-export-be.json` precise graph from the running context |
 
 ## Layout: `docs-gen.json`
@@ -33,6 +34,9 @@ merged key by key, so a partial block keeps the other defaults.
 | `rest.session_header` / `rest.session_marker` | header name added to the Params column when the operation's contract text contains the marker | `X-Harbor-Session` / `SessionHeader` |
 | `asyncapi` | the Kafka contract (index.md, collector) | `harbor-core/src/main/resources/openapi/harbor-events.yaml` |
 | `external_contracts_dir` | OpenAPI files of the external services the backend calls, directly in the folder or one sub-folder per service (`api/<service>/<file>.yaml\|.yml\|.json`); read by index.md and the docs collector | `harbor-core/src/main/resources/api` |
+| `db_docs.dir` | the database documentation folder the docs collector copies (`readme.md`, `schema.json`, `schema/tables/*.md`, `schema/erd/*.mmd`), whoever writes it | `docs/db` |
+| `db_docs.generate` | `true`: `gen-all.py` rebuilds that folder from the migrations with `gen-db-docs.py` (comments from `COMMENT ON TABLE\|COLUMN`); `false`: a database documentation tool (tbls, SchemaSpy, ...) owns the folder and only its layout must match | `true` |
+| `db_docs.database` | `databaseType`, `name`, `schema` written into `schema.json` | postgresql / harbor / public |
 | `kafka.listener_annotation` | consumer annotation (`topics = [...]`, `groupId`) | `KafkaListener` |
 | `kafka.producer_pattern` | regex whose first group is the topic expression of a producer call | `\.send\(\s*([^,)]+)` |
 | `kafka.property_files` | application.yml / .properties files that resolve `${...}` placeholders in topic names and `groupId` | `harbor-core/src/main/resources/application.yml` |

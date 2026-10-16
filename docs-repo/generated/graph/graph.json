@@ -99,7 +99,7 @@
       "label": "AdminController",
       "community": "admin",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:17",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:16",
       "note": "api; RestController",
       "component": 1,
       "rank": 4.42,
@@ -171,7 +171,7 @@
       "label": "ClientController",
       "community": "clients",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:20",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:19",
       "note": "api; RestController",
       "component": 1,
       "rank": 4.46,
@@ -759,7 +759,7 @@
       "label": "Product2Controller",
       "community": "product2",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:22",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:21",
       "note": "api; RestController",
       "component": 1,
       "rank": 5.42,
@@ -1035,7 +1035,7 @@
       "label": "SessionController",
       "community": "meetings",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:22",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:21",
       "note": "api; RestController",
       "component": 1,
       "rank": 4.89,
@@ -1143,7 +1143,7 @@
       "label": "StressTestController",
       "community": "stress",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:18",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:17",
       "note": "api; RestController",
       "component": 1,
       "rank": 3.42,
@@ -1935,7 +1935,7 @@
       "label": "GET /api/v1/admin/imports",
       "community": "admin",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:26",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:25",
       "note": "operationId listImportBatches; handler AdminController.listImportBatches; params ",
       "component": 1,
       "rank": 3.17,
@@ -1947,7 +1947,7 @@
       "label": "GET /api/v1/admin/parameters",
       "community": "admin",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:20",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:19",
       "note": "operationId listParameters; handler AdminController.listParameters; params ",
       "component": 1,
       "rank": 3.25,
@@ -1959,7 +1959,7 @@
       "label": "GET /api/v1/clients",
       "community": "clients",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:23",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:22",
       "note": "operationId searchClients; handler ClientController.searchClients; params ",
       "component": 1,
       "rank": 2.93,
@@ -1971,7 +1971,7 @@
       "label": "GET /api/v1/clients/{clientId}",
       "community": "clients",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:26",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:25",
       "note": "operationId getClient; handler ClientController.getClient; params clientId",
       "component": 1,
       "rank": 2.93,
@@ -1995,7 +1995,7 @@
       "label": "GET /api/v1/clients/{clientId}/overview",
       "community": "clients",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:29",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:28",
       "note": "operationId getClientOverview; handler ClientController.getClientOverview; params clientId",
       "component": 1,
       "rank": 2.91,
@@ -2007,7 +2007,7 @@
       "label": "GET /api/v1/clients/{clientId}/role",
       "community": "clients",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:32",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:31",
       "note": "operationId getClientRole; handler ClientController.getClientRole; params clientId",
       "component": 1,
       "rank": 2.91,
@@ -2067,7 +2067,7 @@
       "label": "GET /api/v1/session/product2/overview",
       "community": "product2",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:25",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:24",
       "note": "operationId getProduct2Overview; handler Product2Controller.getProduct2Overview; params ",
       "component": 1,
       "rank": 2.84,
@@ -2079,7 +2079,7 @@
       "label": "GET /api/v1/session/product2/projection",
       "community": "product2",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:43",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:42",
       "note": "operationId getProduct2Projection; handler Product2Controller.getProduct2Projection; params ",
       "component": 1,
       "rank": 2.84,
@@ -2103,7 +2103,7 @@
       "label": "GET /api/v1/session/stress-test",
       "community": "stress",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:24",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:23",
       "note": "operationId getStressTest; handler StressTestController.getStressTest; params ",
       "component": 1,
       "rank": 3.05,
@@ -2115,7 +2115,7 @@
       "label": "GET /api/v1/sessions",
       "community": "meetings",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:35",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:34",
       "note": "operationId listSessions; handler SessionController.listSessions; params ",
       "component": 1,
       "rank": 2.78,
@@ -2127,7 +2127,7 @@
       "label": "GET /api/v1/sessions/{sessionId}",
       "community": "meetings",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:38",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:37",
       "note": "operationId getSession; handler SessionController.getSession; params sessionId",
       "component": 1,
       "rank": 2.78,
@@ -2175,7 +2175,7 @@
       "label": "POST /api/v1/admin/imports/run",
       "community": "admin",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:29",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:28",
       "note": "operationId triggerImport; handler AdminController.triggerImport; params ",
       "component": 1,
       "rank": 3.17,
@@ -2187,7 +2187,7 @@
       "label": "POST /api/v1/clients/{clientId}/sessions",
       "community": "meetings",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:25",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:24",
       "note": "operationId createSession; handler SessionController.createSession; params clientId",
       "component": 1,
       "rank": 3.41,
@@ -2223,7 +2223,7 @@
       "label": "POST /api/v1/session/product2/peer-simulation",
       "community": "product2",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:37",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:36",
       "note": "operationId postProduct2PeerSimulation; handler Product2Controller.postProduct2PeerSimulation; params ",
       "component": 1,
       "rank": 2.84,
@@ -2247,7 +2247,7 @@
       "label": "POST /api/v1/session/stress-test",
       "community": "stress",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:21",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:20",
       "note": "operationId runStressTest; handler StressTestController.runStressTest; params ",
       "component": 1,
       "rank": 3.05,
@@ -2259,7 +2259,7 @@
       "label": "POST /api/v1/sessions/{sessionId}/close",
       "community": "meetings",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:41",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:40",
       "note": "operationId closeSession; handler SessionController.closeSession; params sessionId",
       "component": 1,
       "rank": 2.85,
@@ -2283,7 +2283,7 @@
       "label": "PUT /api/v1/admin/parameters/{key}",
       "community": "admin",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:23",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:22",
       "note": "operationId upsertParameter; handler AdminController.upsertParameter; params key",
       "component": 1,
       "rank": 3.25,
@@ -2307,7 +2307,7 @@
       "label": "PUT /api/v1/session/product2/movements",
       "community": "product2",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:31",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:30",
       "note": "operationId putProduct2Movements; handler Product2Controller.putProduct2Movements; params ",
       "component": 1,
       "rank": 2.84,
@@ -2331,7 +2331,7 @@
       "label": "PUT /api/v1/sessions/{sessionId}/role",
       "community": "meetings",
       "repo": "be",
-      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:44",
+      "location": "harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:43",
       "note": "operationId setRoleOverride; handler SessionController.setRoleOverride; params sessionId",
       "component": 1,
       "rank": 2.85,
@@ -3376,7 +3376,7 @@
       "community": "market",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V7__market_stress.sql",
-      "note": "7 columns: id, product_group, corridor, period, price, transport_price, as_of",
+      "note": "Baseline price and transport price per product group, corridor and month, as loaded from market data. (7 columns)",
       "component": 1,
       "rank": 1.61,
       "degree": 2
@@ -3388,7 +3388,7 @@
       "community": "clients",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V1__clients.sql",
-      "note": "6 columns: id, external_ref, name, country, segment, created_at",
+      "note": "A client of the platform: master data merged from the client registry, one row per external reference. (6 columns)",
       "component": 1,
       "rank": 4.42,
       "degree": 7
@@ -3400,7 +3400,7 @@
       "community": "clients",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V1__clients.sql",
-      "note": "7 columns: id, client_id, product_group, role, source, reason, decided_at",
+      "note": "Role of a client per product group (IMPORTER, EXPORTER, MIXED, UNDETERMINED) as decided from its movements or overridden in a session. (7 columns)",
       "component": 1,
       "rank": 2.06,
       "degree": 3
@@ -3412,7 +3412,7 @@
       "community": "cover",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V6__cover.sql",
-      "note": "8 columns: id, client_id, product_group, sub_product, covered_share, premium_rate, valid_from, valid_to",
+      "note": "Cover policies of a client per product group and sub-product: covered share, premium rate, validity. (8 columns)",
       "component": 1,
       "rank": 2.18,
       "degree": 3
@@ -3424,7 +3424,7 @@
       "community": "cover",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V6__cover.sql",
-      "note": "6 columns: id, session_id, requested_at, uncovered_value, premium, provider_ref",
+      "note": "Quote requested from the cover provider for the uncovered value of a session. (6 columns)",
       "component": 1,
       "rank": 2.2,
       "degree": 3
@@ -3436,7 +3436,7 @@
       "community": "imports",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V3__movements.sql",
-      "note": "12 columns: id, client_id, batch_id, product_group, sub_product, city, transport_mode, direction, period, quantity, unit_price, price_basis",
+      "note": "Daily movements as imported from the file exchange, one row per line of the file after validation. (12 columns)",
       "component": 1,
       "rank": 3.6,
       "degree": 5
@@ -3448,7 +3448,7 @@
       "community": "imports",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V3__movements.sql",
-      "note": "6 columns: id, source_file, received_at, rows_total, rows_rejected, status",
+      "note": "One received movement file: its status and row counts. (6 columns)",
       "component": 1,
       "rank": 2.39,
       "degree": 3
@@ -3460,7 +3460,7 @@
       "community": "market",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V7__market_stress.sql",
-      "note": "7 columns: id, session_id, name, kind, shocks, created_by, created_at",
+      "note": "Market scenario defined in a session: named shocks on prices and transport prices used by the stress test. (7 columns)",
       "component": 1,
       "rank": 2.58,
       "degree": 4
@@ -3472,7 +3472,7 @@
       "community": "meetings",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V8__reports.sql",
-      "note": "5 columns: session_id, payload, pdf_path, status, rendered_at",
+      "note": "The meeting report of a closed session: payload sent for rendering, PDF path and rendering status. (5 columns)",
       "component": 1,
       "rank": 2.0,
       "degree": 3
@@ -3484,7 +3484,7 @@
       "community": "meetings",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V2__meetings.sql",
-      "note": "12 columns: id, client_id, product_group, kind, representative_id, status, started_at, closed_at, role_override, role_override_reason, parameter_snapshot, report_requested_at",
+      "note": "A meeting with a client (CLIENT) or a preparation dry run (PREPARATION) for one product group; every session-scoped table hangs off it. (12 columns)",
       "component": 1,
       "rank": 7.98,
       "degree": 14
@@ -3496,7 +3496,7 @@
       "community": "imports",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V3__movements.sql",
-      "note": "10 columns: id, client_id, product_group, sub_product, city, transport_mode, direction, period, quantity, value",
+      "note": "Monthly aggregate of goods_movement per client, sub-product, city, transport mode and direction; the input of every projection. (10 columns)",
       "component": 1,
       "rank": 2.71,
       "degree": 4
@@ -3508,7 +3508,7 @@
       "community": "admin",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V9__parameters.sql",
-      "note": "9 columns: id, key, scope_product_group, scope_country, scope_value, value, valid_from, updated_by, updated_at",
+      "note": "Admin parameters: one value per key and scope (product group, country, value), valid from a date. (9 columns)",
       "component": 1,
       "rank": 1.77,
       "degree": 2
@@ -3520,7 +3520,7 @@
       "community": "product1",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V5__projection.sql",
-      "note": "9 columns: id, session_id, period, dimension_kind, dimension_value, quantity, value, landed_cost, cumulative_value",
+      "note": "Monthly projection per dimension value: city for Product 1, transport mode for Product 2 (dimension_kind says which). (9 columns)",
       "component": 1,
       "rank": 1.86,
       "degree": 3
@@ -3532,7 +3532,7 @@
       "community": "product1",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V5__projection.sql",
-      "note": "8 columns: id, session_id, period, direction, quantity, value, landed_cost, cumulative_value",
+      "note": "Monthly projection per direction (IN, OUT). (8 columns)",
       "component": 1,
       "rank": 1.86,
       "degree": 3
@@ -3544,7 +3544,7 @@
       "community": "product1",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V5__projection.sql",
-      "note": "8 columns: id, session_id, period, sub_product, quantity, value, landed_cost, cumulative_value",
+      "note": "Monthly projection table per sub-product of the session (cumulative values over the horizon). (8 columns)",
       "component": 1,
       "rank": 1.86,
       "degree": 3
@@ -3556,7 +3556,7 @@
       "community": "product1",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V5__projection.sql",
-      "note": "8 columns: id, session_id, period, total_quantity, total_value, total_landed_cost, cover_ratio, cumulative_value",
+      "note": "Monthly totals of the session projection with the cover ratio. (8 columns)",
       "component": 1,
       "rank": 1.86,
       "degree": 3
@@ -3568,7 +3568,7 @@
       "community": "meetings",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V2__meetings.sql",
-      "note": "4 columns: session_id, horizon_months, price_basis, cover_preference",
+      "note": "Per-session choices of the client: projection horizon, price basis and cover preference. (4 columns)",
       "component": 1,
       "rank": 1.94,
       "degree": 3
@@ -3580,7 +3580,7 @@
       "community": "product1",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V4__session_inputs.sql",
-      "note": "9 columns: id, session_id, period, sub_product, city, transport_mode, direction, quantity, unit_price",
+      "note": "Movements modelled by hand during a session (the movement modal); they replace the imported history for the months they cover. (9 columns)",
       "component": 1,
       "rank": 1.85,
       "degree": 3
@@ -3592,7 +3592,7 @@
       "community": "product1",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V4__session_inputs.sql",
-      "note": "5 columns: id, session_id, peer_segment, scaling_factor, generated_at",
+      "note": "Peer simulation requested in a session: the peer segment and the scaling factor applied to the projection of the client. (5 columns)",
       "component": 1,
       "rank": 1.86,
       "degree": 3
@@ -3604,7 +3604,7 @@
       "community": "shared",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V10__shedlock.sql",
-      "note": "4 columns: name, lock_until, locked_at, locked_by",
+      "note": "ShedLock table: distributed locks of the scheduled jobs (one row per job name). Technical. (4 columns)",
       "component": 10,
       "rank": 0.5,
       "degree": 0
@@ -3616,7 +3616,7 @@
       "community": "stress",
       "repo": "be",
       "location": "harbor-core/src/main/resources/db/migration/V7__market_stress.sql",
-      "note": "8 columns: id, session_id, scenario_id, period, dimension_value, exposure, transport_cost_delta, cumulative_exposure",
+      "note": "Stress test output per session, scenario, month and dimension value: exposure and cumulative exposure. (8 columns)",
       "component": 1,
       "rank": 2.63,
       "degree": 4
@@ -7788,112 +7788,112 @@
       "source": "regex-map"
     },
     {
-      "from": "table:client_role",
-      "to": "table:client_profile",
+      "from": "table:client_profile",
+      "to": "table:client_role",
       "rel": "fk client_id",
-      "source": "regex-map"
+      "source": "db-docs"
     },
     {
-      "from": "table:cover_policy",
-      "to": "table:client_profile",
+      "from": "table:client_profile",
+      "to": "table:cover_policy",
       "rel": "fk client_id",
-      "source": "regex-map"
+      "source": "db-docs"
     },
     {
-      "from": "table:cover_quote",
+      "from": "table:client_profile",
+      "to": "table:goods_movement",
+      "rel": "fk client_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:client_profile",
       "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:goods_movement",
-      "to": "table:import_batch",
-      "rel": "fk batch_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:goods_movement",
-      "to": "table:client_profile",
       "rel": "fk client_id",
-      "source": "regex-map"
+      "source": "db-docs"
+    },
+    {
+      "from": "table:client_profile",
+      "to": "table:movement_monthly",
+      "rel": "fk client_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:import_batch",
+      "to": "table:goods_movement",
+      "rel": "fk batch_id",
+      "source": "db-docs"
     },
     {
       "from": "table:market_scenario",
-      "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:meeting_report",
-      "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
+      "to": "table:stress_test_result",
+      "rel": "fk scenario_id",
+      "source": "db-docs"
     },
     {
       "from": "table:meeting_session",
-      "to": "table:client_profile",
-      "rel": "fk client_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:movement_monthly",
-      "to": "table:client_profile",
-      "rel": "fk client_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:projection_by_dimension",
-      "to": "table:meeting_session",
+      "to": "table:cover_quote",
       "rel": "fk session_id",
-      "source": "regex-map"
+      "source": "db-docs"
     },
     {
-      "from": "table:projection_by_direction",
-      "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:projection_by_subproduct",
-      "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:projection_summary",
-      "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:session_client_config",
-      "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:session_movement_input",
-      "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:session_peer_simulation",
-      "to": "table:meeting_session",
-      "rel": "fk session_id",
-      "source": "regex-map"
-    },
-    {
-      "from": "table:stress_test_result",
+      "from": "table:meeting_session",
       "to": "table:market_scenario",
-      "rel": "fk scenario_id",
-      "source": "regex-map"
+      "rel": "fk session_id",
+      "source": "db-docs"
     },
     {
-      "from": "table:stress_test_result",
-      "to": "table:meeting_session",
+      "from": "table:meeting_session",
+      "to": "table:meeting_report",
       "rel": "fk session_id",
-      "source": "regex-map"
+      "source": "db-docs"
+    },
+    {
+      "from": "table:meeting_session",
+      "to": "table:projection_by_dimension",
+      "rel": "fk session_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:meeting_session",
+      "to": "table:projection_by_direction",
+      "rel": "fk session_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:meeting_session",
+      "to": "table:projection_by_subproduct",
+      "rel": "fk session_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:meeting_session",
+      "to": "table:projection_summary",
+      "rel": "fk session_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:meeting_session",
+      "to": "table:session_client_config",
+      "rel": "fk session_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:meeting_session",
+      "to": "table:session_movement_input",
+      "rel": "fk session_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:meeting_session",
+      "to": "table:session_peer_simulation",
+      "rel": "fk session_id",
+      "source": "db-docs"
+    },
+    {
+      "from": "table:meeting_session",
+      "to": "table:stress_test_result",
+      "rel": "fk session_id",
+      "source": "db-docs"
     },
     {
       "from": "topic:harbor.imports.movements-loaded",

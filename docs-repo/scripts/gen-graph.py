@@ -6,6 +6,7 @@ connected components for cross-repo flows, a tiny PageRank for the budgeted REPO
 Inputs  (default: generated/be, generated/fe as pushed by the code-repo CI):
   api-index.md, events.md, db-schema.md, codebase-map.md, docs-tags.md     (BE)
   codebase-map.md, routes.md, docs-tags.md                                  (FE)
+  optional generated/be/db/schema.json (database documentation) -> table comments, exact foreign keys
   optional graph-export-be.json / graph-export-fe.json  -> precise edges from
     GraphExportTest.kt (Spring context) / gen-graph-fe.ts (TS compiler API); merged, win over regex.
   features/**/<ID>.md, domain/calculations/<id>.md  -> spec nodes get path + status.
@@ -70,6 +71,45 @@ def fmt_num(x):
 
 def ticks(ids):
     return ', '.join('`' + i + '`' for i in ids)
+
+
+def db_relations(tbl):
+    """Foreign keys of one table of schema.json, tolerant to the common tool shapes:
+    table-level `parents` / `foreignKeys` / `relations` entries ({table|parent_table|parentTable|name, columns|column}),
+    or column-level `references` / `parents` ({table|parent_table, columns}). Yields {'parent', 'column'}."""
+    out = []
+    def parent_name(d):
+        for k in ('parent_table', 'parentTable', 'parent', 'referencedTable', 'table', 'name'):
+            if isinstance(d.get(k), str) and d[k]:
+                return d[k].lower()
+        return ''
+    def cols(d):
+        for k in ('columns', 'column', 'childColumns', 'child_columns', 'foreignKeyColumns'):
+            v = d.get(k)
+            if isinstance(v, str):
+                return [v.lower()]
+            if isinstance(v, list) and v:
+                return [str(x).lower() for x in v]
+        return ['']
+    for key in ('parents', 'foreignKeys', 'foreign_keys', 'relations'):
+        for d in tbl.get(key) or []:
+            p = parent_name(d) if isinstance(d, dict) else ''
+            if p and p != (tbl.get('name') or '').lower():
+                out.append({'parent': p, 'column': cols(d)[0]})
+    for c in tbl.get('columns') or []:
+        for key in ('references', 'parents', 'foreignKey'):
+            v = c.get(key)
+            for d in (v if isinstance(v, list) else [v] if isinstance(v, dict) else []):
+                p = parent_name(d)
+                if p:
+                    out.append({'parent': p, 'column': (c.get('name') or '').lower()})
+    seen, uniq = set(), []
+    for r in out:
+        k = (r['parent'], r['column'])
+        if k not in seen:
+            seen.add(k)
+            uniq.append(r)
+    return uniq
 
 
 def main():
@@ -281,8 +321,36 @@ def main():
         for c in touch:
             if f'class:{c}' in nodes:
                 add_edge(f'class:{c}', f'table:{t}', 'persists-to')
+    db_json = os.path.join(be_maps, 'db', 'schema.json')
+    db_tables = []
+    if os.path.isfile(db_json):
+        try:
+            db_tables = json.loads(read_text(db_json)).get('tables', [])
+        except ValueError as e:
+            print(f'warning: {db_json}: not valid JSON ({e}); ignored')
+    if db_tables:
+        # database documentation (schema.json of the backend's docs/db): comments and exact foreign keys
+        for tbl in db_tables:
+            tn = (tbl.get('name') or '').lower()
+            if not tn:
+                continue
+            cols = [c.get('name', '') for c in tbl.get('columns', [])]
+            comment = ' '.join((tbl.get('comment') or '').split())
+            note = (comment[:160] + ('...' if len(comment) > 160 else '')) if comment else ''
+            nid = f'table:{tn}'
+            page = f'generated/be/db/schema/tables/{tn}.md'
+            if nid in nodes:
+                if note:
+                    nodes[nid]['note'] = note + f' ({len(cols)} columns)'
+                if not nodes[nid]['location']:
+                    nodes[nid]['location'] = page
+            else:
+                add_node(nid, 'table', tn, 'shared', 'be', page, (note + ' ' if note else '') + f"({len(cols)} columns: {', '.join(cols)})")
+            for rel_ in db_relations(tbl):
+                add_edge(f"table:{rel_['parent']}", nid, f"fk {rel_['column']}", 'db-docs')
     for m in re.finditer(r'(?m)^\s*(\w+)\s*\|[|o}{\-]+\s*(\w+)\s*:\s*(\w+)', schema):
-        add_edge(f'table:{m.group(2)}', f'table:{m.group(1)}', f'fk {m.group(3)}')
+        if not db_tables:
+            add_edge(f'table:{m.group(2)}', f'table:{m.group(1)}', f'fk {m.group(3)}')
 
     # ---------- FE ----------
     fe_exports = {}

@@ -10,7 +10,7 @@ The repository rules (read order, contracts, conventions, commands, where busine
 ## Output discipline
 - Return diffs / edited files, never whole-file dumps in chat.
 - "How does X work" answers: map + manager (+ its row in `components.md`), <= 15 lines, `file:line` links and the spec ID; expand only on request.
-- After touching an endpoint, topic, table, job or `@docs` tag: run `scripts/docs/gen-all.py` and include `docs/_generated/*` (incl. `components.md`).
+- After touching an endpoint, topic, table, job or `@docs` tag: run `scripts/docs/gen-all.py` and include `docs/_generated/*` (incl. `components.md`) and `docs/db/*`.
 
 ## Context references
 Prefer `#file`, `#sym`, `#selection` over `@workspace` / `#codebase`. Start from `#file:docs/_generated/index.md`.

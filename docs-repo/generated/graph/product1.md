@@ -53,12 +53,12 @@ status: stable
 - `component:Product1OverviewPage` - `src/pages/Product1OverviewPage/Product1OverviewPage.tsx:25`
 
 ## tables
-- `table:projection_by_dimension` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - 9 columns: id, session_id, period, dimension_kind, dimension_value, quantity, value, landed_cost, cumulative_value
-- `table:projection_by_direction` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - 8 columns: id, session_id, period, direction, quantity, value, landed_cost, cumulative_value
-- `table:projection_by_subproduct` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - 8 columns: id, session_id, period, sub_product, quantity, value, landed_cost, cumulative_value
-- `table:projection_summary` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - 8 columns: id, session_id, period, total_quantity, total_value, total_landed_cost, cover_ratio, cumulative_value
-- `table:session_peer_simulation` - `harbor-core/src/main/resources/db/migration/V4__session_inputs.sql` - 5 columns: id, session_id, peer_segment, scaling_factor, generated_at
-- `table:session_movement_input` - `harbor-core/src/main/resources/db/migration/V4__session_inputs.sql` - 9 columns: id, session_id, period, sub_product, city, transport_mode, direction, quantity, unit_price
+- `table:projection_by_dimension` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - Monthly projection per dimension value: city for Product 1, transport mode for Product 2 (dimension_kind says which). (9 columns)
+- `table:projection_by_direction` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - Monthly projection per direction (IN, OUT). (8 columns)
+- `table:projection_by_subproduct` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - Monthly projection table per sub-product of the session (cumulative values over the horizon). (8 columns)
+- `table:projection_summary` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - Monthly totals of the session projection with the cover ratio. (8 columns)
+- `table:session_peer_simulation` - `harbor-core/src/main/resources/db/migration/V4__session_inputs.sql` - Peer simulation requested in a session: the peer segment and the scaling factor applied to the projection of the client. (5 columns)
+- `table:session_movement_input` - `harbor-core/src/main/resources/db/migration/V4__session_inputs.sql` - Movements modelled by hand during a session (the movement modal); they replace the imported history for the months they cover. (9 columns)
 
 ## Edges
 - `feature:Product1OverviewPage` -calls-> `endpoint:GET /api/v1/session/product1/overview`
@@ -124,12 +124,12 @@ status: stable
 - `context:product1` -exposes-> `endpoint:GET /api/v1/session/product1/projection`
 - `context:product1` -exposes-> `endpoint:POST /api/v1/session/product1/peer-simulation`
 - `context:product1` -exposes-> `endpoint:PUT /api/v1/session/product1/movements`
-- `table:projection_by_dimension` -fk session_id-> `table:meeting_session` (-> meetings)
-- `table:projection_by_direction` -fk session_id-> `table:meeting_session` (-> meetings)
-- `table:projection_by_subproduct` -fk session_id-> `table:meeting_session` (-> meetings)
-- `table:projection_summary` -fk session_id-> `table:meeting_session` (-> meetings)
-- `table:session_movement_input` -fk session_id-> `table:meeting_session` (-> meetings)
-- `table:session_peer_simulation` -fk session_id-> `table:meeting_session` (-> meetings)
+- `table:meeting_session` -fk session_id-> `table:projection_by_dimension` (-> meetings)
+- `table:meeting_session` -fk session_id-> `table:projection_by_direction` (-> meetings)
+- `table:meeting_session` -fk session_id-> `table:projection_by_subproduct` (-> meetings)
+- `table:meeting_session` -fk session_id-> `table:projection_summary` (-> meetings)
+- `table:meeting_session` -fk session_id-> `table:session_movement_input` (-> meetings)
+- `table:meeting_session` -fk session_id-> `table:session_peer_simulation` (-> meetings)
 - `endpoint:GET /api/v1/session/product1/overview` -handled-by-> `class:Product1Controller`
 - `endpoint:GET /api/v1/session/product1/projection` -handled-by-> `class:Product1Controller`
 - `endpoint:POST /api/v1/session/product1/peer-simulation` -handled-by-> `class:Product1Controller`

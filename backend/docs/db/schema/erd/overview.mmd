@@ -1,0 +1,219 @@
+erDiagram
+  baseline_price {
+    bigserial id PK
+    varchar product_group
+    varchar corridor
+    date period
+    numeric price
+    numeric transport_price
+    timestamp as_of
+  }
+  client_profile {
+    uuid id PK
+    varchar external_ref
+    varchar name
+    varchar country
+    varchar segment
+    timestamp created_at
+  }
+  client_role {
+    bigserial id PK
+    uuid client_id FK
+    varchar product_group
+    varchar role
+    varchar source
+    varchar reason
+    timestamp decided_at
+  }
+  cover_policy {
+    uuid id PK
+    uuid client_id FK
+    varchar product_group
+    varchar sub_product
+    numeric covered_share
+    numeric premium_rate
+    date valid_from
+    date valid_to
+  }
+  cover_quote {
+    uuid id PK
+    uuid session_id FK
+    timestamp requested_at
+    numeric uncovered_value
+    numeric premium
+    varchar provider_ref
+  }
+  goods_movement {
+    bigserial id PK
+    uuid client_id FK
+    uuid batch_id FK
+    varchar product_group
+    varchar sub_product
+    varchar city
+    varchar transport_mode
+    varchar direction
+    date period
+    numeric quantity
+    numeric unit_price
+    varchar price_basis
+  }
+  import_batch {
+    uuid id PK
+    varchar source_file
+    timestamp received_at
+    integer rows_total
+    integer rows_rejected
+    varchar status
+  }
+  market_scenario {
+    uuid id PK
+    uuid session_id FK
+    varchar name
+    varchar kind
+    jsonb shocks
+    varchar created_by
+    timestamp created_at
+  }
+  meeting_report {
+    uuid session_id PK FK
+    jsonb payload
+    varchar pdf_path
+    varchar status
+    timestamp rendered_at
+  }
+  meeting_session {
+    uuid id PK
+    uuid client_id FK
+    varchar product_group
+    varchar kind
+    varchar representative_id
+    varchar status
+    timestamp started_at
+    timestamp closed_at
+    varchar role_override
+    varchar role_override_reason
+    jsonb parameter_snapshot
+    timestamp report_requested_at
+  }
+  movement_monthly {
+    bigserial id PK
+    uuid client_id FK
+    varchar product_group
+    varchar sub_product
+    varchar city
+    varchar transport_mode
+    varchar direction
+    date period
+    numeric quantity
+    numeric value
+  }
+  parameter_set {
+    uuid id PK
+    varchar key
+    varchar scope_product_group
+    varchar scope_country
+    varchar scope_value
+    numeric value
+    date valid_from
+    varchar updated_by
+    timestamp updated_at
+  }
+  projection_by_dimension {
+    bigserial id PK
+    uuid session_id FK
+    date period
+    varchar dimension_kind
+    varchar dimension_value
+    numeric quantity
+    numeric value
+    numeric landed_cost
+    numeric cumulative_value
+  }
+  projection_by_direction {
+    bigserial id PK
+    uuid session_id FK
+    date period
+    varchar direction
+    numeric quantity
+    numeric value
+    numeric landed_cost
+    numeric cumulative_value
+  }
+  projection_by_subproduct {
+    bigserial id PK
+    uuid session_id FK
+    date period
+    varchar sub_product
+    numeric quantity
+    numeric value
+    numeric landed_cost
+    numeric cumulative_value
+  }
+  projection_summary {
+    bigserial id PK
+    uuid session_id FK
+    date period
+    numeric total_quantity
+    numeric total_value
+    numeric total_landed_cost
+    numeric cover_ratio
+    numeric cumulative_value
+  }
+  session_client_config {
+    uuid session_id PK FK
+    integer horizon_months
+    varchar price_basis
+    varchar cover_preference
+  }
+  session_movement_input {
+    uuid id PK
+    uuid session_id FK
+    date period
+    varchar sub_product
+    varchar city
+    varchar transport_mode
+    varchar direction
+    numeric quantity
+    numeric unit_price
+  }
+  session_peer_simulation {
+    uuid id PK
+    uuid session_id FK
+    varchar peer_segment
+    numeric scaling_factor
+    timestamp generated_at
+  }
+  shedlock {
+    varchar name PK
+    timestamp lock_until
+    timestamp locked_at
+    varchar locked_by
+  }
+  stress_test_result {
+    bigserial id PK
+    uuid session_id FK
+    uuid scenario_id FK
+    date period
+    varchar dimension_value
+    numeric exposure
+    numeric transport_cost_delta
+    numeric cumulative_exposure
+  }
+  client_profile ||--o{ client_role : client_id
+  client_profile ||--o{ cover_policy : client_id
+  meeting_session ||--o{ cover_quote : session_id
+  client_profile ||--o{ goods_movement : client_id
+  import_batch ||--o{ goods_movement : batch_id
+  meeting_session ||--o{ market_scenario : session_id
+  meeting_session ||--o{ meeting_report : session_id
+  client_profile ||--o{ meeting_session : client_id
+  client_profile ||--o{ movement_monthly : client_id
+  meeting_session ||--o{ projection_by_dimension : session_id
+  meeting_session ||--o{ projection_by_direction : session_id
+  meeting_session ||--o{ projection_by_subproduct : session_id
+  meeting_session ||--o{ projection_summary : session_id
+  meeting_session ||--o{ session_client_config : session_id
+  meeting_session ||--o{ session_movement_input : session_id
+  meeting_session ||--o{ session_peer_simulation : session_id
+  meeting_session ||--o{ stress_test_result : session_id
+  market_scenario ||--o{ stress_test_result : scenario_id

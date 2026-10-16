@@ -53,8 +53,8 @@ status: stable
 - `component:ShockRow` - `src/pages/ScenariosPage/components/ShockRow/ShockRow.tsx:12`
 
 ## tables
-- `table:market_scenario` - `harbor-core/src/main/resources/db/migration/V7__market_stress.sql` - 7 columns: id, session_id, name, kind, shocks, created_by, created_at
-- `table:baseline_price` - `harbor-core/src/main/resources/db/migration/V7__market_stress.sql` - 7 columns: id, product_group, corridor, period, price, transport_price, as_of
+- `table:market_scenario` - `harbor-core/src/main/resources/db/migration/V7__market_stress.sql` - Market scenario defined in a session: named shocks on prices and transport prices used by the stress test. (7 columns)
+- `table:baseline_price` - `harbor-core/src/main/resources/db/migration/V7__market_stress.sql` - Baseline price and transport price per product group, corridor and month, as loaded from market data. (7 columns)
 
 ## Edges
 - `feature:ScenariosPage` -calls-> `endpoint:DELETE /api/v1/session/scenarios/{scenarioId}`
@@ -104,8 +104,8 @@ status: stable
 - `context:market` -exposes-> `endpoint:GET /api/v1/session/scenarios`
 - `context:market` -exposes-> `endpoint:POST /api/v1/session/scenarios`
 - `context:market` -exposes-> `endpoint:PUT /api/v1/session/scenarios/{scenarioId}`
-- `table:stress_test_result` -fk scenario_id-> `table:market_scenario` (-> stress)
-- `table:market_scenario` -fk session_id-> `table:meeting_session` (-> meetings)
+- `table:market_scenario` -fk scenario_id-> `table:stress_test_result` (-> stress)
+- `table:meeting_session` -fk session_id-> `table:market_scenario` (-> meetings)
 - `endpoint:DELETE /api/v1/session/scenarios/{scenarioId}` -handled-by-> `class:ScenarioController`
 - `endpoint:GET /api/v1/session/market/baseline` -handled-by-> `class:ScenarioController`
 - `endpoint:GET /api/v1/session/scenarios` -handled-by-> `class:ScenarioController`

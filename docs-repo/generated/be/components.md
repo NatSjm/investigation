@@ -17,16 +17,16 @@ status: stable
 | `HarborBackendApplication` | (root) | harbor-core | SpringBootApplication |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/HarborBackendApplication.kt:14` |
 | `HarborConstants` | (root) | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/HarborConstants.kt:4` |
 | `GlobalExceptionAdvice` | advice | harbor-core | RestControllerAdvice |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/advice/GlobalExceptionAdvice.kt:33` |
-| `AdminController` | api | harbor-core | RestController | `AdminManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:17` |
-| `ClientController` | api | harbor-core | RestController | `ClientManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:20` |
+| `AdminController` | api | harbor-core | RestController | `AdminManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:16` |
+| `ClientController` | api | harbor-core | RestController | `ClientManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:19` |
 | `CoverController` | api | harbor-core | RestController | `CoverManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:20` |
 | `HttpHeadersFactory` | api | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/HttpHeadersFactory.kt:8` |
 | `Product1Controller` | api | harbor-core | RestController | `Product1Manager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:21` |
-| `Product2Controller` | api | harbor-core | RestController | `Product2Manager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:22` |
+| `Product2Controller` | api | harbor-core | RestController | `Product2Manager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:21` |
 | `ReportController` | api | harbor-core | RestController | `ReportManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:18` |
 | `ScenarioController` | api | harbor-core | RestController | `MarketManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:20` |
-| `SessionController` | api | harbor-core | RestController | `MeetingManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:22` |
-| `StressTestController` | api | harbor-core | RestController | `StressManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:18` |
+| `SessionController` | api | harbor-core | RestController | `MeetingManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:21` |
+| `StressTestController` | api | harbor-core | RestController | `StressManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:17` |
 | `ProblemDetails` | api/error | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/error/ProblemDetails.kt:12` |
 | `TechnicalController` | api/technical | harbor-core | RestController |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/technical/TechnicalController.kt:14` |
 | `AvroJsonDeserializer` | client/kafka | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/client/kafka/AvroJsonSerde.kt:30` |
@@ -132,15 +132,15 @@ status: stable
 | `Product2Manager` | manager | harbor-core | Service | `ProjectionService`, `ProjectionInputAssembler`, `PeerSimulationService`, `ClientRoleService`, `MovementInputValidator` |  | `P2-001` | `harbor-core/src/main/kotlin/com/acme/harbor/manager/Product2Manager.kt:26` |
 | `ReportManager` | manager | harbor-core | Service | `MeetingReportRepository`, `MeetingSessionRepository`, `MeetingSessionDaoService`, `ReportPayloadService`, `ReportRenderRequester`, `DocumentServiceClient` |  | `RPT-001` | `harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt:27` |
 | `StressManager` | manager | harbor-core | Service | `StressTestService`, `StressTestResultRepository`, `MarketScenarioRepository`, `ClientRoleService` |  | `STR-001` | `harbor-core/src/main/kotlin/com/acme/harbor/manager/StressManager.kt:30` |
-| `ClientMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ClientMapper.kt:21` |
+| `ClientMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ClientMapper.kt:20` |
 | `CoverMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/CoverMapper.kt:18` |
 | `ImportBatchMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ImportBatchMapper.kt:8` |
-| `ParameterMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ParameterMapper.kt:12` |
-| `ProjectionMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ProjectionMapper.kt:31` |
+| `ParameterMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ParameterMapper.kt:11` |
+| `ProjectionMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ProjectionMapper.kt:30` |
 | `ReportMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ReportMapper.kt:9` |
-| `ScenarioMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ScenarioMapper.kt:18` |
-| `SessionMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/SessionMapper.kt:17` |
-| `StressMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/StressMapper.kt:14` |
+| `ScenarioMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/ScenarioMapper.kt:17` |
+| `SessionMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/SessionMapper.kt:16` |
+| `StressMapper` | mapper | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/mapper/StressMapper.kt:13` |
 | `ClientOverviewIndicators` | model | harbor-core | class | `ProductGroup`, `ClientRole` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/model/ClientOverviewIndicators.kt:13` |
 | `ProjectionRow` | model | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/model/ProjectionRow.kt:11` |
 | `ScenarioShock` | model | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/model/ScenarioShock.kt:7` |

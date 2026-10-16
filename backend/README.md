@@ -128,5 +128,7 @@ The statistical view `db/migration/statistical-views/create_view_client_overview
 ## Generated maps
 
 `python3 scripts/docs/gen-all.py` writes `docs/_generated/*.md` (layers, components, API index, events, schema, jobs,
-`@docs` tags, parameters, datasets); `--check` is the CI gate. The generators read the layout (modules, base package,
+`@docs` tags, parameters, datasets) and the database documentation `docs/db/` (`schema.json`, `readme.md`, one page per
+table under `schema/tables/`, `schema/erd/overview.mmd`) from the migrations and their `COMMENT ON` statements
+(`V11__table_comments.sql` holds the comments of the first ten migrations); `--check` is the CI gate. The generators read the layout (modules, base package,
 layers and sub-packages, contract paths, annotations) from `scripts/docs/docs-gen.json`; see `scripts/docs/README.md`.

@@ -64,7 +64,7 @@ status: stable
 - 5.85 `class:ClientRoleService` [clients] deg 11 - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientRoleService.kt:28`
 - 5.62 `spec:RPT-001` [docs] deg 9 - `features/reports/RPT-001.md`
 - 5.43 `class:MeetingManager` [meetings] deg 10 - `harbor-core/src/main/kotlin/com/acme/harbor/manager/MeetingManager.kt:38`
-- 5.42 `class:Product2Controller` [product2] deg 9 - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:22`
+- 5.42 `class:Product2Controller` [product2] deg 9 - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:21`
 - 5.25 `context:stress` [stress] deg 8 - `harbor-core/src/main/kotlin/com/acme/harbor/manager/StressManager.kt`
 - 5.21 `class:Product2Manager` [product2] deg 10 - `harbor-core/src/main/kotlin/com/acme/harbor/manager/Product2Manager.kt:26`
 - 5.21 `class:ProjectionRepository` [product1] deg 10 - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ProjectionRepository.kt:23`
@@ -72,7 +72,7 @@ status: stable
 - 5.08 `class:ClientProfileService` [clients] deg 9 - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientProfileService.kt:16`
 - 4.99 `class:PeerSimulationService` [product1] deg 10 - `harbor-core/src/main/kotlin/com/acme/harbor/service/PeerSimulationService.kt:26`
 - 4.99 `class:ReportPayloadService` [reports] deg 9 - `harbor-core/src/main/kotlin/com/acme/harbor/service/ReportPayloadService.kt:22`
-- 4.89 `class:SessionController` [meetings] deg 8 - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:22`
+- 4.89 `class:SessionController` [meetings] deg 8 - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:21`
 - 4.87 `class:Product1Controller` [product1] deg 9 - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:21`
 - 4.83 `class:BaselinePriceService` [market] deg 8 - `harbor-core/src/main/kotlin/com/acme/harbor/service/BaselinePriceService.kt:23`
 - 4.82 `class:Product1Manager` [product1] deg 10 - `harbor-core/src/main/kotlin/com/acme/harbor/manager/Product1Manager.kt:26`
@@ -81,8 +81,8 @@ status: stable
 - 4.7 `class:ParameterService` [admin] deg 8 - `harbor-core/src/main/kotlin/com/acme/harbor/service/ParameterService.kt:23`
 - 4.62 `spec:STR-001` [docs] deg 7 - `features/stress/STR-001.md`
 - 4.5 `class:MovementMonthlyRepository` [imports] deg 8 - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MovementMonthlyRepository.kt:13`
-- 4.46 `class:ClientController` [clients] deg 7 - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:20`
-- 4.42 `class:AdminController` [admin] deg 6 - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:17`
+- 4.46 `class:ClientController` [clients] deg 7 - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:19`
+- 4.42 `class:AdminController` [admin] deg 6 - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:16`
 - 4.42 `table:client_profile` [clients] deg 7 - `harbor-core/src/main/resources/db/migration/V1__clients.sql`
 - 4.35 `context:product2` [product2] deg 7 - `harbor-core/src/main/kotlin/com/acme/harbor/manager/Product2Manager.kt`
 - 4.31 `class:MeetingSessionDaoService` [meetings] deg 8 - `harbor-core/src/main/kotlin/com/acme/harbor/dao/service/MeetingSessionDaoService.kt:19`

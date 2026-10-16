@@ -52,6 +52,7 @@
   },
   "asyncapi": "harbor-core/src/main/resources/openapi/harbor-events.yaml",
   "external_contracts_dir": "harbor-core/src/main/resources/api",
+  "db_docs": { "dir": "docs/db", "generate": true, "database": { "databaseType": "postgresql", "name": "harbor", "schema": "public" } },
   "kafka": {
     "listener_annotation": "KafkaListener",
     "producer_pattern": "\\.send\\(\\s*([^,)]+)",

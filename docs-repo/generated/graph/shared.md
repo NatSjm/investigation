@@ -27,7 +27,7 @@ status: stable
 - `class:StatisticalViewsInitializer` - `harbor-core/src/main/kotlin/com/acme/harbor/component/StatisticalViewsInitializer.kt:15` - component; Component
 
 ## tables
-- `table:shedlock` - `harbor-core/src/main/resources/db/migration/V10__shedlock.sql` - 4 columns: name, lock_until, locked_at, locked_by
+- `table:shedlock` - `harbor-core/src/main/resources/db/migration/V10__shedlock.sql` - ShedLock table: distributed locks of the scheduled jobs (one row per job name). Technical. (4 columns)
 
 ## Edges
 - `class:MovementsLoadedPublisher` -depends-on-> `class:EventProducer` (-> imports)

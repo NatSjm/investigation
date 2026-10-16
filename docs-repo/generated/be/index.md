@@ -1,5 +1,8 @@
 # be
 
+# Sections
+* [db](db/) - 22 concept(s)
+
 # Concepts
 * [REST API index (BE)](api-index.md) - Generated map: REST API index (BE), derived from harbor-core/src/main/resources/openapi/openapi_harbor.yaml (contract) + handler method named like the operationId (rest.handler_pattern) in @RestController classes; read instead of source files. · unverified
 * [Codebase map (BE)](codebase-map.md) - Backend modules, technical layers with their classes and resource folders; read the manager of a context first. · unverified

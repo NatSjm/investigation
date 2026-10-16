@@ -25,11 +25,11 @@ status: stable
 - `feature:PreparationSessionsPage` - `src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx` - /meetings/preparation` - sessions of kind `PREPARATION` (dry runs by the representative), same list and actions.
 
 ## endpoints
-- `endpoint:POST /api/v1/clients/{clientId}/sessions` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:25` - operationId createSession; handler SessionController.createSession; params clientId
-- `endpoint:POST /api/v1/sessions/{sessionId}/close` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:41` - operationId closeSession; handler SessionController.closeSession; params sessionId
-- `endpoint:PUT /api/v1/sessions/{sessionId}/role` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:44` - operationId setRoleOverride; handler SessionController.setRoleOverride; params sessionId
-- `endpoint:GET /api/v1/sessions` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:35` - operationId listSessions; handler SessionController.listSessions; params 
-- `endpoint:GET /api/v1/sessions/{sessionId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:38` - operationId getSession; handler SessionController.getSession; params sessionId
+- `endpoint:POST /api/v1/clients/{clientId}/sessions` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:24` - operationId createSession; handler SessionController.createSession; params clientId
+- `endpoint:POST /api/v1/sessions/{sessionId}/close` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:40` - operationId closeSession; handler SessionController.closeSession; params sessionId
+- `endpoint:PUT /api/v1/sessions/{sessionId}/role` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:43` - operationId setRoleOverride; handler SessionController.setRoleOverride; params sessionId
+- `endpoint:GET /api/v1/sessions` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:34` - operationId listSessions; handler SessionController.listSessions; params 
+- `endpoint:GET /api/v1/sessions/{sessionId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:37` - operationId getSession; handler SessionController.getSession; params sessionId
 
 ## routes
 - `route:/meetings/client` - `src/routing/Routing.tsx:30` - renders ClientMeetingsPage
@@ -38,7 +38,7 @@ status: stable
 
 ## classes
 - `class:MeetingManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/MeetingManager.kt:38` - manager; Service
-- `class:SessionController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:22` - api; RestController
+- `class:SessionController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:21` - api; RestController
 - `class:MeetingSessionDaoService` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/service/MeetingSessionDaoService.kt:19` - dao/service; Service
 - `class:MeetingSessionRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MeetingSessionRepository.kt:13` - dao/repository; Repository
 - `class:SessionScopeService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/SessionScopeService.kt:18` - service; Service
@@ -59,9 +59,9 @@ status: stable
 - `component:SessionSummaryPage` - `src/pages/SessionSummaryPage/SessionSummaryPage.tsx:16`
 
 ## tables
-- `table:meeting_session` - `harbor-core/src/main/resources/db/migration/V2__meetings.sql` - 12 columns: id, client_id, product_group, kind, representative_id, status, started_at, closed_at, role_override, role_override_reason, parameter_snapshot, report_requested_at
-- `table:meeting_report` - `harbor-core/src/main/resources/db/migration/V8__reports.sql` - 5 columns: session_id, payload, pdf_path, status, rendered_at
-- `table:session_client_config` - `harbor-core/src/main/resources/db/migration/V2__meetings.sql` - 4 columns: session_id, horizon_months, price_basis, cover_preference
+- `table:meeting_session` - `harbor-core/src/main/resources/db/migration/V2__meetings.sql` - A meeting with a client (CLIENT) or a preparation dry run (PREPARATION) for one product group; every session-scoped table hangs off it. (12 columns)
+- `table:meeting_report` - `harbor-core/src/main/resources/db/migration/V8__reports.sql` - The meeting report of a closed session: payload sent for rendering, PDF path and rendering status. (5 columns)
+- `table:session_client_config` - `harbor-core/src/main/resources/db/migration/V2__meetings.sql` - Per-session choices of the client: projection horizon, price basis and cover preference. (4 columns)
 
 ## Edges
 - `feature:ClientOverviewPage` -calls-> `endpoint:POST /api/v1/clients/{clientId}/sessions` (-> clients)
@@ -129,18 +129,18 @@ status: stable
 - `context:meetings` -exposes-> `endpoint:POST /api/v1/clients/{clientId}/sessions`
 - `context:meetings` -exposes-> `endpoint:POST /api/v1/sessions/{sessionId}/close`
 - `context:meetings` -exposes-> `endpoint:PUT /api/v1/sessions/{sessionId}/role`
-- `table:meeting_session` -fk client_id-> `table:client_profile` (-> clients)
-- `table:cover_quote` -fk session_id-> `table:meeting_session` (-> cover)
-- `table:market_scenario` -fk session_id-> `table:meeting_session` (-> market)
-- `table:meeting_report` -fk session_id-> `table:meeting_session`
-- `table:projection_by_dimension` -fk session_id-> `table:meeting_session` (-> product1)
-- `table:projection_by_direction` -fk session_id-> `table:meeting_session` (-> product1)
-- `table:projection_by_subproduct` -fk session_id-> `table:meeting_session` (-> product1)
-- `table:projection_summary` -fk session_id-> `table:meeting_session` (-> product1)
-- `table:session_client_config` -fk session_id-> `table:meeting_session`
-- `table:session_movement_input` -fk session_id-> `table:meeting_session` (-> product1)
-- `table:session_peer_simulation` -fk session_id-> `table:meeting_session` (-> product1)
-- `table:stress_test_result` -fk session_id-> `table:meeting_session` (-> stress)
+- `table:client_profile` -fk client_id-> `table:meeting_session` (-> clients)
+- `table:meeting_session` -fk session_id-> `table:cover_quote` (-> cover)
+- `table:meeting_session` -fk session_id-> `table:market_scenario` (-> market)
+- `table:meeting_session` -fk session_id-> `table:meeting_report`
+- `table:meeting_session` -fk session_id-> `table:projection_by_dimension` (-> product1)
+- `table:meeting_session` -fk session_id-> `table:projection_by_direction` (-> product1)
+- `table:meeting_session` -fk session_id-> `table:projection_by_subproduct` (-> product1)
+- `table:meeting_session` -fk session_id-> `table:projection_summary` (-> product1)
+- `table:meeting_session` -fk session_id-> `table:session_client_config`
+- `table:meeting_session` -fk session_id-> `table:session_movement_input` (-> product1)
+- `table:meeting_session` -fk session_id-> `table:session_peer_simulation` (-> product1)
+- `table:meeting_session` -fk session_id-> `table:stress_test_result` (-> stress)
 - `endpoint:GET /api/v1/sessions` -handled-by-> `class:SessionController`
 - `endpoint:GET /api/v1/sessions/{sessionId}` -handled-by-> `class:SessionController`
 - `endpoint:POST /api/v1/clients/{clientId}/sessions` -handled-by-> `class:SessionController`

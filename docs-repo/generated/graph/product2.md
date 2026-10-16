@@ -25,16 +25,16 @@ status: stable
 - `feature:Product2OverviewPage` - `src/pages/Product2OverviewPage/Product2OverviewPage.tsx` - /session/:sessionId/product2` - first meeting step for Product 2: transport mode filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals.
 
 ## endpoints
-- `endpoint:GET /api/v1/session/product2/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:25` - operationId getProduct2Overview; handler Product2Controller.getProduct2Overview; params 
-- `endpoint:GET /api/v1/session/product2/projection` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:43` - operationId getProduct2Projection; handler Product2Controller.getProduct2Projection; params 
-- `endpoint:POST /api/v1/session/product2/peer-simulation` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:37` - operationId postProduct2PeerSimulation; handler Product2Controller.postProduct2PeerSimulation; params 
-- `endpoint:PUT /api/v1/session/product2/movements` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:31` - operationId putProduct2Movements; handler Product2Controller.putProduct2Movements; params 
+- `endpoint:GET /api/v1/session/product2/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:24` - operationId getProduct2Overview; handler Product2Controller.getProduct2Overview; params 
+- `endpoint:GET /api/v1/session/product2/projection` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:42` - operationId getProduct2Projection; handler Product2Controller.getProduct2Projection; params 
+- `endpoint:POST /api/v1/session/product2/peer-simulation` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:36` - operationId postProduct2PeerSimulation; handler Product2Controller.postProduct2PeerSimulation; params 
+- `endpoint:PUT /api/v1/session/product2/movements` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:30` - operationId putProduct2Movements; handler Product2Controller.putProduct2Movements; params 
 
 ## routes
 - `route:/session/:sessionId/product2` - `src/routing/SessionRoutes.tsx:20` - renders Product2OverviewPage
 
 ## classes
-- `class:Product2Controller` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:22` - api; RestController
+- `class:Product2Controller` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:21` - api; RestController
 - `class:Product2Manager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/Product2Manager.kt:26` - manager; Service
 - `class:Product2ProjectionRefreshListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/Product2ProjectionRefreshListener.kt:17` - event; Component, KafkaListener
 

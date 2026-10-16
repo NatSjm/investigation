@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Runs all BE generators and writes docs/_generated/index.md (OKF-style reserved index for progressive disclosure).
+Also refreshes the database documentation folder (`db_docs.dir`, default docs/db) with gen-db-docs.py unless
+`db_docs.generate` is false (a database tool writes that folder) or the script is in `skip_generators`.
 The generators read the repository layout from scripts/docs/docs-gen.json (modules, base package, layers, contract
 paths, annotations ...); --config points them at another file.
 --check: exit 1 if any generated file would change (CI freshness gate)."""
@@ -25,7 +27,8 @@ GENERATORS = [
     ('gen-datasets.py', 'datasets.md'),
 ]
 DEFAULTS = {'rest': {'open_api': ''}, 'asyncapi': '', 'external_contracts_dir': '', 'parameters': {'enum_name': 'ParameterKey'},
-            'datasets': {'seed_dirs': ['scripts/db/seed'], 'fixture_dirs': []}, 'entry_layer': 'manager'}
+            'datasets': {'seed_dirs': ['scripts/db/seed'], 'fixture_dirs': []}, 'entry_layer': 'manager',
+            'db_docs': {'dir': 'docs/db', 'generate': True}}
 
 INDEX = """# Generated code maps
 
@@ -40,6 +43,7 @@ Read these before opening source. Each file is a few hundred tokens.
 - [docs-tags.md](docs-tags.md): spec ID (`@docs`) to code location
 - [parameters.md](parameters.md): admin parameter catalogue - every `{enum}` with seeded defaults per scope, readers and validator
 - [datasets.md](datasets.md): named synthetic datasets (local seeds, integration-test fixtures) with tables, row counts, loaders and a sample row
+- `{db_dir}/` (outside this folder): the database documentation - `schema.json`, one page per table with the column comments and relations, ER diagram
 
 The folder layout the generators assume (modules, base package, layers, contract paths) is in `scripts/docs/docs-gen.json`;
 the business context of a class is its name prefix (docs repo `contexts.yml`), read the `{entry}` of a context first.
@@ -48,6 +52,20 @@ the business context of a class is its name prefix (docs repo `contexts.yml`), r
 
 def norm(s):
     return re.sub(r'(?m)^  at: .*$', '', s).replace('\r', '')
+
+
+def norm_db(s):
+    """db docs: the generation date is the only line that may differ between two runs."""
+    return re.sub(r'(?i)("generatedAt": "|on )\d{4}-\d{2}-\d{2}', r'\1<date>', s.replace('\r', ''))
+
+
+def tree(d):
+    out = {}
+    for dp, dn, fn in os.walk(d):
+        for f in fn:
+            p = os.path.join(dp, f)
+            out[os.path.relpath(p, d).replace(os.sep, '/')] = p
+    return out
 
 
 def contracts_line(cfg):
@@ -87,7 +105,16 @@ def main():
         r = subprocess.run([sys.executable, os.path.join(here, script), '--root', root, '--out', rel + '/' + out] + extra)
         if r.returncode:
             sys.exit(r.returncode)
-    index = INDEX.format(contracts=contracts_line(cfg), enum=cfg['parameters']['enum_name'], entry=cfg['entry_layer'])
+    db_cfg = cfg['db_docs']
+    db_on = db_cfg.get('generate', True) and 'gen-db-docs.py' not in skip
+    if db_on:
+        db_out = os.path.join(tempfile.mkdtemp(prefix='gen-db-docs-'), 'db') if a.check else db_cfg['dir']
+        r = subprocess.run([sys.executable, os.path.join(here, 'gen-db-docs.py'), '--root', root, '--out', db_out] + extra)
+        if r.returncode:
+            sys.exit(r.returncode)
+    else:
+        print(f"gen-db-docs.py: skipped ({db_cfg['dir']} is written by your database documentation tool)")
+    index = INDEX.format(contracts=contracts_line(cfg), enum=cfg['parameters']['enum_name'], entry=cfg['entry_layer'], db_dir=db_cfg['dir'])
     index = '\n'.join(line for line in index.split('\n') if not any(f'[{o}]' in line for o in skipped_outputs))
     write_text(os.path.join(work, 'index.md'), index)
     if a.check:
@@ -100,6 +127,15 @@ def main():
                 print(f'STALE: {a.out_dir}/{name}')
                 diff += 1
         shutil.rmtree(work, ignore_errors=True)
+        if db_on:
+            cur_t, new_t = tree(os.path.join(root, db_cfg['dir'])), tree(db_out)
+            for name in sorted(set(cur_t) | set(new_t), key=str.lower):
+                a_text = norm_db(read_text(cur_t[name])) if name in cur_t else ''
+                b_text = norm_db(read_text(new_t[name])) if name in new_t else ''
+                if a_text != b_text:
+                    print(f"STALE: {db_cfg['dir']}/{name}")
+                    diff += 1
+            shutil.rmtree(os.path.dirname(db_out), ignore_errors=True)
         if diff:
             print(f'{diff} generated file(s) out of date. Run scripts/docs/gen-all.py', file=sys.stderr)
             sys.exit(1)

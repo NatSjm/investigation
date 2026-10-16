@@ -1,0 +1,2730 @@
+{
+  "database": {
+    "databaseType": "postgresql",
+    "name": "harbor",
+    "schema": "public"
+  },
+  "generatedAt": "2026-10-16",
+  "generatedBy": "scripts/docs/gen-db-docs.py (from the migrations)",
+  "tables": [
+    {
+      "name": "baseline_price",
+      "comment": "Baseline price and transport price per product group, corridor and month, as loaded from market data.",
+      "source": "harbor-core/src/main/resources/db/migration/V7__market_stress.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "product_group",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Origin-destination corridor code (for example VLD-NRL).",
+          "default": null,
+          "digits": 0,
+          "name": "corridor",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 8,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "price",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "transport_price",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Timestamp of the market data snapshot the row comes from.",
+          "default": null,
+          "digits": 0,
+          "name": "as_of",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        }
+      ],
+      "parents": [],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_baseline_price_product_group",
+          "expression": "(product_group IN ('PRODUCT1', 'PRODUCT2'))"
+        }
+      ],
+      "uniques": [
+        {
+          "name": "uq_baseline_price",
+          "columns": [
+            "product_group",
+            "corridor",
+            "period"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "client_profile",
+      "comment": "A client of the platform: master data merged from the client registry, one row per external reference.",
+      "source": "harbor-core/src/main/resources/db/migration/V1__clients.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Identifier of the client in the client registry (CR-nnnn).",
+          "default": null,
+          "digits": 0,
+          "name": "external_ref",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "name",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 200,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Three-letter country code of the client seat.",
+          "default": null,
+          "digits": 0,
+          "name": "country",
+          "nullable": true,
+          "position": 3,
+          "primaryKey": false,
+          "size": 3,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Commercial segment used for peer simulation (SMALL, MID, LARGE).",
+          "default": null,
+          "digits": 0,
+          "name": "segment",
+          "nullable": true,
+          "position": 4,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": "now()",
+          "digits": 0,
+          "name": "created_at",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        }
+      ],
+      "parents": [],
+      "children": [
+        {
+          "table": "client_role",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "meeting_session",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "goods_movement",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "movement_monthly",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "cover_policy",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "checks": [],
+      "uniques": [
+        {
+          "name": "uq_client_profile_external_ref",
+          "columns": [
+            "external_ref"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "client_role",
+      "comment": "Role of a client per product group (IMPORTER, EXPORTER, MIXED, UNDETERMINED) as decided from its movements or overridden in a session.",
+      "source": "harbor-core/src/main/resources/db/migration/V1__clients.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "client_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "product_group",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "role",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "How the role was decided: MOVEMENTS (computed) or SESSION (override by the representative).",
+          "default": null,
+          "digits": 0,
+          "name": "source",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Free-text justification of a session override; empty for computed roles.",
+          "default": null,
+          "digits": 0,
+          "name": "reason",
+          "nullable": true,
+          "position": 5,
+          "primaryKey": false,
+          "size": 500,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": "now()",
+          "digits": 0,
+          "name": "decided_at",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        }
+      ],
+      "parents": [
+        {
+          "table": "client_profile",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_client_role_product_group",
+          "expression": "(product_group IN ('PRODUCT1', 'PRODUCT2'))"
+        },
+        {
+          "name": "ck_client_role_role",
+          "expression": "(role IN ('IMPORTER', 'EXPORTER', 'MIXED', 'UNDETERMINED'))"
+        },
+        {
+          "name": "ck_client_role_source",
+          "expression": "(source IN ('ALGORITHM', 'MANUAL'))"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "cover_policy",
+      "comment": "Cover policies of a client per product group and sub-product: covered share, premium rate, validity.",
+      "source": "harbor-core/src/main/resources/db/migration/V6__cover.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "client_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "product_group",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "sub_product",
+          "nullable": true,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Share of the value covered by the policy (0 to 1).",
+          "default": null,
+          "digits": 4,
+          "name": "covered_share",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 7,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Premium as a rate of the covered value.",
+          "default": null,
+          "digits": 6,
+          "name": "premium_rate",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 9,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "valid_from",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "valid_to",
+          "nullable": true,
+          "position": 7,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        }
+      ],
+      "parents": [
+        {
+          "table": "client_profile",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_cover_policy_product_group",
+          "expression": "(product_group IN ('PRODUCT1', 'PRODUCT2'))"
+        },
+        {
+          "name": "ck_cover_policy_covered_share",
+          "expression": "(covered_share BETWEEN 0 AND 1)"
+        },
+        {
+          "name": "ck_cover_policy_validity",
+          "expression": "(valid_to IS NULL OR valid_to >= valid_from)"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "cover_quote",
+      "comment": "Quote requested from the cover provider for the uncovered value of a session.",
+      "source": "harbor-core/src/main/resources/db/migration/V6__cover.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "requested_at",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "uncovered_value",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "premium",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Reference of the quote at the cover provider; null while the request is pending.",
+          "default": null,
+          "digits": 0,
+          "name": "provider_ref",
+          "nullable": true,
+          "position": 5,
+          "primaryKey": false,
+          "size": 128,
+          "type": "varchar"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [],
+      "uniques": []
+    },
+    {
+      "name": "goods_movement",
+      "comment": "Daily movements as imported from the file exchange, one row per line of the file after validation.",
+      "source": "harbor-core/src/main/resources/db/migration/V3__movements.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "client_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "batch_id",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "product_group",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "sub_product",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "city",
+          "nullable": true,
+          "position": 5,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Transport mode of the movement (Product 2 dimension); null for Product 1.",
+          "default": null,
+          "digits": 0,
+          "name": "transport_mode",
+          "nullable": true,
+          "position": 6,
+          "primaryKey": false,
+          "size": 8,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "IN (import) or OUT (export) from the point of view of the client.",
+          "default": null,
+          "digits": 0,
+          "name": "direction",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 3,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 8,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "quantity",
+          "nullable": false,
+          "position": 9,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "unit_price",
+          "nullable": false,
+          "position": 10,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Port the unit price refers to.",
+          "default": null,
+          "digits": 0,
+          "name": "price_basis",
+          "nullable": false,
+          "position": 11,
+          "primaryKey": false,
+          "size": 3,
+          "type": "varchar"
+        }
+      ],
+      "parents": [
+        {
+          "table": "client_profile",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "import_batch",
+          "columns": [
+            "batch_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_goods_movement_product_group",
+          "expression": "(product_group IN ('PRODUCT1', 'PRODUCT2'))"
+        },
+        {
+          "name": "ck_goods_movement_transport_mode",
+          "expression": "(transport_mode IS NULL OR transport_mode IN ('ROAD', 'RAIL', 'SEA', 'AIR'))"
+        },
+        {
+          "name": "ck_goods_movement_direction",
+          "expression": "(direction IN ('IN', 'OUT'))"
+        },
+        {
+          "name": "ck_goods_movement_period",
+          "expression": "(extract(day FROM period) = 1)"
+        },
+        {
+          "name": "ck_goods_movement_quantity",
+          "expression": "(quantity > 0)"
+        },
+        {
+          "name": "ck_goods_movement_price_basis",
+          "expression": "(price_basis IN ('VLD', 'NRL', 'CST', 'MRD'))"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "import_batch",
+      "comment": "One received movement file: its status and row counts.",
+      "source": "harbor-core/src/main/resources/db/migration/V3__movements.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "source_file",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 255,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "received_at",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": "0",
+          "digits": 0,
+          "name": "rows_total",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 0,
+          "type": "integer"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Rows the validator refused (unknown client, bad period, negative quantity).",
+          "default": "0",
+          "digits": 0,
+          "name": "rows_rejected",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 0,
+          "type": "integer"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "status",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        }
+      ],
+      "parents": [],
+      "children": [
+        {
+          "table": "goods_movement",
+          "columns": [
+            "batch_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_import_batch_status",
+          "expression": "(status IN ('RUNNING', 'DONE', 'FAILED'))"
+        }
+      ],
+      "uniques": [
+        {
+          "name": "uq_import_batch_source_file",
+          "columns": [
+            "source_file"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "market_scenario",
+      "comment": "Market scenario defined in a session: named shocks on prices and transport prices used by the stress test.",
+      "source": "harbor-core/src/main/resources/db/migration/V7__market_stress.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "name",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 120,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "PRESET (from the catalogue) or CUSTOM (edited in the session).",
+          "default": null,
+          "digits": 0,
+          "name": "kind",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "JSON list of shocks: target (price, transport), period range, relative change.",
+          "default": "'[]'",
+          "digits": 0,
+          "name": "shocks",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 0,
+          "type": "jsonb"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "created_by",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "created_at",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [
+        {
+          "table": "stress_test_result",
+          "columns": [
+            "scenario_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_market_scenario_kind",
+          "expression": "(kind IN ('REPRESENTATIVE', 'CLIENT'))"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "meeting_report",
+      "comment": "The meeting report of a closed session: payload sent for rendering, PDF path and rendering status.",
+      "source": "harbor-core/src/main/resources/db/migration/V8__reports.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "payload",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "jsonb"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "pdf_path",
+          "nullable": true,
+          "position": 2,
+          "primaryKey": false,
+          "size": 512,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "REQUESTED, RENDERED or FAILED.",
+          "default": "'PENDING'",
+          "digits": 0,
+          "name": "status",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "rendered_at",
+          "nullable": true,
+          "position": 4,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_meeting_report_status",
+          "expression": "(status IN ('PENDING', 'REQUESTED', 'RENDERED', 'FAILED'))"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "meeting_session",
+      "comment": "A meeting with a client (CLIENT) or a preparation dry run (PREPARATION) for one product group; every session-scoped table hangs off it.",
+      "source": "harbor-core/src/main/resources/db/migration/V2__meetings.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "client_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "product_group",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "CLIENT: with the client present; PREPARATION: rehearsal by the representative, never reported.",
+          "default": null,
+          "digits": 0,
+          "name": "kind",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "representative_id",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "OPEN while inputs can change; CLOSED freezes the session and triggers the report.",
+          "default": null,
+          "digits": 0,
+          "name": "status",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "started_at",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "closed_at",
+          "nullable": true,
+          "position": 7,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Client role chosen in the session instead of the computed one; null = computed role applies.",
+          "default": null,
+          "digits": 0,
+          "name": "role_override",
+          "nullable": true,
+          "position": 8,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "role_override_reason",
+          "nullable": true,
+          "position": 9,
+          "primaryKey": false,
+          "size": 500,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Copy of the parameter values at session start (JSON); calculations in the session read this, never the live parameter_set.",
+          "default": null,
+          "digits": 0,
+          "name": "parameter_snapshot",
+          "nullable": true,
+          "position": 10,
+          "primaryKey": false,
+          "size": 0,
+          "type": "jsonb"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "When the meeting report was requested from the document service; null until the session is closed.",
+          "default": null,
+          "digits": 0,
+          "name": "report_requested_at",
+          "nullable": true,
+          "position": 11,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        }
+      ],
+      "parents": [
+        {
+          "table": "client_profile",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [
+        {
+          "table": "session_client_config",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "session_movement_input",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "session_peer_simulation",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "projection_by_subproduct",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "projection_by_dimension",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "projection_by_direction",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "projection_summary",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "cover_quote",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "market_scenario",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "stress_test_result",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "meeting_report",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "checks": [
+        {
+          "name": "ck_meeting_session_product_group",
+          "expression": "(product_group IN ('PRODUCT1', 'PRODUCT2'))"
+        },
+        {
+          "name": "ck_meeting_session_kind",
+          "expression": "(kind IN ('CLIENT', 'PREPARATION'))"
+        },
+        {
+          "name": "ck_meeting_session_status",
+          "expression": "(status IN ('OPEN', 'CLOSED'))"
+        },
+        {
+          "name": "ck_meeting_session_role_override",
+          "expression": "(role_override IS NULL OR role_override IN ('IMPORTER', 'EXPORTER', 'MIXED', 'UNDETERMINED'))"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "movement_monthly",
+      "comment": "Monthly aggregate of goods_movement per client, sub-product, city, transport mode and direction; the input of every projection.",
+      "source": "harbor-core/src/main/resources/db/migration/V3__movements.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "client_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "product_group",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "sub_product",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "city",
+          "nullable": true,
+          "position": 4,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "transport_mode",
+          "nullable": true,
+          "position": 5,
+          "primaryKey": false,
+          "size": 8,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "direction",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 3,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "quantity",
+          "nullable": false,
+          "position": 8,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Quantity times unit price, summed over the month.",
+          "default": null,
+          "digits": 2,
+          "name": "value",
+          "nullable": false,
+          "position": 9,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        }
+      ],
+      "parents": [
+        {
+          "table": "client_profile",
+          "columns": [
+            "client_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_movement_monthly_product_group",
+          "expression": "(product_group IN ('PRODUCT1', 'PRODUCT2'))"
+        },
+        {
+          "name": "ck_movement_monthly_direction",
+          "expression": "(direction IN ('IN', 'OUT'))"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "parameter_set",
+      "comment": "Admin parameters: one value per key and scope (product group, country, value), valid from a date.",
+      "source": "harbor-core/src/main/resources/db/migration/V9__parameters.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Parameter key (ParameterKey enum in the backend).",
+          "default": null,
+          "digits": 0,
+          "name": "key",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "scope_product_group",
+          "nullable": true,
+          "position": 2,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "scope_country",
+          "nullable": true,
+          "position": 3,
+          "primaryKey": false,
+          "size": 3,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Free scope qualifier (city, sub-product) when the key is scoped that way.",
+          "default": null,
+          "digits": 0,
+          "name": "scope_value",
+          "nullable": true,
+          "position": 4,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 6,
+          "name": "value",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "valid_from",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "updated_by",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": "now()",
+          "digits": 0,
+          "name": "updated_at",
+          "nullable": false,
+          "position": 8,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        }
+      ],
+      "parents": [],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_parameter_set_product_group",
+          "expression": "(scope_product_group IS NULL OR scope_product_group IN ('PRODUCT1', 'PRODUCT2'))"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "projection_by_dimension",
+      "comment": "Monthly projection per dimension value: city for Product 1, transport mode for Product 2 (dimension_kind says which).",
+      "source": "harbor-core/src/main/resources/db/migration/V5__projection.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "CITY or TRANSPORT_MODE.",
+          "default": null,
+          "digits": 0,
+          "name": "dimension_kind",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "dimension_value",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "quantity",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "value",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "landed_cost",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "cumulative_value",
+          "nullable": false,
+          "position": 8,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_projection_by_dimension_kind",
+          "expression": "(dimension_kind IN ('CITY', 'TRANSPORT_MODE'))"
+        }
+      ],
+      "uniques": [
+        {
+          "name": "uq_projection_by_dimension",
+          "columns": [
+            "session_id",
+            "period",
+            "dimension_kind",
+            "dimension_value"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "projection_by_direction",
+      "comment": "Monthly projection per direction (IN, OUT).",
+      "source": "harbor-core/src/main/resources/db/migration/V5__projection.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "direction",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 3,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "quantity",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "value",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "landed_cost",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "cumulative_value",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_projection_by_direction_direction",
+          "expression": "(direction IN ('IN', 'OUT'))"
+        }
+      ],
+      "uniques": [
+        {
+          "name": "uq_projection_by_direction",
+          "columns": [
+            "session_id",
+            "period",
+            "direction"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "projection_by_subproduct",
+      "comment": "Monthly projection table per sub-product of the session (cumulative values over the horizon).",
+      "source": "harbor-core/src/main/resources/db/migration/V5__projection.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "sub_product",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "quantity",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "value",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Value plus transport and handling costs for the month.",
+          "default": null,
+          "digits": 2,
+          "name": "landed_cost",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Running total of value from the first month of the horizon.",
+          "default": null,
+          "digits": 2,
+          "name": "cumulative_value",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [],
+      "uniques": [
+        {
+          "name": "uq_projection_by_subproduct",
+          "columns": [
+            "session_id",
+            "period",
+            "sub_product"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "projection_summary",
+      "comment": "Monthly totals of the session projection with the cover ratio.",
+      "source": "harbor-core/src/main/resources/db/migration/V5__projection.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "total_quantity",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "total_value",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "total_landed_cost",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Covered value divided by total value for the month (0 to 1).",
+          "default": "0",
+          "digits": 4,
+          "name": "cover_ratio",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 7,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "cumulative_value",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [],
+      "uniques": [
+        {
+          "name": "uq_projection_summary",
+          "columns": [
+            "session_id",
+            "period"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "session_client_config",
+      "comment": "Per-session choices of the client: projection horizon, price basis and cover preference.",
+      "source": "harbor-core/src/main/resources/db/migration/V2__meetings.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Projection horizon in months (12 to 60).",
+          "default": null,
+          "digits": 0,
+          "name": "horizon_months",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "integer"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Port whose prices are the basis of the projection (VLD, NRL, CST, MRD).",
+          "default": null,
+          "digits": 0,
+          "name": "price_basis",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 3,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "NONE, PARTIAL or FULL cover wished by the client; drives the cover quote.",
+          "default": "'NONE'",
+          "digits": 0,
+          "name": "cover_preference",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_session_client_config_horizon",
+          "expression": "(horizon_months BETWEEN 12 AND 60)"
+        },
+        {
+          "name": "ck_session_client_config_price_basis",
+          "expression": "(price_basis IN ('VLD', 'NRL', 'CST', 'MRD'))"
+        },
+        {
+          "name": "ck_session_client_config_cover_preference",
+          "expression": "(cover_preference IN ('NONE', 'PARTIAL', 'FULL'))"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "session_movement_input",
+      "comment": "Movements modelled by hand during a session (the movement modal); they replace the imported history for the months they cover.",
+      "source": "harbor-core/src/main/resources/db/migration/V4__session_inputs.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "sub_product",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 16,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "city",
+          "nullable": true,
+          "position": 4,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "transport_mode",
+          "nullable": true,
+          "position": 5,
+          "primaryKey": false,
+          "size": 8,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "direction",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 3,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "quantity",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 4,
+          "name": "unit_price",
+          "nullable": false,
+          "position": 8,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_session_movement_input_transport_mode",
+          "expression": "(transport_mode IS NULL OR transport_mode IN ('ROAD', 'RAIL', 'SEA', 'AIR'))"
+        },
+        {
+          "name": "ck_session_movement_input_direction",
+          "expression": "(direction IN ('IN', 'OUT'))"
+        },
+        {
+          "name": "ck_session_movement_input_quantity",
+          "expression": "(quantity >= 0)"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "session_peer_simulation",
+      "comment": "Peer simulation requested in a session: the peer segment and the scaling factor applied to the projection of the client.",
+      "source": "harbor-core/src/main/resources/db/migration/V4__session_inputs.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "peer_segment",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Factor applied to the quantities of the client to simulate a peer of the chosen segment.",
+          "default": null,
+          "digits": 4,
+          "name": "scaling_factor",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 8,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "generated_at",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [
+        {
+          "name": "ck_session_peer_simulation_scaling",
+          "expression": "(scaling_factor > 0)"
+        }
+      ],
+      "uniques": []
+    },
+    {
+      "name": "shedlock",
+      "comment": "ShedLock table: distributed locks of the scheduled jobs (one row per job name). Technical.",
+      "source": "harbor-core/src/main/resources/db/migration/V10__shedlock.sql",
+      "columns": [
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "name",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "lock_until",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "locked_at",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "timestamp"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "locked_by",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 255,
+          "type": "varchar"
+        }
+      ],
+      "parents": [],
+      "children": [],
+      "checks": [],
+      "uniques": []
+    },
+    {
+      "name": "stress_test_result",
+      "comment": "Stress test output per session, scenario, month and dimension value: exposure and cumulative exposure.",
+      "source": "harbor-core/src/main/resources/db/migration/V7__market_stress.sql",
+      "columns": [
+        {
+          "autoUpdated": true,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "id",
+          "nullable": false,
+          "position": 0,
+          "primaryKey": true,
+          "size": 0,
+          "type": "bigserial"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "session_id",
+          "nullable": false,
+          "position": 1,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "scenario_id",
+          "nullable": false,
+          "position": 2,
+          "primaryKey": false,
+          "size": 0,
+          "type": "uuid"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "period",
+          "nullable": false,
+          "position": 3,
+          "primaryKey": false,
+          "size": 0,
+          "type": "date"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 0,
+          "name": "dimension_value",
+          "nullable": false,
+          "position": 4,
+          "primaryKey": false,
+          "size": 64,
+          "type": "varchar"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Value at risk for the month under the scenario.",
+          "default": null,
+          "digits": 2,
+          "name": "exposure",
+          "nullable": false,
+          "position": 5,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "Change of transport cost for the month caused by the scenario.",
+          "default": null,
+          "digits": 2,
+          "name": "transport_cost_delta",
+          "nullable": false,
+          "position": 6,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        },
+        {
+          "autoUpdated": false,
+          "comment": "",
+          "default": null,
+          "digits": 2,
+          "name": "cumulative_exposure",
+          "nullable": false,
+          "position": 7,
+          "primaryKey": false,
+          "size": 18,
+          "type": "numeric"
+        }
+      ],
+      "parents": [
+        {
+          "table": "meeting_session",
+          "columns": [
+            "session_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        },
+        {
+          "table": "market_scenario",
+          "columns": [
+            "scenario_id"
+          ],
+          "parentColumns": [
+            "id"
+          ],
+          "constraint": ""
+        }
+      ],
+      "children": [],
+      "checks": [],
+      "uniques": [
+        {
+          "name": "uq_stress_test_result",
+          "columns": [
+            "session_id",
+            "scenario_id",
+            "period",
+            "dimension_value"
+          ]
+        }
+      ]
+    }
+  ]
+}

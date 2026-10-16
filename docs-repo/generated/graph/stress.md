@@ -23,8 +23,8 @@ status: stable
 - `feature:StressTestPage` - `src/pages/StressTestPage/StressTestPage.tsx` - /session/:sessionId/stress-test` - third meeting step: one monthly table per scenario, transport price chart per scenario and the dimension toggle (city / transport mode).
 
 ## endpoints
-- `endpoint:GET /api/v1/session/stress-test` - `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:24` - operationId getStressTest; handler StressTestController.getStressTest; params 
-- `endpoint:POST /api/v1/session/stress-test` - `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:21` - operationId runStressTest; handler StressTestController.runStressTest; params 
+- `endpoint:GET /api/v1/session/stress-test` - `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:23` - operationId getStressTest; handler StressTestController.getStressTest; params 
+- `endpoint:POST /api/v1/session/stress-test` - `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:20` - operationId runStressTest; handler StressTestController.runStressTest; params 
 
 ## routes
 - `route:/session/:sessionId/stress-test` - `src/routing/SessionRoutes.tsx:22` - renders StressTestPage
@@ -32,7 +32,7 @@ status: stable
 ## classes
 - `class:StressManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/StressManager.kt:30` - manager; Service
 - `class:StressTestService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/StressTestService.kt:26` - service; Service
-- `class:StressTestController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:18` - api; RestController
+- `class:StressTestController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:17` - api; RestController
 - `class:StressTestResultRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/StressTestResultRepository.kt:10` - dao/repository; Repository
 - `class:StressTestCalculator` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/StressTestCalculator.kt:23` - utils; object
 
@@ -43,7 +43,7 @@ status: stable
 - `component:TransportPriceChart` - `src/pages/StressTestPage/components/TransportPriceChart/TransportPriceChart.tsx:18`
 
 ## tables
-- `table:stress_test_result` - `harbor-core/src/main/resources/db/migration/V7__market_stress.sql` - 8 columns: id, session_id, scenario_id, period, dimension_value, exposure, transport_cost_delta, cumulative_exposure
+- `table:stress_test_result` - `harbor-core/src/main/resources/db/migration/V7__market_stress.sql` - Stress test output per session, scenario, month and dimension value: exposure and cumulative exposure. (8 columns)
 
 ## Edges
 - `feature:StressTestPage` -calls-> `endpoint:GET /api/v1/session/stress-test`
@@ -76,8 +76,8 @@ status: stable
 - `feature:StressTestPage` -depends-on-> `feature:shared` (-> fe-shared) (exact)
 - `context:stress` -exposes-> `endpoint:GET /api/v1/session/stress-test`
 - `context:stress` -exposes-> `endpoint:POST /api/v1/session/stress-test`
-- `table:stress_test_result` -fk scenario_id-> `table:market_scenario` (-> market)
-- `table:stress_test_result` -fk session_id-> `table:meeting_session` (-> meetings)
+- `table:market_scenario` -fk scenario_id-> `table:stress_test_result` (-> market)
+- `table:meeting_session` -fk session_id-> `table:stress_test_result` (-> meetings)
 - `endpoint:GET /api/v1/session/stress-test` -handled-by-> `class:StressTestController`
 - `endpoint:POST /api/v1/session/stress-test` -handled-by-> `class:StressTestController`
 - `spec:STR-001` -implemented-by-> `class:StressManager` (-> docs)

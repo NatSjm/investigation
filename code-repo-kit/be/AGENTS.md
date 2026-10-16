@@ -62,7 +62,8 @@ repo `contexts.yml`): contexts `clients`, `meetings`, `imports`, `product1`, `pr
 - Files <= 400 lines (`scripts/check-file-size.py`). No real client data anywhere; synthetic values only.
 
 ## Commands
-- `python3 scripts/docs/gen-all.py` regenerates `docs/_generated/*`; `--check` fails if they are stale (CI gate).
+- `python3 scripts/docs/gen-all.py` regenerates `docs/_generated/*` and the database documentation `docs/db/` (`schema.json`,
+  one page per table from the migration comments, ER diagram); `--check` fails if they are stale (CI gate).
   Run it after changing an endpoint, topic, table, job, injected dependency or `@docs` tag and commit the regenerated maps.
   The layout the generators read (modules, base package, layers, contract paths) is `scripts/docs/docs-gen.json`.
 - `python3 scripts/check-file-size.py --root . --max-lines 400 --baseline .filesize-baseline.txt`

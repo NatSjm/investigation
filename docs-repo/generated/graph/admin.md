@@ -26,10 +26,10 @@ status: stable
 - `feature:ImportsPage` - `src/pages/ImportsPage/ImportsPage.tsx` - /admin/imports` - monitor of the daily XLS movement imports with a manual trigger.
 
 ## endpoints
-- `endpoint:GET /api/v1/admin/parameters` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:20` - operationId listParameters; handler AdminController.listParameters; params 
-- `endpoint:PUT /api/v1/admin/parameters/{key}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:23` - operationId upsertParameter; handler AdminController.upsertParameter; params key
-- `endpoint:GET /api/v1/admin/imports` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:26` - operationId listImportBatches; handler AdminController.listImportBatches; params 
-- `endpoint:POST /api/v1/admin/imports/run` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:29` - operationId triggerImport; handler AdminController.triggerImport; params 
+- `endpoint:GET /api/v1/admin/parameters` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:19` - operationId listParameters; handler AdminController.listParameters; params 
+- `endpoint:PUT /api/v1/admin/parameters/{key}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:22` - operationId upsertParameter; handler AdminController.upsertParameter; params key
+- `endpoint:GET /api/v1/admin/imports` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:25` - operationId listImportBatches; handler AdminController.listImportBatches; params 
+- `endpoint:POST /api/v1/admin/imports/run` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:28` - operationId triggerImport; handler AdminController.triggerImport; params 
 
 ## routes
 - `route:/admin/parameters` - `src/routing/Routing.tsx:36` - renders ParametersPage
@@ -37,7 +37,7 @@ status: stable
 
 ## classes
 - `class:ParameterService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ParameterService.kt:23` - service; Service
-- `class:AdminController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:17` - api; RestController
+- `class:AdminController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:16` - api; RestController
 - `class:AdminManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/AdminManager.kt:24` - manager; Service
 - `class:ParameterRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ParameterRepository.kt:12` - dao/repository; Repository
 - `class:ParameterValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/ParameterValidator.kt:16` - validator; Component
@@ -48,7 +48,7 @@ status: stable
 - `component:ImportsPage` - `src/pages/ImportsPage/ImportsPage.tsx:22`
 
 ## tables
-- `table:parameter_set` - `harbor-core/src/main/resources/db/migration/V9__parameters.sql` - 9 columns: id, key, scope_product_group, scope_country, scope_value, value, valid_from, updated_by, updated_at
+- `table:parameter_set` - `harbor-core/src/main/resources/db/migration/V9__parameters.sql` - Admin parameters: one value per key and scope (product group, country, value), valid from a date. (9 columns)
 
 ## Edges
 - `feature:ImportsPage` -calls-> `endpoint:GET /api/v1/admin/imports`

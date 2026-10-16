@@ -14,6 +14,7 @@ Contracts: `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` (REST; F
 - [docs-tags.md](docs-tags.md): spec ID (`@docs`) to code location
 - [parameters.md](parameters.md): admin parameter catalogue - every `ParameterKey` with seeded defaults per scope, readers and validator
 - [datasets.md](datasets.md): named synthetic datasets (local seeds, integration-test fixtures) with tables, row counts, loaders and a sample row
+- `docs/db/` (outside this folder): the database documentation - `schema.json`, one page per table with the column comments and relations, ER diagram
 
 The folder layout the generators assume (modules, base package, layers, contract paths) is in `scripts/docs/docs-gen.json`;
 the business context of a class is its name prefix (docs repo `contexts.yml`), read the `manager` of a context first.

@@ -35,9 +35,9 @@ status: stable
 - `topic:harbor.imports.movements-loaded`
 
 ## tables
-- `table:goods_movement` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - 12 columns: id, client_id, batch_id, product_group, sub_product, city, transport_mode, direction, period, quantity, unit_price, price_basis
-- `table:movement_monthly` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - 10 columns: id, client_id, product_group, sub_product, city, transport_mode, direction, period, quantity, value
-- `table:import_batch` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - 6 columns: id, source_file, received_at, rows_total, rows_rejected, status
+- `table:goods_movement` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - Daily movements as imported from the file exchange, one row per line of the file after validation. (12 columns)
+- `table:movement_monthly` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - Monthly aggregate of goods_movement per client, sub-product, city, transport mode and direction; the input of every projection. (10 columns)
+- `table:import_batch` - `harbor-core/src/main/resources/db/migration/V3__movements.sql` - One received movement file: its status and row counts. (6 columns)
 
 ## Edges
 - `topic:harbor.imports.movements-loaded` -consumed-by-> `class:Product1ProjectionRefreshListener` (-> product1)
@@ -76,9 +76,9 @@ status: stable
 - `class:PeerSimulationService` -depends-on-> `class:MovementMonthlyRepository` (-> product1)
 - `class:ProjectionInputAssembler` -depends-on-> `class:MovementMonthlyRepository` (-> product1)
 - `class:WorkbookReaderFactory` -depends-on-> `class:XlsWorkbookOpener`
-- `table:goods_movement` -fk batch_id-> `table:import_batch`
-- `table:goods_movement` -fk client_id-> `table:client_profile` (-> clients)
-- `table:movement_monthly` -fk client_id-> `table:client_profile` (-> clients)
+- `table:import_batch` -fk batch_id-> `table:goods_movement`
+- `table:client_profile` -fk client_id-> `table:goods_movement` (-> clients)
+- `table:client_profile` -fk client_id-> `table:movement_monthly` (-> clients)
 - `spec:IMP-001` -implemented-by-> `class:ImportManager` (-> docs)
 - `context:imports` -owns-> `table:goods_movement`
 - `context:imports` -owns-> `table:import_batch`

@@ -23,7 +23,7 @@ or a free-text feature description.
    graph neighbourhood of `context:<community>` / `feature:<community>` instead of a spec.
 2. Build the skeleton from `features/_template.md` with the graph (`generated/graph/<community>.md`):
    - **API / Events** <- `endpoint:*` nodes (method, path, `operationId`, handler `file:line`) and `topic:*` nodes with direction;
-   - **Data** <- `table:*` nodes with column lists from `generated/be/db-schema.md`;
+   - **Data** <- `table:*` nodes with the table and column comments from `generated/be/db/schema/tables/<table>.md` (column lists from `generated/be/db-schema.md` when a table has no page);
    - **UI flow** <- `route:*`, `component:*`, `hook:*` nodes;
    - **Calculations** <- `spec:*` nodes of kind calculation; link, never inline;
    - frontmatter `code_refs` <- node locations (file only), `api`, `events`, `tables`, `context`.

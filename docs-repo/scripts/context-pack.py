@@ -243,8 +243,27 @@ def main():
     if file:
         tables = get_list(fm, 'tables')
         schema = os.path.join(repo, 'generated/be/db-schema.md')
+        db_pages = os.path.join(repo, 'generated/be/db/schema/tables')
         parts = []
-        if tables and os.path.isfile(schema):
+        if tables and os.path.isdir(db_pages):
+            # database documentation pages (table comment, columns with comments, relations, constraints) beat the regex schema
+            sources.append('generated/be/db/schema/tables/')
+            st = read_text_or_empty(schema)
+            for t in tables:
+                page = os.path.join(db_pages, f'{t}.md')
+                if os.path.isfile(page):
+                    body = body_of(read_text_or_empty(page))
+                    body = re.sub(r'(?m)^# .*\r?\n', '', body, count=1).strip()
+                    body = re.sub(r'\]\(([\w-]+)\.md\)', r'](generated/be/db/schema/tables/\1.md)', body)
+                    body = body.replace('(../erd/overview.mmd)', '(generated/be/db/schema/erd/overview.mmd)')
+                    lines = split_lines(body)
+                    if len(lines) > 60:
+                        body = '\n'.join(lines[:60]) + f'\n_... {len(lines) - 60} more line(s) in generated/be/db/schema/tables/{t}.md_'
+                    parts.append(f'### `{t}`\n' + body)
+                else:
+                    m = re.search(r'(?ms)^## `' + re.escape(t) + r'`\s*\r?\n(.*?)(?=^## |\Z)', st)
+                    parts.append(f'### `{t}`\n' + m.group(1).strip() if m else f'### `{t}` - _no table page and not in db-schema.md_')
+        elif tables and os.path.isfile(schema):
             st = read_text_or_empty(schema)
             sources.append('generated/be/db-schema.md')
             for t in tables:

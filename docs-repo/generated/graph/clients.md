@@ -27,10 +27,10 @@ status: stable
 - `feature:ClientSearchPage` - `src/pages/ClientSearchPage/ClientSearchPage.tsx` - /clients` - search box backed by the client registry; results link to the overview page.
 
 ## endpoints
-- `endpoint:GET /api/v1/clients` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:23` - operationId searchClients; handler ClientController.searchClients; params 
-- `endpoint:GET /api/v1/clients/{clientId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:26` - operationId getClient; handler ClientController.getClient; params clientId
-- `endpoint:GET /api/v1/clients/{clientId}/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:29` - operationId getClientOverview; handler ClientController.getClientOverview; params clientId
-- `endpoint:GET /api/v1/clients/{clientId}/role` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:32` - operationId getClientRole; handler ClientController.getClientRole; params clientId
+- `endpoint:GET /api/v1/clients` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:22` - operationId searchClients; handler ClientController.searchClients; params 
+- `endpoint:GET /api/v1/clients/{clientId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:25` - operationId getClient; handler ClientController.getClient; params clientId
+- `endpoint:GET /api/v1/clients/{clientId}/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:28` - operationId getClientOverview; handler ClientController.getClientOverview; params clientId
+- `endpoint:GET /api/v1/clients/{clientId}/role` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:31` - operationId getClientRole; handler ClientController.getClientRole; params clientId
 
 ## routes
 - `route:/clients` - `src/routing/Routing.tsx:27` - renders ClientSearchPage
@@ -39,7 +39,7 @@ status: stable
 ## classes
 - `class:ClientRoleService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientRoleService.kt:28` - service; Service
 - `class:ClientProfileService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientProfileService.kt:16` - service; Service
-- `class:ClientController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:20` - api; RestController
+- `class:ClientController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:19` - api; RestController
 - `class:ClientManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ClientManager.kt:25` - manager; Service
 - `class:ClientOverviewService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientOverviewService.kt:23` - service; Service
 - `class:ClientRoleRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ClientRoleRepository.kt:10` - dao/repository; Repository
@@ -55,8 +55,8 @@ status: stable
 - `component:ProductGroupCard` - `src/pages/ClientOverviewPage/components/ProductGroupCard/ProductGroupCard.tsx:23`
 
 ## tables
-- `table:client_profile` - `harbor-core/src/main/resources/db/migration/V1__clients.sql` - 6 columns: id, external_ref, name, country, segment, created_at
-- `table:client_role` - `harbor-core/src/main/resources/db/migration/V1__clients.sql` - 7 columns: id, client_id, product_group, role, source, reason, decided_at
+- `table:client_profile` - `harbor-core/src/main/resources/db/migration/V1__clients.sql` - A client of the platform: master data merged from the client registry, one row per external reference. (6 columns)
+- `table:client_role` - `harbor-core/src/main/resources/db/migration/V1__clients.sql` - Role of a client per product group (IMPORTER, EXPORTER, MIXED, UNDETERMINED) as decided from its movements or overridden in a session. (7 columns)
 
 ## Edges
 - `feature:ClientOverviewPage` -calls-> `endpoint:GET /api/v1/clients/{clientId}/overview`
@@ -120,11 +120,11 @@ status: stable
 - `context:clients` -exposes-> `endpoint:GET /api/v1/clients/{clientId}`
 - `context:clients` -exposes-> `endpoint:GET /api/v1/clients/{clientId}/overview`
 - `context:clients` -exposes-> `endpoint:GET /api/v1/clients/{clientId}/role`
-- `table:client_role` -fk client_id-> `table:client_profile`
-- `table:cover_policy` -fk client_id-> `table:client_profile` (-> cover)
-- `table:goods_movement` -fk client_id-> `table:client_profile` (-> imports)
-- `table:meeting_session` -fk client_id-> `table:client_profile` (-> meetings)
-- `table:movement_monthly` -fk client_id-> `table:client_profile` (-> imports)
+- `table:client_profile` -fk client_id-> `table:client_role`
+- `table:client_profile` -fk client_id-> `table:cover_policy` (-> cover)
+- `table:client_profile` -fk client_id-> `table:goods_movement` (-> imports)
+- `table:client_profile` -fk client_id-> `table:meeting_session` (-> meetings)
+- `table:client_profile` -fk client_id-> `table:movement_monthly` (-> imports)
 - `endpoint:GET /api/v1/clients` -handled-by-> `class:ClientController`
 - `endpoint:GET /api/v1/clients/{clientId}` -handled-by-> `class:ClientController`
 - `endpoint:GET /api/v1/clients/{clientId}/overview` -handled-by-> `class:ClientController`

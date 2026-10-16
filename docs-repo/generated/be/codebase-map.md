@@ -58,7 +58,7 @@ Other top-level folders (not build modules): `init_docker_compose/`
 | Folder | Files |
 |---|---|
 | `api/` | `client-registry/client-registry.yaml`, `cover-provider/cover-provider.yaml`, `document-service/document-service.yaml`, `file-exchange/file-exchange.yaml`, `market-data/market-data.yaml` |
-| `db/` | `migration/V10__shedlock.sql`, `migration/V1__clients.sql`, `migration/V2__meetings.sql`, `migration/V3__movements.sql`, `migration/V4__session_inputs.sql`, `migration/V5__projection.sql`, `migration/V6__cover.sql`, `migration/V7__market_stress.sql`, `migration/V8__reports.sql`, `migration/V9__parameters.sql`, (+1) |
+| `db/` | `migration/V10__shedlock.sql`, `migration/V11__table_comments.sql`, `migration/V1__clients.sql`, `migration/V2__meetings.sql`, `migration/V3__movements.sql`, `migration/V4__session_inputs.sql`, `migration/V5__projection.sql`, `migration/V6__cover.sql`, `migration/V7__market_stress.sql`, `migration/V8__reports.sql`, (+2) |
 | `openapi/` | `harbor-events.yaml`, `openapi_harbor.yaml` |
 | `pdf/` | `meeting-report.html`, `report.css` |
 | (root) | `application.yml` |

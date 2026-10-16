@@ -12,10 +12,10 @@ package path, `openapi_harbor.yaml` by `openapi_<app>.yaml`.
 
 | File | Why |
 |---|---|
-| `scripts/gen-graph.py` | `fe` lists in `contexts.yml` (page folders instead of one feature folder); FE page nodes folded into their context; backend sub-layers (`dao/repository`, ...) accepted; entities (`dao/model`) excluded from the graph |
-| `scripts/collect-evidence.py` | reads the backend `scripts/docs/docs-gen.json` for the contract paths; copies external contracts from `api/<service>/` folders (yaml, yml or json) |
+| `scripts/gen-graph.py` | `fe` lists in `contexts.yml` (page folders instead of one feature folder); FE page nodes folded into their context; backend sub-layers (`dao/repository`, ...) accepted; entities (`dao/model`) excluded from the graph; table comments and exact foreign keys from `generated/be/db/schema.json` |
+| `scripts/collect-evidence.py` | reads the backend `scripts/docs/docs-gen.json` for the contract paths; copies external contracts from `api/<service>/` folders (yaml, yml or json); copies the database documentation folder (`db_docs.dir`) to `generated/be/db/` with frontmatter on its pages |
 | `scripts/migration-status.py` | parses `fe: [PageA, PageB]` lists |
-| `scripts/context-pack.py` | FE-only contexts resolve to their first page node |
+| `scripts/context-pack.py` | FE-only contexts resolve to their first page node; the Data section carries the table pages (comments, relations, constraints) |
 | `scripts/map-paths.py`, `scripts/graph-query.py` | only the usage examples changed; optional |
 | `.github/prompts/context-map-from-code.prompt.md` | proposes `contexts.yml` with `fe` lists; backend sub-packages |
 | `.github/prompts/source-priority-from-code.prompt.md` | backend sub-packages |
@@ -69,7 +69,11 @@ Backend `docs-gen.json` values already known from your answers: `base_package` =
 annotations do not matter); `external_contracts_dir` = `<app>-core/src/main/resources/api`; `kafka.property_files` =
 your `application.yml`; `kafka.schema_dirs` = `["kafka-client/src/main/resources"]`; `jobs.lock_annotation` =
 `SchedulerLock`; `migrations.view_patterns` = `["*view*.sql"]`; `skip_generators` = `["gen-parameters.py", "gen-datasets.py"]`
-(no parameter-key enum, no SQL datasets with the header convention); `test_pattern` as your tests are named.
+(no parameter-key enum, no SQL datasets with the header convention); `test_pattern` as your tests are named;
+`db_docs` = `{ "dir": "docs/db", "generate": false }` because your database documentation tool already writes that
+folder (`readme.md`, `schema.json`, `schema/tables/*.md`, `schema/erd/*.mmd`) from the comments in the migrations; the
+collector copies it as it is and the graph reads `schema.json` (table-level `parents`/`children` or column-level
+`references` entries name the foreign keys; send one table with relations to confirm the shape).
 Frontend values: `pages_dir`, `hook_dirs`, `components_dir`, `route_files`, `route_constants`, `types`, `exclude_paths`
 (the Orval output) and `test_pattern` follow the layout you described; `/adapt-docs-scripts` confirms each with a path.
 

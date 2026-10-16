@@ -31,8 +31,8 @@ status: stable
 - `class:CoverProviderClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/CoverProviderClient.kt:19` - client/rest; Component
 
 ## tables
-- `table:cover_quote` - `harbor-core/src/main/resources/db/migration/V6__cover.sql` - 6 columns: id, session_id, requested_at, uncovered_value, premium, provider_ref
-- `table:cover_policy` - `harbor-core/src/main/resources/db/migration/V6__cover.sql` - 8 columns: id, client_id, product_group, sub_product, covered_share, premium_rate, valid_from, valid_to
+- `table:cover_quote` - `harbor-core/src/main/resources/db/migration/V6__cover.sql` - Quote requested from the cover provider for the uncovered value of a session. (6 columns)
+- `table:cover_policy` - `harbor-core/src/main/resources/db/migration/V6__cover.sql` - Cover policies of a client per product group and sub-product: covered share, premium rate, validity. (8 columns)
 
 ## Edges
 - `feature:shared` -calls-> `endpoint:GET /api/v1/clients/{clientId}/cover-policies` (-> fe-shared)
@@ -66,8 +66,8 @@ status: stable
 - `context:cover` -exposes-> `endpoint:GET /api/v1/clients/{clientId}/cover-policies`
 - `context:cover` -exposes-> `endpoint:GET /api/v1/session/cover/summary`
 - `context:cover` -exposes-> `endpoint:POST /api/v1/session/cover/quotes`
-- `table:cover_policy` -fk client_id-> `table:client_profile` (-> clients)
-- `table:cover_quote` -fk session_id-> `table:meeting_session` (-> meetings)
+- `table:client_profile` -fk client_id-> `table:cover_policy` (-> clients)
+- `table:meeting_session` -fk session_id-> `table:cover_quote` (-> meetings)
 - `endpoint:GET /api/v1/clients/{clientId}/cover-policies` -handled-by-> `class:CoverController`
 - `endpoint:GET /api/v1/session/cover/summary` -handled-by-> `class:CoverController`
 - `endpoint:POST /api/v1/session/cover/quotes` -handled-by-> `class:CoverController`
