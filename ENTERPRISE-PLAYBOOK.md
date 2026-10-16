@@ -160,7 +160,7 @@ Then copy `.github/` as it is and adapt only names:
 | Folder | What to keep | What to adapt |
 |---|---|---|
 | `.github/copilot-instructions.md` | the pointer to `AGENTS.md`, the never-open list | product name |
-| `.github/instructions/*.instructions.md` | all six (features, calculations, confluence-import, generated, test-design, work-items); they are short path-scoped rules | nothing |
+| `.github/instructions/*.instructions.md` | all seven (features, calculations, contracts, confluence-import, generated, test-design, work-items); they are short path-scoped rules | nothing |
 | `.github/agents/*.agent.md` | for the pilot three agents are enough: `analyst`, `spec-writer`, `calc-auditor`; add `confluence-migrator` when the first pages arrive, `doc-sync` when the collector runs, `migration-lead`, `test-designer`, `architect`, `impact-analyst` later | the domain sentence in each description |
 | `.github/prompts/*.prompt.md` | all; they are the slash commands | nothing |
 | `.github/skills/*/SKILL.md` | all; procedures shared by agents | `write-feature-spec/references/source-priority.md` if your source layout differs |
@@ -200,9 +200,9 @@ Write one row per context now, even before any spec exists (`specs: []` is allow
 
 ```yaml
 mappings:
-  - paths: ["be/src/main/kotlin/<root>/**/Billing*.kt", "fe/src/pages/BillingPage/**", "fe/src/pages/InvoicePage/**", "fe/src/types/billing.ts"]
+  - paths: ["be/<module>/src/main/kotlin/<root>/**/Billing*.kt", "fe/src/pages/BillingPage/**", "fe/src/pages/InvoicePage/**", "fe/src/types/billing.ts"]
     specs: ["features/billing/BIL-001.md"]
-  - paths: ["be/src/main/kotlin/<root>/calc/**"]
+  - paths: ["be/<module>/src/main/kotlin/<root>/utils/**"]
     specs: ["domain/calculations/**"]
 ignore: ["**/*Test.kt", "**/src/test/**", "**/*.test.ts*", "fe/src/services/openapi/**"]
 ```
@@ -233,14 +233,14 @@ You already keep the OpenAPI documents in the docs repository. Put them where th
 | Contract | Location in the docs repo | Who owns the file |
 |---|---|---|
 | The API the frontend calls | `generated/openapi/backend.yaml` | the collector (copied from the backend repo) |
-| APIs of the other services your backend calls | `generated/openapi/external/<service>.yaml` | the collector if they live in the backend repo (`src/main/resources/api/`), otherwise hand-placed with a note in `generated/manifest.yml` |
+| APIs of the other services your backend calls | `generated/openapi/external/<service>.yaml` (or `.json`) | the collector if they live in the backend repo (`src/main/resources/api/<service>/`, yaml or json; folder from the backend `docs-gen.json`), otherwise hand-placed with a note in `generated/manifest.yml` |
 | Kafka: AsyncAPI document | `generated/asyncapi/backend.yaml` | the collector |
-| Kafka: Avro or JSON schemas only | `generated/asyncapi/schemas/<topic>.json`, plus the generated `events.md` map (topic, producer, consumer, payload class with `file:line`) | schemas hand-placed; `events.md` by the generator |
+| Kafka: Avro or JSON schemas only (a `kafka-client` module with `avro/*.avsc` and `json_<service>/*.json`) | they stay in the backend; `generated/be/events.md` lists every topic with producer, consumer, payload type and the path of its schema file (`kafka.schema_dirs` in the backend `docs-gen.json`) | `events.md` by the generator; add an AsyncAPI document later only if you want the collector to publish one |
 
 Rules: keep the complete document and the files it references; an external `$ref` that does not resolve inside
 `generated/` is rejected by the collector. Record the version and retrieval time of a provider specification in the
 manifest when there is no source commit. The frontend's generated client and the backend's generated interfaces are
-never read by agents; the contract is the single thing to read (`api.instructions.md`, `api-client.instructions.md`).
+never read by agents; the contract is the single thing to read (`api.instructions.md`, `services.instructions.md`).
 
 **Contracts designed before code.** Your analysts design APIs during analysis, so a contract may exist in the docs
 repo before any code. That is a proposal, not evidence, and it has its own folder: `contracts/proposed/<SPEC-ID>.openapi.yaml`
@@ -257,8 +257,9 @@ needs an API before code exists (section 17.8), and `doc-sync` switches a spec f
 contract once the collector brings it in (section 13).
 
 The API index generator (`gen-api-index.py`) is contract-first: it lists every operation of the OpenAPI document
-and finds the handler method by `operationId`. If your controllers are not generated from the contract, adapt the
-lookup to your annotations (`@GetMapping("/path")`); the output table stays the same.
+and finds the handler method by `operationId` (`rest.handler_match: operationId`, controllers implementing the generated
+interfaces with `override fun`). If your controllers are hand-written, set `rest.handler_match: mapping` and the handler
+is matched by verb and path of its `@GetMapping`; routes outside the contract are listed as `(no contract)` either way.
 
 ---
 
@@ -575,8 +576,7 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 | `gen-jobs.py` | scheduled jobs with cron, class and distributed-lock name (ShedLock) | - |
 | `gen-parameters.py` | admin parameter catalogue: key, seeded defaults per scope, readers, validator (cross-checked against the calculations by `validate-frontmatter.py`) | - |
 | `gen-datasets.py` | named synthetic datasets (seed scripts, integration fixtures): purpose, tables and row counts, loaders, one sample row - analysts cite setups by name instead of describing rows | - |
-| `gen-routes.py` | - | routes to screens |
-| `gen-types-index.py` | - | exported types per feature |
+| `gen-types-index.py` | - | exported types per types file (`types` globs of `docs-gen.json`) |
 | `gen-docs-tags.py` | `@docs <ID>` tags with `file:line` | same |
 | `tag-candidates.py` | candidates for tags per context, with proposed IDs | same |
 | `gen-all.py [--check]` | runs all of the above; `--check` fails when a map is stale | same |
