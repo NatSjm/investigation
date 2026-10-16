@@ -43,7 +43,7 @@ status: stable
 - `class:MeetingSessionRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MeetingSessionRepository.kt:13` - dao/repository; Repository
 - `class:SessionScopeService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/SessionScopeService.kt:18` - service; Service
 - `class:SessionClientConfigRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/SessionClientConfigRepository.kt:9` - dao/repository; Repository
-- `class:SessionEventsPublisher` - `harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt:14` - event; Component, KafkaProducer
+- `class:SessionEventsPublisher` - `harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt:13` - event; Component, KafkaProducer
 - `class:MeetingReportRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MeetingReportRepository.kt:9` - dao/repository; Repository
 - `class:SessionHeaderFilter` - `harbor-core/src/main/kotlin/com/acme/harbor/component/SessionHeaderFilter.kt:33` - component; Component
 - `class:RoleOverrideValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/RoleOverrideValidator.kt:15` - validator; Component

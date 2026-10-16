@@ -1,8 +1,7 @@
 package com.acme.harbor.event
 
 import com.acme.harbor.enums.ProductGroup
-import com.acme.harbor.kafka.Topics
-import com.acme.harbor.kafka.events.PricesUpdatedEvent
+import com.acme.harbor.kafka.events.marketdata.PricesUpdated
 import com.acme.harbor.service.BaselinePriceService
 import com.acme.harbor.utils.MonthGrid
 import org.slf4j.LoggerFactory
@@ -20,8 +19,8 @@ class MarketPricesListener(private val curves: BaselinePriceService, private val
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @KafkaListener(topics = [Topics.PRICES_UPDATED], groupId = "harbor-market")
-    fun onPricesUpdated(event: PricesUpdatedEvent) {
+    @KafkaListener(topics = [TOPIC], groupId = "\${harbor.kafka.groups.market}", autoStartup = "\${harbor.kafka.listeners.auto-startup:true}")
+    fun onPricesUpdated(event: PricesUpdated) {
         val productGroup = ProductGroup.fromWire(event.productGroup)
         if (event.corridor != productGroup.corridor) {
             log.warn("Ignoring prices-updated for unknown corridor {} of {}", event.corridor, productGroup)
@@ -31,5 +30,10 @@ class MarketPricesListener(private val curves: BaselinePriceService, private val
         val to = from.plusMonths(MonthGrid.MAX_HORIZON.toLong())
         val rows = curves.refresh(productGroup, from, to)
         log.info("Baseline curve of {} refreshed from market-data (as of {}): {} months", productGroup, event.asOf, rows)
+    }
+
+    companion object {
+        /** Published by the external market-data service; JSON schema `kafka-client/src/main/resources/json_market-data/PricesUpdated.json`. */
+        const val TOPIC = "harbor.market.prices-updated"
     }
 }

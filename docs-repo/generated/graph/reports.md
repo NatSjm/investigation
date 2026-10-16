@@ -23,9 +23,9 @@ status: stable
 ## classes
 - `class:ReportManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt:27` - manager; Service
 - `class:ReportPayloadService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ReportPayloadService.kt:22` - service; Service
-- `class:ReportRenderRequester` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderRequester.kt:16` - event; Component, KafkaProducer
+- `class:ReportRenderRequester` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderRequester.kt:15` - event; Component, KafkaProducer
 - `class:ReportController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:18` - api; RestController
-- `class:ReportRenderedListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderedListener.kt:10` - event; Component, KafkaListener
+- `class:ReportRenderedListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderedListener.kt:9` - event; Component, KafkaListener
 - `class:ReportSessionClosedListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportSessionClosedListener.kt:14` - event; Component, KafkaListener
 - `class:ReportTemplateLoader` - `harbor-core/src/main/kotlin/com/acme/harbor/component/ReportTemplateLoader.kt:15` - component; Component
 - `class:DocumentServiceClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/DocumentServiceClient.kt:17` - client/rest; Component

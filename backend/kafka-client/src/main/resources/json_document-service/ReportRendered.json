@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReportRendered",
+  "description": "Topic harbor.reports.rendered, published by the external document-service (key = sessionId): the PDF of a meeting report is available. Consumed by ReportRenderedListener.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["sessionId", "pdfPath"],
+  "properties": {
+    "sessionId": {"type": "string", "format": "uuid", "description": "session id"},
+    "pdfPath": {"type": "string", "description": "location of the rendered PDF in the document store"}
+  }
+}

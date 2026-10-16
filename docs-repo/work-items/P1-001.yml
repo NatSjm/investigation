@@ -112,7 +112,7 @@ stories:
         estimate_hours: 4
       - summary: "[BE] service/ProjectionService: cover_ratio (utils/CoverRatioCalculator) into projection_summary on recompute"
         estimate_hours: 3
-      - summary: "[TEST] consumer contract test with synthetic MovementsLoadedEvent"
+      - summary: "[TEST] consumer contract test with synthetic MovementsLoaded"
         estimate_hours: 3
   - id: S6
     jira_key: null
@@ -149,7 +149,7 @@ stories:
     subtasks:
       - summary: "[BE] utils/ProjectionAggregator.totals / totalsOf (calculation horizon_totals) + unit test with the worked examples (ProjectionAggregatorTest)"
         estimate_hours: 4
-      - summary: "[BE] contract ProjectionTotal / ProjectionTotals as ProjectionTables.totals in harbor-api.yaml; mapper/ProjectionMapper.totals; returned by getProduct1Overview, getProduct1Projection, putProduct1Movements (api/Product1Controller)"
+      - summary: "[BE] contract ProjectionTotal / ProjectionTotals as ProjectionTables.totals in openapi_harbor.yaml; mapper/ProjectionMapper.totals; returned by getProduct1Overview, getProduct1Projection, putProduct1Movements (api/Product1Controller)"
         estimate_hours: 4
       - summary: "[FE] ProjectionTables: three totals tables (shared DataTable, footer line All) fed by useProduct1Overview / useProduct1Projection; regenerate src/services/openapi/schema.d.ts"
         estimate_hours: 5

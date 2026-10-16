@@ -3,7 +3,7 @@
 React 18 / TypeScript single-page application for Harbor account representatives: find a client, open a
 meeting session for a product group, review the monthly projection tables and cover position, define market
 scenarios, run the stress test and close the meeting with a PDF report. Administration (parameters, import
-batches) lives outside meetings. The backend contract is `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml` (served under `/api/v1`).
+batches) lives outside meetings. The backend contract is `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml` (served under `/api/v1`).
 
 ## Scripts
 

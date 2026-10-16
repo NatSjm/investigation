@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
  * tag `(no contract)`.
  */
 @RestController
-@RequestMapping(HarborConstants.API_BASE_PATH + "/technical")
+@RequestMapping("/technical")   // relative to the servlet context path (HarborConstants.API_BASE_PATH)
 class TechnicalController(@Value("\${harbor.version:dev}") private val version: String) {
 
     data class VersionInfo(val application: String, val version: String)

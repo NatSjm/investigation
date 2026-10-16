@@ -13,7 +13,7 @@
 
   <!--
     Two modules (BLUEPRINT.md section 3):
-    - kafka-client:  Kafka topic constants, event payload classes, serde and producer helper (shared library)
+    - kafka-client:  event contracts only (Avro schemas of the events Harbor publishes, JSON schemas of the external ones); payload classes generated at build
     - harbor-core:  the Spring Boot application, all business code in package-by-layer folders under com/acme/harbor/
   -->
   <modules>
@@ -28,6 +28,7 @@
     <kotlin.code.style>official</kotlin.code.style>
     <spring-boot.version>3.3.4</spring-boot.version>
     <openapi-generator.version>7.8.0</openapi-generator.version>
+    <shedlock.version>5.16.0</shedlock.version>
     <swagger-annotations.version>2.2.22</swagger-annotations.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

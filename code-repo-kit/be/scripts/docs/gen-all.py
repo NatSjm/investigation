@@ -77,11 +77,19 @@ def main():
     os.makedirs(work, exist_ok=True)
     rel = work if a.check else a.out_dir
     extra = ['--config', a.config] if a.config else []
+    skip = set(cfg.get('skip_generators', []))
+    skipped_outputs = []
     for script, out in GENERATORS:
+        if script in skip:
+            skipped_outputs.append(out)
+            print(f'{script}: skipped (skip_generators in docs-gen.json)')
+            continue
         r = subprocess.run([sys.executable, os.path.join(here, script), '--root', root, '--out', rel + '/' + out] + extra)
         if r.returncode:
             sys.exit(r.returncode)
-    write_text(os.path.join(work, 'index.md'), INDEX.format(contracts=contracts_line(cfg), enum=cfg['parameters']['enum_name'], entry=cfg['entry_layer']))
+    index = INDEX.format(contracts=contracts_line(cfg), enum=cfg['parameters']['enum_name'], entry=cfg['entry_layer'])
+    index = '\n'.join(line for line in index.split('\n') if not any(f'[{o}]' in line for o in skipped_outputs))
+    write_text(os.path.join(work, 'index.md'), index)
     if a.check:
         diff = 0
         for name in sorted(os.listdir(work), key=str.lower):

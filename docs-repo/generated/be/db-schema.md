@@ -10,7 +10,7 @@ status: stable
 # DB schema (approximate, from migrations)
 
 > Generated from `migrations V*.sql, R*.sql under /db/migration/` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
-20 table(s). Derived by regex from migrations - types/constraints are indicative; verify against a real DB for DDL work.
+21 table(s). Derived by regex from migrations - types/constraints are indicative; verify against a real DB for DDL work.
 
 ```mermaid
 erDiagram
@@ -106,7 +106,7 @@ Used in: `ImportBatch`, `ImportBatchRepository`, `ImportManager`, `MovementImpor
 
 ## `goods_movement`
 Created in `harbor-core/src/main/resources/db/migration/V3__movements.sql`
-Used in: `DailyMovementImportJob`, `GoodsMovement`, `GoodsMovementRepository`, `ImportManager`, `MonthlySnapshotJob`, `MovementImportService`, `MovementMonthly`, `MovementsLoadedEvent`
+Used in: `DailyMovementImportJob`, `GoodsMovement`, `GoodsMovementRepository`, `ImportManager`, `MonthlySnapshotJob`, `MovementImportService`, `MovementMonthly`
 
 | Column | Type / flags |
 |---|---|
@@ -328,3 +328,20 @@ Used in: `ClientRoleService`, `MeetingManager`, `MeetingSession`, `MissingParame
 | `updated_by` | varchar(64) NN |
 | `updated_at` | timestamp NN |
 
+## `shedlock`
+Created in `harbor-core/src/main/resources/db/migration/V10__shedlock.sql`
+Used in: `SchedulingConfig`
+
+| Column | Type / flags |
+|---|---|
+| `name` | varchar(64) PK NN |
+| `lock_until` | timestamp NN |
+| `locked_at` | timestamp NN |
+| `locked_by` | varchar(255) NN |
+
+## Views
+Statistical / reporting views defined next to the migrations (not versioned by Flyway; applied by the application or by hand).
+
+| View | Columns | From tables | Source |
+|---|---|---|---|
+| `v_client_overview` | `client_id`, `external_ref`, `name`, `country`, `open_sessions`, `last_session_at` | `client_profile`, `meeting_session` | `harbor-core/src/main/resources/db/migration/statistical-views/create_view_client_overview.sql` |

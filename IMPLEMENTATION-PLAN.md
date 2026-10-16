@@ -23,7 +23,7 @@ publish target; Jira and the tests repo are outputs.
 
 | # | Check | Where | If false |
 |---|---|---|---|
-| 0.1 | `harbor-core/src/main/resources/openapi/harbor-api.yaml` is the BE contract and controllers implement generated `*Api` interfaces with `override fun <operationId>` | BE repo | `gen-api-index.py` falls back to annotation scan; the join to operations is lost |
+| 0.1 | `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` is the BE contract and controllers implement generated `*Api` interfaces with `override fun <operationId>` | BE repo | `gen-api-index.py` falls back to annotation scan; the join to operations is lost |
 | 0.2 | External service contracts exist as OpenAPI files (`harbor-core/src/main/resources/api/`); Kafka topics are constants in one `Topics` object (`kafka-client`) | BE repo | add the files / constants before Step 3 (`events.md` cannot resolve literals) |
 | 0.2a | Class-name prefixes cover the business contexts (layered `core`: `Product1*`, `Projection*`, `Stress*`, ...; one `<Ctx>Manager` per context) | BE repo, `components.md` | fill `docs-repo/contexts.yml` (context -> BE prefixes, FE feature, spec prefix); unmatched classes show as `shared` in the graph - rename or add a prefix line |
 | 0.3 | `spring-boot-starter-test` on the BE test classpath | BE `pom.xml` | skip `GraphExportTest.kt`; regex joiner alone (edges "approximate") |
@@ -86,7 +86,7 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.py --check` at the end of a 
 
 1. Run `python3 scripts/docs/gen-all.py --root .` and inspect `docs/_generated/*.md`:
    - BE: `codebase-map` (modules from `pom.xml` -> layers -> classes + resource folders), `components` (one row per class:
-     layer, stereotype, injected deps, tables, `@docs`, `file:line`), `api-index` (operations from `openapi/harbor-api.yaml`
+     layer, stereotype, injected deps, tables, `@docs`, `file:line`), `api-index` (operations from `openapi/openapi_harbor.yaml`
      joined to `override fun <operationId>`, `Tag` = context; rows `_not implemented_` are a real backlog), `events`,
      `db-schema` ("Used in:" lists classes), `jobs`, `docs-tags`.
    - FE: `codebase-map` (feature barrels), `routes`, `types-index`, `docs-tags`.
@@ -96,13 +96,13 @@ the `agentStop` hook `docs-maps.json` runs `gen-all.py --check` at the end of a 
    FE `src/features/<name>/index.ts` barrel with `/** @module ... */`, `<name>.types.ts`, object routes.
 3. Add `@docs <ID>` KDoc/JSDoc tags on managers, calculators, event classes, FE barrels/types (pilot context).
 4. Commit `docs/_generated/**`; `docs-maps.yml` runs the freshness + size gate on PR and, on `main`, publishes maps **and
-   contracts** (`harbor-core/src/main/resources/openapi/harbor-api.yaml` -> `generated/openapi/backend.yaml`,
+   contracts** (`harbor-core/src/main/resources/openapi/openapi_harbor.yaml` -> `generated/openapi/backend.yaml`,
    `.../openapi/harbor-events.yaml` -> `generated/asyncapi/backend.yaml`, `.../resources/api/*.yaml` -> `generated/openapi/external/`)
    as a PR into the docs repo.
 5. In the docs repo the PRs land in `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi`; agent
    `doc-sync` reviews them (`map-paths.py` -> affected specs). The docs repo's collector (`scripts/collect-evidence.py`, CI `ci-examples/collect-evidence.yml`) does the copy, validation and manifest; the code repos keep only the PR freshness check.
 
-**Done when:** a PR that adds an operation to `harbor-api.yaml` without regenerating fails CI; `generated/be/api-index.md` and
+**Done when:** a PR that adds an operation to `openapi_harbor.yaml` without regenerating fails CI; `generated/be/api-index.md` and
 `generated/openapi/backend.yaml` exist in the docs repo; `jobs.md` lists the import jobs.
 
 ---
@@ -148,7 +148,7 @@ tables, topics, FE hooks/routes with `file:line`; `REPO_MAP.md` shows the pilot 
 | Order | Action | Asset | Output |
 |---|---|---|---|
 | 6.1 | Context pack | `/context-pack <ID>` or `scripts/context-pack.py --task <ID>` (skill `task-context`) | `.context/<ID>.md`; every later step starts from it |
-| 6.2 | Skeleton spec from graph | `/spec-skeleton-from-graph <context> <ID>` (agent `spec-writer`) | `features/<ctx>/<ID>.md` draft with Interfaces (from `harbor-api.yaml`), Events, Data prefilled |
+| 6.2 | Skeleton spec from graph | `/spec-skeleton-from-graph <context> <ID>` (agent `spec-writer`) | `features/<ctx>/<ID>.md` draft with Interfaces (from `openapi_harbor.yaml`), Events, Data prefilled |
 | 6.3 | Fill business rules | `spec-writer` reads graph neighbourhood + one manager file (`context:` node); legacy pages via `confluence-migrator` (translates via glossary `Aliases`, sets `source_lang`, `aliases`) | spec `status: draft`, open questions listed |
 | 6.4 | Calculations + audit | skill `calculation-spec` (worked examples copied from the unit test); `/audit-calculation <name>` (agent `calc-auditor`, skill `legacy-page-audit`) against the calculator + its test | `domain/calculations/<name>.md` with `## Audit <date>` table; legacy page `migrated | obsolete` |
 | 6.5 | Human review | owner adds `verified[].by: human:<id>` | index badge `human-reviewed` |
@@ -244,7 +244,7 @@ Jira subtasks produced in < 10 minutes per story with no source files read, ever
 
 ### Fixtures to test against before touching the real repos
 The simulated repos `backend/` and `frontend/` (naming contract `BLUEPRINT.md`): layered BE (`core` + `kafka-client` in `pom.xml`, 10 contexts by class-name prefix in `contexts.yml`),
-34 operations in `harbor-core/src/main/resources/openapi/harbor-api.yaml`, 5 topics, 5 external contracts, 9 FE feature folders; specs `CLI-001` / `SES-001` / `P1-001`
+34 operations in `harbor-core/src/main/resources/openapi/openapi_harbor.yaml`, 5 topics, 5 external contracts, 9 FE feature folders; specs `CLI-001` / `SES-001` / `P1-001`
 stable, `STR-001` draft with a deliberately outdated legacy page, `MKT-001` / `RPT-001` skeletons, `P2-001` / `COV-001` /
 `IMP-001` / `ADM-001` deliberately missing. Run every generator, the publish, the graph joiner, the packs and the coverage
 matrix here (`README.md` "Try it"); counts and spec coverage: see `docs-repo/generated/graph/REPO_MAP.md`. Then exercise the agents on

@@ -1,6 +1,7 @@
 package com.acme.harbor.dao.model
 
 import com.acme.harbor.enums.ScenarioKind
+import com.acme.harbor.model.ScenarioShock
 import com.acme.harbor.utils.ScenarioPricePath
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

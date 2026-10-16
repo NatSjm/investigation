@@ -17,8 +17,8 @@ Read order: the context's `manager/*` class (KDoc + `@docs`) -> the classes it d
 
 | Module | Purpose | Base package | Kotlin files | Layers |
 |---|---|---|---|---|
-| `harbor-core` | The Harbor Spring Boot application: all business code, package-by-layer under src/main/kotlin/com/acme/harbor/ | `com.acme.harbor` | 154 | `(root)` `advice` `api` `api/error` `api/technical` `client/kafka` `client/rest` `component` `config` `context` `dao/mapper` `dao/model` `dao/repository` `dao/service` `dao/specification` `databind` `enums` `event` `exception` `job` `manager` `mapper` `model` `service` `utils` `validator` |
-| `kafka-client` | Shared Kafka library: topic constants (com.acme.harbor.kafka.Topics), event payload classes (com.acme.harbor.kafka.events), JSON serde and producer/consumer helper. No dependency on core; payloads use wire values (strings, UUIDs, dates). | `com.acme.harbor` | 8 | `kafka` |
+| `harbor-core` | The Harbor Spring Boot application: all business code, package-by-layer under src/main/kotlin/com/acme/harbor/ | `com.acme.harbor` | 156 | `(root)` `advice` `api` `api/error` `api/technical` `client/kafka` `client/rest` `component` `config` `context` `dao/mapper` `dao/model` `dao/repository` `dao/service` `dao/specification` `databind` `enums` `event` `exception` `job` `manager` `mapper` `model` `service` `utils` `validator` |
+| `kafka-client` | Event contracts of the Harbor topics, no hand-written code: Avro schemas (src/main/resources/avro) of the events Harbor publishes and JSON schemas (src/main/resources/json_<service>) of the events consumed from external services. The payload classes are generated at build time into target/generated-sources (avro-maven-plugin -> com.acme.harbor.kafka.events, jsonschema2pojo -> com.acme.harbor.kafka.events.<service>) and never committed. | `` | 0 |  |
 
 Other top-level folders (not build modules): `init_docker_compose/`
 
@@ -31,9 +31,9 @@ Other top-level folders (not build modules): `init_docker_compose/`
 | `api` | REST controllers implementing the generated *Api interfaces (one per contract tag) | 10 | `AdminController`, `ClientController`, `CoverController`, `HttpHeadersFactory`, `Product1Controller`, `Product2Controller`, `ReportController`, `ScenarioController`, `SessionController`, `StressTestController` |
 | `api/error` | problem body factory (RFC 7807) and error models | 1 | `ProblemDetails` |
 | `api/technical` | technical endpoints outside the contract (version, operations) | 1 | `TechnicalController` |
-| `client/kafka` | outbound Kafka producer used by the publishers in event/ | 1 | `EventProducer` |
+| `client/kafka` | outbound Kafka producer used by the publishers in event/ | 2 | `AvroJsonSerde`, `EventProducer` |
 | `client/rest` | wrappers over generated REST clients of external services (contracts in resources/api) | 5 | `ClientRegistryClient`, `CoverProviderClient`, `DocumentServiceClient`, `FileExchangeClient`, `MarketDataClient` |
-| `component` | infrastructure components (filters, parsers, template loaders) | 7 | `ReportTemplateLoader`, `SessionHeaderFilter`, `WorkbookDelimitedReader`, `WorkbookReader`, `WorkbookReaderFactory`, `XlsMovementParser`, `XlsWorkbookOpener` |
+| `component` | infrastructure components (filters, parsers, template loaders) | 8 | `ReportTemplateLoader`, `SessionHeaderFilter`, `StatisticalViewsInitializer`, `WorkbookDelimitedReader`, `WorkbookReader`, `WorkbookReaderFactory`, `XlsMovementParser`, `XlsWorkbookOpener` |
 | `config` | Spring configuration | 4 | `JacksonConfig`, `KafkaConfig`, `SchedulingConfig`, `WebConfig` |
 | `context` | request / session context holders | 3 | `CurrentUser`, `SessionContext`, `SessionScope` |
 | `dao/mapper` | row and entity mappers of the persistence layer | 1 | `ProjectionRowMapper` |
@@ -57,9 +57,17 @@ Other top-level folders (not build modules): `init_docker_compose/`
 
 | Folder | Files |
 |---|---|
-| `api/` | `client-registry.yaml`, `cover-provider.yaml`, `document-service.yaml`, `file-exchange.yaml`, `market-data.yaml` |
-| `db/` | `migration/V1__clients.sql`, `migration/V2__meetings.sql`, `migration/V3__movements.sql`, `migration/V4__session_inputs.sql`, `migration/V5__projection.sql`, `migration/V6__cover.sql`, `migration/V7__market_stress.sql`, `migration/V8__reports.sql`, `migration/V9__parameters.sql` |
-| `openapi/` | `harbor-api.yaml`, `harbor-events.yaml` |
+| `api/` | `client-registry/client-registry.yaml`, `cover-provider/cover-provider.yaml`, `document-service/document-service.yaml`, `file-exchange/file-exchange.yaml`, `market-data/market-data.yaml` |
+| `db/` | `migration/V10__shedlock.sql`, `migration/V1__clients.sql`, `migration/V2__meetings.sql`, `migration/V3__movements.sql`, `migration/V4__session_inputs.sql`, `migration/V5__projection.sql`, `migration/V6__cover.sql`, `migration/V7__market_stress.sql`, `migration/V8__reports.sql`, `migration/V9__parameters.sql`, (+1) |
+| `openapi/` | `harbor-events.yaml`, `openapi_harbor.yaml` |
 | `pdf/` | `meeting-report.html`, `report.css` |
 | (root) | `application.yml` |
+
+## Resources of `kafka-client` (`kafka-client/src/main/resources`)
+
+| Folder | Files |
+|---|---|
+| `avro/` | `MovementsLoaded.avsc`, `ReportRenderRequested.avsc`, `SessionClosed.avsc` |
+| `json_document-service/` | `ReportRendered.json` |
+| `json_market-data/` | `PricesUpdated.json` |
 

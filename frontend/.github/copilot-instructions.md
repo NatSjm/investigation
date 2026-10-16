@@ -10,7 +10,7 @@ The repository rules (read order, contracts, conventions, commands, where busine
 ## Output discipline
 - Return diffs, not full files. Explanations <= 15 lines with `file:line` and the spec ID.
 - After changing routes, pages, hooks, types or `@docs` tags: run `scripts/docs/gen-all.py` and include `docs/_generated/*`.
-- A new or changed backend field starts in the backend `harbor-core/src/main/resources/openapi/harbor-api.yaml`; here only `npm run generate:api` and the
+- A new or changed backend field starts in the backend `harbor-core/src/main/resources/openapi/openapi_harbor.yaml`; here only `npm run generate:api` and the
   types/hooks change.
 
 ## Context references

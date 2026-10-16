@@ -10,7 +10,7 @@ from _common import (read_text, write_text, source_files, resolve_out, rel_path,
                      sort_key, utf8_stdout, load_config, module_dirs, main_sources)
 
 DEFAULTS = {'modules': [], 'source_root': 'src/main/kotlin', 'test_pattern': '', 'exclude_paths': [],
-            'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql']}}
+            'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql'], 'view_patterns': []}}
 
 
 def version_key(path):
@@ -72,6 +72,23 @@ def main():
             if tn in tables:
                 tables[tn]['cols'].pop(m.group(2).lower(), None)
 
+    # views: SQL files under the migrations folder matching migrations.view_patterns (CREATE [OR REPLACE] VIEW ... AS SELECT ...)
+    views = {}
+    for f in sorted((f for f in source_files(root, mig.get('view_patterns', [])) if re.search(re.escape(mig['dir_pattern']), posix(f), re.I)), key=sort_key):
+        sql = read_text(f)
+        rel = rel_path(root, f)
+        for m in re.finditer(r'(?is)CREATE\s+(?:OR\s+REPLACE\s+)?VIEW\s+(\w+)\s+AS\s+(.*?);', sql):
+            body = m.group(2)
+            sel = re.split(r'(?is)\bFROM\b', body, maxsplit=1)[0]
+            sel = re.sub(r'(?is)^\s*SELECT\s+', '', sel)
+            cols = []
+            for part in re.split(r',\s*(?![^()]*\))', sel):   # commas outside parentheses
+                part = part.strip()
+                am = re.search(r'(?is)\bAS\s+(\w+)\s*$', part)
+                cols.append((am.group(1) if am else part.split('.')[-1].strip()).lower())
+            froms = [x.lower() for x in re.findall(r'(?i)\b(?:FROM|JOIN)\s+(\w+)', body)]
+            views[m.group(1).lower()] = {'cols': cols, 'from': sorted(set(froms), key=sort_key), 'src': rel}
+
     # which classes reference each table in code (@Table(name = "x"), JPA/JDBC SQL strings) - lets the docs graph
     # attribute a table to the bounded context (class-name prefix) that owns it instead of where the migrations live
     kt_files = main_sources(root, cfg, module_dirs(root, cfg))
@@ -98,8 +115,15 @@ def main():
         for c, spec in tbl['cols'].items():
             sb.append(f'| `{c}` | {escape_cell(spec)} |\n')
         sb.append('\n')
+    if views:
+        sb.append('## Views\n')
+        sb.append('Statistical / reporting views defined next to the migrations (not versioned by Flyway; applied by the application or by hand).\n\n')
+        sb.append('| View | Columns | From tables | Source |\n|---|---|---|---|\n')
+        for vn in sorted(views, key=sort_key):
+            v = views[vn]
+            sb.append(f"| `{vn}` | {', '.join('`' + c + '`' for c in v['cols'])} | {', '.join('`' + x + '`' for x in v['from'])} | `{v['src']}` |\n")
     write_text(resolve_out(root, a.out), ''.join(sb))
-    print(f'db-schema: {len(tables)} table(s) -> {a.out}')
+    print(f'db-schema: {len(tables)} table(s), {len(views)} view(s) -> {a.out}')
 
 
 if __name__ == '__main__':

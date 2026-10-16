@@ -21,7 +21,7 @@ the single `BroadcastChannel` module `src/components/broadcast/sessionChannel.ts
 4. For "which backend endpoint / which screens are affected" use the docs repo `generated/graph/<context>.md`.
 
 ## Contracts (source of truth)
-- The backend `harbor-core/src/main/resources/openapi/harbor-api.yaml` is the REST contract. `src/services/openapi/schema.d.ts` is **generated** from it
+- The backend `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` is the REST contract. `src/services/openapi/schema.d.ts` is **generated** from it
   (`npm run generate:api`); never edit it, never read it. `src/services/api/client.ts` exports the typed `api` client (base URL `/api/v1`).
 - Hooks call `api.GET('/clients/{clientId}/overview', { params: { path: { clientId } } })` with the literal contract path -
   the maps and the graph join on that string, so never build paths with template literals.

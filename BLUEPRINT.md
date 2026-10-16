@@ -36,7 +36,7 @@ refers to the real application or its industry.
 - Closing a meeting stores the report payload as JSON (`meeting_report.payload`), requests PDF rendering via Kafka from the external
   `document-service`; the **Meetings** page lists sessions with a **Download PDF** button.
 - **Admin** (outside meetings): parameters (`parameter_set`) such as tariff rates, handling costs, thresholds; import batch monitor.
-- Everything is **OpenAPI-first**: `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml` is the contract; BE server interfaces and the FE client are generated from it.
+- Everything is **OpenAPI-first**: `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml` is the contract; BE server interfaces and the FE client are generated from it.
   External service contracts live in `backend/harbor-core/src/main/resources/api/*.yaml`. Copies of all contracts are published to `docs-repo/generated/openapi/`.
 
 ## 2. Repositories and layout
@@ -63,15 +63,14 @@ backend/
     src/main/resources/
       api/                     contracts of the EXTERNAL services (client-registry.yaml, market-data.yaml, cover-provider.yaml,
                                document-service.yaml, file-exchange.yaml) -> generated REST clients wrapped in client/rest/
-      openapi/                 OUR contract: harbor-api.yaml (OpenAPI; BE server interfaces + FE client generated from it)
+      openapi/                 OUR contract: openapi_harbor.yaml (OpenAPI; BE server interfaces + FE client generated from it)
                                and harbor-events.yaml (AsyncAPI for the Kafka topics)
       db/migration/            Flyway V1__..V9__*.sql
       pdf/                     meeting report template (meeting-report.html, report.css) sent with the payload to document-service
       application.yml
     src/test/kotlin/harbor/    unit tests (utils/*Test.kt hold the worked examples)
-  kafka-client/                Maven module: Kafka topic constants, event payload classes, serde + producer helper (shared library)
-    pom.xml
-    src/main/kotlin/harbor/kafka/   Topics.kt, events/*.kt, HarborKafkaClient.kt, JsonSerde.kt
+  kafka-client/                Maven module: event contracts only - src/main/resources/avro/*.avsc (events Harbor publishes) and
+    pom.xml                    src/main/resources/json_<service>/*.json (external events); payload classes generated at build
   init_docker_compose/         local environment: docker-compose.yml (postgres, kafka, wiremock for the 5 external services),
                                init-db.sql, wiremock/mappings/*.json, README.md
   README.md, .gitignore
@@ -102,24 +101,24 @@ Layers in `harbor-core/src/main/kotlin/com/acme/harbor/` (folder = package `com.
 
 Every manager file starts with a KDoc block (`/** ... @docs <ID> */`) directly above `@Service class XxxManager(...)`.
 Controllers are `@RestController class XxxController(...) : XxxApi` and implement `override fun <operationId>(...)` **without**
-mapping annotations (they are on the generated interface). The API index is produced from `openapi/harbor-api.yaml` + `override fun` lookup.
+mapping annotations (they are on the generated interface). The API index is produced from `openapi/openapi_harbor.yaml` + `override fun` lookup.
 Calculations live in `utils/` with a unit test in `harbor-core/src/test/kotlin/com/acme/harbor/utils/` whose cases are the **worked examples**
 quoted in `docs-repo/domain/calculations/*.md`. Business context of a class = its name prefix (`Product1*`, `Stress*`, ...),
 mapped in `docs-repo/contexts.yml` (contexts: clients, meetings, imports, product1, product2, cover, market, stress, reports, admin, and the FE-only presentation).
 
-### 3.1 Kafka topics (`kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt`, `object Topics { const val ... }`)
+### 3.1 Kafka topics (`const val TOPIC` in the companion object of each listener and publisher in `harbor-core/.../event/`)
 
-| Constant | Topic | Producer (`core/.../event/`) | Consumers (`core/.../event/`) |
+| Schema (`kafka-client/src/main/resources`) | Topic | Producer (`event/`) | Consumers (`event/`) |
 |---|---|---|---|
-| `MOVEMENTS_LOADED` | `harbor.imports.movements-loaded` | `MovementsLoadedPublisher` | `Product1ProjectionRefreshListener`, `Product2ProjectionRefreshListener` |
-| `PRICES_UPDATED` | `harbor.market.prices-updated` | external (market-data) | `MarketPricesListener` |
-| `SESSION_CLOSED` | `harbor.meetings.session-closed` | `SessionEventsPublisher` | `ReportSessionClosedListener`, `ClientRoleSessionClosedListener` |
-| `REPORT_RENDER_REQUESTED` | `harbor.reports.render-requested` | `ReportRenderRequester` | external (document-service) |
-| `REPORT_RENDERED` | `harbor.reports.rendered` | external (document-service) | `ReportRenderedListener` |
+| `avro/MovementsLoaded.avsc` | `harbor.imports.movements-loaded` | `MovementsLoadedPublisher` | `Product1ProjectionRefreshListener`, `Product2ProjectionRefreshListener` |
+| `json_market-data/PricesUpdated.json` | `harbor.market.prices-updated` | external (market-data) | `MarketPricesListener` |
+| `avro/SessionClosed.avsc` | `harbor.meetings.session-closed` | `SessionEventsPublisher` | `ReportSessionClosedListener`, `ClientRoleSessionClosedListener` |
+| `avro/ReportRenderRequested.avsc` | `harbor.reports.render-requested` | `ReportRenderRequester` | external (document-service) |
+| `json_document-service/ReportRendered.json` | `harbor.reports.rendered` | external (document-service) | `ReportRenderedListener` |
 
-Producers call `kafkaTemplate.send(Topics.X, key, payload)`; consumers use `@KafkaListener(topics = [Topics.X], groupId = "harbor-<context>")`.
-Event payload classes (`kafka-client/.../events/`): `MovementsLoadedEvent(batchId, clientIds, periodFrom, periodTo)`, `PricesUpdatedEvent(productGroup, corridor, asOf)`,
-`SessionClosedEvent(sessionId, clientId, productGroup, kind, roleOverride?)`, `ReportRenderRequested(sessionId, payloadRef, template)`, `ReportRendered(sessionId, pdfPath)`.
+Producers call `producer.send(TOPIC, key, payload)`; consumers use `@KafkaListener(topics = [TOPIC], groupId = "${harbor.kafka.groups.<context>}")`.
+Event payload classes, generated at build from the schemas (`com.acme.harbor.kafka.events[.<service>]`): `MovementsLoaded(batchId, clientIds, periodFrom, periodTo)`, `PricesUpdated(productGroup, corridor, asOf)`,
+`SessionClosed(sessionId, clientId, productGroup, kind, roleOverride?)`, `ReportRenderRequested(sessionId, payloadRef, template)`, `ReportRendered(sessionId, pdfPath)`.
 AsyncAPI description: `harbor-core/src/main/resources/openapi/harbor-events.yaml`.
 
 ### 3.2 Database (Flyway, `harbor-core/src/main/resources/db/migration`)
@@ -136,7 +135,7 @@ AsyncAPI description: `harbor-core/src/main/resources/openapi/harbor-events.yaml
 | `V8__reports.sql` | `meeting_report(session_id PK FK, payload jsonb, pdf_path, status, rendered_at)` |
 | `V9__parameters.sql` | `parameter_set(id, key, scope_product_group, scope_country, scope_value, value numeric, valid_from, updated_by, updated_at)` + `ALTER TABLE meeting_session ADD COLUMN report_requested_at timestamp` |
 
-### 3.3 REST API (`harbor-core/src/main/resources/openapi/harbor-api.yaml`, server base `/api/v1`)
+### 3.3 REST API (`harbor-core/src/main/resources/openapi/openapi_harbor.yaml`, server base `/api/v1`)
 
 | operationId | Method + path | Context | Notes |
 |---|---|---|---|

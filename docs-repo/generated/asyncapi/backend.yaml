@@ -3,8 +3,9 @@ info:
   title: Harbor Backend events
   version: 1.0.0
   description: >-
-    Kafka topics used by harbor-backend. Topic names are declared once in
-    `kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt` (event payloads in `com.acme.harbor.kafka.events`). In AsyncAPI 2.x `publish` describes
+    Kafka topics used by harbor-backend. Topic names are the `TOPIC` constants of the
+    listener and publisher classes in `harbor-core/.../event/`; payload schemas are in `kafka-client/src/main/resources`
+    (Avro `avro/*.avsc` for the events Harbor publishes, encoded as Avro JSON; JSON Schema `json_<service>/*.json` for the external ones). In AsyncAPI 2.x `publish` describes
     messages the application RECEIVES and `subscribe` describes messages it SENDS; the `x-producer` /
     `x-consumers` extensions name the concrete classes.
 servers:
@@ -16,34 +17,34 @@ defaultContentType: application/json
 channels:
   harbor.imports.movements-loaded:
     description: A daily import batch has been loaded into goods_movement.
-    x-topic-constant: Topics.MOVEMENTS_LOADED
+    x-topic-constant: MovementsLoadedPublisher.TOPIC
     x-producer: com.acme.harbor.event.MovementsLoadedPublisher
     x-consumers: [com.acme.harbor.event.Product1ProjectionRefreshListener, com.acme.harbor.event.Product2ProjectionRefreshListener]
     subscribe:
       operationId: movementsLoaded
-      message: { $ref: '#/components/messages/MovementsLoadedEvent' }
+      message: { $ref: '#/components/messages/MovementsLoaded' }
 
   harbor.market.prices-updated:
     description: The external market-data service published a new baseline curve.
-    x-topic-constant: Topics.PRICES_UPDATED
+    x-topic-constant: MarketPricesListener.TOPIC
     x-producer: external (market-data)
     x-consumers: [com.acme.harbor.event.MarketPricesListener]
     publish:
       operationId: pricesUpdated
-      message: { $ref: '#/components/messages/PricesUpdatedEvent' }
+      message: { $ref: '#/components/messages/PricesUpdated' }
 
   harbor.meetings.session-closed:
     description: A meeting session was closed by the representative.
-    x-topic-constant: Topics.SESSION_CLOSED
+    x-topic-constant: SessionEventsPublisher.TOPIC
     x-producer: com.acme.harbor.event.SessionEventsPublisher
     x-consumers: [com.acme.harbor.event.ReportSessionClosedListener, com.acme.harbor.event.ClientRoleSessionClosedListener]
     subscribe:
       operationId: sessionClosed
-      message: { $ref: '#/components/messages/SessionClosedEvent' }
+      message: { $ref: '#/components/messages/SessionClosed' }
 
   harbor.reports.render-requested:
     description: Ask document-service to render the report payload as PDF.
-    x-topic-constant: Topics.REPORT_RENDER_REQUESTED
+    x-topic-constant: ReportRenderRequester.TOPIC
     x-producer: com.acme.harbor.event.ReportRenderRequester
     x-consumers: [external (document-service)]
     subscribe:
@@ -52,7 +53,7 @@ channels:
 
   harbor.reports.rendered:
     description: document-service finished rendering a PDF.
-    x-topic-constant: Topics.REPORT_RENDERED
+    x-topic-constant: ReportRenderedListener.TOPIC
     x-producer: external (document-service)
     x-consumers: [com.acme.harbor.event.ReportRenderedListener]
     publish:
@@ -61,19 +62,19 @@ channels:
 
 components:
   messages:
-    MovementsLoadedEvent:
-      name: MovementsLoadedEvent
+    MovementsLoaded:
+      name: MovementsLoaded
       title: Movements loaded
       headers: { $ref: '#/components/schemas/KeyHeader' }
-      payload: { $ref: '#/components/schemas/MovementsLoadedEvent' }
-    PricesUpdatedEvent:
-      name: PricesUpdatedEvent
+      payload: { $ref: '#/components/schemas/MovementsLoaded' }
+    PricesUpdated:
+      name: PricesUpdated
       title: Prices updated
-      payload: { $ref: '#/components/schemas/PricesUpdatedEvent' }
-    SessionClosedEvent:
-      name: SessionClosedEvent
+      payload: { $ref: '#/components/schemas/PricesUpdated' }
+    SessionClosed:
+      name: SessionClosed
       title: Session closed
-      payload: { $ref: '#/components/schemas/SessionClosedEvent' }
+      payload: { $ref: '#/components/schemas/SessionClosed' }
     ReportRenderRequested:
       name: ReportRenderRequested
       title: Report render requested
@@ -93,7 +94,7 @@ components:
     ClientRole: { type: string, enum: [IMPORTER, EXPORTER, MIXED, UNDETERMINED] }
     SessionKind: { type: string, enum: [CLIENT, PREPARATION] }
 
-    MovementsLoadedEvent:
+    MovementsLoaded:
       type: object
       required: [batchId, clientIds, periodFrom, periodTo]
       properties:
@@ -101,14 +102,14 @@ components:
         clientIds: { type: array, items: { type: string, format: uuid } }
         periodFrom: { type: string, format: date }
         periodTo: { type: string, format: date }
-    PricesUpdatedEvent:
+    PricesUpdated:
       type: object
       required: [productGroup, corridor, asOf]
       properties:
         productGroup: { $ref: '#/components/schemas/ProductGroup' }
         corridor: { type: string, example: VLD-NRL }
         asOf: { type: string, format: date-time }
-    SessionClosedEvent:
+    SessionClosed:
       type: object
       required: [sessionId, clientId, productGroup, kind]
       properties:

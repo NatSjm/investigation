@@ -1,6 +1,7 @@
 package com.acme.harbor.job
 
 import com.acme.harbor.manager.ImportManager
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -18,6 +19,7 @@ class MonthlySnapshotJob(private val importManager: ImportManager, private val c
 
     /** Rebuilds movement_monthly for the previous calendar month. */
     @Scheduled(cron = "0 0 3 1 * *")
+    @SchedulerLock(name = "monthlySnapshot", lockAtLeastFor = "PT1M", lockAtMostFor = "PT1H")
     fun run() {
         val month = YearMonth.now(clock).minusMonths(1)
         val rows = importManager.snapshotMonth(month)

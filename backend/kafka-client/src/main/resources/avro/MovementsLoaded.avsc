@@ -1,0 +1,12 @@
+{
+  "type": "record",
+  "name": "MovementsLoaded",
+  "namespace": "com.acme.harbor.kafka.events",
+  "doc": "Topic harbor.imports.movements-loaded, key = batchId: a daily import batch has been stored in goods_movement; the projections of the listed clients are stale. Produced by MovementsLoadedPublisher.",
+  "fields": [
+    {"name": "batchId", "type": "string", "doc": "import batch id (UUID)"},
+    {"name": "clientIds", "type": {"type": "array", "items": "string"}, "doc": "clients (UUID) with accepted rows in the batch"},
+    {"name": "periodFrom", "type": "string", "doc": "first month of the batch, ISO date (first day of month)"},
+    {"name": "periodTo", "type": "string", "doc": "last month of the batch, ISO date"}
+  ]
+}

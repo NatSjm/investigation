@@ -5,7 +5,7 @@ Deterministic mapping used by `analyst` and `test-designer`. Start from `spec:<I
 
 | Node kind in radius | Jira subtask | Test layer tag | Fixture |
 |---|---|---|---|
-| `class:*Controller`, `endpoint:*` | `[BE] <operationId> (<METHOD path>): contract change in harbor-api.yaml + regenerate + implement override fun` | `@api` | request/response JSON per `components/schemas` |
+| `class:*Controller`, `endpoint:*` | `[BE] <operationId> (<METHOD path>): contract change in openapi_harbor.yaml + regenerate + implement override fun` | `@api` | request/response JSON per `components/schemas` |
 | `class:*Manager`, `class:*Service` | `[BE] <Manager>: orchestration change` | `@api` (via endpoint) | - |
 | `class:*Validator`, `class:*Mapper` (not graph nodes - found via `generated/be/components.md` deps of the manager/service) | `[BE] <Class>: validation / mapping change` | `@api` (via endpoint) | invalid / edge-case request JSON |
 | `class:*Calculator`, `class:*Aggregator`, `class:*Classifier` (layer `utils/`) | `[BE] <Class>: formula + unit test cases (worked examples)` + `[DOC] domain/calculations/<id>.md` | `@calc` | rows from the calculation's Worked examples |

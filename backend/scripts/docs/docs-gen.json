@@ -43,7 +43,7 @@
   "test_pattern": "(Test|IT|Spec)\\.(kt|java)$",
   "exclude_paths": [],
   "rest": {
-    "open_api": "harbor-core/src/main/resources/openapi/harbor-api.yaml",
+    "open_api": "harbor-core/src/main/resources/openapi/openapi_harbor.yaml",
     "handler_match": "operationId",
     "handler_pattern": "override\\s+fun\\s+(\\w+)\\s*\\(",
     "controller_annotation": "RestController",
@@ -55,10 +55,11 @@
   "kafka": {
     "listener_annotation": "KafkaListener",
     "producer_pattern": "\\.send\\(\\s*([^,)]+)",
-    "property_files": ["harbor-core/src/main/resources/application.yml"]
+    "property_files": ["harbor-core/src/main/resources/application.yml"],
+    "schema_dirs": ["kafka-client/src/main/resources"]
   },
-  "jobs": { "annotation": "Scheduled" },
-  "migrations": { "dir_pattern": "/db/migration/", "file_patterns": ["V*.sql", "R*.sql"] },
+  "jobs": { "annotation": "Scheduled", "lock_annotation": "SchedulerLock" },
+  "migrations": { "dir_pattern": "/db/migration/", "file_patterns": ["V*.sql", "R*.sql"], "view_patterns": ["*view*.sql"] },
   "parameters": {
     "enum_name": "ParameterKey",
     "table": "parameter_set",
@@ -69,5 +70,6 @@
     "validator_layer": "validator"
   },
   "datasets": { "seed_dirs": ["scripts/db/seed"], "fixture_dirs": ["harbor-core/src/test/resources/datasets"] },
-  "docs_tags_include": ["*.kt", "*.java"]
+  "docs_tags_include": ["*.kt", "*.java"],
+  "skip_generators": []
 }

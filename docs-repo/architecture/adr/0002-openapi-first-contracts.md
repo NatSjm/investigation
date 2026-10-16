@@ -1,7 +1,7 @@
 ---
 type: Decision
 title: "ADR-0002: OpenAPI-first contracts for the backend API and external services"
-description: backend/harbor-core/src/main/resources/openapi/harbor-api.yaml is the single contract; backend server interfaces and the frontend client are generated from it, external services are described by contracts in backend/harbor-core/src/main/resources/api, and copies are published to docs-repo/generated/openapi.
+description: backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml is the single contract; backend server interfaces and the frontend client are generated from it, external services are described by contracts in backend/harbor-core/src/main/resources/api, and copies are published to docs-repo/generated/openapi.
 tags: [adr, openapi, contracts]
 status: stable
 generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
@@ -22,7 +22,7 @@ Five external services (`client-registry`, `market-data`, `cover-provider`, `doc
 are called through thin clients whose shapes also need to be stable and reviewable.
 
 ## Decision
-- `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml` (server base `/api/v1`) is **the** contract. Every operation has an `operationId`
+- `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml` (server base `/api/v1`) is **the** contract. Every operation has an `operationId`
   (e.g. `getProduct1Overview`), tags equal to the bounded context, and `/session/**` operations declare the
   `X-Harbor-Session` header parameter.
 - The backend generates `*Api` interfaces into `harbor-core/target/` (not committed). Controllers are
@@ -35,7 +35,7 @@ are called through thin clients whose shapes also need to be stable and reviewab
 - External contracts live in `backend/harbor-core/src/main/resources/api/<name>.yaml`; `core` generates one `*Api`
   per service, wrapped by a `@Component` in the `client/` layer.
 - Asynchronous messages are described in `backend/harbor-core/src/main/resources/openapi/harbor-events.yaml`; topic names are
-  constants in `Topics.kt` (`kafka-client`).
+  `TOPIC` constants of the listener and publisher classes; payload schemas (Avro, JSON Schema) are in `kafka-client`.
 - CI publishes copies to `docs-repo/generated/openapi/backend.yaml`, `generated/openapi/external/<name>.yaml`
   and `generated/asyncapi/backend.yaml`. Specs reference contracts only through these anchors.
 
@@ -47,6 +47,6 @@ are called through thin clients whose shapes also need to be stable and reviewab
 | Hand-written frontend client | flexible | duplicated paths/types, no compile-time check against the backend |
 
 ## Consequences
-+ `generated/be/api-index.md` is produced from `harbor-api.yaml` + `override fun` lookup, so the API index is exact.
++ `generated/be/api-index.md` is produced from `openapi_harbor.yaml` + `override fun` lookup, so the API index is exact.
 + Spec tables cite `generated/openapi/backend.yaml#/paths/~1session~1product1~1overview` and the like.
 − A new endpoint requires a contract change first; breaking changes need a version bump of the generated client.

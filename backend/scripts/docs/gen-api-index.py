@@ -17,7 +17,7 @@ import re
 
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, line_number, header,
                      escape_cell, posix, sort_key, utf8_stdout, load_config, module_dirs, main_sources,
-                     const_strings, resolve_string_expr)
+                     const_strings, resolve_string_expr, blank_comments)
 
 DEFAULTS = {
     'modules': [], 'source_root': 'src/main/kotlin', 'test_pattern': '', 'exclude_paths': [],
@@ -140,6 +140,7 @@ def main():
         t = read_text(f)
         if not ctrl_rx.search(t):
             continue
+        t = blank_comments(t)   # a comment between an annotation and `class` must not hide the mapping; offsets stay
         rel = rel_path(root, f)
         cm = re.search(r'(?m)^\s*(?:class|object)\s+(\w+)', t)
         cls = cm.group(1) if cm else ''
@@ -165,6 +166,7 @@ def main():
 
     rows = []
     used = set()
+    base = ''
     if open_api:
         base, ops = parse_contract(read_text(os.path.join(root, open_api)), rest['session_marker'])
         for o in ops:
@@ -191,9 +193,11 @@ def main():
         note = 'No OpenAPI contract found: endpoints listed from the request mappings. DTO field lists: open the DTO file, not the controller.'
     extra = 0
     for mp in mappings:
-        if id(mp) in used or (open_api and any(r['Verb'] == mp['Verb'] and r['Path'] == mp['Path'] for r in rows)):
+        # annotation paths are relative to the servlet context path; the contract's server base names that path
+        full = (base + mp['Path']) if (base and not mp['Path'].startswith(base)) else mp['Path']
+        if id(mp) in used or (open_api and any(r['Verb'] == mp['Verb'] and r['Path'] == full for r in rows)):
             continue
-        rows.append({'Verb': mp['Verb'], 'Path': mp['Path'], 'OpId': mp['Fn'], 'Tag': '(no contract)' if open_api else '',
+        rows.append({'Verb': mp['Verb'], 'Path': full, 'OpId': mp['Fn'], 'Tag': '(no contract)' if open_api else '',
                      'Handler': mp['Handler'], 'Params': mp['Params'], 'Loc': mp['Loc']})
         extra += 1
     if open_api and extra:

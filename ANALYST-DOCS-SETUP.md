@@ -103,7 +103,7 @@ Everything named "Harbor", `harbor`, `HARBOR`, `P1`, `CLI`, ... is sample vocabu
 | File(s) | Edit after copying |
 |---|---|
 | `scripts/context-pack.py`, `graph-query.py`, `gen-graph.py`, `build-index.py`, `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py`, `map-paths.py`, `coverage-matrix.py`, `migration-status.py`, `hooks/guard-generated.py` | `build-index.py` line ~78: bundle title. `context-pack.py` lines ~163-177: if you keep hand-maintained contracts in `contracts/`, add them to the "Contracts" section (it only reads `generated/openapi/backend.yaml` today). `validate-frontmatter.py` checks the generic ID pattern `^[A-Z][A-Z0-9]*-\d{3}$` and the required keys (line 17); change only if your IDs look different. |
-| `scripts/collect-evidence.py` | Lines 99-101: replace `openapi/harbor-api.yaml` and `openapi/harbor-events.yaml` with your file names. Remove the `asyncapi` line if your events contract is not AsyncAPI. Line 76: temp folder prefix. |
+| `scripts/collect-evidence.py` | Lines 99-101: replace `openapi/openapi_harbor.yaml` and `openapi/harbor-events.yaml` with your file names. Remove the `asyncapi` line if your events contract is not AsyncAPI. Line 76: temp folder prefix. |
 | `.github/agents/analyst.agent.md` | Replace with the version in Step 14 (adds a question-answering mode). |
 | `.github/agents/spec-writer.agent.md`, `confluence-migrator.agent.md`, `calc-auditor.agent.md`, `doc-sync.agent.md`, `migration-lead.agent.md` | Replace `harbor` paths with `<project>`. In `calc-auditor` replace `V9__parameters.sql` / `parameter_set` / `.../calc/<Class>Test.kt` with where your parameters and calculator tests really live. In `doc-sync` step 5 replace `harbor-core/src/main/kotlin/com/acme/harbor/utils/**` with your calculation package. |
 | `.github/prompts/*.prompt.md` | Replace sample defaults in `${input:...:default}` (e.g. `product2 P2-001`). |
@@ -220,7 +220,7 @@ assumptions; an empty or wrong map means the generator must be adapted, never th
 |---|---|---|
 | `components.md` | Spring stereotypes, constructor injection, `JpaRepository<Entity>` / `@Table` | adapt the regex in `gen-components.py` |
 | `api-index.md` | contract-first: `operationId` implemented as `override fun <operationId>(` in a `@RestController` | otherwise it falls back to `@*Mapping` annotations; check `_not implemented_` rows |
-| `events.md` | `@KafkaListener` + `KafkaTemplate.send(Topics.X, ...)`, constants in `kafka-client` | adapt `gen-events.py` |
+| `events.md` | `@KafkaListener` + producer calls, `const val` topic names of the declaring class, `${property}` placeholders | adapt `gen-events.py` |
 | `db-schema.md` | Flyway `db/migration/V*.sql` | Liquibase -> rewrite `gen-db-schema.py` |
 | `jobs.md` | `@Scheduled` | - |
 | `parameters.md` | enum `ParameterKey(val key)` + `INSERT INTO parameter_set` seeds in Flyway migrations | other names via `--enum-name` / `--table`; otherwise adapt `gen-parameters.py` |

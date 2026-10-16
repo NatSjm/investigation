@@ -14,7 +14,7 @@ code-repo-kit/
     .github/agents/code-reader.agent.md     read-only navigator (maps + manager + components.md, max 3 files)
     .github/agents/impact-analyst.agent.md  blast-radius checklist across backend / frontend / docs
     .github/agents/docs-tagger.agent.md     adds missing @docs tags from contexts.yml (comment lines only, one PR per context)
-    .github/prompts/*.prompt.md             /explain-module (a context), /find-spec-code, /add-endpoint, /tag-docs
+    .github/prompts/*.prompt.md             /explain-module (a context), /find-spec-code, /add-endpoint, /tag-docs, /adapt-docs-scripts (review + config, never runs)
     scripts/docs/tag-candidates.py         inventory for docs-tagger: manager / calculation -> current tag, proposed tag, status
     .github/hooks/docs-maps.json            agentStop hook: gen-all.py --check
     .github/workflows/copilot-setup-steps.yml  JDK 21 + mvn -pl harbor-core -am generate-sources for the coding agent
@@ -40,7 +40,7 @@ Copilot spends tokens on *finding* and *reading*. We remove finding by giving ev
 always-fresh maps (`docs/_generated/`: layers, components, operations, topics, tables, jobs, routes, types, `@docs` tags)
 and an `AGENTS.md` that says "read the map, then the manager or barrel, then one range". We shrink reading by capping file
 size, excluding noise at the GitHub level, opening per-context workspaces instead of whole repos, keeping the REST
-contract (`harbor-core/src/main/resources/openapi/harbor-api.yaml`) as the single thing to read instead of generated interfaces
+contract (`harbor-core/src/main/resources/openapi/openapi_harbor.yaml`) as the single thing to read instead of generated interfaces
 and clients, and - in VS Code - replacing `@workspace` with four retrieval tools that return a few hundred tokens with `file:line`.
 
 **Layered backend.** `harbor-backend` is package-by-layer (`harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`: `api`, `manager`,
@@ -56,8 +56,8 @@ dependencies, tables, `@docs`, `file:line`) replaces "open the module folder": a
 |---|---|---|---|
 | `codebase-map.md` | root `pom.xml` modules -> layers (package segments after the base package; sub-packages listed in `docs-gen.json` such as `dao/model` are layers of their own) -> classes, plus resource folders (`api`, `openapi`, `db/migration`, `pdf`) | `src/pages/<Page>/` folders (page JSDoc, hooks, components, `api.GET('<path>')` calls, BroadcastChannels; layout from `docs-gen.json`) | 1 line / module and layer, or 1 row / page |
 | `components.md` | every top-level class: layer, Spring stereotype, constructor-injected deps, tables (`@Table`, SQL, `JpaRepository<Entity>`), `@docs`, `file:line` | - | 1 row / class |
-| `api-index.md` | **contract-first**: operations from `openapi/harbor-api.yaml` joined to `override fun <operationId>` in controllers (`_not implemented_` when missing); column `Tag` = context; annotation scan as fallback | - | 1 row / operation |
-| `events.md` | `@KafkaListener` + producer calls (`producer.send(Topics.X, ...)`) in `event/`, `Topics.<CONST>` resolved from `kafka-client`, `${property}` names from application.yml | - | 1 row / topic |
+| `api-index.md` | **contract-first**: operations from `openapi/openapi_harbor.yaml` joined to `override fun <operationId>` in controllers (`_not implemented_` when missing); column `Tag` = context; annotation scan as fallback | - | 1 row / operation |
+| `events.md` | `@KafkaListener` + producer calls (`producer.send(TOPIC, ...)`) in `event/`, the `TOPIC` constant resolved from the declaring class first, payload schema linked from `kafka-client`, `${property}` names from application.yml | - | 1 row / topic |
 | `db-schema.md` | Flyway `V*.sql` (CREATE/ALTER, inline `REFERENCES`), Mermaid ER; "Used in:" lists classes | - | 1 section / table |
 | `jobs.md` | `@Scheduled` methods: trigger (cron / fixedDelay), first KDoc line, `file:line` | - | 1 row / job |
 | `parameters.md` | `ParameterKey` enum constants + `INSERT INTO parameter_set` seeds per scope, readers (`ParameterKey.X` usages), validator (`validator/`) | - | 1 row / key |
@@ -68,7 +68,7 @@ dependencies, tables, `@docs`, `file:line`) replaces "open the module folder": a
 
 All maps carry OKF-style frontmatter (`type: Document`, `generated.by: process:gen-docs`) so CI can copy them into the
 docs bundle's `generated/<be|fe>/` unchanged. CI also publishes the contracts:
-`harbor-core/src/main/resources/openapi/harbor-api.yaml` -> `generated/openapi/backend.yaml`,
+`harbor-core/src/main/resources/openapi/openapi_harbor.yaml` -> `generated/openapi/backend.yaml`,
 `harbor-core/src/main/resources/openapi/harbor-events.yaml` -> `generated/asyncapi/backend.yaml`,
 `harbor-core/src/main/resources/api/*.yaml` -> `generated/openapi/external/`.
 
@@ -84,7 +84,7 @@ See `INVESTIGATION.md` section 3.9 and `IMPLEMENTATION-PLAN.md` Step 4.
 ## Verified locally
 Run from `code-repo-kit/` against the sibling simulated repos:
 ```
-python3 be/scripts/docs/gen-all.py --root ../backend            # codebase-map (harbor-core + kafka-client, layers), components, api-index from openapi/harbor-api.yaml, events, db-schema, jobs, docs-tags
+python3 be/scripts/docs/gen-all.py --root ../backend            # codebase-map (harbor-core + kafka-client, layers), components, api-index from openapi/openapi_harbor.yaml, events, db-schema, jobs, docs-tags
 python3 be/scripts/docs/gen-all.py --root ../backend --check     # exit 1 when a map is stale (what CI and the agentStop hook run)
 python3 fe/scripts/docs/gen-all.py --root ../frontend           # 13 pages + fe-app, 7 shared components, 15 routes, 66 types, 71 tags (simulated frontend, page layout)
 python3 fe/scripts/docs/gen-all.py --root ../frontend --check
@@ -101,7 +101,7 @@ The generated outputs belong to the code repos (`backend/docs/_generated`, `fron
 2. Generators + `docs-maps.yml` freshness gate (warn-only for two sprints, then blocking); `copilot-setup-steps.yml` so the
    coding agent can run `gen-all.py --check` in its own environment.
 3. `@docs` tagging of managers, barrels and calculations during normal work; `docs-tags.md` fills up; contract changes go
-   through `openapi/harbor-api.yaml` first (`/add-endpoint`); new class-name prefixes go into `contexts.yml`.
+   through `openapi/openapi_harbor.yaml` first (`/add-endpoint`); new class-name prefixes go into `contexts.yml`.
 4. Per-context workspaces + VS Code extension for frontend / QA / analyst roles; `graph-query.py` for IntelliJ users.
 5. Measure: Copilot usage metrics API (premium requests / user / week), share of `@workspace` vs `#file` references in prompts
    (survey), PR review time, number of `_not implemented_` rows in `api-index.md`.

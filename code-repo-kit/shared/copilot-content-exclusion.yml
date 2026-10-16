@@ -5,7 +5,7 @@
 # --- harbor-backend (Kotlin / Spring / Maven) ---
 "*":
   - "**/target/**"
-  - "**/target/generated-sources/**"                   # *Api interfaces generated from openapi/harbor-api.yaml - read the contract instead
+  - "**/target/generated-sources/**"                   # *Api interfaces generated from openapi/openapi_harbor.yaml - read the contract instead
   - "**/build/**"
   - "**/*.iml"
   - "**/generated/**"

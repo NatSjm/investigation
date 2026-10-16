@@ -1,7 +1,7 @@
 package com.acme.harbor.enums
 
 /**
- * The two product groups. Wire values are those of the OpenAPI contract (`openapi/harbor-api.yaml`) and of the
+ * The two product groups. Wire values are those of the OpenAPI contract (`openapi/openapi_harbor.yaml`) and of the
  * Kafka payloads; the enum names are stored in the database columns, so neither may be renamed.
  */
 enum class ProductGroup(

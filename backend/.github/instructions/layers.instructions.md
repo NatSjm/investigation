@@ -20,7 +20,7 @@ Allowed dependency direction: `api` -> `manager` -> `service` -> `dao` / `utils`
 | `dao/service` (persistence services) | `dao/repository`, `dao/specification`, `dao/model` | hold business rules (lookups and filtered listings only) |
 | `dao/model` (entities), `dao/specification`, `dao/mapper`, `dao/converter` | `enums`, `model` | reference Spring beans |
 | `client/rest` | generated clients of `resources/api/*.yaml` | contain business rules |
-| `client/kafka` | `KafkaTemplate` from `config/KafkaConfig` | know topic names (the publishers in `event/` pass `Topics.X`) |
+| `client/kafka` | `KafkaTemplate` from `config/KafkaConfig` | know topic names (the publishers in `event/` pass their `TOPIC` constant) |
 | `utils` | nothing (pure Kotlin, JDK + `enums` + `model`) | Spring annotations, `dao/*`, `client/*`, config reads |
 
 - **Business-prefix naming = context.** A class starts with the prefix of its bounded context from the docs repo

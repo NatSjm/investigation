@@ -301,16 +301,17 @@ everything at once; for the enterprise rollout copy selectively in this order an
    code repo reads the maps without running anything.
 
 **With an agent** (Copilot in the code repository, after the kit files are copied):
-1. `docs-gen.json` (both repositories): paste the key table of the flavour's `scripts/docs/README.md` and ask for the
-   value of each key for this repository with one evidence path per key. Backend: the root pom modules, the package
-   of the application class, one class per sub-package of `dao`, `api` and `client`, the OpenAPI file and one
-   controller (generated interface or hand-written mappings), one Kafka listener and the property file with the
-   topic names, one migration, the parameter enum, a seed and a fixture. Frontend: the pages folder, a hook folder, a
-   component folder, the routing files, the route-constants file, the generated client folder. Run `gen-all.py` and
-   read `codebase-map.md` (every layer with a role; business classes under `(root)` mean a wrong base package),
-   `api-index.md` (no `_not implemented_` row for an operation that exists; hand-written routes tagged
-   `(no contract)`), `events.md` (no `<expr>` topic) and `routes.md`; a page without purpose, a route left relative
-   or an empty hooks column is a wrong key.
+1. `/adapt-docs-scripts` (prompt in both kit flavours, agent `agent`; give it the strongest reasoning model you have). The
+   agent reads `scripts/docs/*` and the repository and answers **without running anything**: a security table per script
+   (what it reads, writes, starts, downloads; imports outside the standard library), the `docs-gen.json` with one
+   evidence path per key, the smallest regex diff for what the config cannot express, and what every table must show
+   for this repository. A person checks the security table against the scripts (the only process start is `gen-all.py`
+   calling its sibling generators; writes go under `docs/_generated`, or under `--out`), pastes the config, applies the
+   diffs it agrees with, then runs `gen-all.py` and compares `codebase-map.md` (every layer with a role; business classes
+   under `(root)` mean a wrong base package), `api-index.md` (no `_not implemented_` row for an operation that exists;
+   hand-written routes tagged `(no contract)`), `events.md` (no `<expr>` topic, a schema next to every payload),
+   `jobs.md` (every job with its lock) and `routes.md` (no relative route, a purpose and hooks per page) with the expected
+   outcome the agent wrote. Generators that do not apply (no parameter enum, no SQL datasets) go into `skip_generators`.
 2. Generator regexes (both repositories): when a table misses a row, paste the declaration it missed (the controller
    annotation, the listener, the route object) together with the regex from the generator and ask for the smallest
    change that matches it; rerun `gen-all.py` and diff the table. Never let the agent widen a regex to match everything.
@@ -569,9 +570,9 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 | `gen-components.py` | one row per class: layer or sub-layer, annotations, injected dependencies, tables, `file:line` | the shared component library: props, used-by pages |
 | `gen-routes.py` | - | URL -> page component, nested routes joined, route constants resolved, enclosing layout |
 | `gen-api-index.py` | every OpenAPI operation with its handler (matched by operationId or by verb + path), plus hand-written routes outside the contract | - |
-| `gen-events.py` | topics with producers, consumers, payload classes (constants, literals and `${property}` names resolved) | - |
-| `gen-db-schema.py` | tables and columns from the migrations | - |
-| `gen-jobs.py` | scheduled jobs with cron and class | - |
+| `gen-events.py` | topics with producers, consumers, payload type linked to its schema file (`TOPIC` constants of the declaring class, literals and `${property}` names resolved) | - |
+| `gen-db-schema.py` | tables and columns from the migrations, plus the views defined next to them | - |
+| `gen-jobs.py` | scheduled jobs with cron, class and distributed-lock name (ShedLock) | - |
 | `gen-parameters.py` | admin parameter catalogue: key, seeded defaults per scope, readers, validator (cross-checked against the calculations by `validate-frontmatter.py`) | - |
 | `gen-datasets.py` | named synthetic datasets (seed scripts, integration fixtures): purpose, tables and row counts, loaders, one sample row - analysts cite setups by name instead of describing rows | - |
 | `gen-routes.py` | - | routes to screens |

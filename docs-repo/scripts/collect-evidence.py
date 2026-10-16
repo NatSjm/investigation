@@ -72,7 +72,7 @@ def git_info(path, name):
 def backend_contracts(backend):
     """Contract paths (relative to the backend root) from its scripts/docs/docs-gen.json; Harbor defaults when absent."""
     import json
-    out = {'open_api': 'harbor-core/src/main/resources/openapi/harbor-api.yaml',
+    out = {'open_api': 'harbor-core/src/main/resources/openapi/openapi_harbor.yaml',
            'asyncapi': 'harbor-core/src/main/resources/openapi/harbor-events.yaml',
            'external_contracts_dir': 'harbor-core/src/main/resources/api'}
     cfg = os.path.join(backend, 'scripts', 'docs', 'docs-gen.json')
@@ -153,9 +153,12 @@ def main():
     stage_file('asyncapi', os.path.join(backend, contracts['asyncapi']), 'backend.yaml')
     api_dir = os.path.join(backend, contracts['external_contracts_dir'])
     if os.path.isdir(api_dir):
-        for f in sorted(os.listdir(api_dir), key=str.lower):
-            if f.lower().endswith('.yaml') and os.path.isfile(os.path.join(api_dir, f)):
-                stage_file('openapi', os.path.join(api_dir, f), 'external/' + f)
+        # one contract per external service: <service>.yaml in the folder, or api/<service>/<file>.(yaml|yml|json)
+        for dp, dn, fn in os.walk(api_dir):
+            dn.sort(key=str.lower)
+            for f in sorted(fn, key=str.lower):
+                if f.lower().endswith(('.yaml', '.yml', '.json')):
+                    stage_file('openapi', os.path.join(dp, f), 'external/' + f)
 
     # ---------- 4. validate the candidate ----------
     problems = []
@@ -176,7 +179,7 @@ def main():
             problems.append(f"{f['Rel']}: not an OpenAPI 3 document")
         if like(f['Rel'], 'generated/asyncapi/*.yaml') and not re.search(r'(?m)^asyncapi:\s*\d', t, re.I):
             problems.append(f"{f['Rel']}: not an AsyncAPI document")
-        if like(f['Rel'], 'generated/openapi/external/*.yaml') and not re.search(r'(?m)^(openapi|swagger):', t, re.I):
+        if like(f['Rel'], 'generated/openapi/external/*') and not re.search(r'(?m)^\s*"?(openapi|swagger)"?\s*:', t, re.I):
             problems.append(f"{f['Rel']}: not an OpenAPI document")
         if like(f['Rel'], '*.yaml'):
             m = re.search(r'(?m)^\s*\$ref:\s*["\']?(?!#)[^"\'\s]+', t, re.I)

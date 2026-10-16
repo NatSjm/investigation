@@ -10,7 +10,7 @@ The repository rules (read order, contracts, conventions, commands, where busine
 ## Output discipline
 - Return diffs, not full files. Explanations <= 15 lines with `file:line` and the spec ID.
 - After changing routes, pages, hooks, types or `@docs` tags: run `scripts/docs/gen-all.py` and include `docs/_generated/*`.
-- A new or changed backend field starts in the backend `harbor-core/src/main/resources/openapi/harbor-api.yaml`; here only `npm run generate:api` and the
+- A new or changed backend field starts in the backend `harbor-core/src/main/resources/openapi/openapi_harbor.yaml`; here only `npm run generate:api` and the
   types/hooks change.
 
 ## Context references
@@ -20,7 +20,8 @@ for backend endpoints use the backend `docs/_generated/api-index.md` or `#codeMa
 ## Custom agents and prompts in this repo
 - Agents (`.github/agents/`): `code-reader` (read-only navigator, max 3 files), `docs-tagger` (adds missing `@docs`
   JSDoc tags from `contexts.yml`, comment lines only, one PR per page).
-- Prompts (`.github/prompts/`): `/explain-feature` (default `StressTestPage`), `/tag-docs <Page|all>` (inventory from `scripts/docs/tag-candidates.py`, then the tags).
+- Prompts (`.github/prompts/`): `/explain-feature` (default `StressTestPage`), `/tag-docs <Page|all>` (inventory from `scripts/docs/tag-candidates.py`, then the tags),
+  `/adapt-docs-scripts` (security review of `scripts/docs/*` and the `docs-gen.json` for this repository; never runs anything, a person runs after review).
 - Hook `.github/hooks/docs-maps.json` runs `gen-all.py --check` when an agent session stops.
 
 ## Docs-repo tools

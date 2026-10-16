@@ -70,7 +70,7 @@ class GraphExportTest {
                 edge(id, "class:$cls", "handled-by")
             }
         }
-        // 4. Kafka consumers (producers stay regex-detected: KafkaTemplate.send(Topics.X, ...))
+        // 4. Kafka consumers (producers stay regex-detected: producer.send(TOPIC, ...))
         kafkaRegistry?.listenerContainers?.forEach { c ->
             val topics = c.containerProperties.topics?.toList() ?: emptyList()
             val bean = (c.containerProperties.messageListener)?.javaClass?.simpleName ?: c.listenerId

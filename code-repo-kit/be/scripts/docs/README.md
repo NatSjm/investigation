@@ -26,26 +26,30 @@ merged key by key, so a partial block keeps the other defaults.
 | `repository_bases` | Spring Data base interfaces whose first type argument is the entity (table inherited) | JpaRepository, CrudRepository, PagingAndSortingRepository, ListCrudRepository |
 | `test_pattern` | regex on file names that marks tests (never scanned as components) | `(Test\|IT\|Spec)\.(kt\|java)$` |
 | `exclude_paths` | repo-relative folders never read (generated sources outside `target/`, vendored code) | `[]` |
-| `rest.open_api` | the REST contract; empty = auto-detect (`api/openapi.yaml`, else the first OpenAPI document under `src/main/resources`) | `harbor-core/src/main/resources/openapi/harbor-api.yaml` |
+| `rest.open_api` | the REST contract (`openapi_<app>.yaml` style); empty = auto-detect (`api/openapi.yaml`, else the first OpenAPI document under `src/main/resources`) | `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` |
 | `rest.handler_match` | `operationId`: the handler is the method named like the operation, found with `rest.handler_pattern` (controllers implementing generated interfaces); `mapping`: the handler is the `@GetMapping("/x")` method whose verb + path equal the operation (hand-written controllers, class `@RequestMapping` prefix and `const val` paths resolved) | `operationId` |
 | `rest.handler_pattern` | regex with one group = the operationId of a handler method | `override\s+fun\s+(\w+)\s*\(` |
 | `rest.controller_annotation` | classes scanned for handlers | `RestController` |
 | `rest.session_header` / `rest.session_marker` | header name added to the Params column when the operation's contract text contains the marker | `X-Harbor-Session` / `SessionHeader` |
 | `asyncapi` | the Kafka contract (index.md, collector) | `harbor-core/src/main/resources/openapi/harbor-events.yaml` |
-| `external_contracts_dir` | OpenAPI files of the external services the backend calls (index.md, collector) | `harbor-core/src/main/resources/api` |
+| `external_contracts_dir` | OpenAPI files of the external services the backend calls, directly in the folder or one sub-folder per service (`api/<service>/<file>.yaml\|.yml\|.json`); read by index.md and the docs collector | `harbor-core/src/main/resources/api` |
 | `kafka.listener_annotation` | consumer annotation (`topics = [...]`, `groupId`) | `KafkaListener` |
 | `kafka.producer_pattern` | regex whose first group is the topic expression of a producer call | `\.send\(\s*([^,)]+)` |
-| `kafka.property_files` | application.yml / .properties files that resolve `${...}` placeholders in topic names | `harbor-core/src/main/resources/application.yml` |
+| `kafka.property_files` | application.yml / .properties files that resolve `${...}` placeholders in topic names and `groupId` | `harbor-core/src/main/resources/application.yml` |
+| `kafka.schema_dirs` | folders (recursive) holding the payload schemas or classes; a file named like the listener parameter type is linked in the Payload column | `kafka-client/src/main/resources` |
 | `jobs.annotation` | scheduling annotation (`cron`, `fixedDelay`, `fixedRate`) | `Scheduled` |
+| `jobs.lock_annotation` | distributed-lock annotation on the same method (ShedLock `@SchedulerLock(name, lockAtMostFor)`), shown in the Lock column; empty = none | `SchedulerLock` |
 | `migrations.dir_pattern` / `migrations.file_patterns` | where the SQL migrations live and how they are named (Flyway) | `/db/migration/`, `V*.sql`, `R*.sql` |
+| `migrations.view_patterns` | SQL files under the migrations folder that define views (`CREATE [OR REPLACE] VIEW`), listed in a Views section | `*view*.sql` |
 | `parameters.*` | the parameter-key enum, its table and columns (`key_column`, `value_column`, `scope_columns`, `valid_from_column`) and the layer of the validators | `ParameterKey`, `parameter_set`, `key`, `value`, `scope_product_group`/`scope_country`/`scope_value`, `valid_from`, `validator` |
 | `datasets.seed_dirs` / `datasets.fixture_dirs` | folders of the local seeds and of the integration-test fixtures (header contract in `gen-datasets.py`) | `scripts/db/seed`, `harbor-core/src/test/resources/datasets` |
 | `docs_tags_include` | file patterns scanned for `@docs` tags (whole repo minus `exclude_paths`) | `*.kt`, `*.java` |
+| `skip_generators` | generator scripts `gen-all.py` does not run and leaves out of `index.md` (a repository without a parameter enum skips `gen-parameters.py`, one without SQL datasets `gen-datasets.py`) | `[]` |
 
 What a generator still assumes beyond the config: Kotlin or Java sources with one top-level class per file and a
 `package` line; constructor injection (`class X(private val dep: Dep)`) for the Depends-on column; topic names as
-string literals, `const val` constants (any module) or `${property}` placeholders - SpEL expressions are shown as
-`<expr>`; Flyway-style SQL migrations (Liquibase XML/YAML changelogs are not parsed - point the patterns at SQL
+string literals, `const val` constants (the declaring class first, then any module) or `${property}` placeholders - SpEL
+expressions are shown as `<expr>`; Flyway-style SQL migrations (Liquibase XML/YAML changelogs are not parsed - point the patterns at SQL
 changelogs or keep a SQL dump of the schema under a migration-like folder); `@Scheduled`-style triggers (Quartz job
 classes are not detected); the parameter enum declares its constants as `NAME("key")`; `@docs <ID>` is one ID per
 `@docs` line in the KDoc directly above the declaration.

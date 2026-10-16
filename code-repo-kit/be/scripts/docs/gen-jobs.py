@@ -22,7 +22,19 @@ def main():
     root = os.path.abspath(a.root)
     cfg = load_config(root, DEFAULTS, a.config)
     ann = cfg['jobs']['annotation']
-    rx = re.compile(r'(?:/\*\*(?P<doc>.*?)\*/\s*)?@' + re.escape(ann) + r'\((?P<args>[^)]*)\)\s*(?:@\w+(?:\([^)]*\))?\s*)*fun\s+(?P<fn>\w+)', re.S)
+    lock_ann = cfg['jobs'].get('lock_annotation', '')
+    # KDoc, annotations before the scheduling one (a lock may come first), the scheduling annotation, annotations after it, the method
+    rx = re.compile(r'(?:/\*\*(?P<doc>.*?)\*/\s*)?(?P<pre>(?:@(?!' + re.escape(ann) + r'\b)\w+(?:\([^)]*\))?\s*)*)@' + re.escape(ann)
+                    + r'\((?P<args>[^)]*)\)\s*(?P<post>(?:@\w+(?:\([^)]*\))?\s*)*)fun\s+(?P<fn>\w+)', re.S)
+    lock_rx = re.compile(r'@' + re.escape(lock_ann) + r'\(([^)]*)\)') if lock_ann else None
+
+    def lock_of(anns):
+        m = lock_rx.search(anns) if lock_rx else None
+        if not m:
+            return ''
+        name = re.search(r'name\s*=\s*"([^"]*)"', m.group(1))
+        most = re.search(r'lockAtMostFor\s*=\s*"([^"]*)"', m.group(1))
+        return ('`' + name.group(1) + '`' if name else '(unnamed)') + (f' (at most {most.group(1)})' if most else '')
 
     rows = []
     for f in main_sources(root, cfg, module_dirs(root, cfg)):
@@ -47,13 +59,15 @@ def main():
                 trigger = args.strip()
             doc = m.group('doc') or ''
             summary = first_doc_line(doc) if doc else (first_doc_line(class_doc) if class_doc else '')
-            rows.append((f"{cls}.{m.group('fn')}", trigger, summary, f"{rel}:{line_number(t, m.start('fn'))}"))
+            lock = lock_of((m.group('pre') or '') + (m.group('post') or ''))
+            rows.append((f"{cls}.{m.group('fn')}", trigger, lock, summary, f"{rel}:{line_number(t, m.start('fn'))}"))
 
-    sb = [header('Scheduled jobs (BE)', f'@{ann} scan')]
-    sb.append(f'{len(rows)} job(s). Cron expressions are Spring 6-field (seconds first).\n\n')
-    sb.append('| Job | Trigger | Summary | Location |\n|---|---|---|---|\n')
-    for job, trigger, summary, loc in sorted(rows, key=lambda r: sort_key(r[0])):
-        sb.append(f'| `{job}` | {trigger} | {escape_cell(summary)} | `{loc}` |\n')
+    sb = [header('Scheduled jobs (BE)', f'@{ann} scan' + (f' + @{lock_ann} locks' if lock_ann else ''))]
+    sb.append(f'{len(rows)} job(s). Cron expressions are Spring 6-field (seconds first).'
+              + (f' Lock = `@{lock_ann}` name (one instance at a time) and its lockAtMostFor.' if lock_ann else '') + '\n\n')
+    sb.append('| Job | Trigger | Lock | Summary | Location |\n|---|---|---|---|---|\n')
+    for job, trigger, lock, summary, loc in sorted(rows, key=lambda r: sort_key(r[0])):
+        sb.append(f'| `{job}` | {trigger} | {lock} | {escape_cell(summary)} | `{loc}` |\n')
     write_text(resolve_out(root, a.out), ''.join(sb))
     print(f'jobs: {len(rows)} job(s) -> {a.out}')
 

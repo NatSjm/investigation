@@ -43,6 +43,16 @@ management:
         include: health,info,prometheus
 
 harbor:
+  kafka:
+    # consumer group per listener (read with ${harbor.kafka.groups.<name>}) and the listener auto-start switch
+    groups:
+      clients: harbor-clients
+      product1: harbor-product1
+      product2: harbor-product2
+      market: harbor-market
+      reports: harbor-reports
+    listeners:
+      auto-startup: ${HARBOR_KAFKA_LISTENERS:true}
   session:
     # Header carrying the meeting session id; required on every /api/v1/session/** request.
     header: X-Harbor-Session

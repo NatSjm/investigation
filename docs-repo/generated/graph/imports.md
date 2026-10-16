@@ -19,12 +19,12 @@ status: stable
 - `class:MovementImportService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/MovementImportService.kt:31` - service; Service
 - `class:MovementMonthlyRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MovementMonthlyRepository.kt:13` - dao/repository; Repository
 - `class:ImportManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ImportManager.kt:18` - manager; Service
-- `class:MovementsLoadedPublisher` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt:15` - event; Component, KafkaProducer
+- `class:MovementsLoadedPublisher` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt:14` - event; Component, KafkaProducer
 - `class:GoodsMovementRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/GoodsMovementRepository.kt:12` - dao/repository; Repository
 - `class:WorkbookReaderFactory` - `harbor-core/src/main/kotlin/com/acme/harbor/component/WorkbookReaderFactory.kt:11` - component; Component
-- `class:DailyMovementImportJob` - `harbor-core/src/main/kotlin/com/acme/harbor/job/DailyMovementImportJob.kt:12` - job; Component, Scheduled
+- `class:DailyMovementImportJob` - `harbor-core/src/main/kotlin/com/acme/harbor/job/DailyMovementImportJob.kt:13` - job; Component, Scheduled
 - `class:ImportBatchRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ImportBatchRepository.kt:9` - dao/repository; Repository
-- `class:MonthlySnapshotJob` - `harbor-core/src/main/kotlin/com/acme/harbor/job/MonthlySnapshotJob.kt:14` - job; Component, Scheduled
+- `class:MonthlySnapshotJob` - `harbor-core/src/main/kotlin/com/acme/harbor/job/MonthlySnapshotJob.kt:15` - job; Component, Scheduled
 - `class:XlsWorkbookOpener` - `harbor-core/src/main/kotlin/com/acme/harbor/component/XlsWorkbookOpener.kt:8` - component; interface
 - `class:FileExchangeClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/FileExchangeClient.kt:17` - client/rest; Component
 - `class:XlsMovementParser` - `harbor-core/src/main/kotlin/com/acme/harbor/component/XlsMovementParser.kt:32` - component; Component

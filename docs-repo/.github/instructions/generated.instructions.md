@@ -19,7 +19,7 @@ Use them as your primary, cheap context (each file is a few hundred tokens):
 | `be/api-index.md` | every operation of the contract with `operationId`, `Tag` (= context), implementing handler `file:line` | `gen-api-index.py` (contract-first) |
 | `be/events.md`, `be/db-schema.md`, `be/jobs.md`, `be/docs-tags.md` | Kafka topics, tables from migrations ("Used in:" lists classes), scheduled jobs, `@docs` tags | BE generators |
 | `fe/codebase-map.md`, `fe/routes.md`, `fe/types-index.md`, `fe/docs-tags.md` | FE features with API calls, routes, exported types, `@docs` tags | FE generators |
-| `openapi/backend.yaml` | the REST contract both FE and BE are generated from | copied from `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml` |
+| `openapi/backend.yaml` | the REST contract both FE and BE are generated from | copied from `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml` |
 | `openapi/external/*.yaml` | contracts between the backend and the external services (client-registry, market-data, cover-provider, document-service, file-exchange) | copied from `backend/harbor-core/src/main/resources/api/` |
 | `asyncapi/backend.yaml` | Kafka topics and payload schemas | copied from `backend/harbor-core/src/main/resources/openapi/harbor-events.yaml` |
 | `analytics/coverage-matrix.md` | BR <-> story <-> scenario coverage | `scripts/coverage-matrix.py` (this repo) |

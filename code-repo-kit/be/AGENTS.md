@@ -11,7 +11,7 @@ Layout is **package-by-layer**: the root `pom.xml` has two modules - `harbor-cor
 all business code in `harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`: `api` (+ `api/error`, `api/technical`),
 `manager`, `service`, `dao` (`dao/model` entities, `dao/repository`, `dao/service`, `dao/mapper`, `dao/specification`,
 `dao/converter`), `event`, `job`, `utils`, `client` (`client/rest`, `client/kafka`), `validator`, `mapper`, `model`, ...)
-and `kafka-client` (topic constants, event payloads, serde). The layer list with roles is `scripts/docs/docs-gen.json`.
+and `kafka-client` (event schemas: Avro and JSON Schema, payload classes generated at build, no sources). The layer list with roles is `scripts/docs/docs-gen.json`.
 The bounded context of a class is its **name prefix** (`Product1*`, `Projection*`, `Stress*`, ...; mapping in the docs
 repo `contexts.yml`): contexts `clients`, `meetings`, `imports`, `product1`, `product2`, `cover`, `market`, `stress`,
 `reports`, `admin`. `init_docker_compose/` starts the local environment (PostgreSQL, Kafka, WireMock stubs of the external services).
@@ -26,7 +26,7 @@ repo `contexts.yml`): contexts `clients`, `meetings`, `imports`, `product1`, `pr
 5. For "what breaks if" questions use the docs repo `generated/graph/<context>.md` instead of the maps.
 
 ## Contracts (source of truth)
-- `harbor-core/src/main/resources/openapi/harbor-api.yaml` is the REST contract. The `*Api` server interfaces are **generated**
+- `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` is the REST contract. The `*Api` server interfaces are **generated**
   from it into `target/generated-sources` at build time; the frontend client is generated from the same file.
   Never edit generated code. Change the contract first, regenerate (`mvn -q -pl harbor-core -am -DskipTests generate-sources`), then implement.
   The only hand-written request mappings are the technical endpoints in `api/technical/` (listed as `(no contract)` in `api-index.md`).
@@ -42,12 +42,13 @@ repo `contexts.yml`): contexts `clients`, `meetings`, `imports`, `product1`, `pr
 - Business-prefix naming: every class starts with its context prefix from `contexts.yml` (`Product1Controller`,
   `ProjectionService`, `ProjectionRepository`, `MeetingSessionDaoService`); classes without a known prefix are reported as `shared`.
 - Controllers in `api/`: `@RestController class XxxController(...) : XxxApi` implementing `override fun <operationId>(...)`
-  **without** `@*Mapping` annotations (they live on the generated interface). `api-index.md` joins harbor-api.yaml to these overrides.
+  **without** `@*Mapping` annotations (they live on the generated interface). `api-index.md` joins openapi_harbor.yaml to these overrides.
   Problem bodies come from `api/error/ProblemDetails`, download headers from `api/HttpHeadersFactory`.
-- Kafka: topic names only via `Topics.<CONST>` (`kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt`, payloads in `kafka/events/`);
-  listeners and publishers in `event/`: `@KafkaListener(topics = [Topics.X], groupId = "harbor-<context>")`,
-  producers `producer.send(Topics.X, key, payload)` through `client/kafka/EventProducer`. Literals break `events.md`.
-- Scheduled work: `@Scheduled(cron = "...")` methods in `job/` with a one-line KDoc -> `jobs.md`.
+- Kafka: topic names only via the `TOPIC` constant of the listener or publisher class (companion object `const val TOPIC` of that class in `event/`; payload schemas in `kafka-client/src/main/resources/avro` and
+  `json_<service>`, classes generated at build);
+  listeners and publishers in `event/`: `@KafkaListener(topics = [TOPIC], groupId = "${harbor.kafka.groups.<context>}", autoStartup = "${harbor.kafka.listeners.auto-startup:true}")`,
+  producers `producer.send(TOPIC, key, payload)` through `client/kafka/EventProducer`. Literals break `events.md`.
+- Scheduled work: `@Scheduled(cron = "...")` + `@SchedulerLock(name = "...")` (ShedLock, table `shedlock`) methods in `job/` with a one-line KDoc -> `jobs.md`.
 - Admin parameters: one constant per key in `enums/ParameterKey.kt`, seeds as `INSERT INTO parameter_set` in the migrations, reads only through `ParameterService` -> `parameters.md`. The meaning of a key is documented in the docs repo (calculation `## Parameters`), not in code.
 - Datasets: every seed in `scripts/db/seed/*.sql` and every fixture in `harbor-core/src/test/resources/datasets/*.sql` starts with the header `-- dataset: <name>` / `-- purpose:` / `-- synthetic: yes` (`scripts/db/seed/README.md`) -> `datasets.md`; analysts cite them by name.
 - Persistence: entities in `dao/model/` (`@Entity @Table(name = "...")`), repositories in `dao/repository/` (`*Repository`,

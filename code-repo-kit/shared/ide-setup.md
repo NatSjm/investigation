@@ -29,4 +29,4 @@ so the retrieval helpers live in VS Code only (`vscode-extension/`).
 
 - Content exclusion is configured on GitHub (repo settings) - see `copilot-content-exclusion.yml`; it applies to every Copilot surface.
 - Run `scripts/docs/gen-all.py` before asking architecture questions if `docs/_generated/*` is older than your branch.
-- Contract changes start in `harbor-backend/harbor-core/src/main/resources/openapi/harbor-api.yaml`; the generated `*Api` interfaces and the FE client are never edited.
+- Contract changes start in `harbor-backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml`; the generated `*Api` interfaces and the FE client are never edited.

@@ -1,8 +1,7 @@
 package com.acme.harbor.event
 
 import com.acme.harbor.dao.repository.GoodsMovementRepository
-import com.acme.harbor.kafka.Topics
-import com.acme.harbor.kafka.events.MovementsLoadedEvent
+import com.acme.harbor.kafka.events.MovementsLoaded
 import com.acme.harbor.dao.model.ImportBatch
 import org.slf4j.LoggerFactory
 import com.acme.harbor.client.kafka.EventProducer
@@ -26,13 +25,18 @@ class MovementsLoadedPublisher(
             log.info("Batch {} contains no accepted rows, nothing to publish", batch.id)
             return
         }
-        val event = MovementsLoadedEvent(
-            batchId = batch.id,
-            clientIds = movementRepository.clientIdsOfBatch(batch.id),
-            periodFrom = periodFrom,
-            periodTo = periodTo,
+        val event = MovementsLoaded(
+            batch.id.toString(),
+            movementRepository.clientIdsOfBatch(batch.id).map { it.toString() },
+            periodFrom.toString(),
+            periodTo.toString(),
         )
-        producer.send(Topics.MOVEMENTS_LOADED, batch.id.toString(), event)
+        producer.send(TOPIC, batch.id.toString(), event)
         log.info("Published movements-loaded for batch {} ({} clients)", batch.id, event.clientIds.size)
+    }
+
+    companion object {
+        /** Consumed by Product1ProjectionRefreshListener and Product2ProjectionRefreshListener; schema `kafka-client/src/main/resources/avro/MovementsLoaded.avsc`. */
+        const val TOPIC = "harbor.imports.movements-loaded"
     }
 }

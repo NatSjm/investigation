@@ -15,7 +15,7 @@ export function sessionHeader(): { [SESSION_HEADER]: string } {
   return { [SESSION_HEADER]: getSessionId() ?? '' };
 }
 
-/** Typed client generated from `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml` (see `npm run generate:api`). */
+/** Typed client generated from `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml` (see `npm run generate:api`). */
 export const api = createClient<paths>({ baseUrl: '/api/v1' });
 
 export class ApiError extends Error {

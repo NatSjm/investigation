@@ -1,7 +1,7 @@
 # Generated code maps
 
 Read these before opening source. Each file is a few hundred tokens.
-Contracts: `harbor-core/src/main/resources/openapi/harbor-api.yaml` (REST; FE client and BE interfaces are generated from it),
+Contracts: `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` (REST; FE client and BE interfaces are generated from it),
 `harbor-core/src/main/resources/openapi/harbor-events.yaml` (Kafka),
 `harbor-core/src/main/resources/api/*.yaml` (external services).
 

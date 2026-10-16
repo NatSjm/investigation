@@ -8,6 +8,7 @@ import com.acme.harbor.exception.SessionHeaderMissingException
 import com.acme.harbor.exception.SessionNotBoundException
 import com.acme.harbor.exception.ValidationException
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.ConstraintViolationException
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 /**
  * Maps exceptions to RFC 7807 `application/problem+json` bodies (the `Problem` schema of the contract):
  * - [NotFoundException], `NoSuchElementException`               -> 404
- * - [ValidationException], `IllegalArgumentException`, bean validation -> 400
+ * - [ValidationException], `IllegalArgumentException`, bean validation (body or method parameters) -> 400
  * - missing / malformed request parameter or body                 -> 400
  * - [SessionHeaderMissingException]                             -> 428
  * - [SessionClosedException], other `IllegalStateException`      -> 409
@@ -53,6 +54,10 @@ class GlobalExceptionAdvice {
     @ExceptionHandler(MissingServletRequestParameterException::class, MethodArgumentTypeMismatchException::class, HttpMessageNotReadableException::class)
     fun malformedRequest(e: Exception, request: HttpServletRequest): ProblemDetail =
         problem(HttpStatus.BAD_REQUEST, e.message?.lineSequence()?.firstOrNull(), request)
+
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun constraintViolation(e: ConstraintViolationException, request: HttpServletRequest): ProblemDetail =
+        problem(HttpStatus.BAD_REQUEST, e.constraintViolations.joinToString("; ") { "${it.propertyPath}: ${it.message}" }, request)
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun beanValidation(e: MethodArgumentNotValidException, request: HttpServletRequest): ProblemDetail {

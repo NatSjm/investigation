@@ -93,7 +93,7 @@ pattern and the file discipline but do not adopt its CLI (no third-party tooling
 | Technique | Effect |
 |---|---|
 | **Task-scoped context pack** (§3.5) | one ~300-500-line read replaces 10-20 tool calls; the agent opens <= 2 files besides the pack |
-| **Contracts instead of generated code** (§3.6) | `openapi/harbor-api.yaml` is read once; `*Api` interfaces, generated clients and `schema.d.ts` are never opened |
+| **Contracts instead of generated code** (§3.6) | `openapi/openapi_harbor.yaml` is read once; `*Api` interfaces, generated clients and `schema.d.ts` are never opened |
 | **Lib-free code maps in the code repos** (`code-repo-kit/`, §3.12) | 1 row per layer/class/operation/topic/table/job/route with `file:line` instead of directory walks |
 | **Layered backend mapped by name prefix** (§3.12) | `contexts.yml` turns `Product1*` / `Projection*` classes spread over `api/`, `manager/`, `service/`, `dao/` into one bounded context; `components.md` gives the injection chain, so nobody walks layer folders |
 | **Architectural graph** (§3.13) | context -> endpoint -> manager -> service / dao -> calculator -> table (`depends-on`, `persists-to`), topic -> consumer, FE route -> endpoint; a few hundred nodes |
@@ -117,12 +117,12 @@ a `file:line`; free text matching several specs yields `candidates:`. Why a scri
 
 ### 3.6 Contract-led API index and jobs map (lever b)
 Because the real FE and BE are generated from the OpenAPI document, the controllers carry no mapping annotations.
-`gen-api-index.py` therefore reads `harbor-core/src/main/resources/openapi/harbor-api.yaml` (operations, parameters, the shared session-header parameter) and
+`gen-api-index.py` therefore reads `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` (operations, parameters, the shared session-header parameter) and
 joins each `operationId` to `override fun <operationId>(` in a `@RestController`; operations without an implementation are
 listed `_not implemented_` (a useful backlog signal). Annotation scan remains the fallback for non-contract repos.
 `gen-jobs.py` lists every `@Scheduled` method with its trigger and one KDoc line, so the XLS import and monthly snapshot
-jobs are visible to analysts. `events.md` resolves `Topics.<CONST>`; `db-schema.md` is parsed from Flyway migrations, so the
-four cumulative projection tables and the `parameter_set` table appear with columns. CI copies `openapi/harbor-api.yaml`,
+jobs are visible to analysts. `events.md` resolves the `TOPIC` constant of the listener or publisher class; `db-schema.md` is parsed from Flyway migrations, so the
+four cumulative projection tables and the `parameter_set` table appear with columns. CI copies `openapi/openapi_harbor.yaml`,
 `openapi/harbor-events.yaml` and `harbor-core/src/main/resources/api/*.yaml` next to the maps.
 
 ### 3.7 Calculation and legacy-page audit (lever c)
@@ -297,7 +297,7 @@ names, values or identifiers. Everything is standard-library Python 3.11+; nothi
 | Item | State |
 |---|---|
 | BE layout | `backend/pom.xml` modules `core` (package-by-layer `harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`, 18 layers, one `<Ctx>Manager` per bounded context) and `kafka-client`, plus `init_docker_compose/`; 10 bounded contexts by class-name prefix (`docs-repo/contexts.yml`); calculators in `utils/`, unit tests in `harbor-core/src/test/kotlin/com/acme/harbor/utils/` |
-| REST contract | `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml`: 34 operations, shared session-header parameter; `openapi/harbor-events.yaml`: 5 topics (`kafka-client/.../harbor/kafka/Topics.kt`) |
+| REST contract | `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml`: 34 operations, shared session-header parameter; `openapi/harbor-events.yaml`: 5 topics (`kafka-client/.../harbor/kafka/Topics.kt`) |
 | External contracts | `backend/harbor-core/src/main/resources/api/`: client-registry, market-data, cover-provider, document-service, file-exchange |
 | DB | 9 Flyway migrations `V1__..V9__` per the blueprint (four projection tables, `parameter_set`); counts: see `generated/be/db-schema.md` after `gen-all.py` |
 | FE | 9 feature folders mirroring the bounded contexts, `openapi-fetch` client with the session-header middleware, object routes; routes/types/tags counts: see `generated/fe/*.md` |

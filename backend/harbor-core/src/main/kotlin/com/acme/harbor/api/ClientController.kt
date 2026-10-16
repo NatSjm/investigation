@@ -15,7 +15,7 @@ import com.acme.harbor.api.generated.model.ProductGroup as ApiProductGroup
 
 /**
  * REST adapter for the `clients` tag. Request mappings live on the generated [ClientsApi] interface
- * (openapi-generator, `openapi/harbor-api.yaml`); this class only implements the operations.
+ * (openapi-generator, `openapi/openapi_harbor.yaml`); this class only implements the operations.
  */
 @RestController
 class ClientController(private val manager: ClientManager) : ClientsApi {

@@ -12,29 +12,29 @@ sources:
     title: AsyncAPI (backend/harbor-core/src/main/resources/openapi/harbor-events.yaml)
   - id: openapi
     resource: /generated/openapi/backend.yaml
-    title: OpenAPI (backend/harbor-core/src/main/resources/openapi/harbor-api.yaml)
+    title: OpenAPI (backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml)
   - id: topics
-    resource: be/kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt
-    title: Topics.kt
+    resource: be/harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt
+    title: TOPIC constants of the event/ classes (schemas in kafka-client/src/main/resources)
 ---
 
 # Integrations map
 
 Rows marked `gen` are refreshed by CI from `generated/asyncapi/backend.yaml` and `generated/openapi/`;
-rows marked `manual` are maintained by hand. Topic names are constants in `Topics.kt`[^topics] (library `kafka-client`,
-payload classes in `com.acme.harbor.kafka.events`); producers and consumers live in the `event/` layer of `core`. Producers call
-`kafkaTemplate.send(Topics.X, key, payload)`, consumers use
-`@KafkaListener(topics = [Topics.X], groupId = "harbor-<context>")`.
+rows marked `manual` are maintained by hand. Topic names are the `TOPIC` constants of the listener and publisher classes[^topics] (payload schemas in the
+`kafka-client` module: Avro for Harbor's own events, JSON Schema for the external ones; classes generated at build); producers and consumers live in the `event/` layer of `core`. Producers call
+`producer.send(TOPIC, key, payload)`, consumers use
+`@KafkaListener(topics = [TOPIC], groupId = "${harbor.kafka.groups.<context>}")`.
 
 ## Kafka topics
 
-| Constant | Topic | Producer | Consumers | Payload | Contract | Feature | Src |
+| Schema (`kafka-client/src/main/resources`) | Topic | Producer | Consumers | Payload | Contract | Feature | Src |
 |---|---|---|---|---|---|---|---|
-| `MOVEMENTS_LOADED` | `harbor.imports.movements-loaded` | `event/MovementsLoadedPublisher` | `event/Product1ProjectionRefreshListener`, `event/Product2ProjectionRefreshListener` | `MovementsLoadedEvent(batchId, clientIds, periodFrom, periodTo)` | `generated/asyncapi/backend.yaml#/channels/harbor.imports.movements-loaded` | IMP-001, P1-001, P2-001 | gen |
-| `PRICES_UPDATED` | `harbor.market.prices-updated` | external (`market-data`) | `event/MarketPricesListener` | `PricesUpdatedEvent(productGroup, corridor, asOf)` | `generated/asyncapi/backend.yaml#/channels/harbor.market.prices-updated` | MKT-001 | gen |
-| `SESSION_CLOSED` | `harbor.meetings.session-closed` | `event/SessionEventsPublisher` | `event/ReportSessionClosedListener`, `event/ClientRoleSessionClosedListener` | `SessionClosedEvent(sessionId, clientId, productGroup, kind, roleOverride?)` | `generated/asyncapi/backend.yaml#/channels/harbor.meetings.session-closed` | SES-001, RPT-001, CLI-001 | gen |
-| `REPORT_RENDER_REQUESTED` | `harbor.reports.render-requested` | `event/ReportRenderRequester` | external (`document-service`) | `ReportRenderRequested(sessionId, payloadRef)` | `generated/asyncapi/backend.yaml#/channels/harbor.reports.render-requested` | RPT-001 | gen |
-| `REPORT_RENDERED` | `harbor.reports.rendered` | external (`document-service`) | `event/ReportRenderedListener` | `ReportRendered(sessionId, pdfPath)` | `generated/asyncapi/backend.yaml#/channels/harbor.reports.rendered` | RPT-001 | gen |
+| `avro/MovementsLoaded.avsc` | `harbor.imports.movements-loaded` | `event/MovementsLoadedPublisher` | `event/Product1ProjectionRefreshListener`, `event/Product2ProjectionRefreshListener` | `MovementsLoaded(batchId, clientIds, periodFrom, periodTo)` | `generated/asyncapi/backend.yaml#/channels/harbor.imports.movements-loaded` | IMP-001, P1-001, P2-001 | gen |
+| `json_market-data/PricesUpdated.json` | `harbor.market.prices-updated` | external (`market-data`) | `event/MarketPricesListener` | `PricesUpdated(productGroup, corridor, asOf)` | `generated/asyncapi/backend.yaml#/channels/harbor.market.prices-updated` | MKT-001 | gen |
+| `avro/SessionClosed.avsc` | `harbor.meetings.session-closed` | `event/SessionEventsPublisher` | `event/ReportSessionClosedListener`, `event/ClientRoleSessionClosedListener` | `SessionClosed(sessionId, clientId, productGroup, kind, roleOverride?)` | `generated/asyncapi/backend.yaml#/channels/harbor.meetings.session-closed` | SES-001, RPT-001, CLI-001 | gen |
+| `avro/ReportRenderRequested.avsc` | `harbor.reports.render-requested` | `event/ReportRenderRequester` | external (`document-service`) | `ReportRenderRequested(sessionId, payloadRef)` | `generated/asyncapi/backend.yaml#/channels/harbor.reports.render-requested` | RPT-001 | gen |
+| `json_document-service/ReportRendered.json` | `harbor.reports.rendered` | external (`document-service`) | `event/ReportRenderedListener` | `ReportRendered(sessionId, pdfPath)` | `generated/asyncapi/backend.yaml#/channels/harbor.reports.rendered` | RPT-001 | gen |
 
 Event flow (happy path of one meeting):
 
@@ -96,5 +96,5 @@ path requires header `X-Harbor-Session` (`component/SessionHeaderFilter`, see [S
 | `DailyMovementImportJob` | `0 0 2 * * *` | imports | pulls new files from `file-exchange`, parses into `goods_movement`, emits `movements-loaded` |
 | `MonthlySnapshotJob` | `0 0 3 1 * *` | imports | rolls `goods_movement` up into `movement_monthly` |
 
-[^topics]: `Topics.kt` (`object Topics { const val ... }`, harbor-backend `kafka-client` module)
-[^openapi]: `generated/openapi/backend.yaml` (copy of `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml`)
+[^topics]: `const val TOPIC` in the companion object of each class in `harbor-core/.../event/`; schemas `kafka-client/src/main/resources/{avro,json_<service>}`
+[^openapi]: `generated/openapi/backend.yaml` (copy of `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml`)

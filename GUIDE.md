@@ -42,7 +42,7 @@ docker compose -f backend/init_docker_compose/docker-compose.yml up -d        # 
 cd backend; mvn -B -DskipTests package                                         # 27 unit tests with `mvn test`
 export HARBOR_CLIENT_REGISTRY_URL=http://localhost:8089 HARBOR_MARKET_DATA_URL=http://localhost:8089
 export HARBOR_COVER_PROVIDER_URL=http://localhost:8089 HARBOR_DOCUMENT_SERVICE_URL=http://localhost:8089 HARBOR_FILE_EXCHANGE_URL=http://localhost:8089
-java -jar harbor-core/target/core-1.0.0-SNAPSHOT.jar                                  # http://localhost:8080/api/v1, Flyway applies V1..V9
+java -jar harbor-core/target/harbor-core-1.0.0-SNAPSHOT.jar                                  # http://localhost:8080/api/v1, Flyway applies V1..V9
 cd ../frontend; npm install; npm run generate:api; npm run dev                 # http://localhost:5173, proxies /api to 8080
 ```
 Search a client, open its overview, create a session; `/meetings/client` and `/meetings/preparation` list the sessions; inside a

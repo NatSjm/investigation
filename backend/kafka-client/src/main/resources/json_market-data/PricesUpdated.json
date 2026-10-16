@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PricesUpdated",
+  "description": "Topic harbor.market.prices-updated, published by the external market-data service (key = productGroup): the baseline price curve of a product group changed. Consumed by MarketPricesListener.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["productGroup", "corridor", "asOf"],
+  "properties": {
+    "productGroup": {"type": "string", "description": "wire value of the product group (product1 / product2)"},
+    "corridor": {"type": "string", "description": "corridor code (VLD-NRL / CST-MRD)"},
+    "asOf": {"type": "string", "format": "date-time", "description": "instant the curve was published"}
+  }
+}

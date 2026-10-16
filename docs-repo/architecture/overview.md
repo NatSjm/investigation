@@ -61,7 +61,7 @@ C4Context
 ## C4 level 2 — containers
 
 The backend is one Spring Boot application, Maven module `harbor-core`, organised **by technical layer**
-(`harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`). Kafka topic constants, event payloads and the serde live in the library
+(`harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`). Kafka event contracts (Avro and JSON schemas; payload classes generated at build) live in the
 module `kafka-client`, used by `harbor-core`. Bounded contexts of the [context map](/domain/context-map.md) are not folders:
 a class belongs to a context by its **name prefix** (`/contexts.yml`, see [ADR-0004](/architecture/adr/0004-layered-backend-and-context-prefixes.md)).
 Only `harbor-core` is deployed; `init_docker_compose/` starts PostgreSQL, Kafka and WireMock stubs of the external services for local runs.
@@ -73,7 +73,7 @@ C4Container
   Container(fe, "harbor-frontend", "React 18 / TypeScript", "Routes per feature; openapi-fetch client adds X-Harbor-Session")
   Container_Boundary(be, "harbor-backend (base path /api/v1)") {
     Container(core, "harbor-core", "Spring Boot / Kotlin", "Layers api -> manager -> service -> dao / utils / client; event, job, validator, mapper, model; Flyway V1..V9; contracts in resources/openapi and resources/api")
-    Container(kc, "kafka-client", "Kotlin library", "Topics constants, event payloads, JsonSerde, HarborKafkaClient")
+    Container(kc, "kafka-client", "Schemas module", "Avro and JSON Schema event contracts; payload classes generated at build")
   }
   Container(local, "init_docker_compose", "docker compose", "Local env only: postgres, kafka, wiremock (5 external services)")
   ContainerDb(pg, "PostgreSQL", "Flyway-managed schema", "client_profile .. parameter_set")
@@ -117,7 +117,7 @@ C4Container
 | `shared` (no prefix) | — | — | config, filters, `utils` helpers (`MonthGrid`, `Rounding`); `kafka-client` |
 
 ## Cross-cutting rules
-- **OpenAPI-first** ([ADR-0002](/architecture/adr/0002-openapi-first-contracts.md)): `backend/harbor-core/src/main/resources/openapi/harbor-api.yaml`
+- **OpenAPI-first** ([ADR-0002](/architecture/adr/0002-openapi-first-contracts.md)): `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml`
   is the contract; controllers implement generated `*Api` interfaces; the frontend uses the generated client.
 - **Session scoping**: selecting a product group on the client overview creates a `meeting_session`; every
   `/session/**` request carries `X-Harbor-Session` (see [SES-001](/features/meetings/SES-001.md)).

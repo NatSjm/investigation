@@ -16,10 +16,10 @@ status: stable
 - `hook:useCoverPolicies` - `src/pages/shared/hook/useCoverSummary.ts:23`
 - `hook:useCoverQuote` - `src/pages/shared/hook/useCoverQuote.ts:11`
 - `hook:useCoverSummary` - `src/pages/shared/hook/useCoverSummary.ts:10`
-- `hook:useBaselinePrices` - `src/pages/shared/hook/useBaselinePrices.ts:11`
 - `hook:useDownloadReportPdf` - `src/pages/shared/hook/useDownloadReportPdf.ts:10`
 - `hook:useRegenerateReport` - `src/pages/shared/hook/useReport.ts:28`
 - `hook:useReport` - `src/pages/shared/hook/useReport.ts:12`
+- `hook:useBaselinePrices` - `src/pages/shared/hook/useBaselinePrices.ts:11`
 - `hook:useSession` - `src/pages/shared/hook/useSessions.ts:20`
 - `hook:useSessions` - `src/pages/shared/hook/useSessions.ts:9`
 

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
  * (`com.acme.harbor.dao.repository`) all live below package `com.acme.harbor`, one folder per technical layer
  * (`api`, `manager`, `service`, `dao`, `event`, `job`, `utils`, ...). Scheduling and Kafka are enabled in
  * `config/SchedulingConfig` / `config/KafkaConfig`; migrations are in `src/main/resources/db/migration`,
- * the REST contract in `src/main/resources/openapi/harbor-api.yaml`.
+ * the REST contract in `src/main/resources/openapi/openapi_harbor.yaml`.
  */
 @SpringBootApplication
 @EnableTransactionManagement

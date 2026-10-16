@@ -1,7 +1,6 @@
 package com.acme.harbor.event
 
 import com.acme.harbor.component.ReportTemplateLoader
-import com.acme.harbor.kafka.Topics
 import com.acme.harbor.kafka.events.ReportRenderRequested
 import org.springframework.beans.factory.annotation.Value
 import com.acme.harbor.client.kafka.EventProducer
@@ -22,10 +21,15 @@ class ReportRenderRequester(
 
     fun request(sessionId: UUID) {
         val event = ReportRenderRequested(
-            sessionId = sessionId,
-            payloadRef = "$payloadBaseUrl/sessions/$sessionId/report",
-            template = templateLoader.meetingReport(),
+            sessionId.toString(),
+            "$payloadBaseUrl/sessions/$sessionId/report",
+            templateLoader.meetingReport(),
         )
-        producer.send(Topics.REPORT_RENDER_REQUESTED, sessionId.toString(), event)
+        producer.send(TOPIC, sessionId.toString(), event)
+    }
+
+    companion object {
+        /** Consumed by the external document-service; schema `kafka-client/src/main/resources/avro/ReportRenderRequested.avsc`. */
+        const val TOPIC = "harbor.reports.render-requested"
     }
 }

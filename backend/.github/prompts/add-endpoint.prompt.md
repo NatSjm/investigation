@@ -1,6 +1,6 @@
 ---
 agent: agent
-description: Contract-first checklist for adding or changing a REST operation (harbor-api.yaml -> regenerate -> override fun -> maps).
+description: Contract-first checklist for adding or changing a REST operation (openapi_harbor.yaml -> regenerate -> override fun -> maps).
 argument-hint: "operationId and purpose, e.g. getProduct1Projection - four projection tables for the session"
 ---
 Add or change the operation `${input:operationId:getProduct1Projection}` following the contract-first rules in `AGENTS.md`
@@ -8,7 +8,7 @@ and `.github/instructions/api.instructions.md`.
 
 Work through this checklist and report each step:
 
-1. **Contract** - edit `harbor-core/src/main/resources/openapi/harbor-api.yaml`: path item under the context tag, unique `operationId`, request/response schemas in
+1. **Contract** - edit `harbor-core/src/main/resources/openapi/openapi_harbor.yaml`: path item under the context tag, unique `operationId`, request/response schemas in
    `components/schemas`; `/session/**` paths reference `components/parameters/SessionHeader` (`X-Harbor-Session`).
    Reuse existing schemas before adding new ones.
 2. **Regenerate** - `mvn -q -pl harbor-core -am -DskipTests generate-sources`; confirm the new method appears on the `*Api` interface

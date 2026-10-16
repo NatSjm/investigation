@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 
 /**
  * The only outbound Kafka client of the application: the publishers in `event/` call [send] with a
- * `Topics.<CONST>` and the aggregate id as key. Wraps the [KafkaTemplate] built in `config/KafkaConfig`
+ * the `TOPIC` constant of the listener or publisher class and the aggregate id as key. Wraps the [KafkaTemplate] built in `config/KafkaConfig`
  * (string keys, JSON values, idempotent producer) so that producers never depend on Spring Kafka directly.
  */
 @Component

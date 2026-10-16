@@ -10,13 +10,13 @@ status: stable
 # Components (BE)
 
 > Generated from `top-level Kotlin declarations per layer` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
-162 declaration(s). Per layer: (root) 2, advice 1, api 10, api/error 1, api/technical 1, client/kafka 1, client/rest 5, component 7, config 4, context 3, dao/mapper 1, dao/model 16, dao/repository 17, dao/service 1, dao/specification 1, databind 2, enums 15, event 9, exception 6, job 2, kafka 8, manager 10, mapper 9, model 3, service 15, utils 8, validator 4. Business context of a class = its name prefix (docs repo `contexts.yml`).
+157 declaration(s). Per layer: (root) 2, advice 1, api 10, api/error 1, api/technical 1, client/kafka 3, client/rest 5, component 8, config 4, context 3, dao/mapper 1, dao/model 16, dao/repository 17, dao/service 1, dao/specification 1, databind 2, enums 15, event 9, exception 6, job 2, manager 10, mapper 9, model 3, service 15, utils 8, validator 4. Business context of a class = its name prefix (docs repo `contexts.yml`).
 
 | Class | Layer | Module | Kind | Depends on | Tables | @docs | Location |
 |---|---|---|---|---|---|---|---|
 | `HarborBackendApplication` | (root) | harbor-core | SpringBootApplication |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/HarborBackendApplication.kt:14` |
 | `HarborConstants` | (root) | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/HarborConstants.kt:4` |
-| `GlobalExceptionAdvice` | advice | harbor-core | RestControllerAdvice |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/advice/GlobalExceptionAdvice.kt:32` |
+| `GlobalExceptionAdvice` | advice | harbor-core | RestControllerAdvice |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/advice/GlobalExceptionAdvice.kt:33` |
 | `AdminController` | api | harbor-core | RestController | `AdminManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/AdminController.kt:17` |
 | `ClientController` | api | harbor-core | RestController | `ClientManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:20` |
 | `CoverController` | api | harbor-core | RestController | `CoverManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:20` |
@@ -29,6 +29,8 @@ status: stable
 | `StressTestController` | api | harbor-core | RestController | `StressManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:18` |
 | `ProblemDetails` | api/error | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/error/ProblemDetails.kt:12` |
 | `TechnicalController` | api/technical | harbor-core | RestController |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/api/technical/TechnicalController.kt:14` |
+| `AvroJsonDeserializer` | client/kafka | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/client/kafka/AvroJsonSerde.kt:30` |
+| `AvroJsonSerializer` | client/kafka | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/client/kafka/AvroJsonSerde.kt:17` |
 | `EventProducer` | client/kafka | harbor-core | Component, KafkaProducer |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/client/kafka/EventProducer.kt:11` |
 | `ClientRegistryClient` | client/rest | harbor-core | Component |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/ClientRegistryClient.kt:16` |
 | `CoverProviderClient` | client/rest | harbor-core | Component |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/CoverProviderClient.kt:19` |
@@ -37,14 +39,15 @@ status: stable
 | `MarketDataClient` | client/rest | harbor-core | Component |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/MarketDataClient.kt:19` |
 | `ReportTemplateLoader` | component | harbor-core | Component |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/component/ReportTemplateLoader.kt:15` |
 | `SessionHeaderFilter` | component | harbor-core | Component | `MeetingSessionDaoService`, `SessionScopeService` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/component/SessionHeaderFilter.kt:33` |
+| `StatisticalViewsInitializer` | component | harbor-core | Component |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/component/StatisticalViewsInitializer.kt:15` |
 | `WorkbookDelimitedReader` | component | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/component/WorkbookDelimitedReader.kt:7` |
 | `WorkbookReader` | component | harbor-core | interface |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/component/WorkbookReader.kt:9` |
 | `WorkbookReaderFactory` | component | harbor-core | Component | `XlsWorkbookOpener` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/component/WorkbookReaderFactory.kt:11` |
 | `XlsMovementParser` | component | harbor-core | Component |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/component/XlsMovementParser.kt:32` |
 | `XlsWorkbookOpener` | component | harbor-core | interface |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/component/XlsWorkbookOpener.kt:8` |
 | `JacksonConfig` | config | harbor-core | Configuration |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/config/JacksonConfig.kt:17` |
-| `KafkaConfig` | config | harbor-core | Configuration |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/config/KafkaConfig.kt:25` |
-| `SchedulingConfig` | config | harbor-core | Configuration |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/config/SchedulingConfig.kt:12` |
+| `KafkaConfig` | config | harbor-core | Configuration |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/config/KafkaConfig.kt:48` |
+| `SchedulingConfig` | config | harbor-core | Configuration |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/config/SchedulingConfig.kt:18` |
 | `WebConfig` | config | harbor-core | Configuration |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/config/WebConfig.kt:17` |
 | `CurrentUser` | context | harbor-core | interface |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/context/CurrentUser.kt:7` |
 | `SessionContext` | context | harbor-core | object |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/context/SessionContext.kt:12` |
@@ -57,7 +60,7 @@ status: stable
 | `CoverQuote` | dao/model | harbor-core | Entity |  | `cover_quote` |  | `harbor-core/src/main/kotlin/com/acme/harbor/dao/model/CoverQuote.kt:12` |
 | `GoodsMovement` | dao/model | harbor-core | Entity | `ProductGroup`, `TransportMode`, `Direction`, `PriceBasis` | `goods_movement` |  | `harbor-core/src/main/kotlin/com/acme/harbor/dao/model/GoodsMovement.kt:23` |
 | `ImportBatch` | dao/model | harbor-core | Entity | `ImportStatus` | `import_batch` |  | `harbor-core/src/main/kotlin/com/acme/harbor/dao/model/ImportBatch.kt:14` |
-| `MarketScenario` | dao/model | harbor-core | Entity | `ScenarioKind` | `market_scenario` |  | `harbor-core/src/main/kotlin/com/acme/harbor/dao/model/MarketScenario.kt:20` |
+| `MarketScenario` | dao/model | harbor-core | Entity | `ScenarioKind` | `market_scenario` |  | `harbor-core/src/main/kotlin/com/acme/harbor/dao/model/MarketScenario.kt:21` |
 | `MeetingReport` | dao/model | harbor-core | Entity | `ReportStatus` | `meeting_report` |  | `harbor-core/src/main/kotlin/com/acme/harbor/dao/model/MeetingReport.kt:19` |
 | `MeetingSession` | dao/model | harbor-core | Entity | `ProductGroup`, `SessionKind`, `SessionStatus`, `ClientRole` | `meeting_session` |  | `harbor-core/src/main/kotlin/com/acme/harbor/dao/model/MeetingSession.kt:25` |
 | `MovementMonthly` | dao/model | harbor-core | Entity | `ProductGroup`, `TransportMode`, `Direction` | `movement_monthly` |  | `harbor-core/src/main/kotlin/com/acme/harbor/dao/model/MovementMonthly.kt:22` |
@@ -103,30 +106,22 @@ status: stable
 | `StressDimension` | enums | harbor-core | class | `DimensionKind` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/enums/StressDimension.kt:7` |
 | `TransportMode` | enums | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/enums/TransportMode.kt:4` |
 | `ClientRoleSessionClosedListener` | event | harbor-core | Component, KafkaListener | `ClientRoleService` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/ClientRoleSessionClosedListener.kt:18` |
-| `MarketPricesListener` | event | harbor-core | Component, KafkaListener | `BaselinePriceService` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/MarketPricesListener.kt:18` |
-| `MovementsLoadedPublisher` | event | harbor-core | Component, KafkaProducer | `EventProducer`, `GoodsMovementRepository` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt:15` |
+| `MarketPricesListener` | event | harbor-core | Component, KafkaListener | `BaselinePriceService` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/MarketPricesListener.kt:17` |
+| `MovementsLoadedPublisher` | event | harbor-core | Component, KafkaProducer | `EventProducer`, `GoodsMovementRepository` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt:14` |
 | `Product1ProjectionRefreshListener` | event | harbor-core | Component, KafkaListener | `SessionScopeService`, `ProjectionService` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/Product1ProjectionRefreshListener.kt:17` |
 | `Product2ProjectionRefreshListener` | event | harbor-core | Component, KafkaListener | `SessionScopeService`, `ProjectionService` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/Product2ProjectionRefreshListener.kt:17` |
-| `ReportRenderedListener` | event | harbor-core | Component, KafkaListener | `ReportManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderedListener.kt:10` |
-| `ReportRenderRequester` | event | harbor-core | Component, KafkaProducer | `EventProducer`, `ReportTemplateLoader` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderRequester.kt:16` |
+| `ReportRenderedListener` | event | harbor-core | Component, KafkaListener | `ReportManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderedListener.kt:9` |
+| `ReportRenderRequester` | event | harbor-core | Component, KafkaProducer | `EventProducer`, `ReportTemplateLoader` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportRenderRequester.kt:15` |
 | `ReportSessionClosedListener` | event | harbor-core | Component, KafkaListener | `ReportManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/ReportSessionClosedListener.kt:14` |
-| `SessionEventsPublisher` | event | harbor-core | Component, KafkaProducer | `EventProducer` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt:14` |
+| `SessionEventsPublisher` | event | harbor-core | Component, KafkaProducer | `EventProducer` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt:13` |
 | `MissingParameterException` | exception | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/exception/MissingParameterException.kt:6` |
 | `NotFoundException` | exception | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/exception/NotFoundException.kt:4` |
 | `SessionClosedException` | exception | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/exception/SessionClosedException.kt:6` |
 | `SessionHeaderMissingException` | exception | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/exception/SessionHeaderMissingException.kt:4` |
 | `SessionNotBoundException` | exception | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/exception/SessionNotBoundException.kt:4` |
 | `ValidationException` | exception | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/exception/ValidationException.kt:4` |
-| `DailyMovementImportJob` | job | harbor-core | Component, Scheduled | `ImportManager` | `goods_movement` |  | `harbor-core/src/main/kotlin/com/acme/harbor/job/DailyMovementImportJob.kt:12` |
-| `MonthlySnapshotJob` | job | harbor-core | Component, Scheduled | `ImportManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/job/MonthlySnapshotJob.kt:14` |
-| `HarborKafkaClient` | kafka | kafka-client | object |  |  |  | `kafka-client/src/main/kotlin/com/acme/harbor/kafka/HarborKafkaClient.kt:22` |
-| `JsonSerde` | kafka | kafka-client | class |  |  |  | `kafka-client/src/main/kotlin/com/acme/harbor/kafka/JsonSerde.kt:16` |
-| `MovementsLoadedEvent` | kafka | kafka-client | class |  |  |  | `kafka-client/src/main/kotlin/com/acme/harbor/kafka/events/MovementsLoadedEvent.kt:10` |
-| `PricesUpdatedEvent` | kafka | kafka-client | class |  |  |  | `kafka-client/src/main/kotlin/com/acme/harbor/kafka/events/PricesUpdatedEvent.kt:11` |
-| `ReportRendered` | kafka | kafka-client | class |  |  |  | `kafka-client/src/main/kotlin/com/acme/harbor/kafka/events/ReportRendered.kt:6` |
-| `ReportRenderRequested` | kafka | kafka-client | class |  |  |  | `kafka-client/src/main/kotlin/com/acme/harbor/kafka/events/ReportRenderRequested.kt:11` |
-| `SessionClosedEvent` | kafka | kafka-client | class |  |  |  | `kafka-client/src/main/kotlin/com/acme/harbor/kafka/events/SessionClosedEvent.kt:12` |
-| `Topics` | kafka | kafka-client | object |  |  |  | `kafka-client/src/main/kotlin/com/acme/harbor/kafka/Topics.kt:8` |
+| `DailyMovementImportJob` | job | harbor-core | Component, Scheduled | `ImportManager` | `goods_movement` |  | `harbor-core/src/main/kotlin/com/acme/harbor/job/DailyMovementImportJob.kt:13` |
+| `MonthlySnapshotJob` | job | harbor-core | Component, Scheduled | `ImportManager` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/job/MonthlySnapshotJob.kt:15` |
 | `AdminManager` | manager | harbor-core | Service | `ParameterService`, `ParameterValidator`, `MovementImportService`, `CurrentUser` |  | `ADM-001` | `harbor-core/src/main/kotlin/com/acme/harbor/manager/AdminManager.kt:24` |
 | `ClientManager` | manager | harbor-core | Service | `ClientProfileService`, `ClientRoleRepository`, `ClientRoleService`, `ClientOverviewService` |  | `CLI-001` | `harbor-core/src/main/kotlin/com/acme/harbor/manager/ClientManager.kt:25` |
 | `CoverManager` | manager | harbor-core | Service | `CoverPolicyRepository`, `ProjectionService`, `CoverRatioService`, `CoverQuoteService`, `ClientProfileService` |  | `COV-001` | `harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt:25` |

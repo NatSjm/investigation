@@ -38,7 +38,7 @@ status: stable
 - `class:MarketScenarioRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MarketScenarioRepository.kt:9` - dao/repository; Repository
 - `class:ScenarioService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ScenarioService.kt:20` - service; Service
 - `class:MarketManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/MarketManager.kt:21` - manager; Service
-- `class:MarketPricesListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MarketPricesListener.kt:18` - event; Component, KafkaListener
+- `class:MarketPricesListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MarketPricesListener.kt:17` - event; Component, KafkaListener
 - `class:BaselinePriceRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/BaselinePriceRepository.kt:10` - dao/repository; Repository
 - `class:ScenarioPricePath` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt:19` - utils; object
 - `class:ScenarioValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/ScenarioValidator.kt:15` - validator; Component

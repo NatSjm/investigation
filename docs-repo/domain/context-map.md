@@ -35,7 +35,7 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
 
 Classes matching no prefix are `shared` and are not a bounded context: configuration (`WebConfig`, `KafkaConfig`, ...),
 `enums`, the `utils` helpers (`MonthGrid`, `Rounding`), unprefixed `client/rest/` wrappers (`DocumentServiceClient`,
-`FileExchangeClient`) and the `kafka-client` library (`Topics`, event payloads). They have no spec prefix and are documented in
+`FileExchangeClient`) and the `kafka-client` module (event schemas). They have no spec prefix and are documented in
 `domain/calculations/` and [architecture/integrations.md](/architecture/integrations.md).
 
 ## Relationships
@@ -75,7 +75,7 @@ flowchart LR
 ### Relationship notes
 - **clients → meetings** (customer/supplier): the overview page's "Start meeting" / "Prepare" buttons call
   `createSession`; from then on the session id travels in the header.
-- **meetings → clients** (published language, Kafka): `SessionClosedEvent.roleOverride` lets `ClientRoleSessionClosedListener`
+- **meetings → clients** (published language, Kafka): `SessionClosed.roleOverride` lets `ClientRoleSessionClosedListener`
   update `client_role` with `source = MANUAL`.
 - **imports → product1/product2** (published language, Kafka): a loaded batch triggers a projection refresh for
   open sessions of the affected clients.

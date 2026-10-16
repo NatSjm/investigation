@@ -1,6 +1,7 @@
 package com.acme.harbor.job
 
 import com.acme.harbor.manager.ImportManager
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -16,6 +17,7 @@ class DailyMovementImportJob(private val importManager: ImportManager) {
 
     /** Imports every new file from file-exchange into goods_movement and publishes movements-loaded. */
     @Scheduled(cron = "0 0 2 * * *")
+    @SchedulerLock(name = "dailyMovementImport", lockAtLeastFor = "PT1M", lockAtMostFor = "PT2H")
     fun run() {
         log.info("Daily movement import started")
         val batches = importManager.importNewFiles(scheduled = true)

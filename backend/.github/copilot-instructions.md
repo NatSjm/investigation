@@ -19,7 +19,8 @@ Prefer `#file`, `#sym`, `#selection` over `@workspace` / `#codebase`. Start from
 - Agents (`.github/agents/`): `code-reader` (read-only navigator, max 3 files), `impact-analyst` (blast-radius checklist),
   `docs-tagger` (adds missing `@docs` KDoc tags from `contexts.yml`, comment lines only, one PR per context).
 - Prompts (`.github/prompts/`): `/explain-module` (explains a context: manager + its dependencies; default `product1`), `/find-spec-code` (default `P1-001`),
-  `/add-endpoint` (contract-first checklist), `/tag-docs <context|all>` (inventory from `scripts/docs/tag-candidates.py`, then the tags).
+  `/add-endpoint` (contract-first checklist), `/tag-docs <context|all>` (inventory from `scripts/docs/tag-candidates.py`, then the tags),
+  `/adapt-docs-scripts` (security review of `scripts/docs/*` and the `docs-gen.json` for this repository; never runs anything, a person runs after review).
 - Hook `.github/hooks/docs-maps.json` runs `gen-all.py --check` when an agent session stops.
 
 ## Docs-repo tools

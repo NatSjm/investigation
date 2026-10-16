@@ -16,13 +16,14 @@ harbor-core/             the Spring Boot application - all business code, one pa
   src/main/kotlin/com/acme/harbor/HarborConstants.kt     application-wide constants (API base path, session header)
   src/main/kotlin/com/acme/harbor/<layer>/...             see the table below
   src/main/resources/api/            contracts of the external services -> generated REST clients
-  src/main/resources/openapi/        harbor-api.yaml (REST contract), harbor-events.yaml (AsyncAPI, Kafka)
+  src/main/resources/openapi/        openapi_harbor.yaml (REST contract), harbor-events.yaml (AsyncAPI, Kafka)
   src/main/resources/db/migration/   Flyway V1__..V9__*.sql
   src/main/resources/pdf/            meeting-report.html + report.css (template sent to document-service)
   src/main/resources/application.yml
   src/test/kotlin/com/acme/harbor/   unit tests (<Class>Test.kt next to the layer: utils/, validator/)
   src/test/resources/datasets/       integration-test fixtures (named datasets)
-kafka-client/            shared library: com.acme.harbor.kafka.Topics, com.acme.harbor.kafka.events.*, JsonSerde, HarborKafkaClient
+kafka-client/            event contracts only: src/main/resources/avro/*.avsc (events Harbor publishes), json_<service>/*.json (external
+                         events); payload classes generated at build (avro-maven-plugin, jsonschema2pojo), no sources
 init_docker_compose/     local environment: PostgreSQL, Kafka, WireMock for the five external services
 scripts/docs/            generators of docs/_generated/*.md; the layout they read is scripts/docs/docs-gen.json
 ```
@@ -49,7 +50,7 @@ scripts/docs/            generators of docs/_generated/*.md; the layout they rea
 | `event` | Kafka publishers and listeners (topics and payloads from `kafka-client`) | `SessionEventsPublisher`, `ReportSessionClosedListener` |
 | `job` | `@Scheduled` jobs | `DailyMovementImportJob`, `MonthlySnapshotJob` |
 | `client/rest` | thin `@Component` wrappers over the generated clients of the external services | `MarketDataClient`, `CoverProviderClient` |
-| `client/kafka` | the outbound Kafka producer used by the publishers (`producer.send(Topics.X, key, payload)`) | `EventProducer` |
+| `client/kafka` | the outbound Kafka producer used by the publishers (`producer.send(TOPIC, key, payload)`) | `EventProducer` |
 | `component` | infrastructure components | `SessionHeaderFilter`, `XlsMovementParser`, `ReportTemplateLoader` |
 | `context` | request / session context | `SessionContext`, `SessionScope`, `CurrentUser` |
 | `config` | Spring configuration | `KafkaConfig`, `WebConfig`, `JacksonConfig`, `SchedulingConfig` |
@@ -79,7 +80,7 @@ Point the external services to WireMock with `HARBOR_*_URL=http://localhost:8089
 `harbor-core/pom.xml` runs openapi-generator during `generate-sources`; the output lands in `harbor-core/target/generated-sources`
 and is **not committed**:
 
-- `openapi/harbor-api.yaml` -> `kotlin-spring`, `interfaceOnly`: one interface per tag in `com.acme.harbor.api.generated`
+- `openapi/openapi_harbor.yaml` -> `kotlin-spring`, `interfaceOnly`: one interface per tag in `com.acme.harbor.api.generated`
   (`ClientsApi`, `MeetingsApi`, `Product1Api`, `Product2Api`, `CoverApi`, `MarketApi`, `StressApi`, `ReportsApi`,
   `AdminApi`) with the request mappings, models in `com.acme.harbor.api.generated.model`. The frontend client is generated
   from the same file. Change the contract first, regenerate, then implement the `override fun`.
@@ -99,15 +100,19 @@ Session-scoped controllers read `SessionContext.current()` and pass the scope to
 
 ## Kafka
 
-| Topic (`com.acme.harbor.kafka.Topics`) | Producer | Consumers |
-|---|---|---|
-| `MOVEMENTS_LOADED` | `MovementsLoadedPublisher` | `Product1ProjectionRefreshListener`, `Product2ProjectionRefreshListener` |
-| `PRICES_UPDATED` | external (market-data) | `MarketPricesListener` |
-| `SESSION_CLOSED` | `SessionEventsPublisher` | `ReportSessionClosedListener`, `ClientRoleSessionClosedListener` |
-| `REPORT_RENDER_REQUESTED` | `ReportRenderRequester` | external (document-service) |
-| `REPORT_RENDERED` | external (document-service) | `ReportRenderedListener` |
+| Topic (`TOPIC` constant of the class) | Schema (`kafka-client/src/main/resources`) | Producer | Consumers |
+|---|---|---|---|
+| `harbor.imports.movements-loaded` | `avro/MovementsLoaded.avsc` | `MovementsLoadedPublisher` | `Product1ProjectionRefreshListener`, `Product2ProjectionRefreshListener` |
+| `harbor.market.prices-updated` | `json_market-data/PricesUpdated.json` | external (market-data) | `MarketPricesListener` |
+| `harbor.meetings.session-closed` | `avro/SessionClosed.avsc` | `SessionEventsPublisher` | `ReportSessionClosedListener`, `ClientRoleSessionClosedListener` |
+| `harbor.reports.render-requested` | `avro/ReportRenderRequested.avsc` | `ReportRenderRequester` | external (document-service) |
+| `harbor.reports.rendered` | `json_document-service/ReportRendered.json` | external (document-service) | `ReportRenderedListener` |
 
-Publishers send through `client/kafka/EventProducer` (the only class holding the `KafkaTemplate`).
+Every listener and publisher declares its topic as `const val TOPIC` in its companion object; listeners read `groupId` and
+`autoStartup` from `harbor.kafka.*` properties. Publishers send through `client/kafka/EventProducer` (the only class holding the
+`KafkaTemplate`); Harbor's own events travel as Avro JSON (`client/kafka/AvroJsonSerde`), external ones as plain JSON.
+The statistical view `db/migration/statistical-views/create_view_client_overview.sql` is applied at start-up by
+`component/StatisticalViewsInitializer`; jobs are guarded by ShedLock (`@SchedulerLock`, table `shedlock`, V10).
 
 ## Scheduled jobs (`job/`)
 

@@ -24,13 +24,13 @@ C:/projects/tools/apache-maven-3.9.9/bin/mvn -B -DskipTests clean package   # ~2
 export HARBOR_CLIENT_REGISTRY_URL='http://localhost:8089'; export HARBOR_MARKET_DATA_URL='http://localhost:8089'
 export HARBOR_COVER_PROVIDER_URL='http://localhost:8089'; export HARBOR_DOCUMENT_SERVICE_URL='http://localhost:8089'
 export HARBOR_FILE_EXCHANGE_URL='http://localhost:8089'
-java -jar harbor-core/target/core-1.0.0-SNAPSHOT.jar          # "Started HarborBackendApplicationKt", Flyway applies V1..V9
+java -jar harbor-core/target/harbor-core-1.0.0-SNAPSHOT.jar          # "Started HarborBackendApplicationKt", Flyway applies V1..V9
 cd ..
 
 # 3. frontend
 cd frontend
 npm install                                             # first time
-npm run generate:api                                    # types from ../backend/.../openapi/harbor-api.yaml
+npm run generate:api                                    # types from ../backend/.../openapi/openapi_harbor.yaml
 npm run dev                                             # http://localhost:5173, proxies /api -> 8080
 ```
 
@@ -182,7 +182,7 @@ In VS Code with Copilot (workspace root `docs-repo`): `/context-pack PRS-001`, `
 ## 8. Stop
 
 ```bash
-taskkill /IM java.exe /F                                                 # backend (Windows); macOS: pkill -f core-1.0.0-SNAPSHOT.jar
+taskkill /IM java.exe /F                                                 # backend (Windows); macOS: pkill -f harbor-core-1.0.0-SNAPSHOT.jar
 docker compose -f backend/init_docker_compose/docker-compose.yml down    # add -v to drop the database volume
 ```
 The Vite server stops with Ctrl+C in its terminal.
