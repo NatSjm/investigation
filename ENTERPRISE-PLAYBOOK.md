@@ -14,10 +14,43 @@ named below exists in this investigation repository; copy it, then adapt where t
 Companion documents: [HANDBOOK.md](HANDBOOK.md) explains every piece and why; [MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md)
 is the meeting checklist; [GUIDE.md](GUIDE.md) is the tour of this prototype. This playbook is the order of work.
 
-Contents: 0 Ground rules and safety · 1 Decisions before you start · 2 Docs repository skeleton · 3 AGENTS.md and the
+Contents: Pilot track (read first) · 0 Ground rules and safety · 1 Decisions before you start · 2 Docs repository skeleton · 3 AGENTS.md and the
 Copilot files · 4 Contexts and the mapping file · 5 Contracts you already have · 6 Code repositories · 7 Collector ·
 8 Graph and indexes · 9 Confluence import · 10 Specs, run by run · 11 Calculations and flows · 12 The analyst ·
 13 Maintenance · 14 Scripts catalogue · 15 Agents catalogue · 16 Plan: documentation first, analyst second · 17 Lessons from the first trial · 18 Human-owned documents an agent may draft · 19 Several repositories in IntelliJ · 20 Workstations: Windows and macOS
+
+---
+
+## Pilot track: the minimum for the first spec (read first)
+
+The playbook describes the full system. For the first spec of one pilot context you need five pieces; everything
+else is added when its absence hurts. Each section from 2 to 13 is marked **Pilot** or **Later** under its heading.
+
+| # | Piece | Section | Done when |
+|---|---|---|---|
+| 1 | Docs repo skeleton, `AGENTS.md`, three agents (`analyst`, `spec-writer`, `calc-auditor`), the instructions and skills; prompt files are optional in the CLI (section 1, item 6) | 2, 3 | validators green on the empty repo; `/agent` lists the three agents |
+| 2 | Contracts copied by hand into `generated/openapi/` (own API, external services) with a line each in `generated/manifest.yml` | 5 | `okf-validate.py --strict` accepts them; `architecture/integrations.md` cites them |
+| 3 | Backend and frontend generators run once by hand in the pilot repositories (`docs-gen.json` through `/adapt-docs-scripts`, then `gen-all.py`), `docs/_generated/` committed | 6, items 1 and 9 | every endpoint, topic, table, job, route and hook of the pilot context appears once |
+| 4 | `contexts.yml`, a `docs-map.yml` with one row per context, the maps copied into `generated/be` and `generated/fe` (by hand or by one local collector run), then `gen-graph.py` and `build-index.py` | 4, 7 (local run only), 8 | `REPO_MAP.md` shows the pilot community; its spec is listed as "code only" |
+| 5 | One context pack per task and Runs 1 to 4 for the pilot spec, with the calculations it links | 10, 11 | a spec with `file:line` citations, reviewed by its owner |
+
+Deferred until the trigger named:
+
+- Hooks, CI workflows, the freshness gate and the migration board (section 6 items 5 to 7, section 7 in CI,
+  section 13): when a second person writes specs, or the first time a map goes stale unnoticed.
+- `confluence-migrator` and section 9: when the first exported space arrives.
+- `doc-sync`: with the first collector pull request. `impact-analyst`, `architect`, `test-designer`,
+  `migration-lead`: with the first task of that kind.
+- `@docs` tags and `tag-docs` (section 6, item 8): when a calculation without a spec appears on the board.
+- Parameter and dataset headers (17.7): when `gen-parameters.py` and `gen-datasets.py` leave `skip_generators`.
+- Confluence publish, the reader test of 17.3 and a human-facing rendering of the repository: after the first
+  analytics tasks.
+- The analyst agent (section 12) and the gate of section 16 stay as written; the pilot track is week 1 of phase 1,
+  not a shortcut around the gate.
+
+The pilot track is an afternoon after section 3 once `docs-gen.json` is right. The two places where it stalls are
+the generator regexes against your conventions (`/adapt-docs-scripts`, section 6) and the bounded-context cut in
+`contexts.yml` (section 4), which no tool decides for you.
 
 ---
 
@@ -81,13 +114,19 @@ permissions, and review of what gets committed.
 5. **Roles.** Documentation maintainer (runs the agents, reviews diffs), context owners (Run 4 verification), one
    analyst to evaluate the output, a platform engineer for CI and tokens.
 6. **Copilot client.** Copilot CLI for every agent run (hooks and skills work there; the JetBrains plugin has them in
-   preview), IntelliJ for reading and reviewing. Verify once on your CLI version that prompt files appear as slash
-   commands and that hooks fire in `-p` mode.
+   preview), IntelliJ for reading and reviewing. The CLI loads `AGENTS.md`, `.github/agents/*.agent.md` (`/agent`)
+   and `.github/skills/`; it does **not** load `.github/prompts/*.prompt.md` as slash commands (github/copilot-cli
+   issue 618, still a feature request in 2026). Prompt files are slash commands in the JetBrains plugin and VS Code
+   only. Wherever this playbook writes `/name`, in the CLI type
+   `Follow .github/prompts/<name>.prompt.md with <input> = <value>, ...`, after selecting the agent named in the
+   prompt's `agent:` line with `/agent` when it is not the default one. Verify once that hooks fire in `-p` mode.
 7. **Language.** English in files; glossary aliases keep the source-language terms findable.
 
 ---
 
 ## 2. Docs repository skeleton (half a day)
+
+**Pilot.**
 
 Create the repository and copy these from `docs-repo/` of this investigation repository, unchanged unless noted:
 
@@ -133,6 +172,8 @@ All three must pass on the empty skeleton. Protect `main`: PRs only, one approva
 
 ## 3. AGENTS.md and the Copilot files
 
+**Pilot** (the agents `analyst`, `spec-writer`, `calc-auditor`, the instructions and skills; hooks and workflows later).
+
 `AGENTS.md` is the contract between people and agents. Every Copilot surface reads it first. Keep it under 80 lines.
 Write these sections, in this order, adapted from `docs-repo/AGENTS.md`:
 
@@ -168,8 +209,9 @@ Then copy `.github/` as it is and adapt only names:
 | `.github/workflows/docs-quality.yml` | markdownlint, validators, index and graph checks, link check | runner OS, Python availability for the reference OKF checker (optional) |
 | `.github/workflows/copilot-setup-steps.yml` | only if you use the cloud coding agent | - |
 
-**Acceptance:** in the Copilot CLI, opened in the docs repo, `/context-pack` and `/spec-skeleton-from-graph` appear
-as commands and `@analyst` is selectable.
+**Acceptance:** in the Copilot CLI, opened in the docs repo, `/agent` lists `analyst`, and
+`python3 scripts/context-pack.py --task <any text> --print` runs; in the JetBrains plugin or VS Code `/context-pack`
+and `/spec-skeleton-from-graph` appear as commands (not in the CLI, section 1 item 6).
 
 **With an agent.** One file of this step is written from your code rather than copied: the code rows of
 `.github/skills/write-feature-spec/references/source-priority.md`. Steps: 1. open the Copilot CLI in the docs repo with
@@ -180,6 +222,8 @@ row, and that the rules of thumb stay at seven or fewer; 4. commit. Rerun it whe
 ---
 
 ## 4. Contexts and the mapping file (one hour with a developer who knows the code)
+
+**Pilot.**
 
 **`contexts.yml`** turns code into bounded contexts without moving code. One entry per business area:
 
@@ -228,6 +272,8 @@ where precision matters.
 
 ## 5. Contracts you already have (one hour)
 
+**Pilot** (contracts copied by hand; the collector later).
+
 You already keep the OpenAPI documents in the docs repository. Put them where the scripts and agents look:
 
 | Contract | Location in the docs repo | Who owns the file |
@@ -264,6 +310,8 @@ is matched by verb and path of its `@GetMapping`; routes outside the contract ar
 ---
 
 ## 6. Code repositories (one afternoon per repository)
+
+**Pilot:** items 1 and 9 for the pilot repositories, items 2 to 4 with them when cheap; items 5 to 8 later.
 
 Copy the kit flavour into each repository. `code-repo-kit/apply-kit.py --flavour be --target <backend>` copies
 everything at once; for the enterprise rollout copy selectively in this order and review each file:
@@ -330,6 +378,8 @@ regenerating; a Copilot question "where is the billing entry point" in the code 
 
 ## 7. Collector (half a day, platform engineer)
 
+**Later** (one local run in the pilot to copy the maps, or copy `docs/_generated/` by hand; CI when a second person writes specs).
+
 One workflow in the docs repository pulls the evidence; the code repositories push nothing.
 
 1. Locally first, from the docs repo, against checkouts of the code repos:
@@ -362,6 +412,8 @@ nothing; an unchanged run opens no PR.
 
 ## 8. Graph and indexes (one hour, then iterate)
 
+**Pilot.**
+
 ```bash
 python3 scripts/gen-graph.py; python3 scripts/build-index.py
 ```
@@ -388,6 +440,8 @@ file names its entry point.
 
 ## 9. Confluence import (half a day per space)
 
+**Later** (with the first exported space).
+
 Export the space to HTML (the standard space export, no API needed) and run the importer: the specification is in
 [MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md) step 3 and the stub `scripts/confluence-export.py`. It writes one Markdown
 file per page under `confluence-import/<SPACE>/` with a header block (`source`, `last_modified`, `author`,
@@ -409,9 +463,12 @@ input) instead of Run 2. 3. Everything else waits for Run 2 (`@confluence-migrat
 
 ## 10. Specs, run by run (the core of the work)
 
+**Pilot** (one context, four runs).
+
 One spec is written in four runs; one Copilot run, one human review of the diff, one commit each. The lifecycle skill
 (`.github/skills/spec-lifecycle/SKILL.md`) and its review checklist (`references/run-checklist.md`) are the reference.
-All commands are typed in the Copilot CLI opened in the docs repo.
+All commands are typed in the Copilot CLI opened in the docs repo (`/name` is a prompt file; in the CLI invoke it
+as in section 1, item 6).
 
 **Before Run 1, shape the spec list of the context** (migration lead with a developer, one hour per context;
 the rules are in `features/conventions.md`, section "Shaping specs"). Contexts follow the code seams, never the
@@ -461,6 +518,8 @@ The `agentStop` hook runs the validators anyway.
 
 ## 11. Calculations and flows
 
+**Pilot** for the calculations the pilot spec links; flows later.
+
 **Calculations** are `type: Attested Computation` documents: inputs with units, parameters with defaults and where
 they are read from, outputs with rounding, the formula, a step list with footnotes to the source, the sanctioned code
 shape, conventions, worked examples copied from the test with the test method named, an audit table, open questions.
@@ -489,6 +548,8 @@ when a search term misses; `@confluence-migrator` adds the legacy wording during
 
 ## 12. The analyst
 
+**Later** (after the gate of section 16).
+
 Phase 2 of the plan (section 16): run the analyst on real tasks only after the "documentation ready" gate is passed
 for the contexts those tasks touch (the scope of section 1). A task that crosses into an out-of-scope context is
 the signal to bring that context through Runs 1 to 4 next, not to let the analyst guess.
@@ -503,9 +564,9 @@ input is a change request and the output is delta stories only (17.1).
 The everyday sequence:
 
 ```bash
-python3 scripts/context-pack.py --task BIL-001            # or in the CLI: /context-pack BIL-001
-# in the Copilot CLI:
-@analyst /jira-from-spec BIL-001
+python3 scripts/context-pack.py --task BIL-001            # or, in the CLI: Follow .github/prompts/context-pack.prompt.md with task = BIL-001
+# in the Copilot CLI (/agent analyst, then):
+#   Follow .github/prompts/jira-from-spec.prompt.md with featureId = BIL-001, mode = vertical
 python3 scripts/validate-work-items.py work-items/BIL-001.yml
 python3 scripts/coverage-matrix.py                        # BR -> story -> scenario matrix, badges, staleness
 ```
@@ -521,6 +582,8 @@ questions per spec, Copilot premium requests per run.
 ---
 
 ## 13. Maintenance
+
+**Later.**
 
 - **Code changes.** The collector's PR names the specs in the blast radius (manifest diff through `docs-map.yml`).
   `doc-sync` runs on that PR: compares API, events and data sections with the new contracts and maps, updates them,

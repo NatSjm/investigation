@@ -108,7 +108,8 @@ override the regex edges when present.
 GitHub Copilot reads, per repository: `AGENTS.md` (cross-tool, read by Chat, CLI, JetBrains and the cloud coding
 agent), `.github/copilot-instructions.md` (Copilot-only supplement), `.github/instructions/*.instructions.md`
 (rules applied to files matching `applyTo` globs), `.github/agents/*.agent.md` (custom agents with a tool list and
-`handoffs`), `.github/prompts/*.prompt.md` (slash commands that pick an agent and carry arguments),
+`handoffs`), `.github/prompts/*.prompt.md` (slash commands in the IDE chat that pick an agent and carry arguments; the CLI does
+not load them, there you ask the agent to follow the file),
 `.github/skills/<name>/SKILL.md` (procedures loaded when their description matches the task),
 `.github/hooks/*.json` (commands run before a tool call or when an agent stops), and
 `.github/workflows/copilot-setup-steps.yml` (environment for the cloud coding agent). Content exclusion is a
