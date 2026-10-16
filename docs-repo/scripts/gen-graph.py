@@ -76,7 +76,8 @@ def ticks(ids):
 def db_relations(tbl):
     """Foreign keys of one table of schema.json, tolerant to the common tool shapes:
     table-level `parents` / `foreignKeys` / `relations` entries ({table|parent_table|parentTable|name, columns|column}),
-    or column-level `references` / `parents` ({table|parent_table, columns}). Yields {'parent', 'column'}."""
+    or column-level `references` / `parents` ({table|parent_table, columns}). Yields {'parent', 'column', 'implied'};
+    `implied: true` (SchemaSpy: relation guessed from column names, no constraint in the database) is kept and labelled."""
     out = []
     def parent_name(d):
         for k in ('parent_table', 'parentTable', 'parent', 'referencedTable', 'refTable', 'ref_table', 'foreignTable', 'table', 'tableName', 'name'):
@@ -95,14 +96,14 @@ def db_relations(tbl):
         for d in tbl.get(key) or []:
             p = parent_name(d) if isinstance(d, dict) else ''
             if p and p != (tbl.get('name') or '').lower():
-                out.append({'parent': p, 'column': cols(d)[0]})
+                out.append({'parent': p, 'column': cols(d)[0], 'implied': bool(d.get('implied'))})
     for c in tbl.get('columns') or []:
         for key in ('references', 'parents', 'foreignKey'):
             v = c.get(key)
             for d in (v if isinstance(v, list) else [v] if isinstance(v, dict) else []):
                 p = parent_name(d)
                 if p:
-                    out.append({'parent': p, 'column': (c.get('name') or '').lower()})
+                    out.append({'parent': p, 'column': (c.get('name') or '').lower(), 'implied': bool(d.get('implied'))})
     seen, uniq = set(), []
     for r in out:
         k = (r['parent'], r['column'])
@@ -347,7 +348,8 @@ def main():
             else:
                 add_node(nid, 'table', tn, 'shared', 'be', page, (note + ' ' if note else '') + f"({len(cols)} columns: {', '.join(cols)})")
             for rel_ in db_relations(tbl):
-                add_edge(f"table:{rel_['parent']}", nid, f"fk {rel_['column']}", 'db-docs')
+                label = f"fk {rel_['column']}" + (' (implied, no constraint)' if rel_['implied'] else '')
+                add_edge(f"table:{rel_['parent']}", nid, label, 'db-docs')
     for m in re.finditer(r'(?m)^\s*(\w+)\s*\|[|o}{\-]+\s*(\w+)\s*:\s*(\w+)', schema):
         if not db_tables:
             add_edge(f'table:{m.group(2)}', f'table:{m.group(1)}', f'fk {m.group(3)}')
