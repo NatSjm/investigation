@@ -260,8 +260,10 @@ ignore: ["**/*Test.kt", "**/src/test/**", "**/*.test.ts*", "fe/src/services/open
 3. `/docs-map-from-contexts` (agent `architect`) drafts the `mappings` rows from `contexts.yml` and the file trees: one
    row per context with a glob per class prefix, per page folder, the types file and the shared pieces the page imports,
    then the cross-cutting rows (calculators, messaging, contracts); every glob verified against at least one file.
-4. Check: `python3 scripts/map-paths.py <one real path per context>` prints the expected spec (or the `specs: []` backlog
-   row); commit both files. The graph (section 8) is where wrong prefixes become visible.
+4. Check: `python3 scripts/map-paths.py <one real path per context>`, each path prefixed `be/` or `fe/` and relative to
+   its repository root (for example the context's manager file and its page component), prints the spec of that context,
+   or `BACKLOG` for a context whose row still has `specs: []`; `UNMAPPED` means no row matched the path, so a glob is
+   wrong. Commit both files. The graph (section 8) is where wrong prefixes become visible.
 
 It is read by `map-paths.py` (changed paths to specs), `check-freshness.py` (CI gate), the collector's PR body, and
 `gen-graph.py`, which turns every row into `implemented-by` edges. That last point means you do not have to put

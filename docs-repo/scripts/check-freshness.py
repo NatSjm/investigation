@@ -34,9 +34,13 @@ def main():
     hits = load_map_paths().map_paths(repo, changed)
     stale = []
     unmapped = []
+    backlog = []
     for path, specs in hits:
         if 'UNMAPPED' in specs:
             unmapped.append(path)
+            continue
+        if 'BACKLOG' in specs:   # mapped context without a spec yet: nothing to verify, never a failure
+            backlog.append(path)
             continue
         for spec in specs:
             for f in sorted(glob.glob(os.path.join(repo, spec))):
@@ -48,6 +52,8 @@ def main():
                     stale.append(f"{path} -> {spec} (last_verified={lv.isoformat() if lv else ''})")
     for s in dict.fromkeys(stale):
         print(f'STALE  {s}')
+    for b in backlog:
+        print(f'BACKLOG {b}')
     for u in unmapped:
         print(f'UNMAPPED {u}')
     if stale or (unmapped and not a.allow_unmapped):

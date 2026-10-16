@@ -3,7 +3,8 @@
 Examples:
   python3 scripts/map-paths.py be/harbor-core/src/main/kotlin/com/acme/harbor/manager/Product1Manager.kt fe/src/pages/StressTestPage/StressTestPage.tsx
   git diff --name-only origin/main | sed 's#^#be/#' | python3 scripts/map-paths.py
-Output: one line per path `<path> -> <spec>, <spec>`; unmapped paths show `UNMAPPED`. --json for machine output."""
+Output: one line per path `<path> -> <spec>, <spec>`; a path matched by a row whose `specs: []` is still empty shows
+`BACKLOG` (mapped context, no spec yet); a path matched by no row shows `UNMAPPED`. --json for machine output."""
 import argparse
 import json
 import os
@@ -51,7 +52,7 @@ def test_glob(glob, path):
 
 
 def map_paths(repo, changed_paths):
-    """[(path, [specs])]; unmapped paths get ['UNMAPPED']."""
+    """[(path, [specs])]; paths matched only by rows without specs get ['BACKLOG'], unmatched paths ['UNMAPPED']."""
     mappings, ignore = load_map(repo)
     out = []
     for p in changed_paths:
@@ -61,12 +62,14 @@ def map_paths(repo, changed_paths):
         if any(test_glob(g, p) for g in ignore):
             continue
         specs = []
+        matched = False
         for m in mappings:
             if any(test_glob(g, p) for g in m['Paths']):
+                matched = True
                 for s in m['Specs']:
                     if s not in specs:
                         specs.append(s)
-        out.append((p, specs if specs else ['UNMAPPED']))
+        out.append((p, specs if specs else ['BACKLOG'] if matched else ['UNMAPPED']))
     return out
 
 
