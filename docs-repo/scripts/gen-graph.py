@@ -79,12 +79,12 @@ def db_relations(tbl):
     or column-level `references` / `parents` ({table|parent_table, columns}). Yields {'parent', 'column'}."""
     out = []
     def parent_name(d):
-        for k in ('parent_table', 'parentTable', 'parent', 'referencedTable', 'table', 'name'):
+        for k in ('parent_table', 'parentTable', 'parent', 'referencedTable', 'refTable', 'ref_table', 'foreignTable', 'table', 'tableName', 'name'):
             if isinstance(d.get(k), str) and d[k]:
                 return d[k].lower()
         return ''
     def cols(d):
-        for k in ('columns', 'column', 'childColumns', 'child_columns', 'foreignKeyColumns'):
+        for k in ('columns', 'column', 'childColumns', 'child_columns', 'foreignKeyColumns', 'fkColumn'):
             v = d.get(k)
             if isinstance(v, str):
                 return [v.lower()]
