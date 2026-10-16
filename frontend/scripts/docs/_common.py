@@ -137,3 +137,60 @@ def split_list(values):
     for v in values or []:
         out.extend(x.strip() for x in v.split(',') if x.strip())
     return out
+
+
+# ---- layout configuration (docs-gen.json next to the generators) ----
+CONFIG_FILE = 'docs-gen.json'
+
+
+def load_config(root, defaults, explicit=''):
+    """Merges docs-gen.json over the generator's defaults. Looked up in this order: --config, <root>/scripts/docs/,
+    the generator's own folder. Keys unknown to the generator are kept (other generators read them)."""
+    import json
+    here = os.path.dirname(os.path.abspath(sys.argv[0]))
+    candidates = [explicit] if explicit else [os.path.join(root, 'scripts', 'docs', CONFIG_FILE), os.path.join(here, CONFIG_FILE)]
+    cfg = dict(defaults)
+    for c in candidates:
+        if c and os.path.isfile(c):
+            with open(c, 'r', encoding='utf-8-sig') as f:
+                data = json.load(f)
+            cfg.update({k: v for k, v in data.items() if not k.startswith('_')})
+            cfg['_config_path'] = c
+            break
+    return cfg
+
+
+def glob_match(rel, pattern):
+    """Path glob on a repo-relative posix path: `**` spans folders, `*` and `?` stay inside one segment."""
+    rx = ''
+    i = 0
+    while i < len(pattern):
+        c = pattern[i]
+        if pattern.startswith('**/', i):
+            rx += '(?:.*/)?'
+            i += 3
+            continue
+        if pattern.startswith('**', i):
+            rx += '.*'
+            i += 2
+            continue
+        rx += '[^/]*' if c == '*' else '[^/]' if c == '?' else re.escape(c)
+        i += 1
+    return re.match('^' + rx + '$', posix(rel), re.I) is not None
+
+
+def under(path, prefixes):
+    """True when the absolute path lies under one of the absolute prefixes (file or folder)."""
+    p = posix(os.path.abspath(path)).lower()
+    for x in prefixes:
+        x = posix(os.path.abspath(x)).lower()
+        if p == x or p.startswith(x + '/'):
+            return True
+    return False
+
+
+def source_files_cfg(root, include, test_rx, exclude_paths=()):
+    """source_files() minus tests (regex on the file name) and minus the configured excluded paths (absolute)."""
+    rx = re.compile(test_rx, re.I) if test_rx else None
+    return [f for f in source_files(root, include)
+            if not (rx and rx.search(os.path.basename(f))) and not under(f, exclude_paths)]

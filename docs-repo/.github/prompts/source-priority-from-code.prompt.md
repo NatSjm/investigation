@@ -17,9 +17,9 @@ product's repositories. Keep the table shape, the column names and the "cheapest
 
 ## Inputs (read-only)
 - The current file (read it first).
-- `contexts.yml`: bounded contexts, backend class-name prefixes, frontend feature folders.
+- `contexts.yml`: bounded contexts, backend class-name prefixes, frontend page folders (`fe` list).
 - Backend repository: Kotlin/Spring, layered packages.
-- Frontend repository: React/TypeScript, feature folders.
+- Frontend repository: React/TypeScript, page folders (`src/pages/<Page>/`).
 - `generated/be/codebase-map.md` and `generated/fe/codebase-map.md` if they exist; otherwise the source trees.
 
 ## Investigation
@@ -29,7 +29,7 @@ product's repositories. Keep the table shape, the column names and the "cheapest
    the entry point of a context lives (the class a spec's `context:` node names). Find where calculators live and
    where their unit tests live (test source root, package, naming pattern such as `<Class>Test.kt`). Find where
    validation and error mapping live (validators, exception handlers, problem-detail mapping).
-2. **Frontend.** For one feature folder, list the sub-folders and what they hold (page components, hooks that
+2. **Frontend.** For one page folder, list the sub-folders and what they hold (the page component, hooks that
    call the API, types, local components), the routing file, the shared component library, the generated API
    client, client-side validation if any, and the test location and naming pattern.
 3. **Cost.** For each candidate source, estimate the reading cost (very low, low, medium, high) by the size of
@@ -38,7 +38,7 @@ product's repositories. Keep the table shape, the column names and the "cheapest
 ## Output
 **A. The rewritten file.** Rows 1 to 7 unchanged. From row 8: one row per backend or frontend source kind,
 cheapest first, with the real path pattern of the repositories (for example
-`core/src/main/kotlin/<pkg>/manager/<Ctx>Manager.kt`, `src/features/<ctx>/api/use*.ts`), a cost, and the
+`core/src/main/kotlin/<pkg>/manager/<Ctx>Manager.kt`, `src/pages/<Page>/hook/use*.ts`), a cost, and the
 "gives you" phrase naming the facts it is the best source for: rule intent, orchestration, edge cases and worked
 examples, validation and error codes, UI flow, client-side validation, cross-window or cross-feature channels.
 Tests come before services where the tests carry the examples. Keep the table under 15 rows.

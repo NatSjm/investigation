@@ -8,10 +8,10 @@ generated: { by: copilot/spec-writer, at: 2026-10-15T09:30:00Z }
 stale_after: 2027-01-13T00:00:00Z
 sources:
   - id: overview
-    resource: fe/src/features/clients/ui/ClientOverviewPage.tsx
+    resource: fe/src/pages/ClientOverviewPage/ClientOverviewPage.tsx
     title: ClientOverviewPage.tsx
   - id: layout
-    resource: fe/src/app/SessionLayout.tsx
+    resource: fe/src/components/layout/SessionLayout.tsx
     title: SessionLayout.tsx
   - id: report
     resource: be/core/src/main/kotlin/harbor/manager/ReportManager.kt
@@ -21,9 +21,9 @@ id: FLOW-meeting-journey
 contexts: [clients, meetings, product1, product2, market, stress, reports, presentation]
 specs: [CLI-001, SES-001, P1-001, P2-001, MKT-001, STR-001, RPT-001, PRS-001]
 code_refs:
-  - fe/src/features/clients/ui/ClientOverviewPage.tsx
-  - fe/src/app/SessionLayout.tsx
-  - fe/src/app/routes.tsx
+  - fe/src/pages/ClientOverviewPage/ClientOverviewPage.tsx
+  - fe/src/components/layout/SessionLayout.tsx
+  - fe/src/routing/Routing.tsx
   - be/core/src/main/kotlin/harbor/manager/MeetingManager.kt
   - be/core/src/main/kotlin/harbor/manager/ReportManager.kt
 channels: ["harbor.meetings.session-closed", "harbor.session.{sessionId}"]
@@ -81,12 +81,12 @@ sequenceDiagram
   X->>X: build payload from projection + stress results, request PDF
 ```
 1. `ClientOverviewPage` calls `useCreateSession` with the chosen product group and kind and navigates to
-   `/session/<id>/<productGroup>` (`fe/src/features/clients/ui/ClientOverviewPage.tsx:24-26`). The backend creates
+   `/session/<id>/<productGroup>` (`fe/src/pages/ClientOverviewPage/ClientOverviewPage.tsx:26-30`). The backend creates
    `meeting_session`, copies the parameter snapshot and inserts the client config (SES-001 BR-1 to BR-4).
 2. `SessionLayout` loads the session, stores it so that every `/session/**` call carries `X-Harbor-Session`
    (SES-001 BR-5), and renders the steps Overview → Scenarios → Stress test → Summary
-   (`fe/src/app/SessionLayout.tsx:37-41`).
-3. Step 1 is the product screen chosen by `session.productGroup` (`fe/src/app/routes.tsx:34-35`): P1-001 with the
+   (`fe/src/components/layout/SessionLayout.tsx:37-41`).
+3. Step 1 is the product screen chosen by `session.productGroup` (`fe/src/routing/SessionRoutes.tsx:19-20`): P1-001 with the
    city dimension or P2-001 with the transport mode. Its modals are P1-002 / P1-003 or P2-002 / P2-003; a saved
    movement set triggers the recalculation flow (`/flows/session-inputs-recalculation.md`).
 4. Step 2 is the scenarios screen (MKT-001): the market scenarios the stress test will use.
@@ -124,9 +124,9 @@ rules are in PRS-001.
 ## Source map
 | Concern | Location |
 |---|---|
-| Product choice and session creation | `fe/src/features/clients/ui/ClientOverviewPage.tsx`, `fe/src/features/meetings/api/useCreateSession.ts`, `be/core/src/main/kotlin/harbor/manager/MeetingManager.kt` |
-| Step navigation, header binding | `fe/src/app/SessionLayout.tsx` |
-| Routes per step | `fe/src/app/routes.tsx:31-38` |
+| Product choice and session creation | `fe/src/pages/ClientOverviewPage/ClientOverviewPage.tsx`, `fe/src/pages/ClientOverviewPage/hook/useCreateSession.ts`, `be/core/src/main/kotlin/harbor/manager/MeetingManager.kt` |
+| Step navigation, header binding | `fe/src/components/layout/SessionLayout.tsx` |
+| Routes per step | `fe/src/routing/SessionRoutes.tsx:16-24` |
 | Close and downstream reactions | `be/core/src/main/kotlin/harbor/manager/MeetingManager.kt`, `be/core/src/main/kotlin/harbor/manager/ReportManager.kt`, `be/core/src/main/kotlin/harbor/event/ClientRoleSessionClosedListener.kt` |
 
 ## Open questions

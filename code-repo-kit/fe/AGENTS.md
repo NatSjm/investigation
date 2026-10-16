@@ -6,40 +6,45 @@ Copilot-specific extras are in `.github/copilot-instructions.md`; path-scoped ru
 ## What this repository is
 Web client of the Harbor platform. Account representatives search clients, start a **meeting session**, work through the
 product overview pages (projection tables, cover charts, movement and peer-simulation modals), market scenarios and the
-stress test, and download the meeting report. One feature folder per bounded context, named like the context in the docs repo `contexts.yml` (BE classes carry the matching name prefix):
+stress test, and download the meeting report. One folder per routed page under `src/pages/<Page>/`; the docs repo
+`contexts.yml` lists which pages belong to which bounded context (`fe` list) and which BE class-name prefixes do:
 `clients`, `meetings`, `product1`, `product2`, `cover`, `market`, `stress`, `reports`, `admin`.
 `presentation` (FE-only, `PRS-001`) is the client-facing window `/present/:sessionId`; all cross-window sync goes through
-the single `BroadcastChannel` module `src/features/presentation/channel.ts` (`route` / `view` / `session-closed` messages).
+the single `BroadcastChannel` module `src/components/broadcast/sessionChannel.ts` and the hooks in `src/components/hook/`
+(`route` / `view` / `session-closed` messages).
 
 ## Read in this order (cheapest first) - never walk `src/`
-1. `docs/_generated/index.md`, then the map that answers the question: `codebase-map.md` (features, exports, API calls),
-   `routes.md` (URL -> component), `types-index.md` (exported types), `docs-tags.md` (spec ID -> code).
-2. The feature barrel `src/features/<name>/index.ts` and `src/features/<name>/<name>.types.ts`.
-3. One component or hook named there. Max 3 source files per question.
-4. For "which backend endpoint / which screens are affected" use the docs repo `generated/graph/<feature>.md`.
+1. `docs/_generated/index.md`, then the map that answers the question: `codebase-map.md` (pages, hooks, components, API calls),
+   `routes.md` (URL -> page), `components.md` (shared UI), `types-index.md` (exported types), `docs-tags.md` (spec ID -> code).
+2. The page component `src/pages/<Page>/<Page>.tsx` (its JSDoc names the route and the spec) and `src/types/<context>.ts`.
+3. One hook under `src/pages/<Page>/hook/` or one component. Max 3 source files per question.
+4. For "which backend endpoint / which screens are affected" use the docs repo `generated/graph/<context>.md`.
 
 ## Contracts (source of truth)
-- The backend `core/src/main/resources/openapi/harbor-api.yaml` is the REST contract. `src/api/generated/schema.d.ts` is **generated** from it
-  (`npm run generate:api`); never edit it by hand. `src/api/client.ts` exports the typed `api` client (base URL `/api/v1`).
+- The backend `core/src/main/resources/openapi/harbor-api.yaml` is the REST contract. `src/services/openapi/schema.d.ts` is **generated** from it
+  (`npm run generate:api`); never edit it, never read it. `src/services/api/client.ts` exports the typed `api` client (base URL `/api/v1`).
 - Hooks call `api.GET('/clients/{clientId}/overview', { params: { path: { clientId } } })` with the literal contract path -
   the maps and the graph join on that string, so never build paths with template literals.
 - Every `/session/**` call needs the header `X-Harbor-Session`; the contract declares it required, so the generated types
-  demand it. Hooks pass `params: { header: sessionHeader(), ... }` with `sessionHeader()` from `src/api/client.ts`, which
+  demand it. Hooks pass `params: { header: sessionHeader(), ... }` with `sessionHeader()` from `src/services/api/client.ts`, which
   reads the id from `sessionStore`. Components never set the header; there is no middleware.
 
-## Conventions the generators rely on
-- Feature folder: `src/features/<name>/{index.ts, <name>.types.ts, api/use*.ts, ui/*.tsx}`; cross-feature imports only via the barrel.
-- `index.ts` starts with a JSDoc block `/** @module <name> ... @docs <ID> */` (e.g. `@module product1`, `@docs P1-001`) - `codebase-map.md` reads it.
-- `<name>.types.ts` holds the feature's exported types (mirrors of contract schemas), tagged `@docs <ID>` -> `types-index.md`.
-- Routes are object routes in `src/app/routes.tsx` / `src/app/AdminRoutes.tsx` written as `{ path: '...', element: <Page /> }`
-  with `path:` before `element:` -> `routes.md`.
-- Data fetching only in `api/use*.ts` hooks (react-query); components receive props. Charts: pure `compute*.ts` + rendering component.
+## Conventions the generators rely on (layout in `scripts/docs/docs-gen.json`)
+- Page folder: `src/pages/<Page>/{<Page>.tsx, hook/use*.ts, components/<Name>/{index.ts, <Name>.tsx, <Name>.test.tsx}}`;
+  pieces shared by pages in `src/pages/shared/{components,hook}/`; generic UI in `src/components/<Name>/`.
+- `<Page>.tsx` carries a JSDoc block whose first sentence is the purpose and which ends with `@docs <ID>` (e.g. `@docs P1-001`)
+  - `codebase-map.md` and `docs-tags.md` read it. Hooks and types files carry `@docs <ID>` too.
+- Types in `src/types/<context>.ts` (mirrors of contract schemas) and `<Page>/types.ts` -> `types-index.md`.
+- Routes are object routes in `src/routing/Routing.tsx` / `SessionRoutes.tsx` (`useRoutes`) written as
+  `{ path: ROUTES.X, Component: XPage }` or `{ path: ROUTES.X, element: <X /> }`, constants in `src/constants/routes.ts`,
+  nested `children` with relative paths -> `routes.md` (joined paths, layouts).
+- Data fetching only in `hook/use*.ts` (react-query); components receive props. Charts: pure `compute*.ts` + rendering component.
 - Files <= 300 lines, components <= 150 lines, one component per file (`scripts/check-file-size.py --max-lines 300`).
 - No real client data in fixtures or mocks; synthetic values only.
 
 ## Commands
 - `python3 scripts/docs/gen-all.py` regenerates `docs/_generated/*`; `--check` fails if stale (CI gate). Run after changing routes,
-  barrels, types or `@docs` tags and commit the maps.
+  pages, hooks, types or `@docs` tags and commit the maps.
 - `python3 scripts/check-file-size.py --root . --max-lines 300 --include *.ts,*.tsx --baseline .filesize-baseline.txt`
 - `npm run generate:api` (regenerate the client from the backend contract), `npm test`, `npm run build`.
 

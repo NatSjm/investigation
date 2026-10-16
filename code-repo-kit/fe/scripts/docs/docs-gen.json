@@ -1,0 +1,16 @@
+{
+  "_comment": "Layout of the frontend repository as the generators see it. Paths are repo-relative, forward slashes. Globs: ** spans folders, * stays inside one segment. Every key is optional; these values are the defaults (the Harbor layout). Fill this file once per repository instead of editing the scripts.",
+  "pages_dir": "src/pages",
+  "not_pages": ["shared"],
+  "page_entry": ["<Page>.tsx", "index.tsx", "index.ts"],
+  "hook_dirs": ["hook", "hooks", "api"],
+  "components_dir": "components",
+  "shared_dir": "src/components",
+  "app_dirs": ["src/routing", "src/components/layout", "src/components/broadcast", "src/components/hook", "src/App.tsx", "src/main.tsx"],
+  "route_files": ["src/routing"],
+  "route_constants": ["src/constants/routes.ts"],
+  "types": ["src/types/**/*.ts", "src/pages/**/*.types.ts", "src/pages/**/types.ts"],
+  "exclude_paths": ["src/services/openapi", "src/api/generated"],
+  "test_pattern": "\\.(test|spec|stories)\\.",
+  "api_call_pattern": "(?:fetch|axios\\.\\w+|api\\.\\w+)\\(\\s*(?:`([^`]*)`|['\"]([^'\"]*)['\"])"
+}

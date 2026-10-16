@@ -15,7 +15,7 @@ Input: a planned change, e.g. "add `landedCost` to `ProjectionRowDto`", "rename 
 2. Follow only the references listed there: `override fun` handler -> manager -> service / dao (injection chain in
    `components.md`) -> event class / DTO / table. Max 4 source files.
 3. Contract impact: if the change touches a request/response schema, `core/src/main/resources/openapi/harbor-api.yaml` changes
-   first and the FE client (`harbor-frontend/src/api/generated`) is regenerated; the FE mirror types are in the FE repo
+   first and the FE client (`harbor-frontend/src/services/openapi`) is regenerated; the FE mirror types are in the FE repo
    `docs/_generated/types-index.md`. If the FE or docs repo is not in the workspace, say so and list the paths to check instead of guessing.
 4. Output a checklist:
    - Contract: `openapi/harbor-api.yaml` / `openapi/harbor-events.yaml` / `resources/api/*.yaml` sections to change; breaking or additive.

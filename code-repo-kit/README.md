@@ -21,14 +21,15 @@ code-repo-kit/
     scripts/docs/gen-*.py, gen-all.py     generators -> docs/_generated/*.md (+ --check gate)
     templates/GraphExportTest.kt            precise graph export from the Spring context (test scope; template)
   fe/                     -> harbor-frontend (React / TypeScript / openapi-fetch)
-    AGENTS.md, .github/...                  same pattern for feature folders (+ api-client instructions, Node 24 setup steps)
-    scripts/docs/gen-*.py                  codebase-map (features), routes, types-index, docs-tags
-    scripts/docs/tag-candidates.py         inventory for docs-tagger: barrel / types / hooks -> current tag, proposed tag, status
+    AGENTS.md, .github/...                  same pattern for page folders (+ pages / services instructions, Node 24 setup steps)
+    scripts/docs/docs-gen.json             the folder layout the FE generators read (pages dir, hooks, components, routing, excluded generated client)
+    scripts/docs/gen-*.py                  codebase-map (pages), components, routes, types-index, docs-tags
+    scripts/docs/tag-candidates.py         inventory for docs-tagger: page component / types / hooks -> current tag, proposed tag, status
     scripts/docs/gen-graph-fe.ts            precise graph export via the TypeScript compiler API (existing devDependency)
   shared/
     check-file-size.py                     line-cap gate with baseline (token hygiene)
     copilot-content-exclusion.yml           what Copilot must never see (GitHub repo setting, every surface)
-    workspaces/product1.code-workspace      per-context multi-root workspace (BE core sources + resources + FE feature + docs)
+    workspaces/product1.code-workspace      per-context multi-root workspace (BE core sources + resources + FE page + docs)
     ide-setup.md                            IntelliJ / VS Code settings
   ci/docs-maps.yml                          freshness + size gate on PR; publish maps and contracts to harbor-docs on main
   vscode-extension/                         MCP-free retrieval tools (#docsLookup, #codeMap, #specToCode, #impact, @docs)
@@ -53,7 +54,7 @@ dependencies, tables, `@docs`, `file:line`) replaces "open the module folder": a
 
 | Map | BE source | FE source | Typical size |
 |---|---|---|---|
-| `codebase-map.md` | root `pom.xml` modules -> layers (package segment after `harbor`) -> classes, plus resource folders (`api`, `openapi`, `db/migration`, `pdf`) | `src/features/*` barrels (`@module` JSDoc, exports, `api.GET('<path>')` calls) | 1 line / module and layer, or 1 row / feature |
+| `codebase-map.md` | root `pom.xml` modules -> layers (package segment after `harbor`) -> classes, plus resource folders (`api`, `openapi`, `db/migration`, `pdf`) | `src/pages/<Page>/` folders (page JSDoc, hooks, components, `api.GET('<path>')` calls, BroadcastChannels; layout from `docs-gen.json`) | 1 line / module and layer, or 1 row / page |
 | `components.md` | every top-level class: layer, Spring stereotype, constructor-injected deps, tables (`@Table`, SQL, `JpaRepository<Entity>`), `@docs`, `file:line` | - | 1 row / class |
 | `api-index.md` | **contract-first**: operations from `openapi/harbor-api.yaml` joined to `override fun <operationId>` in controllers (`_not implemented_` when missing); column `Tag` = context; annotation scan as fallback | - | 1 row / operation |
 | `events.md` | `@KafkaListener` + `KafkaTemplate.send` in `event/`, `Topics.<CONST>` resolved from `kafka_client` | - | 1 row / topic |
@@ -85,7 +86,7 @@ Run from `code-repo-kit/` against the sibling simulated repos:
 ```
 python3 be/scripts/docs/gen-all.py --root ../backend            # codebase-map (core + kafka_client, layers), components, api-index from openapi/harbor-api.yaml, events, db-schema, jobs, docs-tags
 python3 be/scripts/docs/gen-all.py --root ../backend --check     # exit 1 when a map is stale (what CI and the agentStop hook run)
-python3 fe/scripts/docs/gen-all.py --root ../frontend           # 3 features, 12 routes, 31 types, 18 tags (state of the simulated frontend at the time of writing)
+python3 fe/scripts/docs/gen-all.py --root ../frontend           # 13 pages + fe-app, 7 shared components, 15 routes, 66 types, 71 tags (simulated frontend, page layout)
 python3 fe/scripts/docs/gen-all.py --root ../frontend --check
 python3 apply-kit.py --flavour be --target ../backend --what-if     # lists the files it would copy; drop --what-if to apply
 cd vscode-extension; npm install; npm run compile          # tsc OK -> out/extension.js, out/knowledge.js

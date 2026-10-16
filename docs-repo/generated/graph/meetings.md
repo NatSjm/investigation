@@ -1,10 +1,10 @@
 ---
 type: Document
 title: "Graph: meetings (be+fe)"
-description: "Meeting session lifecycle: create CLIENT or PREPARATION sessions, list and close them, override the client role, show the session summary."
+description: "entry point MeetingManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-15
+  at: 2026-10-16
 status: stable
 ---
 # Graph: meetings (be+fe)
@@ -13,29 +13,28 @@ status: stable
 31 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## hooks
-- `hook:useSessions` - `src/features/meetings/api/useSessions.ts:9`
-- `hook:useCloseSession` - `src/features/meetings/api/useCloseSession.ts:10`
-- `hook:useRoleOverride` - `src/features/meetings/api/useRoleOverride.ts:10`
-- `hook:useCreateSession` - `src/features/meetings/api/useCreateSession.ts:11`
-- `hook:useSession` - `src/features/meetings/api/useSessions.ts:20`
+- `hook:useCloseSession` - `src/pages/SessionSummaryPage/hook/useCloseSession.ts:12`
+- `hook:useRoleOverride` - `src/pages/SessionSummaryPage/hook/useRoleOverride.ts:10`
 
 ## contexts
 - `context:meetings` - `core/src/main/kotlin/harbor/manager/MeetingManager.kt` - entry point MeetingManager (manager)
 
 ## features
-- `feature:meetings` - `src/features/meetings/index.ts` - Meeting session lifecycle: create CLIENT or PREPARATION sessions, list and close them, override the client role, show the session summary.
+- `feature:SessionSummaryPage` - `src/pages/SessionSummaryPage/SessionSummaryPage.tsx` - /session/:sessionId/summary` - last meeting step: role override, close the session, preview the report payload and download the rendered PDF.
+- `feature:ClientMeetingsPage` - `src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx` - /meetings/client` - sessions of kind `CLIENT` (real meetings), with status filter and PDF download for closed ones.
+- `feature:PreparationSessionsPage` - `src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx` - /meetings/preparation` - sessions of kind `PREPARATION` (dry runs by the representative), same list and actions.
 
 ## endpoints
-- `endpoint:GET /api/v1/sessions/{sessionId}` - `core/src/main/kotlin/harbor/api/SessionController.kt:38` - operationId getSession; handler SessionController.getSession; params sessionId
 - `endpoint:POST /api/v1/clients/{clientId}/sessions` - `core/src/main/kotlin/harbor/api/SessionController.kt:25` - operationId createSession; handler SessionController.createSession; params clientId
-- `endpoint:GET /api/v1/sessions` - `core/src/main/kotlin/harbor/api/SessionController.kt:35` - operationId listSessions; handler SessionController.listSessions; params 
 - `endpoint:POST /api/v1/sessions/{sessionId}/close` - `core/src/main/kotlin/harbor/api/SessionController.kt:41` - operationId closeSession; handler SessionController.closeSession; params sessionId
 - `endpoint:PUT /api/v1/sessions/{sessionId}/role` - `core/src/main/kotlin/harbor/api/SessionController.kt:44` - operationId setRoleOverride; handler SessionController.setRoleOverride; params sessionId
+- `endpoint:GET /api/v1/sessions` - `core/src/main/kotlin/harbor/api/SessionController.kt:35` - operationId listSessions; handler SessionController.listSessions; params 
+- `endpoint:GET /api/v1/sessions/{sessionId}` - `core/src/main/kotlin/harbor/api/SessionController.kt:38` - operationId getSession; handler SessionController.getSession; params sessionId
 
 ## routes
-- `route:/meetings/client` - `src/app/routes.tsx:28` - renders ClientMeetingsPage
-- `route:/meetings/preparation` - `src/app/routes.tsx:29` - renders PreparationSessionsPage
-- `route:/session/:sessionId/summary` - `src/app/routes.tsx:38` - renders SessionSummaryPage
+- `route:/meetings/client` - `src/routing/Routing.tsx:30` - renders ClientMeetingsPage
+- `route:/meetings/preparation` - `src/routing/Routing.tsx:31` - renders PreparationSessionsPage
+- `route:/session/:sessionId/summary` - `src/routing/SessionRoutes.tsx:23` - renders SessionSummaryPage
 
 ## classes
 - `class:MeetingManager` - `core/src/main/kotlin/harbor/manager/MeetingManager.kt:37` - manager; Service
@@ -52,9 +51,10 @@ status: stable
 - `topic:harbor.meetings.session-closed`
 
 ## components
-- `component:RoleOverrideDialog` - `src/features/meetings/ui/RoleOverrideDialog.tsx:20`
-- `component:SessionSummaryPage` - `src/features/meetings/ui/SessionSummaryPage.tsx:13`
-- `component:MeetingsListPage` - `src/features/meetings/ui/MeetingsListPage.tsx:34`
+- `component:ClientMeetingsPage` - `src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx:7`
+- `component:PreparationSessionsPage` - `src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx:7`
+- `component:RoleOverrideDialog` - `src/pages/SessionSummaryPage/components/RoleOverrideDialog/RoleOverrideDialog.tsx:20`
+- `component:SessionSummaryPage` - `src/pages/SessionSummaryPage/SessionSummaryPage.tsx:16`
 
 ## tables
 - `table:meeting_session` - `core/src/main/resources/db/migration/V2__meetings.sql` - 12 columns: id, client_id, product_group, kind, representative_id, status, started_at, closed_at, role_override, role_override_reason, parameter_snapshot, report_requested_at
@@ -62,16 +62,17 @@ status: stable
 - `table:session_client_config` - `core/src/main/resources/db/migration/V2__meetings.sql` - 4 columns: session_id, horizon_months, price_basis, cover_preference
 
 ## Edges
-- `feature:meetings` -calls-> `endpoint:GET /api/v1/sessions`
-- `feature:meetings` -calls-> `endpoint:GET /api/v1/sessions/{sessionId}`
-- `feature:meetings` -calls-> `endpoint:POST /api/v1/clients/{clientId}/sessions`
-- `feature:meetings` -calls-> `endpoint:POST /api/v1/sessions/{sessionId}/close`
-- `feature:meetings` -calls-> `endpoint:PUT /api/v1/sessions/{sessionId}/role`
+- `feature:ClientOverviewPage` -calls-> `endpoint:POST /api/v1/clients/{clientId}/sessions` (-> clients)
+- `feature:SessionSummaryPage` -calls-> `endpoint:POST /api/v1/sessions/{sessionId}/close`
+- `feature:SessionSummaryPage` -calls-> `endpoint:PUT /api/v1/sessions/{sessionId}/role`
+- `feature:shared` -calls-> `endpoint:GET /api/v1/sessions` (-> fe-shared)
+- `feature:shared` -calls-> `endpoint:GET /api/v1/sessions/{sessionId}` (-> fe-shared)
+- `feature:shared` -calls-> `endpoint:POST /api/v1/clients/{clientId}/sessions` (-> fe-shared)
 - `hook:useCloseSession` -calls-> `endpoint:POST /api/v1/sessions/{sessionId}/close` (exact)
-- `hook:useCreateSession` -calls-> `endpoint:POST /api/v1/clients/{clientId}/sessions` (exact)
+- `hook:useCreateSession` -calls-> `endpoint:POST /api/v1/clients/{clientId}/sessions` (-> clients) (exact)
 - `hook:useRoleOverride` -calls-> `endpoint:PUT /api/v1/sessions/{sessionId}/role` (exact)
-- `hook:useSession` -calls-> `endpoint:GET /api/v1/sessions/{sessionId}` (exact)
-- `hook:useSessions` -calls-> `endpoint:GET /api/v1/sessions` (exact)
+- `hook:useSession` -calls-> `endpoint:GET /api/v1/sessions/{sessionId}` (-> fe-shared) (exact)
+- `hook:useSessions` -calls-> `endpoint:GET /api/v1/sessions` (-> fe-shared) (exact)
 - `topic:harbor.meetings.session-closed` -consumed-by-> `class:ClientRoleSessionClosedListener` (-> clients)
 - `topic:harbor.meetings.session-closed` -consumed-by-> `class:ReportSessionClosedListener` (-> reports)
 - `context:meetings` -contains-> `class:MeetingManager`
@@ -83,14 +84,12 @@ status: stable
 - `context:meetings` -contains-> `class:SessionEventsPublisher`
 - `context:meetings` -contains-> `class:SessionHeaderFilter`
 - `context:meetings` -contains-> `class:SessionScopeService`
-- `feature:meetings` -contains-> `component:MeetingsListPage` (exact)
-- `feature:meetings` -contains-> `component:RoleOverrideDialog` (exact)
-- `feature:meetings` -contains-> `component:SessionSummaryPage` (exact)
-- `feature:meetings` -contains-> `hook:useCloseSession` (exact)
-- `feature:meetings` -contains-> `hook:useCreateSession` (exact)
-- `feature:meetings` -contains-> `hook:useRoleOverride` (exact)
-- `feature:meetings` -contains-> `hook:useSession` (exact)
-- `feature:meetings` -contains-> `hook:useSessions` (exact)
+- `feature:ClientMeetingsPage` -contains-> `component:ClientMeetingsPage` (exact)
+- `feature:PreparationSessionsPage` -contains-> `component:PreparationSessionsPage` (exact)
+- `feature:SessionSummaryPage` -contains-> `component:RoleOverrideDialog` (exact)
+- `feature:SessionSummaryPage` -contains-> `component:SessionSummaryPage` (exact)
+- `feature:SessionSummaryPage` -contains-> `hook:useCloseSession` (exact)
+- `feature:SessionSummaryPage` -contains-> `hook:useRoleOverride` (exact)
 - `class:ClientOverviewService` -depends-on-> `class:MeetingSessionDao` (-> clients)
 - `class:MeetingManager` -depends-on-> `class:ClientProfileService` (-> clients)
 - `class:MeetingManager` -depends-on-> `class:MeetingSessionDao`
@@ -109,6 +108,13 @@ status: stable
 - `class:SessionHeaderFilter` -depends-on-> `class:SessionScopeService`
 - `class:SessionScopeService` -depends-on-> `class:MeetingSessionDao`
 - `class:SessionScopeService` -depends-on-> `class:SessionClientConfigDao`
+- `feature:ClientMeetingsPage` -depends-on-> `feature:shared` (-> fe-shared) (exact)
+- `feature:fe-app` -depends-on-> `feature:ClientMeetingsPage` (-> fe-app) (exact)
+- `feature:fe-app` -depends-on-> `feature:PreparationSessionsPage` (-> fe-app) (exact)
+- `feature:fe-app` -depends-on-> `feature:SessionSummaryPage` (-> fe-app) (exact)
+- `feature:PreparationSessionsPage` -depends-on-> `feature:shared` (-> fe-shared) (exact)
+- `feature:SessionSummaryPage` -depends-on-> `feature:fe-app` (-> fe-app) (exact)
+- `feature:SessionSummaryPage` -depends-on-> `feature:shared` (-> fe-shared) (exact)
 - `context:meetings` -exposes-> `endpoint:GET /api/v1/sessions`
 - `context:meetings` -exposes-> `endpoint:GET /api/v1/sessions/{sessionId}`
 - `context:meetings` -exposes-> `endpoint:POST /api/v1/clients/{clientId}/sessions`
@@ -140,7 +146,9 @@ status: stable
 - `spec:SES-001` -implemented-by-> `class:SessionEventsPublisher` (-> docs)
 - `spec:SES-001` -implemented-by-> `class:SessionHeaderFilter` (-> docs)
 - `spec:SES-001` -implemented-by-> `class:SessionScopeService` (-> docs)
-- `spec:SES-001` -implemented-by-> `feature:meetings` (-> docs)
+- `spec:SES-001` -implemented-by-> `feature:ClientMeetingsPage` (-> docs)
+- `spec:SES-001` -implemented-by-> `feature:PreparationSessionsPage` (-> docs)
+- `spec:SES-001` -implemented-by-> `feature:SessionSummaryPage` (-> docs)
 - `context:meetings` -owns-> `table:meeting_report`
 - `context:meetings` -owns-> `table:meeting_session`
 - `context:meetings` -owns-> `table:session_client_config`
@@ -148,16 +156,11 @@ status: stable
 - `class:MeetingSessionDao` -persists-to-> `table:meeting_session`
 - `class:SessionClientConfigDao` -persists-to-> `table:session_client_config`
 - `class:SessionEventsPublisher` -produces-> `topic:harbor.meetings.session-closed`
-- `feature:meetings` -produces-> `channel:harbor.session.{*}` (-> presentation)
-- `component:SessionSummaryPage` -renders-> `component:RoleOverrideDialog` (exact)
-- `feature:meetings` -renders-> `component:DataTable` (-> shared-ui)
-- `feature:meetings` -renders-> `component:Modal` (-> shared-ui)
-- `route:/meetings/client` -renders-> `feature:meetings`
-- `route:/meetings/preparation` -renders-> `feature:meetings`
-- `route:/session/:sessionId/summary` -renders-> `feature:meetings`
-- `component:MeetingsListPage` -uses-> `hook:useSessions` (exact)
-- `component:RoleOverrideDialog` -uses-> `hook:useRoleOverride` (exact)
-- `component:SessionSummaryPage` -uses-> `hook:useCloseSession` (exact)
+- `feature:SessionSummaryPage` -produces-> `channel:harbor.session.{*}` (-> fe-app)
+- `feature:SessionSummaryPage` -renders-> `component:Modal` (-> shared-ui)
+- `route:/meetings/client` -renders-> `feature:ClientMeetingsPage`
+- `route:/meetings/preparation` -renders-> `feature:PreparationSessionsPage`
+- `route:/session/:sessionId/summary` -renders-> `feature:SessionSummaryPage`
 
 ## Specs touching this community
-- `spec:SES-001` - `features/meetings/SES-001.md` - status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/features/meetings/api/useCloseSession.ts:12; fe src/features/meetings/api/useCreateSession.ts:11; fe src/features/meetings/api/useRoleOverride.ts:10; fe src/features/meetings/api/useSessions.ts:20; fe src/features/meetings/api/useSessions.ts:9; fe src/features/meetings/index.ts:6; fe src/features/meetings/meetings.types.ts:25; fe src/features/meetings/ui/ClientMeetingsPage.tsx:7; fe src/features/meetings/ui/MeetingsListPage.tsx:44; fe src/features/meetings/ui/PreparationSessionsPage.tsx:7
+- `spec:SES-001` - `features/meetings/SES-001.md` - status stable; be core/src/main/kotlin/harbor/manager/MeetingManager.kt:38; fe src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx:7; fe src/pages/ClientOverviewPage/hook/useCreateSession.ts:11; fe src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx:7; fe src/pages/SessionSummaryPage/hook/useCloseSession.ts:12; fe src/pages/SessionSummaryPage/hook/useRoleOverride.ts:10; fe src/pages/SessionSummaryPage/SessionSummaryPage.tsx:16; fe src/pages/shared/components/MeetingsListPage/MeetingsListPage.tsx:44; fe src/pages/shared/hook/useSessions.ts:20; fe src/pages/shared/hook/useSessions.ts:9; fe src/routing/SessionRoutes.tsx:15; fe src/types/meetings.ts:25

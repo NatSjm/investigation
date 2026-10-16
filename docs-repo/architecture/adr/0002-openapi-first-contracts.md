@@ -28,8 +28,8 @@ are called through thin clients whose shapes also need to be stable and reviewab
 - The backend generates `*Api` interfaces into `core/target/` (not committed). Controllers are
   `@RestController class XxxController(...) : XxxApi` and implement `override fun <operationId>(...)` **without**
   mapping annotations; the annotations live on the generated interface.
-- The frontend generates `src/api/generated/schema.d.ts` (openapi-typescript, committed and trimmed) and calls the
-  API only through the `openapi-fetch` client in `src/api/client.ts`, whose middleware adds `X-Harbor-Session` from
+- The frontend generates `src/services/openapi/schema.d.ts` (openapi-typescript, committed and trimmed) and calls the
+  API only through the `openapi-fetch` client in `src/services/api/client.ts`, whose middleware adds `X-Harbor-Session` from
   `sessionStore`. Hooks use literal path strings (`api.GET('/clients/{clientId}/overview', ...)`), which is what the
   frontend codebase map and the graph join on.
 - External contracts live in `backend/core/src/main/resources/api/<name>.yaml`; `core` generates one `*Api`

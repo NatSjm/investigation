@@ -6,7 +6,7 @@ import os
 import re
 
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, line_number, header,
-                     escape_cell, first_doc_line, split_list, sort_key, utf8_stdout)
+                     escape_cell, first_doc_line, split_list, sort_key, under, load_config, utf8_stdout)
 
 # KDoc/JSDoc block followed by the declaration line (annotations skipped)
 RX = re.compile(r'/\*\*(?P<doc>.*?)\*/\s*(?:@\w+(?:\([^)]*\))?\s*)*'
@@ -19,12 +19,16 @@ def main():
     ap.add_argument('--root', default='.')
     ap.add_argument('--out', default='docs/_generated/docs-tags.md')
     ap.add_argument('--include', nargs='+', default=['*.kt', '*.java', '*.ts', '*.tsx'])
+    ap.add_argument('--config', default='', help='docs-gen.json; its exclude_paths (generated clients) are skipped')
     a = ap.parse_args()
     root = os.path.abspath(a.root)
     include = split_list(a.include)
+    excluded = [os.path.join(root, p) for p in load_config(root, {'exclude_paths': []}, a.config)['exclude_paths']]
 
     rows = []
     for f in source_files(root, include):
+        if under(f, excluded):
+            continue
         t = read_text(f)
         if not re.search(r'@docs\s', t, re.I):
             continue

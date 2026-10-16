@@ -1,64 +1,61 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
 // Precise FE graph export using the TypeScript compiler API - `typescript` is already a devDependency in any
 // TS React repo, so this adds no library. Complements the regex maps (gen-codebase-map.py) with exact
 // import edges and resolved API URLs: openapi-fetch calls such as `api.GET('/session/product1/overview', ...)`
 // (method from the member name, literal contract path), plus fetch/axios with template literals and
 // `const BASE = '...'` constants.
 //
+// Layout: read from scripts/docs/docs-gen.json (same file as the Python generators): `pages_dir` (one `feature:` node
+// per page folder, folders in `not_pages` become their own node, e.g. `shared`), `exclude_paths` (generated clients
+// are never parsed), everything else is `fe-app`.
+//
 // Output: docs/_generated/graph-export-fe.json, consumed by docs repo scripts/gen-graph.py (edges source=export).
 //
 // Run:   npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js [srcDir] [outFile]
 // or     npx ts-node scripts/docs/gen-graph-fe.ts            (if ts-node is already present)
-const fs = __importStar(require("fs"));
-const path = __importStar(require("path"));
-const ts = __importStar(require("typescript"));
+import * as fs from 'fs';
+import * as path from 'path';
+import * as ts from 'typescript';
+import { fileURLToPath } from 'url';
 const srcDir = path.resolve(process.argv[2] ?? 'src');
 const outFile = path.resolve(process.argv[3] ?? 'docs/_generated/graph-export-fe.json');
+const repoRoot = path.dirname(srcDir);
+// ES module output (Vite repos declare "type": "module"); for a CommonJS repo set "module": "CommonJS" in tsconfig.gen.json and use __dirname here
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const layout = { pages_dir: 'src/pages', not_pages: ['shared'], page_entry: ['<Page>.tsx', 'index.tsx', 'index.ts'], exclude_paths: [] };
+for (const cfg of [path.join(repoRoot, 'scripts', 'docs', 'docs-gen.json'), path.join(scriptDir, '..', 'docs-gen.json'), path.join(scriptDir, 'docs-gen.json')]) {
+    if (fs.existsSync(cfg)) {
+        Object.assign(layout, JSON.parse(fs.readFileSync(cfg, 'utf8')));
+        break;
+    }
+}
+const pagesPrefix = layout.pages_dir.replace(/\\/g, '/').replace(/\/+$/, '') + '/';
+const excluded = layout.exclude_paths.map(p => path.resolve(repoRoot, p).toLowerCase());
 const nodes = new Map();
 const edges = new Set();
 const addNode = (n) => { if (!nodes.has(n.id))
     nodes.set(n.id, n); };
 const addEdge = (from, to, rel) => edges.add(JSON.stringify({ from, to, rel }));
-const rel = (f) => path.relative(path.dirname(srcDir), f).replace(/\\/g, '/');
-const featureOf = (f) => /src\/features\/([^/]+)\//.exec(rel(f))?.[1] ?? 'fe-app';
+const rel = (f) => path.relative(repoRoot, f).replace(/\\/g, '/');
+// page folder of a file: first segment under pages_dir (shared pieces keep their folder name), else fe-app
+const featureOf = (f) => {
+    const r = rel(f);
+    return r.startsWith(pagesPrefix) ? r.slice(pagesPrefix.length).split('/')[0] || 'fe-app' : 'fe-app';
+};
+const entryOf = (page) => {
+    for (const pat of layout.page_entry) {
+        const cand = path.join(repoRoot, layout.pages_dir, page, pat.replace('<Page>', page));
+        if (fs.existsSync(cand))
+            return rel(cand);
+    }
+    return `${layout.pages_dir}/${page}`;
+};
+const isExcluded = (f) => { const p = path.resolve(f).toLowerCase(); return excluded.some(x => p === x || p.startsWith(x + path.sep)); };
 function listFiles(dir) {
     const out = [];
     for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         const p = path.join(dir, e.name);
+        if (isExcluded(p))
+            continue;
         if (e.isDirectory()) {
             if (!['node_modules', 'dist', 'build', '__tests__'].includes(e.name))
                 out.push(...listFiles(p));
@@ -75,7 +72,7 @@ for (const sf of program.getSourceFiles()) {
     if (sf.isDeclarationFile || !files.includes(path.resolve(sf.fileName)))
         continue;
     const feature = featureOf(sf.fileName);
-    addNode({ id: `feature:${feature}`, kind: 'feature', label: feature, community: feature, repo: 'fe', location: feature === 'fe-app' ? '' : `src/features/${feature}/index.ts`, note: '' });
+    addNode({ id: `feature:${feature}`, kind: 'feature', label: feature, community: feature, repo: 'fe', location: feature === 'fe-app' ? '' : entryOf(feature), note: '' });
     const consts = new Map(); // string constants in this file, for template-literal URLs
     // Exported declarations become nodes: components (PascalCase function returning JSX), hooks (use*), others skipped.
     const declNode = (name, line) => {
@@ -162,10 +159,13 @@ for (const sf of program.getSourceFiles()) {
                 return p.initializer.text.toUpperCase();
         return undefined;
     };
-    // cross-feature imports -> depends-on between features
+    // cross-page imports (relative or '@/' alias) -> depends-on between pages / shared / fe-app
     for (const st of sf.statements) {
-        if (ts.isImportDeclaration(st) && ts.isStringLiteral(st.moduleSpecifier) && st.moduleSpecifier.text.startsWith('.')) {
-            const target = path.resolve(path.dirname(sf.fileName), st.moduleSpecifier.text);
+        if (ts.isImportDeclaration(st) && ts.isStringLiteral(st.moduleSpecifier)) {
+            const spec = st.moduleSpecifier.text;
+            const target = spec.startsWith('.') ? path.resolve(path.dirname(sf.fileName), spec) : spec.startsWith('@/') ? path.join(srcDir, spec.slice(2)) : '';
+            if (!target)
+                continue;
             const tf = featureOf(target + '/');
             if (tf !== feature)
                 addEdge(`feature:${feature}`, `feature:${tf}`, 'depends-on');

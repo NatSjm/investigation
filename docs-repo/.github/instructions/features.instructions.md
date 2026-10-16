@@ -20,7 +20,7 @@ description: Rules for feature specs (structure, numbering, traceability, proven
   Kafka topics by exact name from `generated/asyncapi/backend.yaml`; reference tables by name from
   `generated/be/db-schema.md`. Session-scoped endpoints (`/session/**`) mention the `X-Harbor-Session` header once.
 - `code_refs` are paths relative to the code repo roots (`be/core/src/main/kotlin/harbor/<layer>/<Class>.kt`,
-  `fe/src/features/...`), taken from the graph neighbourhood (`generated/graph/<community>.md`),
+  `fe/src/pages/<Page>/...`), taken from the graph neighbourhood (`generated/graph/<community>.md`),
   `generated/be/components.md` or `generated/*/docs-tags.md`.
 - Update `last_verified` (ISO date) only after you have checked the spec against current `generated/` artifacts.
 - Max ~300 lines and 12 business rules per spec; beyond that, carve the capability out into the next free ID (`P1-002`), leaving withdrawn rules with a pointer. A modal with rules of its own is its own spec; the screen spec keeps it in the UI flow and cites its rules (`features/conventions.md`, "Shaping specs").

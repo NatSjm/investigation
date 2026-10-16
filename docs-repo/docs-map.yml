@@ -5,32 +5,34 @@
 # The backend is layered (core/src/main/kotlin/harbor/<layer>/), so BE globs select a context by CLASS-NAME PREFIX
 # (prefixes from contexts.yml; `**/` = any layer folder, `*` = rest of the file name). A file matching prefixes of
 # two contexts (e.g. `Movement*` vs `MovementInput*`) maps to both specs - harmless, the union is reviewed.
+# The frontend is organised by page (fe/src/pages/<Page>/**); pieces shared by several pages sit under
+# fe/src/pages/shared/{components,hook}/ and are mapped per file, the app shell (routing, layouts, channel) per folder.
 
 mappings:
   # --- bounded contexts with a spec ---
-  - paths: ["be/core/src/main/kotlin/harbor/**/Client*.kt", "fe/src/features/clients/**"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Client*.kt", "fe/src/pages/ClientSearchPage/**", "fe/src/pages/ClientOverviewPage/**", "fe/src/types/clients.ts"]
     specs: ["features/clients/CLI-001.md"]
-  - paths: ["be/core/src/main/kotlin/harbor/**/Session*.kt", "be/core/src/main/kotlin/harbor/**/Meeting*.kt", "be/core/src/main/kotlin/harbor/**/RoleOverride*.kt", "fe/src/features/meetings/**", "fe/src/api/sessionStore.ts"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Session*.kt", "be/core/src/main/kotlin/harbor/**/Meeting*.kt", "be/core/src/main/kotlin/harbor/**/RoleOverride*.kt", "fe/src/pages/ClientMeetingsPage/**", "fe/src/pages/PreparationSessionsPage/**", "fe/src/pages/SessionSummaryPage/**", "fe/src/pages/shared/components/MeetingsListPage/**", "fe/src/pages/shared/hook/useSessions.ts", "fe/src/types/meetings.ts", "fe/src/services/api/sessionStore.ts", "fe/src/components/layout/SessionLayout.tsx", "fe/src/routing/SessionRoutes.tsx"]
     specs: ["features/meetings/SES-001.md"]
-  - paths: ["be/core/src/main/kotlin/harbor/**/Product1*.kt", "be/core/src/main/kotlin/harbor/**/Projection*.kt", "be/core/src/main/kotlin/harbor/**/Peer*.kt", "be/core/src/main/kotlin/harbor/**/MovementInput*.kt", "be/core/src/main/kotlin/harbor/**/SessionMovementInput*.kt", "be/core/src/main/kotlin/harbor/**/SessionPeerSimulation*.kt", "fe/src/features/product1/**"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Product1*.kt", "be/core/src/main/kotlin/harbor/**/Projection*.kt", "be/core/src/main/kotlin/harbor/**/Peer*.kt", "be/core/src/main/kotlin/harbor/**/MovementInput*.kt", "be/core/src/main/kotlin/harbor/**/SessionMovementInput*.kt", "be/core/src/main/kotlin/harbor/**/SessionPeerSimulation*.kt", "fe/src/pages/Product1OverviewPage/**", "fe/src/pages/shared/components/ProjectionTables/**", "fe/src/pages/shared/components/CoverRatioChart/**", "fe/src/pages/shared/components/MovementInputModal/**", "fe/src/pages/shared/components/PeerSimulationModal/**", "fe/src/types/product1.ts"]
     specs: ["features/product1/P1-001.md", "features/product1/P1-002.md", "features/product1/P1-003.md"]
-  - paths: ["be/core/src/main/kotlin/harbor/**/Stress*.kt", "fe/src/features/stress/**"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Stress*.kt", "fe/src/pages/StressTestPage/**", "fe/src/types/stress.ts"]
     specs: ["features/stress/STR-001.md"]
-  - paths: ["be/core/src/main/kotlin/harbor/**/Market*.kt", "be/core/src/main/kotlin/harbor/**/Scenario*.kt", "be/core/src/main/kotlin/harbor/**/BaselinePrice*.kt", "fe/src/features/market/**"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Market*.kt", "be/core/src/main/kotlin/harbor/**/Scenario*.kt", "be/core/src/main/kotlin/harbor/**/BaselinePrice*.kt", "fe/src/pages/ScenariosPage/**", "fe/src/pages/shared/hook/useBaselinePrices.ts", "fe/src/types/market.ts"]
     specs: ["features/market/MKT-001.md"]
-  - paths: ["be/core/src/main/kotlin/harbor/**/Report*.kt", "be/core/src/main/resources/pdf/**", "fe/src/features/reports/**"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Report*.kt", "be/core/src/main/resources/pdf/**", "fe/src/pages/shared/components/ReportPreview/**", "fe/src/pages/shared/components/DownloadPdfButton/**", "fe/src/pages/shared/hook/useReport.ts", "fe/src/pages/shared/hook/useDownloadReportPdf.ts", "fe/src/types/reports.ts"]
     specs: ["features/reports/RPT-001.md"]
 
   # --- bounded contexts without a spec yet (appear as `code only` in generated/graph/REPO_MAP.md) ---
-  - paths: ["be/core/src/main/kotlin/harbor/**/Product2*.kt", "fe/src/features/product2/**"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Product2*.kt", "fe/src/pages/Product2OverviewPage/**", "fe/src/types/product2.ts"]
     specs: ["features/product2/P2-001.md", "features/product2/P2-002.md", "features/product2/P2-003.md"]
-  - paths: ["be/core/src/main/kotlin/harbor/**/Cover*.kt", "fe/src/features/cover/**"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Cover*.kt", "fe/src/pages/shared/components/CoverQuotePanel/**", "fe/src/pages/shared/hook/useCover*.ts", "fe/src/types/cover.ts"]
     specs: []  # TODO: COV-001
   - paths: ["be/core/src/main/kotlin/harbor/**/Import*.kt", "be/core/src/main/kotlin/harbor/**/Movement*.kt", "be/core/src/main/kotlin/harbor/**/GoodsMovement*.kt", "be/core/src/main/kotlin/harbor/**/Xls*.kt", "be/core/src/main/kotlin/harbor/**/Workbook*.kt", "be/core/src/main/kotlin/harbor/**/DailyMovement*.kt", "be/core/src/main/kotlin/harbor/**/MonthlySnapshot*.kt"]
     specs: []  # TODO: IMP-001
-  - paths: ["be/core/src/main/kotlin/harbor/**/Admin*.kt", "be/core/src/main/kotlin/harbor/**/Parameter*.kt", "fe/src/features/admin/**", "fe/src/app/AdminRoutes.tsx"]
+  - paths: ["be/core/src/main/kotlin/harbor/**/Admin*.kt", "be/core/src/main/kotlin/harbor/**/Parameter*.kt", "fe/src/pages/ParametersPage/**", "fe/src/pages/ImportsPage/**", "fe/src/types/admin.ts", "fe/src/routing/AdminRoutesGuard.tsx"]
     specs: [ADM-001]
-  - paths: ["fe/src/features/presentation/**", "fe/src/app/PresentationLayout.tsx"]
+  - paths: ["fe/src/pages/PresentationPage/**", "fe/src/types/presentation.ts", "fe/src/components/broadcast/**", "fe/src/components/hook/usePresentation*.ts", "fe/src/components/layout/PresentationLayout.tsx"]
     specs: ["features/presentation/PRS-001.md", "flows/client-presentation.md"]
 
   # --- calculations, messaging, external services, contracts ---
@@ -49,4 +51,4 @@ ignore:
   - "**/*.test.ts"
   - "**/*.test.tsx"
   - "**/README.md"
-  - "fe/src/api/generated/**"
+  - "fe/src/services/openapi/**"

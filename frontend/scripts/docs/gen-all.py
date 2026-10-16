@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Runs all FE generators and writes docs/_generated/index.md. --check: exit 1 if any output is stale (CI gate)."""
+"""Runs all FE generators and writes docs/_generated/index.md. --check: exit 1 if any output is stale (CI gate).
+The generators read the repository layout from scripts/docs/docs-gen.json (pages dir, shared components, routing, ...)."""
 import argparse
 import os
 import re
@@ -22,11 +23,13 @@ INDEX = """# Generated code maps
 
 Read these before opening source. Each file is a few hundred tokens.
 
-- [codebase-map.md](codebase-map.md): features, purpose, public exports, API calls
-- [components.md](components.md): shared component library (src/shared/**): props, purpose, used by which features
-- [routes.md](routes.md): URL -> component
+- [codebase-map.md](codebase-map.md): pages, purpose, components and hooks, API calls, browser channels
+- [components.md](components.md): shared component library: props, purpose, used by which pages
+- [routes.md](routes.md): URL -> page component (nested routes joined, route constants resolved)
 - [types-index.md](types-index.md): exported types/interfaces (DTO mirrors)
 - [docs-tags.md](docs-tags.md): spec ID (`@docs`) to code location
+
+The folder layout the generators assume is in `scripts/docs/docs-gen.json`.
 """
 
 

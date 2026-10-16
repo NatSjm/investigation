@@ -19,7 +19,7 @@ only what the evidence shows.
   `domain/glossary.md`, `architecture/overview.md`, `architecture/integrations.md`.
 - Backend repository: Kotlin/Spring, layered packages (`api`, `manager`, `service`, `dao`, `event`, `job`, `utils`,
   `client`, `config`, `enums`, `model`, ...). The business area of a class is in its NAME PREFIX, not its folder.
-- Frontend repository: React/TypeScript, `src/features/<name>/` per feature, routes in `src/app/`.
+- Frontend repository: React/TypeScript, one folder per routed page (`src/pages/<Page>/` with `hook/` and `components/`), routes in `src/routing/`, shared pieces in `src/pages/shared/` and `src/components/`.
 - Optional: a Confluence export folder, for page titles only, never as a source of rules.
 - Reference format: copy the STRUCTURE of the reference file exactly (frontmatter keys, the intro bullets, the table
   columns, the "shared" paragraph, the Mermaid flowchart, the "Relationship notes" list). Replace all content with
@@ -30,8 +30,8 @@ only what the evidence shows.
    classes by shared name prefix (longest meaningful prefix). Per group: the manager or service that is its entry
    point, controllers and their routes, DAOs and the tables they touch, Kafka topics produced or consumed (event
    package, kafka client module, `resources/openapi` or asyncapi files), external clients.
-2. **Frontend inventory.** Every folder under `src/features/`, its barrel (`index.ts`) summary, the routes that
-   render its pages (`src/app/routes*.tsx`), the API hooks it owns and the backend routes they call, BroadcastChannel
+2. **Frontend inventory.** Every page folder under `src/pages/`, the JSDoc of its page component, the routes that
+   render it (`src/routing/*.tsx`, route constants in `src/constants/`), the API hooks it owns (`hook/use*.ts`) and the backend routes they call, BroadcastChannel
    or other cross-window channels if any.
 3. **Cross-context evidence.** Constructor injections across prefix groups (A depends on B), tables read by several
    groups, topics published by one group and consumed by another, session or request headers that scope several

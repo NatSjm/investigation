@@ -22,7 +22,7 @@
     "search.exclude": {
       "**/target": true,
       "**/node_modules": true,
-      "**/src/api/generated": true,
+      "**/src/services/openapi": true,
       "**/docs-repo/.context": true
     }
   },

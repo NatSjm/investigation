@@ -18,7 +18,7 @@ owners: [harbor-platform-team]
 last_verified: null            # ISO date, set only after check vs generated/ (mirrors latest verified.at)
 code_refs:                     # relative to the code repo roots, from generated/be/components.md and fe/codebase-map.md
   - be/core/src/main/kotlin/harbor/manager/<Ctx>Manager.kt     # context entry point; other classes from generated/be/components.md
-  - fe/src/features/<context>/index.ts
+  - fe/src/pages/<Page>/<Page>.tsx                               # the page(s) of the context (contexts.yml fe list); hooks and shared pieces from fe/codebase-map.md
 api: []                        # e.g. "GET /session/product1/overview"
 events: []                     # Kafka topics, e.g. harbor.imports.movements-loaded
 tables: []                     # DB tables

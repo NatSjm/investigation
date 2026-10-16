@@ -37,7 +37,7 @@ def main():
     ap.add_argument('--root', default='.')
     ap.add_argument('--max-lines', type=int, default=400)
     ap.add_argument('--include', nargs='+', default=['*.kt', '*.java', '*.ts', '*.tsx'])
-    ap.add_argument('--exclude-dirs', nargs='+', default=['target', 'build', 'node_modules', '.git', 'dist', 'coverage', 'generated', '_generated'])
+    ap.add_argument('--exclude-dirs', nargs='+', default=['target', 'build', 'node_modules', '.git', 'dist', 'coverage', 'generated', '_generated', 'openapi'])
     ap.add_argument('--baseline', default='')
     ap.add_argument('--write-baseline', action='store_true')
     a = ap.parse_args()

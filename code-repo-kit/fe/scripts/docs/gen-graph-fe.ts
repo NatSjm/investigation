@@ -4,6 +4,10 @@
 // (method from the member name, literal contract path), plus fetch/axios with template literals and
 // `const BASE = '...'` constants.
 //
+// Layout: read from scripts/docs/docs-gen.json (same file as the Python generators): `pages_dir` (one `feature:` node
+// per page folder, folders in `not_pages` become their own node, e.g. `shared`), `exclude_paths` (generated clients
+// are never parsed), everything else is `fe-app`.
+//
 // Output: docs/_generated/graph-export-fe.json, consumed by docs repo scripts/gen-graph.py (edges source=export).
 //
 // Run:   npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js [srcDir] [outFile]
@@ -11,9 +15,21 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as ts from 'typescript';
+import { fileURLToPath } from 'url';
 
 const srcDir = path.resolve(process.argv[2] ?? 'src');
 const outFile = path.resolve(process.argv[3] ?? 'docs/_generated/graph-export-fe.json');
+const repoRoot = path.dirname(srcDir);
+// ES module output (Vite repos declare "type": "module"); for a CommonJS repo set "module": "CommonJS" in tsconfig.gen.json and use __dirname here
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+
+interface Layout { pages_dir: string; not_pages: string[]; page_entry: string[]; exclude_paths: string[] }
+const layout: Layout = { pages_dir: 'src/pages', not_pages: ['shared'], page_entry: ['<Page>.tsx', 'index.tsx', 'index.ts'], exclude_paths: [] };
+for (const cfg of [path.join(repoRoot, 'scripts', 'docs', 'docs-gen.json'), path.join(scriptDir, '..', 'docs-gen.json'), path.join(scriptDir, 'docs-gen.json')]) {
+  if (fs.existsSync(cfg)) { Object.assign(layout, JSON.parse(fs.readFileSync(cfg, 'utf8'))); break; }
+}
+const pagesPrefix = layout.pages_dir.replace(/\\/g, '/').replace(/\/+$/, '') + '/';
+const excluded = layout.exclude_paths.map(p => path.resolve(repoRoot, p).toLowerCase());
 
 interface Node { id: string; kind: string; label: string; community: string; repo: string; location: string; note: string }
 interface Edge { from: string; to: string; rel: string }
@@ -21,13 +37,26 @@ const nodes = new Map<string, Node>();
 const edges = new Set<string>();
 const addNode = (n: Node) => { if (!nodes.has(n.id)) nodes.set(n.id, n); };
 const addEdge = (from: string, to: string, rel: string) => edges.add(JSON.stringify({ from, to, rel }));
-const rel = (f: string) => path.relative(path.dirname(srcDir), f).replace(/\\/g, '/');
-const featureOf = (f: string) => /src\/features\/([^/]+)\//.exec(rel(f))?.[1] ?? 'fe-app';
+const rel = (f: string) => path.relative(repoRoot, f).replace(/\\/g, '/');
+// page folder of a file: first segment under pages_dir (shared pieces keep their folder name), else fe-app
+const featureOf = (f: string) => {
+  const r = rel(f);
+  return r.startsWith(pagesPrefix) ? r.slice(pagesPrefix.length).split('/')[0] || 'fe-app' : 'fe-app';
+};
+const entryOf = (page: string) => {
+  for (const pat of layout.page_entry) {
+    const cand = path.join(repoRoot, layout.pages_dir, page, pat.replace('<Page>', page));
+    if (fs.existsSync(cand)) return rel(cand);
+  }
+  return `${layout.pages_dir}/${page}`;
+};
+const isExcluded = (f: string) => { const p = path.resolve(f).toLowerCase(); return excluded.some(x => p === x || p.startsWith(x + path.sep)); };
 
 function listFiles(dir: string): string[] {
   const out: string[] = [];
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
+    if (isExcluded(p)) continue;
     if (e.isDirectory()) { if (!['node_modules', 'dist', 'build', '__tests__'].includes(e.name)) out.push(...listFiles(p)); }
     else if (/\.(ts|tsx)$/.test(e.name) && !/\.(test|spec|stories|d)\.tsx?$/.test(e.name)) out.push(p);
   }
@@ -41,7 +70,7 @@ const checker = program.getTypeChecker();
 for (const sf of program.getSourceFiles()) {
   if (sf.isDeclarationFile || !files.includes(path.resolve(sf.fileName))) continue;
   const feature = featureOf(sf.fileName);
-  addNode({ id: `feature:${feature}`, kind: 'feature', label: feature, community: feature, repo: 'fe', location: feature === 'fe-app' ? '' : `src/features/${feature}/index.ts`, note: '' });
+  addNode({ id: `feature:${feature}`, kind: 'feature', label: feature, community: feature, repo: 'fe', location: feature === 'fe-app' ? '' : entryOf(feature), note: '' });
   const consts = new Map<string, string>();  // string constants in this file, for template-literal URLs
 
   // Exported declarations become nodes: components (PascalCase function returning JSX), hooks (use*), others skipped.
@@ -117,10 +146,12 @@ for (const sf of program.getSourceFiles()) {
     return undefined;
   };
 
-  // cross-feature imports -> depends-on between features
+  // cross-page imports (relative or '@/' alias) -> depends-on between pages / shared / fe-app
   for (const st of sf.statements) {
-    if (ts.isImportDeclaration(st) && ts.isStringLiteral(st.moduleSpecifier) && st.moduleSpecifier.text.startsWith('.')) {
-      const target = path.resolve(path.dirname(sf.fileName), st.moduleSpecifier.text);
+    if (ts.isImportDeclaration(st) && ts.isStringLiteral(st.moduleSpecifier)) {
+      const spec = st.moduleSpecifier.text;
+      const target = spec.startsWith('.') ? path.resolve(path.dirname(sf.fileName), spec) : spec.startsWith('@/') ? path.join(srcDir, spec.slice(2)) : '';
+      if (!target) continue;
       const tf = featureOf(target + '/');
       if (tf !== feature) addEdge(`feature:${feature}`, `feature:${tf}`, 'depends-on');
     }

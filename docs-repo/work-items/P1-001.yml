@@ -151,7 +151,7 @@ stories:
         estimate_hours: 4
       - summary: "[BE] contract ProjectionTotal / ProjectionTotals as ProjectionTables.totals in harbor-api.yaml; mapper/ProjectionMapper.totals; returned by getProduct1Overview, getProduct1Projection, putProduct1Movements (api/Product1Controller)"
         estimate_hours: 4
-      - summary: "[FE] ProjectionTables: three totals tables (shared DataTable, footer line All) fed by useProduct1Overview / useProduct1Projection; regenerate src/api/generated/schema.d.ts"
+      - summary: "[FE] ProjectionTables: three totals tables (shared DataTable, footer line All) fed by useProduct1Overview / useProduct1Projection; regenerate src/services/openapi/schema.d.ts"
         estimate_hours: 5
       - summary: "[FE] presentation ProductMirror shows the totals through the shared ProjectionTables component (channel harbor.session.{*}, PRS-001)"
         estimate_hours: 2

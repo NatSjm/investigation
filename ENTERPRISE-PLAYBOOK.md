@@ -72,12 +72,12 @@ permissions, and review of what gets committed.
      "what else touches this table" answerable.
    - **written and reviewed, per context:** specs (Runs 1 to 4), calculations, flows, glossary rows, Confluence
      pages, test designs. Done only for the contexts in scope; the board shows the rest as due.
-   The first context in scope is the pilot: one backend entry point, one frontend feature, at least one
+   The first context in scope is the pilot: one backend entry point, one frontend page, at least one
    calculation. Everything below is done for it first, then for the other contexts in scope.
 3. **IDs.** Spec IDs `<CTX>-<NNN>` (for example `P1-001`), rules `BR-<ID>-<n>`, calculations `snake_case`. If the
    enterprise already has feature IDs, keep them; the scripts only need the pattern in `features/conventions.md`.
 4. **Context list.** The business areas and, per area, the backend class-name prefixes or packages, the frontend
-   feature folder, the spec prefix. This becomes `contexts.yml` (section 4).
+   page folders, the spec prefix. This becomes `contexts.yml` (section 4).
 5. **Roles.** Documentation maintainer (runs the agents, reviews diffs), context owners (Run 4 verification), one
    analyst to evaluate the output, a platform engineer for CI and tokens.
 6. **Copilot client.** Copilot CLI for every agent run (hooks and skills work there; the JetBrains plugin has them in
@@ -181,7 +181,7 @@ as commands and `@analyst` is selectable.
 contexts:
   billing:
     spec: BIL                          # spec prefix -> features/billing/BIL-001.md
-    fe: billing                        # src/features/billing in the frontend
+    fe: [BillingPage, InvoicePage]     # page folders under src/pages/ (wildcards allowed: "*BillingPage"); [] when the context has no page
     be: [Billing, Invoice, Tariff]     # backend class-name prefixes (longest prefix wins); unmatched classes -> shared
 ```
 
@@ -194,11 +194,11 @@ Write one row per context now, even before any spec exists (`specs: []` is allow
 
 ```yaml
 mappings:
-  - paths: ["be/src/main/kotlin/<root>/**/Billing*.kt", "fe/src/features/billing/**"]
+  - paths: ["be/src/main/kotlin/<root>/**/Billing*.kt", "fe/src/pages/BillingPage/**", "fe/src/pages/InvoicePage/**", "fe/src/types/billing.ts"]
     specs: ["features/billing/BIL-001.md"]
   - paths: ["be/src/main/kotlin/<root>/calc/**"]
     specs: ["domain/calculations/**"]
-ignore: ["**/*Test.kt", "**/src/test/**", "**/*.test.ts*", "fe/src/api/generated/**"]
+ignore: ["**/*Test.kt", "**/src/test/**", "**/*.test.ts*", "fe/src/services/openapi/**"]
 ```
 
 It is read by `map-paths.py` (changed paths to specs), `check-freshness.py` (CI gate), the collector's PR body, and
@@ -245,23 +245,28 @@ Copy the kit flavour into each repository. `code-repo-kit/apply-kit.py --flavour
 everything at once; for the enterprise rollout copy selectively in this order and review each file:
 
 1. **`scripts/docs/`** with `gen-all.py`, `_common.py` and the generators (section 14 lists each). Run
-   `python3 scripts/docs/gen-all.py --root .` and read every table in `docs/_generated/`. Where your code differs from the
-   simulated one (annotation names, package root, Flyway folder, router style), adjust the regular expression in
-   the generator; the tables carry `file:line`, so a wrong row is visible immediately. Target: every endpoint,
-   topic, table, scheduled job, route and hook of the pilot context appears once.
-2. **`AGENTS.md`** under 60 lines: purpose of the repo, read order (map, then the context's manager or barrel, then
+   `python3 scripts/docs/gen-all.py --root .` and read every table in `docs/_generated/`. The frontend generators read
+   the folder layout from `scripts/docs/docs-gen.json` (pages folder, hook and component folder names, shared
+   component library, routing files and route constants, type globs, generated client to exclude): fill that file
+   first, it is the whole adaptation for a page-per-folder React repository (`code-repo-kit/fe/scripts/docs/README.md`
+   lists every key). Where your code still differs from the simulated one (annotation names, package root, Flyway
+   folder, a router that is neither object routes nor `<Route>`), adjust the regular expression in the generator; the
+   tables carry `file:line`, so a wrong row is visible immediately. Target: every endpoint, topic, table, scheduled
+   job, route and hook of the pilot context appears once.
+2. **`AGENTS.md`** under 60 lines: purpose of the repo, read order (map, then the context's manager or page component, then
    one named range), the contracts and where they live, conventions, the commands. Adapt from `code-repo-kit/be/AGENTS.md`
    and `fe/AGENTS.md`.
 3. **`.github/copilot-instructions.md`** with the never-open list (generated clients, build output, lock files).
 4. **`.github/instructions/`**: backend `api`, `calculations`, `kafka`, `migrations`, `tests`, `layers`; frontend
-   `api-client`, `features`. Short path-scoped rules; keep the ones that match your stack.
+   `services`, `pages`. Short path-scoped rules; keep the ones that match your stack.
 5. **`.github/hooks/docs-maps.json`**: `agentStop` runs `gen-all.py --check`, so an agent cannot leave stale maps.
 6. **`.github/workflows/docs-maps.yml`** from `code-repo-kit/ci/docs-maps.yml`: on pull requests, maps fresh and file
    size budget. Nothing on main; publication belongs to the docs repo (section 7). Start warn-only, make it blocking
    after two sprints.
 7. **Content exclusion** in the repository settings from `code-repo-kit/shared/copilot-content-exclusion.yml`.
 8. **`@docs` tags**, selectively: `@docs <SPEC-ID>` on the context's entry point (manager or orchestration service)
-   and on the frontend barrel, `@docs <calculation_name>` on every business calculator. Not on every class. The
+   and on the frontend page component (the JSDoc above `export function <Page>`), `@docs <calculation_name>` on every
+   business calculator. Not on every class. The
    `docs-tagger` agent and `scripts/docs/tag-candidates.py` list candidates per context when you get there.
 9. Commit `docs/_generated/` with the code. It is cheap, it gives the PR-time freshness check, and Copilot in the
    code repo reads the maps without running anything.
@@ -470,8 +475,9 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 
 | Generator | Backend output | Frontend output |
 |---|---|---|
-| `gen-codebase-map.py` | modules and layers with class counts | feature folders with routes, hooks, components, BroadcastChannels |
-| `gen-components.py` | one row per class: layer, annotations, injected dependencies, `file:line` | the shared component library: props, used-by features |
+| `gen-codebase-map.py` | modules and layers with class counts | page folders with purpose, hooks, components, API calls, BroadcastChannels (layout from `docs-gen.json`) |
+| `gen-components.py` | one row per class: layer, annotations, injected dependencies, `file:line` | the shared component library: props, used-by pages |
+| `gen-routes.py` | - | URL -> page component, nested routes joined, route constants resolved, enclosing layout |
 | `gen-api-index.py` | every OpenAPI operation with its handler method | - |
 | `gen-events.py` | topics with producers, consumers, payload classes | - |
 | `gen-db-schema.py` | tables and columns from the migrations | - |

@@ -3,7 +3,7 @@
     { "name": "be/harbor", "path": "../../backend/core/src/main/kotlin/harbor" },
     { "name": "be/resources", "path": "../../backend/core/src/main/resources" },
     { "name": "be/_generated", "path": "../../backend/docs/_generated" },
-    { "name": "fe/product1", "path": "../../frontend/src/features/product1" },
+    { "name": "fe/product1", "path": "../../frontend/src/pages/Product1OverviewPage" },
     { "name": "fe/_generated", "path": "../../frontend/docs/_generated" },
     { "name": "docs", "path": "../../docs-repo" }
   ],

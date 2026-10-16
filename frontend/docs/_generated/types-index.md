@@ -1,18 +1,18 @@
 ---
 type: Document
 title: "Types index (FE)"
-description: "Generated map: Types index (FE), derived from *.types.ts; read instead of source files."
+description: "Generated map: Types index (FE), derived from src/types/**/*.ts, src/pages/**/*.types.ts, src/pages/**/types.ts; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-15
+  at: 2026-10-16
 status: stable
 ---
 # Types index (FE)
 
-> Generated from `*.types.ts` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
+> Generated from `src/types/**/*.ts, src/pages/**/*.types.ts, src/pages/**/types.ts` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
 Exported `interface`/`type` declarations verbatim (types only, ~1 line per field). Mirrors BE DTOs - compare with `api-index.md`.
 
-## `src/features/admin/admin.types.ts`
+## `src/types/admin.ts`
 ```ts
 export type ProductGroup = components['schemas']['ProductGroup'];
 export type Parameter = components['schemas']['Parameter'];
@@ -21,7 +21,7 @@ export type ImportBatch = components['schemas']['ImportBatch'];
 export type ImportStatus = ImportBatch['status'];
 ```
 
-## `src/features/clients/clients.types.ts`
+## `src/types/clients.ts`
 ```ts
 export type ProductGroup = components['schemas']['ProductGroup'];
 export type ClientRole = components['schemas']['ClientRole'];
@@ -34,7 +34,7 @@ export type RoleHistoryEntry = components['schemas']['RoleDecision'];
 export type ClientRoleInfo = components['schemas']['ClientRoleInfo'];
 ```
 
-## `src/features/cover/cover.types.ts`
+## `src/types/cover.ts`
 ```ts
 export type ProductGroup = components['schemas']['ProductGroup'];
 export type PriceBasis = components['schemas']['PriceBasis'];
@@ -45,7 +45,7 @@ export type CoverQuote = components['schemas']['CoverQuote'];
 export type CoverPolicy = components['schemas']['CoverPolicy'];
 ```
 
-## `src/features/market/market.types.ts`
+## `src/types/market.ts`
 ```ts
 export type ProductGroup = components['schemas']['ProductGroup'];
 export type Shock = components['schemas']['Shock'];
@@ -60,7 +60,7 @@ export interface ScenarioPathPoint extends BaselinePoint {
 }
 ```
 
-## `src/features/meetings/meetings.types.ts`
+## `src/types/meetings.ts`
 ```ts
 export type ProductGroup = components['schemas']['ProductGroup'];
 export type ClientRole = components['schemas']['ClientRole'];
@@ -77,7 +77,7 @@ export interface SessionFilter {
 }
 ```
 
-## `src/features/presentation/presentation.types.ts`
+## `src/types/presentation.ts`
 ```ts
 export type PresentationStep = 'product1' | 'product2' | 'scenarios' | 'stress-test' | 'waiting';
 export interface PresentationState {
@@ -87,7 +87,7 @@ export interface PresentationState {
 }
 ```
 
-## `src/features/product1/product1.types.ts`
+## `src/types/product1.ts`
 ```ts
 export type ProductGroup = components['schemas']['ProductGroup'];
 export type PriceBasis = components['schemas']['PriceBasis'];
@@ -108,19 +108,19 @@ export type PeerSimulationRequest = components['schemas']['PeerSimulationRequest
 export type PeerSimulationResult = components['schemas']['PeerSimulationResult'];
 ```
 
-## `src/features/product2/product2.types.ts`
+## `src/types/product2.ts`
 ```ts
 export type TransportMode = components['schemas']['TransportMode'];
 export type Product2Overview = ProductOverview;
 ```
 
-## `src/features/reports/reports.types.ts`
+## `src/types/reports.ts`
 ```ts
 export type Report = components['schemas']['Report'];
 export type ReportStatus = Report['status'];
 ```
 
-## `src/features/stress/stress.types.ts`
+## `src/types/stress.ts`
 ```ts
 export type ProductGroup = components['schemas']['ProductGroup'];
 export type Dimension = components['schemas']['DimensionKind'];

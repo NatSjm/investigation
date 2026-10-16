@@ -111,9 +111,14 @@ def main():
         elif source != 'regex-map':
             edges[k]['source'] = source
 
+    page_dirs = []   # (entry folder, page) from the FE codebase map, longest folder first
+
     def feature_of(location):
-        m = re.search(r'src/features/([^/]+)/', location, re.I)
-        return m.group(1) if m else 'fe-app'
+        loc = file_of(location).lower()
+        for d, p in page_dirs:
+            if loc == d or loc.startswith(d + '/'):
+                return p
+        return 'fe-app'
 
     def file_of(location):
         return location.split(':')[0]
@@ -154,9 +159,13 @@ def main():
                 p = p.strip().strip('"\'')
                 if p:
                     ctx_prefixes.append((c, p))
-        fm_ = re.search(r'fe:\s*"?([\w-]*)"?', body, re.I)
-        if fm_ and fm_.group(1):
-            ctx_of_feature[fm_.group(1)] = c
+        fm_ = re.search(r'fe:\s*(\[[^\]]*\]|"[^"]*"|\'[^\']*\'|[\w*?.-]*)', body, re.I)
+        if fm_:
+            raw = fm_.group(1).strip()
+            raw = raw[1:-1] if raw[:1] in '["\'' else raw
+            for p in (x.strip().strip('"\'') for x in raw.split(',')):
+                if p:
+                    ctx_of_feature[p] = c
     ctx_prefixes.sort(key=lambda x: -len(x[1]))
 
     def context_of(cls):
@@ -164,6 +173,15 @@ def main():
             if cls.startswith(p):
                 return c
         return 'shared'
+
+    def context_of_page(page):
+        # the bounded context a page folder belongs to (contexts.yml fe list, wildcards), else the page itself
+        for p, c in ctx_of_feature.items():
+            if like(page, p):
+                return c
+        # a page folder outside contexts.yml is its own community; `shared` (pieces used by several pages) must not
+        # collide with the BE `shared` community (classes matching no prefix)
+        return 'fe-shared' if page.lower() == 'shared' else page
 
     # ---------- BE (components.md: one row per class with layer, deps, tables) ----------
     class_info = {}
@@ -266,12 +284,20 @@ def main():
 
     # ---------- FE ----------
     fe_exports = {}
-    for r in table_rows(read_text_or_empty(os.path.join(fe_maps, 'codebase-map.md'))):
-        f = strip(r.get('Feature'))
+    fe_rows = table_rows(read_text_or_empty(os.path.join(fe_maps, 'codebase-map.md')))
+    for r in fe_rows:
+        f = strip(r.get('Page')) or strip(r.get('Feature'))
+        entry = strip(r.get('Entry'))
+        if f and f != 'fe-app' and entry:
+            d = re.sub(r'/[^/]*$', '', entry) if re.search(r'\.\w+$', entry) or entry.endswith('/-') else entry
+            page_dirs.append((d.rstrip('/').lower(), f))
+    page_dirs.sort(key=lambda x: -len(x[0]))
+    for r in fe_rows:
+        f = strip(r.get('Page')) or strip(r.get('Feature'))
         if not f:
             continue
-        add_node(f'feature:{f}', 'feature', f, f, 'fe', strip(r.get('Entry')), strip(r.get('Purpose')))
-        fe_exports[f] = [x.strip() for x in re.split(r',\s*', r.get('Public exports', '')) if x.strip()]
+        add_node(f'feature:{f}', 'feature', f, context_of_page(f), 'fe', strip(r.get('Entry')), strip(r.get('Purpose')))
+        fe_exports[f] = [f] + [x.strip() for x in re.split(r',\s*', (r.get('Public exports') or '') + ',' + (r.get('Components') or '')) if x.strip()]
         for url in (x.strip() for x in r.get('API calls', '').split('<br>') if x.strip()):
             hits = [n for n in list(nodes.values()) if n['kind'] == 'endpoint' and url_matches(url, re.sub(r'^\w+\s+', '', n['label']))]
             if not hits:
@@ -282,15 +308,15 @@ def main():
         # browser channels (BroadcastChannel) - the FE counterpart of topics: `defines` / `pub` / `sub` <name>
         if 'Channels' in r:
             for c in (x.strip() for x in r['Channels'].split('<br>') if x.strip()):
-                cm = re.match(r'^(defines|pub|sub)\s+(\S+)$', c, re.I)
+                cm = re.match(r'^(defines|pub|sub)\s+(\S+)(?:\s+\((\S+)\))?$', c, re.I)
                 if not cm:
                     continue
                 verb, cname = cm.group(1).lower(), cm.group(2)
                 cid_ = f'channel:{cname}'
-                add_node(cid_, 'channel', cname, f, 'fe', '', 'BroadcastChannel')
+                add_node(cid_, 'channel', cname, nodes[f'feature:{f}']['community'], 'fe', '', 'BroadcastChannel')
                 if verb == 'defines':
-                    nodes[cid_]['community'] = f
-                    nodes[cid_]['location'] = re.sub(r'/index\.tsx?$', '/channel.ts', strip(r.get('Entry')), flags=re.I)
+                    nodes[cid_]['community'] = nodes[f'feature:{f}']['community']
+                    nodes[cid_]['location'] = cm.group(3) or re.sub(r'/index\.tsx?$', '/channel.ts', strip(r.get('Entry')), flags=re.I)
                     add_edge(f'feature:{f}', cid_, 'defines')
                 elif verb == 'pub':
                     add_edge(f'feature:{f}', cid_, 'produces')
@@ -313,7 +339,7 @@ def main():
         comp = strip(r.get('Component'))
         loc = strip(r.get('Location'))
         feat = next((k for k, v in fe_exports.items() if comp.lower() in (x.lower() for x in v)), None) or feature_of(loc)
-        add_node(f'route:{p}', 'route', p, feat, 'fe', loc, f'renders {comp}')
+        add_node(f'route:{p}', 'route', p, nodes.get(f'feature:{feat}', {}).get('community', feat), 'fe', loc, f'renders {comp}')
         add_edge(f'route:{p}', f'feature:{feat}', 'renders')
 
     # ---------- @docs tags (both repos) + spec files ----------
@@ -329,6 +355,8 @@ def main():
             target = f'class:{class_of(loc)}' if repo == 'be' else f'feature:{comm}'
             if repo == 'be':
                 add_node(target, 'class', class_of(loc), comm, 'be', file_of(loc))
+            else:
+                add_node(target, 'feature', comm, context_of_page(comm), 'fe', '' if comm == 'fe-app' else file_of(loc))
             add_edge(f'spec:{sid}', target, 'implemented-by')
             nodes[f'spec:{sid}']['note'] = '; '.join(x for x in (nodes[f'spec:{sid}']['note'], f'{repo} {loc}') if x)
     add_tags(os.path.join(be_maps, 'docs-tags.md'), 'be')
@@ -416,6 +444,9 @@ def main():
             comm = str(n.get('community') or '')
             if not comm:
                 comm = context_of(n.get('label', '')) if n.get('kind') == 'class' else 'external' if n.get('kind') == 'topic' else 'shared'
+            elif (n.get('repo') or '') == 'fe' and comm != 'fe-app':
+                # the FE export names the page folder: fold it into its bounded context (contexts.yml fe list)
+                comm = context_of_page(comm)
             add_node(n['id'], n.get('kind', ''), n.get('label', ''), comm, n.get('repo') or '', str(n.get('location') or ''), str(n.get('note') or ''))
         for e in j.get('edges') or []:
             add_edge(e['from'], e['to'], e['rel'], 'export')

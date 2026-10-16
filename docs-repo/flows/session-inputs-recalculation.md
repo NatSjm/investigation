@@ -137,7 +137,7 @@ no client's rows leak into another session's tables.
 | Cover reads | `be/core/src/main/kotlin/harbor/manager/CoverManager.kt` |
 | Stress run and stored run | `be/core/src/main/kotlin/harbor/manager/StressManager.kt`, `be/core/src/main/kotlin/harbor/service/StressTestService.kt` |
 | Report payload | `be/core/src/main/kotlin/harbor/manager/ReportManager.kt`, `ReportPayloadService.kt` |
-| FE cache invalidation | `fe/src/features/product1/api/useProduct1Movements.ts`, `fe/src/features/product2/api/useProduct2Movements.ts` |
+| FE cache invalidation | `fe/src/pages/Product1OverviewPage/hook/useProduct1Movements.ts`, `fe/src/pages/Product2OverviewPage/hook/useProduct2Movements.ts` |
 
 ## Open questions
 - [ ] Should a stress run be flagged stale, or rerun automatically, when the projection of its session changes

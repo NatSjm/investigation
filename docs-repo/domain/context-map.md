@@ -14,24 +14,24 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
   (`core/src/main/kotlin/harbor/utils/`): formula + conventions + worked examples copied from the unit test.
   Skill: `.github/skills/calculation-spec/SKILL.md`.
 - The backend is layered ([ADR-0004](/architecture/adr/0004-layered-backend-and-context-prefixes.md)), so a bounded
-  context is a **group of class-name prefixes** (`/contexts.yml`, longest prefix wins) = one frontend feature
-  (`src/features/<context>`) = one spec folder (`features/<context>/`). Its entry point is `manager/<Ctx>Manager.kt`.
+  context is a **group of class-name prefixes** (`/contexts.yml`, longest prefix wins) = the frontend pages of that area
+  (`contexts.yml` `fe` list, e.g. `Product1OverviewPage`; pieces shared by pages live under `src/pages/shared/`) = one spec folder (`features/<context>/`). Its entry point is `manager/<Ctx>Manager.kt`.
 
 ## Bounded contexts and ID prefixes
 
-| Context | Spec prefix | BE class-name prefixes | Backend entry point | FE feature / routes | Specs |
+| Context | Spec prefix | BE class-name prefixes | Backend entry point | FE pages / routes | Specs |
 |---|---|---|---|---|---|
-| clients | `CLI` | `Client` | `manager/ClientManager.kt` | `clients`: `/clients`, `/clients/:clientId` | [CLI-001](/features/clients/CLI-001.md) |
-| meetings | `SES` | `Session`, `Meeting`, `RoleOverride`, `SessionClientConfig` | `manager/MeetingManager.kt` | `meetings`: `/meetings`, `/session/:sessionId/summary` | [SES-001](/features/meetings/SES-001.md) |
+| clients | `CLI` | `Client` | `manager/ClientManager.kt` | `ClientSearchPage` `/clients`, `ClientOverviewPage` `/clients/:clientId` | [CLI-001](/features/clients/CLI-001.md) |
+| meetings | `SES` | `Session`, `Meeting`, `RoleOverride`, `SessionClientConfig` | `manager/MeetingManager.kt` | `ClientMeetingsPage`, `PreparationSessionsPage` `/meetings/*`, `SessionSummaryPage` `/session/:sessionId/summary` | [SES-001](/features/meetings/SES-001.md) |
 | imports | `IMP` | `Import`, `Movement`, `Movements`, `GoodsMovement`, `Xls`, `Workbook`, `DailyMovement`, `MonthlySnapshot` | `manager/ImportManager.kt` | — (jobs; monitored via admin) | missing (`IMP-001` backlog) |
-| product1 | `P1` | `Product1`, `Projection`, `Peer`, `MovementInput`, `SessionMovementInput`, `SessionPeerSimulation` | `manager/Product1Manager.kt` | `product1`: `/session/:sessionId/product1` | [P1-001](/features/product1/P1-001.md) (screen), [P1-002](/features/product1/P1-002.md), [P1-003](/features/product1/P1-003.md) (modals) |
-| product2 | `P2` | `Product2` | `manager/Product2Manager.kt` | `product2`: `/session/:sessionId/product2` | [P2-001](/features/product2/P2-001.md), [P2-002](/features/product2/P2-002.md), [P2-003](/features/product2/P2-003.md) (mirrors of P1, draft) |
-| cover | `COV` | `Cover` | `manager/CoverManager.kt` | `cover`: widgets inside product pages | missing (`COV-001` backlog) |
-| market | `MKT` | `Market`, `Scenario`, `BaselinePrice` | `manager/MarketManager.kt` | `market`: `/session/:sessionId/scenarios` | [MKT-001](/features/market/MKT-001.md) (skeleton) |
-| stress | `STR` | `Stress` | `manager/StressManager.kt` | `stress`: `/session/:sessionId/stress-test` | [STR-001](/features/stress/STR-001.md) (draft) |
-| reports | `RPT` | `Report` | `manager/ReportManager.kt` | `reports`: Download PDF on the Meetings page | [RPT-001](/features/reports/RPT-001.md) (skeleton) |
-| admin | `ADM` | `Admin`, `Parameter` | `manager/AdminManager.kt` | `admin`: `/admin/parameters`, `/admin/imports` | [ADM-001](/features/admin/ADM-001.md) (draft) |
-| presentation | `PRS` | — (FE-only) | — | `presentation`: `/present/:sessionId` (second window, BroadcastChannel `harbor.session.<id>`) | [PRS-001](/features/presentation/PRS-001.md) (draft), flow [client-presentation](/flows/client-presentation.md) |
+| product1 | `P1` | `Product1`, `Projection`, `Peer`, `MovementInput`, `SessionMovementInput`, `SessionPeerSimulation` | `manager/Product1Manager.kt` | `Product1OverviewPage` `/session/:sessionId/product1` | [P1-001](/features/product1/P1-001.md) (screen), [P1-002](/features/product1/P1-002.md), [P1-003](/features/product1/P1-003.md) (modals) |
+| product2 | `P2` | `Product2` | `manager/Product2Manager.kt` | `Product2OverviewPage` `/session/:sessionId/product2` | [P2-001](/features/product2/P2-001.md), [P2-002](/features/product2/P2-002.md), [P2-003](/features/product2/P2-003.md) (mirrors of P1, draft) |
+| cover | `COV` | `Cover` | `manager/CoverManager.kt` | no page: `CoverQuotePanel` and cover hooks under `src/pages/shared/` | missing (`COV-001` backlog) |
+| market | `MKT` | `Market`, `Scenario`, `BaselinePrice` | `manager/MarketManager.kt` | `ScenariosPage` `/session/:sessionId/scenarios` | [MKT-001](/features/market/MKT-001.md) (skeleton) |
+| stress | `STR` | `Stress` | `manager/StressManager.kt` | `StressTestPage` `/session/:sessionId/stress-test` | [STR-001](/features/stress/STR-001.md) (draft) |
+| reports | `RPT` | `Report` | `manager/ReportManager.kt` | no page: `ReportPreview`, `DownloadPdfButton` and report hooks under `src/pages/shared/` | [RPT-001](/features/reports/RPT-001.md) (skeleton) |
+| admin | `ADM` | `Admin`, `Parameter` | `manager/AdminManager.kt` | `ParametersPage` `/admin/parameters`, `ImportsPage` `/admin/imports` | [ADM-001](/features/admin/ADM-001.md) (draft) |
+| presentation | `PRS` | — (FE-only) | — | `PresentationPage` `/present/:sessionId` (second window, BroadcastChannel `harbor.session.<id>` in `src/components/broadcast/`) | [PRS-001](/features/presentation/PRS-001.md) (draft), flow [client-presentation](/flows/client-presentation.md) |
 
 Classes matching no prefix are `shared` and are not a bounded context: configuration (`WebConfig`, `KafkaConfig`, ...),
 `enums`, the `utils` helpers (`MonthGrid`, `Rounding`), unprefixed `client/` wrappers (`DocumentServiceClient`,

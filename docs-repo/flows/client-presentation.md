@@ -8,17 +8,17 @@ generated: { by: copilot/spec-writer, at: 2026-10-12T00:30:00Z }
 stale_after: 2027-01-10T00:00:00Z
 sources:
   - id: channel
-    resource: fe/src/features/presentation/channel.ts
+    resource: fe/src/components/broadcast/sessionChannel.ts
     title: channel.ts
 # --- repo extensions ---
 id: FLOW-client-presentation
 contexts: [meetings, presentation, product1, product2, market, stress]
 specs: [SES-001, PRS-001, P1-001, STR-001]
 code_refs:
-  - fe/src/app/SessionLayout.tsx
-  - fe/src/features/presentation/channel.ts
-  - fe/src/features/presentation/ui/PresentationPage.tsx
-  - fe/src/features/meetings/api/useCloseSession.ts
+  - fe/src/components/layout/SessionLayout.tsx
+  - fe/src/components/broadcast/sessionChannel.ts
+  - fe/src/pages/PresentationPage/PresentationPage.tsx
+  - fe/src/pages/SessionSummaryPage/hook/useCloseSession.ts
 channels: ["harbor.session.{sessionId}"]
 ---
 
@@ -71,12 +71,12 @@ sequenceDiagram
   R->>C: session-closed
   C-->>P: "Session closed"
 ```
-1. `SessionLayout` opens `/present/<id>` (`fe/src/app/SessionLayout.tsx`). The new window mounts
-   `PresentationLayout` (`src/app/PresentationLayout.tsx:13`) and `PresentationPage` (`src/features/presentation/ui/PresentationPage.tsx:20`).
+1. `SessionLayout` opens `/present/<id>` (`fe/src/components/layout/SessionLayout.tsx`). The new window mounts
+   `PresentationLayout` (`src/components/layout/PresentationLayout.tsx:13`) and `PresentationPage` (`src/pages/PresentationPage/PresentationPage.tsx:21`).
 2. `PresentationLayout` loads the session (`useSession`) and initialises the window's session store so that
    `sessionHeader()` works there.
-3. `usePresentationSubscriber` (`channel.ts:95`) opens the channel and sends `hello`.
-4. Every `usePresentationPublisher` instance (`channel.ts:55`) answers `hello` by replaying its last message per type.
+3. `usePresentationSubscriber` (`src/components/hook/usePresentationSubscriber.ts:9`) opens the channel and sends `hello`.
+4. Every `usePresentationPublisher` instance (`src/components/hook/usePresentationPublisher.ts:15`) answers `hello` by replaying its last message per type.
 5. `PresentationPage` maps the `route` to a step (`stepFromPath`, `presentation.types.ts`) and renders the mirror with the
    published filters; the mirror fetches through the normal hooks.
 6. Each navigation or filter change in the session window publishes again; the mirror re-renders.
@@ -105,11 +105,11 @@ authorisation than the representative's is an open question in PRS-001.
 ## Source map
 | Concern | Location |
 |---|---|
-| Channel, message types, hooks | `fe/src/features/presentation/channel.ts` |
-| Step mapping, window state | `fe/src/features/presentation/presentation.types.ts` |
-| Mirrors | `fe/src/features/presentation/ui/{PresentationPage,ProductMirror,ScenariosMirror,StressMirror}.tsx` |
-| Publishers | `fe/src/app/SessionLayout.tsx`, `fe/src/features/product1/ui/Product1OverviewPage.tsx`, `fe/src/features/product2/ui/Product2OverviewPage.tsx`, `fe/src/features/stress/ui/StressTestPage.tsx`, `fe/src/features/meetings/api/useCloseSession.ts` |
-| Routes | `fe/src/app/routes.tsx:45` |
+| Channel, message types, hooks | `fe/src/components/broadcast/sessionChannel.ts` |
+| Step mapping, window state | `fe/src/types/presentation.ts` |
+| Mirrors | `fe/src/pages/PresentationPage/PresentationPage.tsx`, `fe/src/pages/PresentationPage/components/{ProductMirror,ScenariosMirror,StressMirror}` |
+| Publishers | `fe/src/components/layout/SessionLayout.tsx`, `fe/src/pages/Product1OverviewPage/Product1OverviewPage.tsx`, `fe/src/pages/Product2OverviewPage/Product2OverviewPage.tsx`, `fe/src/pages/StressTestPage/StressTestPage.tsx`, `fe/src/pages/SessionSummaryPage/hook/useCloseSession.ts` |
+| Routes | `fe/src/routing/Routing.tsx:43-44` |
 
 ## Open questions
 - [ ] Should the representative see a "client screen connected" indicator (requires a reply message from the subscriber)?

@@ -40,10 +40,12 @@ def main():
             continue
         c, body = m.group(1), m.group(2)
         sm = re.search(r'spec:\s*([A-Z][A-Z0-9]*)', body)
-        fm_ = re.search(r'fe:\s*"?([\w-]*)"?', body, re.I)
+        fm_ = re.search(r'fe:\s*(\[[^\]]*\]|"[^"]*"|[\w*?.-]*)', body, re.I)
+        fe_raw = fm_.group(1).strip().strip('[]"') if fm_ else ''
+        fe_list = [x.strip().strip('"\'') for x in fe_raw.split(',') if x.strip().strip('"\'')]
         bm = re.search(r'be:\s*\[([^\]]*)\]', body, re.I)
         be = [x for x in (p.strip().strip('"\'') for p in bm.group(1).split(',')) if x] if bm else []
-        contexts[c] = {'Name': c, 'Spec': sm.group(1) if sm else '', 'Fe': fm_.group(1) if fm_ else '', 'Be': be}
+        contexts[c] = {'Name': c, 'Spec': sm.group(1) if sm else '', 'Fe': fe_list, 'Be': be}
     if not contexts:
         raise SystemExit('contexts.yml has no contexts')
     prefixes = sorted(((c['Name'], p) for c in contexts.values() for p in c['Be']), key=lambda x: -len(x[1]))
@@ -147,7 +149,7 @@ def main():
             for c in contexts.values():
                 by_target = bool(target) and (target.lower() == c['Name'].lower() or (bool(c['Spec']) and like(target, f"{c['Spec']}-*")))
                 stem = re.sub(r's$', '', c['Name'].lower())   # "meetings" also matches "Meeting flow"
-                by_title = stem in title_key or (bool(c['Fe']) and c['Fe'].lower() in title_key)
+                by_title = stem in title_key or any(re.sub(r'[^A-Za-z0-9]', '', p).lower() in title_key for p in c['Fe'] if '*' not in p)
                 by_id = bool(c['Spec']) and re.search(r'\b' + re.escape(c['Spec']) + r'-\d{3}\b', t, re.I) is not None
                 if by_target or by_title or by_id:
                     hits.append(c['Name'])
@@ -221,7 +223,7 @@ def main():
         summary.append(f"| {ctx_name} | {c['Spec']} | {spec_cell} | {calc_cell} | {len(ctx_pages)} | {state} |")
 
         detail.append(f'## {ctx_name}\n\n')
-        detail.append(f"Spec prefix {code(c['Spec'])}; BE class prefixes {', '.join(code(x) for x in c['Be'])}; FE feature {code('src/features/' + c['Fe']) if c['Fe'] else 'none'}. Graph: " + code(f'generated/graph/{ctx_name}.md') + '.\n\n')
+        detail.append(f"Spec prefix {code(c['Spec'])}; BE class prefixes {', '.join(code(x) for x in c['Be'])}; FE pages {', '.join(code(x) for x in c['Fe']) if c['Fe'] else 'none'}. Graph: " + code(f'generated/graph/{ctx_name}.md') + '.\n\n')
         if not runs:
             detail.append('Ready for the analyst agent: spec stable and verified, calculations audited, no legacy page pending.\n')
         else:

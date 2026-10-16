@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Maps changed code paths (relative to FE/BE repo roots, prefixed be/ or fe/) to affected docs using docs-map.yml.
 Examples:
-  python3 scripts/map-paths.py be/core/src/main/kotlin/harbor/manager/Product1Manager.kt fe/src/features/stress/index.ts
+  python3 scripts/map-paths.py be/core/src/main/kotlin/harbor/manager/Product1Manager.kt fe/src/pages/StressTestPage/StressTestPage.tsx
   git diff --name-only origin/main | sed 's#^#be/#' | python3 scripts/map-paths.py
 Output: one line per path `<path> -> <spec>, <spec>`; unmapped paths show `UNMAPPED`. --json for machine output."""
 import argparse

@@ -204,8 +204,11 @@ def main():
             if ctx:
                 # BE contexts have a `context:` node (located at the manager); FE-only contexts (e.g. presentation) only a `feature:` node
                 ctx_node = f'context:{ctx}'
-                if not re.search(r'"id"\s*:\s*"' + re.escape(ctx_node) + '"', read_text_or_empty(graph_json), re.I):
-                    ctx_node = f'feature:{ctx}'
+                gtext = read_text_or_empty(graph_json)
+                if not re.search(r'"id"\s*:\s*"' + re.escape(ctx_node) + '"', gtext, re.I):
+                    # FE-only: the first page (feature node) whose community is the context
+                    fm_ = re.search(r'"id"\s*:\s*"(feature:[^"]+)",\s*"kind"\s*:\s*"feature",\s*"label"\s*:\s*"[^"]*",\s*"community"\s*:\s*"' + re.escape(ctx) + '"', gtext, re.I)
+                    ctx_node = fm_.group(1) if fm_ else f'feature:{ctx}'
                 gout = f'(`{node}` not in graph - no `@docs` tag in code; neighbourhood of `{ctx_node}` instead)\n' + query(ctx_node)
         sources.append('generated/graph/graph.json')
         gout = re.sub(r'(?m)^#', '###', gout)   # demote the query's headings under this section

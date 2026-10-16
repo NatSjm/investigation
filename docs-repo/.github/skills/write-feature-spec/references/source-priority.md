@@ -12,7 +12,7 @@
 | 8 | BE manager file (`manager/<Ctx>Manager.kt`, named on the `context:` node) | medium | responsibilities, orchestration, rule intent |
 | 9 | BE unit test next to a calculator (`core/src/test/kotlin/harbor/utils/<Class>Test.kt`) | medium | edge cases and worked examples |
 | 10 | BE controller / service / validator / dao, narrow ranges | high | validation details, error codes |
-| 11 | FE page -> hooks -> components | high | UI flow details, client-side validation |
+| 11 | FE page component (`src/pages/<Page>/<Page>.tsx`) -> its hooks (`hook/use*.ts`) -> components (`components/<Name>/`) | high | UI flow details, client-side validation |
 
 Rules of thumb:
 - One `file:line` range of 40-120 lines beats a whole file; never a whole layer.

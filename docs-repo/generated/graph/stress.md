@@ -1,10 +1,10 @@
 ---
 type: Document
 title: "Graph: stress (be+fe)"
-description: "Stress test per scenario: monthly exposure table by city or transport mode plus the transport price chart."
+description: "/session/:sessionId/stress-test` - third meeting step: one monthly table per scenario, transport price chart per scenario and the dimension toggle (city / transport mode)."
 generated:
   by: process:gen-graph
-  at: 2026-10-15
+  at: 2026-10-16
 status: stable
 ---
 # Graph: stress (be+fe)
@@ -13,21 +13,21 @@ status: stable
 17 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## hooks
-- `hook:useRunStressTest` - `src/features/stress/api/useRunStressTest.ts:11`
-- `hook:useStressTest` - `src/features/stress/api/useStressTest.ts:11`
+- `hook:useRunStressTest` - `src/pages/StressTestPage/hook/useRunStressTest.ts:11`
+- `hook:useStressTest` - `src/pages/StressTestPage/hook/useStressTest.ts:11`
 
 ## contexts
 - `context:stress` - `core/src/main/kotlin/harbor/manager/StressManager.kt` - entry point StressManager (manager)
 
 ## features
-- `feature:stress` - `src/features/stress/index.ts` - Stress test per scenario: monthly exposure table by city or transport mode plus the transport price chart.
+- `feature:StressTestPage` - `src/pages/StressTestPage/StressTestPage.tsx` - /session/:sessionId/stress-test` - third meeting step: one monthly table per scenario, transport price chart per scenario and the dimension toggle (city / transport mode).
 
 ## endpoints
 - `endpoint:GET /api/v1/session/stress-test` - `core/src/main/kotlin/harbor/api/StressTestController.kt:24` - operationId getStressTest; handler StressTestController.getStressTest; params 
 - `endpoint:POST /api/v1/session/stress-test` - `core/src/main/kotlin/harbor/api/StressTestController.kt:21` - operationId runStressTest; handler StressTestController.runStressTest; params 
 
 ## routes
-- `route:/session/:sessionId/stress-test` - `src/app/routes.tsx:37` - renders StressTestPage
+- `route:/session/:sessionId/stress-test` - `src/routing/SessionRoutes.tsx:22` - renders StressTestPage
 
 ## classes
 - `class:StressManager` - `core/src/main/kotlin/harbor/manager/StressManager.kt:30` - manager; Service
@@ -37,17 +37,17 @@ status: stable
 - `class:StressTestCalculator` - `core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23` - utils; object
 
 ## components
-- `component:StressTestPage` - `src/features/stress/ui/StressTestPage.tsx:19`
-- `component:DimensionToggle` - `src/features/stress/ui/DimensionToggle.tsx:12`
-- `component:StressTable` - `src/features/stress/ui/StressTable.tsx:16`
-- `component:TransportPriceChart` - `src/features/stress/ui/TransportPriceChart.tsx:14`
+- `component:DimensionToggle` - `src/pages/StressTestPage/components/DimensionToggle/DimensionToggle.tsx:12`
+- `component:StressTable` - `src/pages/StressTestPage/components/StressTable/StressTable.tsx:17`
+- `component:StressTestPage` - `src/pages/StressTestPage/StressTestPage.tsx:21`
+- `component:TransportPriceChart` - `src/pages/StressTestPage/components/TransportPriceChart/TransportPriceChart.tsx:18`
 
 ## tables
 - `table:stress_test_result` - `core/src/main/resources/db/migration/V7__market_stress.sql` - 8 columns: id, session_id, scenario_id, period, dimension_value, exposure, transport_cost_delta, cumulative_exposure
 
 ## Edges
-- `feature:stress` -calls-> `endpoint:GET /api/v1/session/stress-test`
-- `feature:stress` -calls-> `endpoint:POST /api/v1/session/stress-test`
+- `feature:StressTestPage` -calls-> `endpoint:GET /api/v1/session/stress-test`
+- `feature:StressTestPage` -calls-> `endpoint:POST /api/v1/session/stress-test`
 - `hook:useRunStressTest` -calls-> `endpoint:POST /api/v1/session/stress-test` (exact)
 - `hook:useStressTest` -calls-> `endpoint:GET /api/v1/session/stress-test` (exact)
 - `context:stress` -contains-> `class:StressManager`
@@ -55,12 +55,12 @@ status: stable
 - `context:stress` -contains-> `class:StressTestController`
 - `context:stress` -contains-> `class:StressTestResultDao`
 - `context:stress` -contains-> `class:StressTestService`
-- `feature:stress` -contains-> `component:DimensionToggle` (exact)
-- `feature:stress` -contains-> `component:StressTable` (exact)
-- `feature:stress` -contains-> `component:StressTestPage` (exact)
-- `feature:stress` -contains-> `component:TransportPriceChart` (exact)
-- `feature:stress` -contains-> `hook:useRunStressTest` (exact)
-- `feature:stress` -contains-> `hook:useStressTest` (exact)
+- `feature:StressTestPage` -contains-> `component:DimensionToggle` (exact)
+- `feature:StressTestPage` -contains-> `component:StressTable` (exact)
+- `feature:StressTestPage` -contains-> `component:StressTestPage` (exact)
+- `feature:StressTestPage` -contains-> `component:TransportPriceChart` (exact)
+- `feature:StressTestPage` -contains-> `hook:useRunStressTest` (exact)
+- `feature:StressTestPage` -contains-> `hook:useStressTest` (exact)
 - `class:ReportPayloadService` -depends-on-> `class:StressTestResultDao` (-> reports)
 - `class:StressManager` -depends-on-> `class:ClientRoleService` (-> clients)
 - `class:StressManager` -depends-on-> `class:MarketScenarioDao` (-> market)
@@ -70,6 +70,10 @@ status: stable
 - `class:StressTestService` -depends-on-> `class:BaselinePriceService` (-> market)
 - `class:StressTestService` -depends-on-> `class:CoverRatioService` (-> cover)
 - `class:StressTestService` -depends-on-> `class:ProjectionInputAssembler` (-> product1)
+- `feature:fe-app` -depends-on-> `feature:StressTestPage` (-> fe-app) (exact)
+- `feature:PresentationPage` -depends-on-> `feature:StressTestPage` (-> presentation) (exact)
+- `feature:StressTestPage` -depends-on-> `feature:fe-app` (-> fe-app) (exact)
+- `feature:StressTestPage` -depends-on-> `feature:shared` (-> fe-shared) (exact)
 - `context:stress` -exposes-> `endpoint:GET /api/v1/session/stress-test`
 - `context:stress` -exposes-> `endpoint:POST /api/v1/session/stress-test`
 - `table:stress_test_result` -fk scenario_id-> `table:market_scenario` (-> market)
@@ -81,20 +85,15 @@ status: stable
 - `spec:STR-001` -implemented-by-> `class:StressTestController` (-> docs)
 - `spec:STR-001` -implemented-by-> `class:StressTestResultDao` (-> docs)
 - `spec:STR-001` -implemented-by-> `class:StressTestService` (-> docs)
-- `spec:STR-001` -implemented-by-> `feature:stress` (-> docs)
+- `spec:STR-001` -implemented-by-> `feature:StressTestPage` (-> docs)
 - `spec:stress_test_monthly` -implemented-by-> `class:StressTestCalculator` (-> docs)
 - `context:stress` -owns-> `table:stress_test_result`
 - `class:StressTestResultDao` -persists-to-> `table:stress_test_result`
-- `feature:stress` -produces-> `channel:harbor.session.{*}` (-> presentation)
-- `component:StressTestPage` -renders-> `component:DimensionToggle` (exact)
-- `component:StressTestPage` -renders-> `component:StressTable` (exact)
-- `component:StressTestPage` -renders-> `component:TransportPriceChart` (exact)
-- `feature:stress` -renders-> `component:DataTable` (-> shared-ui)
-- `feature:stress` -renders-> `component:LineChart` (-> shared-ui)
-- `route:/session/:sessionId/stress-test` -renders-> `feature:stress`
-- `component:StressTestPage` -uses-> `hook:useRunStressTest` (exact)
-- `component:StressTestPage` -uses-> `hook:useStressTest` (exact)
+- `feature:StressTestPage` -produces-> `channel:harbor.session.{*}` (-> fe-app)
+- `feature:StressTestPage` -renders-> `component:DataTable` (-> shared-ui)
+- `feature:StressTestPage` -renders-> `component:LineChart` (-> shared-ui)
+- `route:/session/:sessionId/stress-test` -renders-> `feature:StressTestPage`
 
 ## Specs touching this community
-- `spec:STR-001` - `features/stress/STR-001.md` - status draft; be core/src/main/kotlin/harbor/manager/StressManager.kt:31; fe src/features/stress/api/useRunStressTest.ts:11; fe src/features/stress/api/useStressTest.ts:11; fe src/features/stress/index.ts:6; fe src/features/stress/stress.types.ts:11
+- `spec:STR-001` - `features/stress/STR-001.md` - status draft; be core/src/main/kotlin/harbor/manager/StressManager.kt:31; fe src/pages/StressTestPage/hook/useRunStressTest.ts:11; fe src/pages/StressTestPage/hook/useStressTest.ts:11; fe src/pages/StressTestPage/StressTestPage.tsx:21; fe src/types/stress.ts:11
 - `spec:stress_test_monthly` - `domain/calculations/stress_test_monthly.md` - status stable; be core/src/main/kotlin/harbor/utils/StressTestCalculator.kt:23

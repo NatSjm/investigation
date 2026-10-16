@@ -3,21 +3,26 @@
 # The backend is layered (package-by-layer: api, manager, service, dao, event, job, utils, ...), so the business
 # area of a class is not in its folder but in its NAME PREFIX. A BE class belongs to the context whose `be` prefix
 # is the LONGEST match at the start of its simple class name; classes matching no prefix are `shared`.
-# The FE is package-by-feature: `fe` is the folder under src/features/. `spec` is the spec ID prefix (CLI-001, ...).
+# The FE is organised by page (src/pages/<Page>/): `fe` lists the page folder names of the context (wildcards allowed,
+# e.g. "*Product1Page"); pieces under src/pages/shared and the app shell belong to no page and are reached through
+# `@docs` tags and docs-map.yml path globs. `spec` is the spec ID prefix (CLI-001, ...).
 #
-# Used by scripts/gen-graph.py (graph communities), scripts/context-pack.py and docs-map.yml authors.
-# Keep one line per context; edit when a new class-name prefix appears (the graph lists unmatched classes as `shared`).
+# Used by scripts/gen-graph.py (graph communities), scripts/context-pack.py, the FE tag-candidates.py and docs-map.yml
+# authors. Keep one line per context; edit when a new class-name prefix or page appears (the graph lists unmatched
+# classes as `shared` and unmatched pages under their own name).
 
 contexts:
-  clients:  { spec: CLI, fe: clients,  be: [Client, Role] }
-  meetings: { spec: SES, fe: meetings, be: [Session, Meeting, RoleOverride, SessionClientConfig] }
-  imports:  { spec: IMP, fe: "",       be: [Import, FileExchange, Movement, Movements, GoodsMovement, Xls, Workbook, DailyMovement, MonthlySnapshot] }
-  product1: { spec: P1,  fe: product1, be: [Product1, Projection, Peer, MovementInput, SessionMovementInput, SessionPeerSimulation] }
-  product2: { spec: P2,  fe: product2, be: [Product2] }
-  cover:    { spec: COV, fe: cover,    be: [Cover] }
-  market:   { spec: MKT, fe: market,   be: [Market, Scenario, BaselinePrice] }
-  stress:   { spec: STR, fe: stress,   be: [Stress] }
-  reports:  { spec: RPT, fe: reports,  be: [Report, DocumentService] }
-  admin:    { spec: ADM, fe: admin,    be: [Admin, Parameter] }
+  clients:  { spec: CLI, fe: [ClientSearchPage, ClientOverviewPage], be: [Client, Role] }
+  meetings: { spec: SES, fe: [ClientMeetingsPage, PreparationSessionsPage, SessionSummaryPage], be: [Session, Meeting, RoleOverride, SessionClientConfig] }
+  imports:  { spec: IMP, fe: [], be: [Import, FileExchange, Movement, Movements, GoodsMovement, Xls, Workbook, DailyMovement, MonthlySnapshot] }
+  product1: { spec: P1,  fe: [Product1OverviewPage], be: [Product1, Projection, Peer, MovementInput, SessionMovementInput, SessionPeerSimulation] }
+  product2: { spec: P2,  fe: [Product2OverviewPage], be: [Product2] }
+  # cover has no page of its own: CoverQuotePanel and the cover hooks live under src/pages/shared (tagged COV-001)
+  cover:    { spec: COV, fe: [], be: [Cover] }
+  market:   { spec: MKT, fe: [ScenariosPage], be: [Market, Scenario, BaselinePrice] }
+  stress:   { spec: STR, fe: [StressTestPage], be: [Stress] }
+  # reports has no page of its own: ReportPreview, DownloadPdfButton and the report hooks live under src/pages/shared (tagged RPT-001)
+  reports:  { spec: RPT, fe: [], be: [Report, DocumentService] }
+  admin:    { spec: ADM, fe: [ParametersPage, ImportsPage], be: [Admin, Parameter] }
   # FE-only context: the client-facing presentation window (second browser window synchronised over a BroadcastChannel)
-  presentation: { spec: PRS, fe: presentation, be: [] }
+  presentation: { spec: PRS, fe: [PresentationPage], be: [] }

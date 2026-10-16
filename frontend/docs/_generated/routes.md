@@ -4,29 +4,28 @@ title: "Routes (FE)"
 description: "Generated map: Routes (FE), derived from react-router route objects / <Route> elements; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-15
+  at: 2026-10-16
 status: stable
 ---
 # Routes (FE)
 
 > Generated from `react-router route objects / <Route> elements` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
-16 route(s). Component -> feature: see codebase-map.md public exports.
+15 route(s). Child paths are joined to their parent; `Layout` is the nearest enclosing pathless or parent element. Component -> page: the page folder of the same name in codebase-map.md.
 
-| Path | Component | Location |
-|---|---|---|
-| `/` | `Navigate` | `src/app/routes.tsx:24` |
-| `/admin/imports` | `ImportsPage` | `src/app/AdminRoutes.tsx:10` |
-| `/admin/parameters` | `ParametersPage` | `src/app/AdminRoutes.tsx:9` |
-| `/clients` | `ClientSearchPage` | `src/app/routes.tsx:25` |
-| `/clients/:clientId` | `ClientOverviewPage` | `src/app/routes.tsx:26` |
-| `/meetings` | `Navigate` | `src/app/routes.tsx:27` |
-| `/meetings/client` | `ClientMeetingsPage` | `src/app/routes.tsx:28` |
-| `/meetings/preparation` | `PreparationSessionsPage` | `src/app/routes.tsx:29` |
-| `/present/:sessionId` | `PresentationLayout` | `src/app/routes.tsx:45` |
-| `/present/:sessionId` | `PresentationPage` | `src/app/routes.tsx:47` |
-| `/session/:sessionId` | `SessionLayout` | `src/app/routes.tsx:31` |
-| `/session/:sessionId/product1` | `Product1OverviewPage` | `src/app/routes.tsx:34` |
-| `/session/:sessionId/product2` | `Product2OverviewPage` | `src/app/routes.tsx:35` |
-| `/session/:sessionId/scenarios` | `ScenariosPage` | `src/app/routes.tsx:36` |
-| `/session/:sessionId/stress-test` | `StressTestPage` | `src/app/routes.tsx:37` |
-| `/session/:sessionId/summary` | `SessionSummaryPage` | `src/app/routes.tsx:38` |
+| Path | Component | Layout | Location |
+|---|---|---|---|
+| `/` | `Navigate` | `RootLayout` | `src/routing/Routing.tsx:26` |
+| `/admin/imports` | `ImportsPage` | `AdminRoutesGuard` | `src/routing/Routing.tsx:37` |
+| `/admin/parameters` | `ParametersPage` | `AdminRoutesGuard` | `src/routing/Routing.tsx:36` |
+| `/clients` | `ClientSearchPage` | `RootLayout` | `src/routing/Routing.tsx:27` |
+| `/clients/:clientId` | `ClientOverviewPage` | `RootLayout` | `src/routing/Routing.tsx:28` |
+| `/meetings` | `Navigate` | `RootLayout` | `src/routing/Routing.tsx:29` |
+| `/meetings/client` | `ClientMeetingsPage` | `RootLayout` | `src/routing/Routing.tsx:30` |
+| `/meetings/preparation` | `PreparationSessionsPage` | `RootLayout` | `src/routing/Routing.tsx:31` |
+| `/present/:sessionId` | `PresentationPage` | `PresentationLayout` | `src/routing/Routing.tsx:44` |
+| `/session/:sessionId` | `SessionLayout` | `RootLayout` | `src/routing/SessionRoutes.tsx:15` |
+| `/session/:sessionId/product1` | `Product1OverviewPage` | `SessionLayout` | `src/routing/SessionRoutes.tsx:19` |
+| `/session/:sessionId/product2` | `Product2OverviewPage` | `SessionLayout` | `src/routing/SessionRoutes.tsx:20` |
+| `/session/:sessionId/scenarios` | `ScenariosPage` | `SessionLayout` | `src/routing/SessionRoutes.tsx:21` |
+| `/session/:sessionId/stress-test` | `StressTestPage` | `SessionLayout` | `src/routing/SessionRoutes.tsx:22` |
+| `/session/:sessionId/summary` | `SessionSummaryPage` | `SessionLayout` | `src/routing/SessionRoutes.tsx:23` |
