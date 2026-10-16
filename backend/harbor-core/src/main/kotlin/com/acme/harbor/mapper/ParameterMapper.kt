@@ -1,13 +1,12 @@
 package com.acme.harbor.mapper
 
-import com.acme.harbor.api.generated.model.ParameterUpsert
+import com.acme.harbor.api.generated.model.ParameterUpsertDto
 import com.acme.harbor.enums.ProductGroup
 import com.acme.harbor.manager.AdminManager
 import com.acme.harbor.dao.model.Parameter
 import java.time.ZoneOffset
-import com.acme.harbor.api.generated.model.Parameter as ApiParameter
-import com.acme.harbor.api.generated.model.ProductGroup as ApiProductGroup
-
+import com.acme.harbor.api.generated.model.ParameterDto as ApiParameter
+import com.acme.harbor.api.generated.model.ProductGroupDto as ApiProductGroup
 /** Maps parameter values and the upsert request body to / from the generated API models. */
 object ParameterMapper {
 
@@ -25,7 +24,7 @@ object ParameterMapper {
         updatedAt = p.updatedAt.atOffset(ZoneOffset.UTC),
     )
 
-    fun change(u: ParameterUpsert) = AdminManager.ParameterChange(
+    fun change(u: ParameterUpsertDto) = AdminManager.ParameterChange(
         scopeProductGroup = u.scopeProductGroup?.toDomain(),
         scopeCountry = u.scopeCountry,
         scopeValue = u.scopeValue,

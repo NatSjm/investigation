@@ -1,6 +1,6 @@
 package com.acme.harbor.mapper
 
-import com.acme.harbor.api.generated.model.Report
+import com.acme.harbor.api.generated.model.ReportDto
 import com.acme.harbor.enums.ReportStatus
 import com.acme.harbor.dao.model.MeetingReport
 import java.time.ZoneOffset
@@ -9,9 +9,9 @@ import java.time.ZoneOffset
 object ReportMapper {
 
     @Suppress("UNCHECKED_CAST")
-    fun report(r: MeetingReport) = Report(
+    fun report(r: MeetingReport) = ReportDto(
         sessionId = r.sessionId,
-        status = Report.Status.valueOf(r.status.name),
+        status = ReportDto.Status.valueOf(r.status.name),
         payload = r.payload as Map<String, Any>,
         pdfAvailable = r.status == ReportStatus.RENDERED && r.pdfPath != null,
         renderedAt = r.renderedAt?.atOffset(ZoneOffset.UTC),

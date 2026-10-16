@@ -42,7 +42,8 @@ repo `contexts.yml`): contexts `clients`, `meetings`, `imports`, `product1`, `pr
 - Business-prefix naming: every class starts with its context prefix from `contexts.yml` (`Product1Controller`,
   `ProjectionService`, `ProjectionRepository`, `MeetingSessionDaoService`); classes without a known prefix are reported as `shared`.
 - Controllers in `api/`: `@RestController class XxxController(...) : XxxApi` implementing `override fun <operationId>(...)`
-  **without** `@*Mapping` annotations (they live on the generated interface). `api-index.md` joins openapi_harbor.yaml to these overrides.
+  **without** `@*Mapping` annotations (they live on the generated interface; parameter annotations such as `@Valid`, `@RequestBody`, `@RequestHeader` are
+  inherited). Generated models end in `Dto` (`ClientDto`). `api-index.md` joins openapi_harbor.yaml to these overrides.
   Problem bodies come from `api/error/ProblemDetails`, download headers from `api/HttpHeadersFactory`.
 - Kafka: topic names only via the `TOPIC` constant of the listener or publisher class (companion object `const val TOPIC` of that class in `event/`; payload schemas in `kafka-client/src/main/resources/avro` and
   `json_<service>`, classes generated at build);

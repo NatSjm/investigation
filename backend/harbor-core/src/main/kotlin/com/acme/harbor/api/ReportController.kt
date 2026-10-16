@@ -1,7 +1,7 @@
 package com.acme.harbor.api
 
 import com.acme.harbor.api.generated.ReportsApi
-import com.acme.harbor.api.generated.model.Report
+import com.acme.harbor.api.generated.model.ReportDto
 import com.acme.harbor.manager.ReportManager
 import com.acme.harbor.mapper.ReportMapper
 import org.springframework.core.io.ByteArrayResource
@@ -18,10 +18,10 @@ import java.util.UUID
 @RestController
 class ReportController(private val manager: ReportManager) : ReportsApi {
 
-    override fun getReport(sessionId: UUID): ResponseEntity<Report> =
+    override fun getReport(sessionId: UUID): ResponseEntity<ReportDto> =
         ResponseEntity.ok(ReportMapper.report(manager.get(sessionId)))
 
-    override fun regenerateReport(sessionId: UUID): ResponseEntity<Report> =
+    override fun regenerateReport(sessionId: UUID): ResponseEntity<ReportDto> =
         ResponseEntity.status(HttpStatus.ACCEPTED).body(ReportMapper.report(manager.regenerate(sessionId)))
 
     override fun downloadReportPdf(sessionId: UUID): ResponseEntity<Resource> =

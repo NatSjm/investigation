@@ -82,7 +82,7 @@ and is **not committed**:
 
 - `openapi/openapi_harbor.yaml` -> `kotlin-spring`, `interfaceOnly`: one interface per tag in `com.acme.harbor.api.generated`
   (`ClientsApi`, `MeetingsApi`, `Product1Api`, `Product2Api`, `CoverApi`, `MarketApi`, `StressApi`, `ReportsApi`,
-  `AdminApi`) with the request mappings, models in `com.acme.harbor.api.generated.model`. The frontend client is generated
+  `AdminApi`) with the request mappings, models in `com.acme.harbor.api.generated.model` with the suffix `Dto` (`ClientDto`, `ProjectionRowDto`; openapi-generator `modelNameSuffix`). The frontend client is generated
   from the same file. Change the contract first, regenerate, then implement the `override fun`.
 - `api/<service>.yaml` -> `kotlin` client (`jvm-spring-restclient`) per external service in
   `com.acme.harbor.client.generated.<name>` (`clientregistry`, `marketdata`, `coverprovider`, `documentservice`, `fileexchange`),

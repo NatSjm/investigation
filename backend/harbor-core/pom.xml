@@ -42,7 +42,7 @@
 
         (1) harbor-api: server interfaces from src/main/resources/openapi/openapi_harbor.yaml, one interface per tag
             (com.acme.harbor.api.generated.ClientsApi, MeetingsApi, Product1Api, Product2Api, CoverApi, MarketApi, StressApi,
-            ReportsApi, AdminApi) carrying the request mappings, models in com.acme.harbor.api.generated.model.
+            ReportsApi, AdminApi) carrying the request mappings, models in com.acme.harbor.api.generated.model with the suffix Dto (ClientDto, ...).
             The controllers in com.acme.harbor.api implement them with plain "override fun <operationId>(...)".
         (2) one kotlin client per external contract in src/main/resources/api/*.yaml, package
             harbor.client.generated.<name>; wrapped by the thin @Component classes in com.acme.harbor.client.rest.
@@ -60,6 +60,7 @@
               <output>${project.build.directory}/generated-sources/openapi/harbor-api</output>
               <apiPackage>com.acme.harbor.api.generated</apiPackage>
               <modelPackage>com.acme.harbor.api.generated.model</modelPackage>
+              <modelNameSuffix>Dto</modelNameSuffix>
               <generateApiTests>false</generateApiTests>
               <generateModelTests>false</generateModelTests>
               <generateSupportingFiles>false</generateSupportingFiles>

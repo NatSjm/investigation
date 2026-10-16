@@ -1,9 +1,9 @@
 package com.acme.harbor.api
 
 import com.acme.harbor.api.generated.MarketApi
-import com.acme.harbor.api.generated.model.BaselinePrices
-import com.acme.harbor.api.generated.model.Scenario
-import com.acme.harbor.api.generated.model.ScenarioInput
+import com.acme.harbor.api.generated.model.BaselinePricesDto
+import com.acme.harbor.api.generated.model.ScenarioDto
+import com.acme.harbor.api.generated.model.ScenarioInputDto
 import com.acme.harbor.context.SessionContext
 import com.acme.harbor.manager.MarketManager
 import com.acme.harbor.mapper.ScenarioMapper
@@ -20,15 +20,15 @@ import java.util.UUID
 @RestController
 class ScenarioController(private val manager: MarketManager) : MarketApi {
 
-    override fun listScenarios(xHarborSession: UUID): ResponseEntity<List<Scenario>> =
+    override fun listScenarios(xHarborSession: UUID): ResponseEntity<List<ScenarioDto>> =
         ResponseEntity.ok(manager.listScenarios(SessionContext.current()).map(ScenarioMapper::scenario))
 
-    override fun createScenario(xHarborSession: UUID, scenarioInput: ScenarioInput): ResponseEntity<Scenario> {
+    override fun createScenario(xHarborSession: UUID, scenarioInput: ScenarioInputDto): ResponseEntity<ScenarioDto> {
         val scenario = manager.createScenario(SessionContext.current(), ScenarioMapper.input(scenarioInput))
         return ResponseEntity.status(HttpStatus.CREATED).body(ScenarioMapper.scenario(scenario))
     }
 
-    override fun updateScenario(xHarborSession: UUID, scenarioId: UUID, scenarioInput: ScenarioInput): ResponseEntity<Scenario> {
+    override fun updateScenario(xHarborSession: UUID, scenarioId: UUID, scenarioInput: ScenarioInputDto): ResponseEntity<ScenarioDto> {
         val scenario = manager.updateScenario(SessionContext.current(), scenarioId, ScenarioMapper.input(scenarioInput))
         return ResponseEntity.ok(ScenarioMapper.scenario(scenario))
     }
@@ -38,6 +38,6 @@ class ScenarioController(private val manager: MarketManager) : MarketApi {
         return ResponseEntity.noContent().build()
     }
 
-    override fun getBaselinePrices(xHarborSession: UUID): ResponseEntity<BaselinePrices> =
+    override fun getBaselinePrices(xHarborSession: UUID): ResponseEntity<BaselinePricesDto> =
         ResponseEntity.ok(ScenarioMapper.baseline(manager.baseline(SessionContext.current())))
 }

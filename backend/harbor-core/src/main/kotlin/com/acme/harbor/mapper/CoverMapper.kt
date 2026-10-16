@@ -1,23 +1,23 @@
 package com.acme.harbor.mapper
 
-import com.acme.harbor.api.generated.model.CoverMonth
-import com.acme.harbor.api.generated.model.CoverQuote
-import com.acme.harbor.api.generated.model.CoverQuoteRequest
-import com.acme.harbor.api.generated.model.CoverSummary
+import com.acme.harbor.api.generated.model.CoverMonthDto
+import com.acme.harbor.api.generated.model.CoverQuoteDto
+import com.acme.harbor.api.generated.model.CoverQuoteRequestDto
+import com.acme.harbor.api.generated.model.CoverSummaryDto
 import com.acme.harbor.manager.CoverManager
 import com.acme.harbor.dao.model.CoverPolicy
 import com.acme.harbor.service.CoverQuoteService
 import java.time.YearMonth
 import java.time.ZoneOffset
-import com.acme.harbor.api.generated.model.CoverPolicy as ApiCoverPolicy
-import com.acme.harbor.api.generated.model.ProductGroup as ApiProductGroup
+import com.acme.harbor.api.generated.model.CoverPolicyDto as ApiCoverPolicy
+import com.acme.harbor.api.generated.model.ProductGroupDto as ApiProductGroup
 import com.acme.harbor.dao.model.CoverQuote as CoverQuoteEntity
 import com.acme.harbor.utils.CoverRatioCalculator.CoverMonth as CalcCoverMonth
 
 /** Maps cover summaries, quotes and policies to the generated API models. */
 object CoverMapper {
 
-    fun month(m: CalcCoverMonth) = CoverMonth(
+    fun month(m: CalcCoverMonth) = CoverMonthDto(
         period = m.period.toString(),
         subProduct = m.subProduct,
         totalValue = m.totalValue,
@@ -26,16 +26,16 @@ object CoverMapper {
     )
 
     fun summary(s: CoverManager.Summary) =
-        CoverSummary(sessionId = s.sessionId, months = s.months.map(::month), uncoveredValue = s.uncoveredValue)
+        CoverSummaryDto(sessionId = s.sessionId, months = s.months.map(::month), uncoveredValue = s.uncoveredValue)
 
-    fun quoteRequest(r: CoverQuoteRequest) = CoverQuoteService.QuoteRequest(
+    fun quoteRequest(r: CoverQuoteRequestDto) = CoverQuoteService.QuoteRequest(
         subProducts = r.subProducts,
         targetCoveredShare = r.targetCoveredShare,
         fromPeriod = r.fromPeriod?.let(YearMonth::parse),
         toPeriod = r.toPeriod?.let(YearMonth::parse),
     )
 
-    fun quote(q: CoverQuoteEntity) = CoverQuote(
+    fun quote(q: CoverQuoteEntity) = CoverQuoteDto(
         quoteId = q.id,
         sessionId = q.sessionId,
         requestedAt = q.requestedAt.atOffset(ZoneOffset.UTC),

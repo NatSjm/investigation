@@ -9,7 +9,7 @@ description: "Contract-first REST API: edit openapi/openapi_harbor.yaml first, r
    generated from the same file, so schema names are shared.
 2. **Regenerate.** `mvn -q -pl harbor-core -am -DskipTests generate-sources` produces the `*Api` interfaces in `harbor-core/target/generated-sources`.
    Never edit or commit generated code; never add `@*Mapping` annotations in controllers.
-3. **Implement.** `@RestController class XxxController(private val manager: XxxManager) : XxxApi` in `api/` with
+3. **Implement.** `@RestController class XxxController(private val manager: XxxManager) : XxxApi` in `api/` (generated models carry the suffix `Dto`) with
    `override fun <operationId>(...)` delegating to the manager. The controller maps DTOs, the manager holds the use case;
    controllers never inject a `*Repository` or a `*Service` directly.
 4. **Session scope.** Every `/session/**` path item references `components/parameters/SessionHeader` (`X-Harbor-Session`).

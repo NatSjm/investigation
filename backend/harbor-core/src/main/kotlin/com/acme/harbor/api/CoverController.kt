@@ -1,10 +1,10 @@
 package com.acme.harbor.api
 
 import com.acme.harbor.api.generated.CoverApi
-import com.acme.harbor.api.generated.model.CoverPolicy
-import com.acme.harbor.api.generated.model.CoverQuote
-import com.acme.harbor.api.generated.model.CoverQuoteRequest
-import com.acme.harbor.api.generated.model.CoverSummary
+import com.acme.harbor.api.generated.model.CoverPolicyDto
+import com.acme.harbor.api.generated.model.CoverQuoteDto
+import com.acme.harbor.api.generated.model.CoverQuoteRequestDto
+import com.acme.harbor.api.generated.model.CoverSummaryDto
 import com.acme.harbor.context.SessionContext
 import com.acme.harbor.manager.CoverManager
 import com.acme.harbor.mapper.CoverMapper
@@ -20,14 +20,14 @@ import java.util.UUID
 @RestController
 class CoverController(private val manager: CoverManager) : CoverApi {
 
-    override fun getCoverSummary(xHarborSession: UUID): ResponseEntity<CoverSummary> =
+    override fun getCoverSummary(xHarborSession: UUID): ResponseEntity<CoverSummaryDto> =
         ResponseEntity.ok(CoverMapper.summary(manager.summary(SessionContext.current())))
 
-    override fun requestCoverQuote(xHarborSession: UUID, coverQuoteRequest: CoverQuoteRequest): ResponseEntity<CoverQuote> {
+    override fun requestCoverQuote(xHarborSession: UUID, coverQuoteRequest: CoverQuoteRequestDto): ResponseEntity<CoverQuoteDto> {
         val quote = manager.requestQuote(SessionContext.current(), CoverMapper.quoteRequest(coverQuoteRequest))
         return ResponseEntity.status(HttpStatus.CREATED).body(CoverMapper.quote(quote))
     }
 
-    override fun listCoverPolicies(clientId: UUID): ResponseEntity<List<CoverPolicy>> =
+    override fun listCoverPolicies(clientId: UUID): ResponseEntity<List<CoverPolicyDto>> =
         ResponseEntity.ok(manager.policies(clientId).map(CoverMapper::policy))
 }

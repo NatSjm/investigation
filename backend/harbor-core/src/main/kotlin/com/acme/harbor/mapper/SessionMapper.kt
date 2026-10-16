@@ -1,18 +1,17 @@
 package com.acme.harbor.mapper
 
-import com.acme.harbor.api.generated.model.Session
-import com.acme.harbor.api.generated.model.SessionCreated
+import com.acme.harbor.api.generated.model.SessionDto
+import com.acme.harbor.api.generated.model.SessionCreatedDto
 import com.acme.harbor.enums.ClientRole
 import com.acme.harbor.enums.ProductGroup
 import com.acme.harbor.enums.SessionKind
 import com.acme.harbor.enums.SessionStatus
 import com.acme.harbor.manager.MeetingManager
 import java.time.ZoneOffset
-import com.acme.harbor.api.generated.model.ClientRole as ApiClientRole
-import com.acme.harbor.api.generated.model.ProductGroup as ApiProductGroup
-import com.acme.harbor.api.generated.model.SessionKind as ApiSessionKind
-import com.acme.harbor.api.generated.model.SessionStatus as ApiSessionStatus
-
+import com.acme.harbor.api.generated.model.ClientRoleDto as ApiClientRole
+import com.acme.harbor.api.generated.model.ProductGroupDto as ApiProductGroup
+import com.acme.harbor.api.generated.model.SessionKindDto as ApiSessionKind
+import com.acme.harbor.api.generated.model.SessionStatusDto as ApiSessionStatus
 /** Maps meeting sessions to the generated API models. */
 object SessionMapper {
 
@@ -21,9 +20,9 @@ object SessionMapper {
     fun ApiSessionStatus.toDomain(): SessionStatus = SessionStatus.valueOf(name)
     fun ApiClientRole.toDomain(): ClientRole = ClientRole.valueOf(name)
 
-    fun created(view: MeetingManager.SessionView): SessionCreated = SessionCreated(sessionId = view.session.id)
+    fun created(view: MeetingManager.SessionView): SessionCreatedDto = SessionCreatedDto(sessionId = view.session.id)
 
-    fun session(view: MeetingManager.SessionView): Session = Session(
+    fun session(view: MeetingManager.SessionView): SessionDto = SessionDto(
         sessionId = view.session.id,
         clientId = view.session.clientId,
         clientName = view.clientName,
