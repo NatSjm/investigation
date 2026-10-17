@@ -230,7 +230,9 @@ Two topics: the backend has Avro and JSON schemas but no AsyncAPI document, and 
   (repeatable; rewrites the Harbor names in the copied `.md`, `.yml`, `.json`, `.kt` files, longest first, never in the
   scripts) and ends with the list of copied text files that still mention Harbor. One run per repository, then
   `docs-gen.json` by hand with the values of section 4 and the `asyncapi` / `kafka.schema_dirs` values of 7.3, then
-  `gen-all.py`. Playbook section 6 opens with this shortest path.
+  `gen-all.py`. Playbook section 6 opens with this shortest path and, below it, the pilot checklist by hand: two
+  tables (backend, frontend) of what to copy from the kit to which path and what to reword, what not to copy, then
+  the four steps (run `gen-all.py` and read the tables, fix a missed row with the agent, commit, back to the docs repo).
 
 ### 7.4 Playbook text (read, nothing to copy)
 

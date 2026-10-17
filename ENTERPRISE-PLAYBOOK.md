@@ -352,6 +352,47 @@ the instructions and the agents) you reword by hand or with the agent of item 1 
 `scripts/docs/docs-gen.json` (the values you already know are in the change list, section 4), run `gen-all.py`, and
 read the tables. The ordered list below is the same work, file by file, for a rollout with review per file.
 
+**Pilot checklist, by hand (no workflows, no hooks).** What to copy from `code-repo-kit/` and where, then what to
+do, in order. "Reword" means: open the file, replace the Harbor names (module, package, contract file, topic and
+class names) by yours, delete sentences about things you do not have.
+
+Backend repository:
+
+| From `code-repo-kit/be/` | To `<backend>/` | Then |
+|---|---|---|
+| `scripts/docs/*.py`, `scripts/docs/README.md` | `scripts/docs/` | nothing to edit; the scripts read the config below |
+| `scripts/docs/docs-gen.json` | `scripts/docs/docs-gen.json` | fill every key for your repository (`README.md` next to it explains each; your known values: change list sections 4 and 7.3) |
+| `AGENTS.md` | `AGENTS.md` | reword; keep it under 60 lines; the read order names your entry layer (`service/<Ctx>Service.kt`) |
+| `.github/copilot-instructions.md` | `.github/copilot-instructions.md` | reword the never-open list (your generated client folders, build output) |
+| `.github/instructions/*.instructions.md` | `.github/instructions/` | keep `api`, `calculations`, `kafka`, `migrations`, `tests`, `layers`; reword paths; delete a file whose stack you do not have |
+| `.github/agents/*.agent.md` | `.github/agents/` | `code-reader`, `docs-tagger`, `impact-analyst`: reword the file names they cite |
+| `.github/prompts/*.prompt.md` | `.github/prompts/` | `adapt-docs-scripts`, `tag-docs`, `explain-module`, `find-spec-code`, `add-endpoint`: reword; the CLI reaches them with "Follow .github/prompts/<name>.prompt.md ..." |
+| `../shared/check-file-size.py` | `scripts/check-file-size.py` | optional in the pilot |
+| not copied | | `.github/hooks/`, `.github/workflows/`, `../ci/docs-maps.yml` (items 5 and 6, later); `templates/GraphExportTest.kt` (optional precise graph, later); `scripts/db/` (Harbor's seed loader) |
+
+Frontend repository:
+
+| From `code-repo-kit/fe/` | To `<frontend>/` | Then |
+|---|---|---|
+| `scripts/docs/*.py`, `scripts/docs/README.md` | `scripts/docs/` | nothing to edit |
+| `scripts/docs/docs-gen.json` | `scripts/docs/docs-gen.json` | fill: `pages_dir`, `not_pages`, `page_entry`, `hook_dirs`, `components_dir`, `shared_dir`, `app_dirs`, `route_files` (your `src/routing`), `route_constants`, `types`, `exclude_paths` (the generated client), `test_pattern`, `api_call_pattern` |
+| `AGENTS.md`, `.github/copilot-instructions.md`, `.github/instructions/pages|services.instructions.md`, `.github/agents/*`, `.github/prompts/*` | same paths | reword as for the backend |
+| not copied | | `.github/hooks/`, `.github/workflows/`; `scripts/docs/gen-graph-fe.ts`, `tsconfig*.json`, `out/` (precise graph through the TypeScript compiler, later) |
+
+Then, per repository:
+
+1. `python3 scripts/docs/gen-all.py` (backend: with `db_docs.generate: false` it leaves your `docs/db` alone). Read every
+   table under `docs/_generated/`: `codebase-map.md` (every layer with a role; business classes under `(root)` mean a
+   wrong base package), `components.md` (your services, managers and calculators present, `Depends on` filled),
+   `api-index.md` (no `_not implemented_` for an operation that exists), `events.md` (no `<expr>` topic, a schema path
+   next to every payload), `jobs.md`, frontend `routes.md` (every page with a route and a purpose).
+2. A wrong or missing row: paste the declaration the generator missed and the regex from the generator to the agent
+   of item 2 of "With an agent" below, apply the smallest change, rerun. Or run `/adapt-docs-scripts` first (item 1
+   below): it proposes the whole `docs-gen.json` with one evidence path per key and never runs anything.
+3. Commit `scripts/`, `.github/`, `AGENTS.md` and `docs/_generated/` together (item 9).
+4. Back in the docs repository: the collector or the hand copy of the maps (pilot piece 4), then `gen-graph.py` and
+   `build-index.py`. `@docs` tags (`/tag-docs`, item 8) wait until a calculation without a spec shows on the board.
+
 Copy the kit flavour into each repository. `code-repo-kit/apply-kit.py --flavour be --target <backend>` copies
 everything at once; for the enterprise rollout copy selectively in this order and review each file:
 
