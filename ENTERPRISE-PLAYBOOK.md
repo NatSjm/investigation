@@ -341,6 +341,17 @@ is matched by verb and path of its `@GetMapping`; routes outside the contract ar
 
 **Pilot:** items 1 and 9 for the pilot repositories, items 2 to 4 with them when cheap; items 5 to 8 later.
 
+**Shortest path (pilot).** Yes, the whole kit flavour can be copied at once; the generators are configuration-driven
+and nothing in them is Harbor-specific. Run `python3 code-repo-kit/apply-kit.py --flavour be --target <backend> --pilot`
+with one `--replace OLD=NEW` per Harbor name (`harbor-core`, `com/acme/harbor`, `com.acme.harbor`, `openapi_harbor.yaml`,
+`harbor-backend`, `harbor-frontend`, `harbor-docs`, `Harbor`, `harbor`; the script applies the longest first), the same
+for `--flavour fe`. `--pilot` leaves out the hooks and workflows (items 5 and 6), `--replace` rewrites the names in
+the copied `.md`, `.yml`, `.json` and `.kt` files, never in the scripts, and the script ends with the list of copied
+text files that still mention Harbor: those sentences (topic names, class names, module purposes in `AGENTS.md`,
+the instructions and the agents) you reword by hand or with the agent of item 1 below. Then fill
+`scripts/docs/docs-gen.json` (the values you already know are in the change list, section 4), run `gen-all.py`, and
+read the tables. The ordered list below is the same work, file by file, for a rollout with review per file.
+
 Copy the kit flavour into each repository. `code-repo-kit/apply-kit.py --flavour be --target <backend>` copies
 everything at once; for the enterprise rollout copy selectively in this order and review each file:
 

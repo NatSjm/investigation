@@ -224,6 +224,14 @@ Two topics: the backend has Avro and JSON schemas but no AsyncAPI document, and 
   generated event classes are never read or cited, the schema file is the contract); `scripts/docs/README.md`
   (`asyncapi` key: `""` when there is none).
 
+### 7.3b Step 6 shortest path (kit)
+
+- `code-repo-kit/apply-kit.py` takes `--pilot` (no hooks, no workflows, no `docs-maps.yml`) and `--replace OLD=NEW`
+  (repeatable; rewrites the Harbor names in the copied `.md`, `.yml`, `.json`, `.kt` files, longest first, never in the
+  scripts) and ends with the list of copied text files that still mention Harbor. One run per repository, then
+  `docs-gen.json` by hand with the values of section 4 and the `asyncapi` / `kafka.schema_dirs` values of 7.3, then
+  `gen-all.py`. Playbook section 6 opens with this shortest path.
+
 ### 7.4 Playbook text (read, nothing to copy)
 
 - Section 5: the schemas-only row says to set `asyncapi: ""`; the "With an agent" paragraph names

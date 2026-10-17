@@ -6,7 +6,8 @@ Companion to `docs-repo/` (the OKF docs bundle, simulated repo `harbor-docs`). E
 
 ```
 code-repo-kit/
-  apply-kit.py           --flavour be|fe --target <repo> [--what-if]: copies .github/**, AGENTS.md, scripts/docs/**, check-file-size.py, docs-maps.yml
+  apply-kit.py           --flavour be|fe --target <repo> [--what-if] [--pilot] [--replace OLD=NEW ...]: copies .github/**, AGENTS.md, scripts/docs/**, check-file-size.py, docs-maps.yml;
+                         --pilot skips hooks, workflows and docs-maps.yml; --replace rewrites the Harbor names in the copied text files and lists what is left to reword
   be/                     -> harbor-backend (Kotlin / Spring Boot / Maven harbor-core + kafka-client / PostgreSQL / Kafka; package-by-layer)
     AGENTS.md                               <= 60 lines: repo purpose, read order, contracts, conventions, commands, where rules live
     .github/copilot-instructions.md         Copilot-only supplement (never-open list, output discipline, agents/prompts/tools)
