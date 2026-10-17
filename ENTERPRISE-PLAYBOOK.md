@@ -232,7 +232,7 @@ contexts:
   billing:
     spec: BIL                          # spec prefix -> features/billing/BIL-001.md
     fe: [BillingPage, InvoicePage]     # page folders under src/pages/ (wildcards allowed: "*BillingPage"); [] when the context has no page
-    be: [Billing, Invoice, Tariff]     # backend class-name prefixes (longest prefix wins); unmatched classes -> shared
+    be: [Billing, Invoice, Tariff]     # backend class-name prefixes (longest prefix wins; "*Tariff" = wildcard over the whole name); unmatched classes -> shared
 ```
 
 If your backend is organised by package rather than by layer, prefixes still work (most classes are named after

@@ -3,7 +3,8 @@
 interface, plus one row per file that declares only top-level functions (Kotlin extension or helper files such as
 `utils/Extensions.kt`): that row carries the file name, kind `file`, and the @docs tags of the file's KDoc blocks.
 interface with its layer (package segments after the base package, `dao/model` style for configured sub-layers),
-Spring stereotype, constructor-injected dependencies, tables it touches, @docs tags and file:line. This is the map
+Spring stereotype, dependencies (constructor-injected classes plus the Kotlin objects it calls statically, such as
+`Rounding.money(v)` or `ClientUtils.hasX(c)`), tables it touches, @docs tags and file:line. This is the map
 that replaces "one module per business area": agents and the docs graph read layer + name prefix + dependencies
 instead of walking folders.
 
@@ -23,6 +24,8 @@ from _common import (read_text, write_text, source_files, resolve_out, rel_path,
 DECL_RX = re.compile(r'(?m)^(?:@[\w.]+(?:\([^)]*\))?\s+)*(?:(?:public|internal|private|data|abstract|open|sealed|enum|annotation|value|fun)\s+)*(class|object|interface)\s+(\w+)')
 ANN_RX = re.compile(r'(?:@[\w.]+(?:\([^)]*\))?\s*)*$')
 TOP_FUN_RX = re.compile(r'(?m)^(?:(?:public|internal|private|inline|operator|infix|suspend|tailrec)\s+)*fun\s')
+# `Name.member` = a call on a Kotlin object / companion (static use); resolved against this repo's declarations later
+STATIC_RX = re.compile(r'\b([A-Z][A-Za-z0-9]*)\.(?!class\b)[A-Za-z_]\w*')
 DEFAULTS = {
     'modules': [], 'source_root': 'src/main/kotlin', 'base_package': '', 'layers': {}, 'test_pattern': '', 'exclude_paths': [],
     'stereotypes': ['RestControllerAdvice', 'RestController', 'Service', 'Component', 'Configuration', 'Repository', 'Entity', 'SpringBootApplication'],
@@ -81,6 +84,7 @@ def main():
                 # a file of top-level functions: one row named after the file, tags from every KDoc block of the file
                 rows.append({'Name': os.path.splitext(os.path.basename(f))[0], 'Layer': layer, 'Module': mod,
                              'Kind': 'file (top-level functions)', 'Deps': [], 'Super': '', 'Tables': [],
+                             'Static': unique(STATIC_RX.findall(code)), 'Decl': 'file', 'Companion': False,
                              'Docs': unique(re.findall(r'@docs\s+([\w.-]+)', t)), 'Loc': f'{rel}:{line_number(t, fm.start())}'})
             continue
         for d in DECL_RX.finditer(code):
@@ -108,6 +112,7 @@ def main():
                 kind = [d.group(1)]
             # primary constructor dependencies: class Name(...) up to the matching ')'
             deps = []
+            end = -1
             after = code[d.end():]
             if re.match(r'^\s*(?:<[^>]*>)?\s*(?:@\w+\s*)*(?:constructor\s*)?\(', after, re.I):
                 op = after.find('(')
@@ -126,6 +131,23 @@ def main():
                     deps = unique(re.findall(r'(?:val|var)\s+\w+\s*:\s*([A-Z]\w*)', params))
             sm = repo_rx.match(after)
             sup = sm.group(1) if sm else ''
+            # declaration body: the first `{` after the constructor / supertype list, matched to its `}`; a declaration
+            # without a body (data class, enum entry list follows another declaration) gets none
+            body = ''
+            ob = after.find('{', end + 1)
+            gap = after[end + 1:ob] if ob >= 0 else ''
+            if ob >= 0 and '\n\n' not in gap and not DECL_RX.search(gap):
+                depth = 0
+                for i in range(ob, len(after)):
+                    if after[i] == '{':
+                        depth += 1
+                    elif after[i] == '}':
+                        depth -= 1
+                        if depth == 0:
+                            body = after[ob + 1:i]
+                            break
+            static = unique(STATIC_RX.findall(body))
+            companion = re.search(r'\bcompanion\s+object\b', body) is not None
             tbl = []
             tm = re.search(r'@Table\(\s*name\s*=\s*"(\w+)"', ann_block + d.group(0))
             if tm:
@@ -136,7 +158,8 @@ def main():
                     tbl.append(x)
             docs = re.findall(r'@docs\s+([\w.-]+)', kdoc)
             rows.append({'Name': name, 'Layer': layer, 'Module': mod, 'Kind': ', '.join(unique(kind)), 'Deps': deps,
-                         'Super': sup, 'Tables': tbl, 'Docs': docs, 'Loc': f'{rel}:{line_number(t, start)}'})
+                         'Super': sup, 'Tables': tbl, 'Docs': docs, 'Loc': f'{rel}:{line_number(t, start)}',
+                         'Static': static, 'Decl': d.group(1), 'Companion': companion})
     # Spring Data repositories inherit the table of their entity; dependencies limited to classes of this repo
     by_name = {r['Name']: r for r in rows}
     for r in rows:
@@ -145,13 +168,18 @@ def main():
                 if x not in r['Tables']:
                     r['Tables'].append(x)
         r['Deps'] = [x for x in r['Deps'] if x in by_name and x != r['Name']]
+        for x in r['Static']:
+            tgt = by_name.get(x)
+            # a Kotlin object (or a class with a companion) used statically is a dependency too: `Rounding.money(v)`
+            if tgt and x != r['Name'] and x not in r['Deps'] and (tgt['Decl'] == 'object' or tgt['Companion']):
+                r['Deps'].append(x)
 
     counts = {}
     for r in rows:
         counts[r['Layer']] = counts.get(r['Layer'], 0) + 1
     layers = [f'{k} {counts[k]}' for k in sorted(counts, key=sort_key)]
     sb = [header('Components (BE)', 'top-level Kotlin declarations per layer',
-                 'One row per class (or per file of top-level functions): layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix.')]
+                 'One row per class (or per file of top-level functions): layer, stereotype, dependencies (constructor-injected classes and the Kotlin objects called statically), tables, @docs tags and file:line; business context = class-name prefix.')]
     sb.append(f"{len(rows)} declaration(s). Per layer: {', '.join(layers)}. Business context of a class = its name prefix (docs repo `contexts.yml`).\n\n")
     sb.append('| Class | Layer | Module | Kind | Depends on | Tables | @docs | Location |\n|---|---|---|---|---|---|---|---|\n')
     for r in sorted(rows, key=lambda r: (sort_key(r['Layer']), sort_key(r['Name']))):

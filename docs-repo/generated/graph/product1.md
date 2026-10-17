@@ -36,16 +36,16 @@ status: stable
 ## classes
 - `class:ProjectionService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ProjectionService.kt:27` - service; Service
 - `class:ProjectionInputAssembler` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ProjectionInputAssembler.kt:30` - service; Component
-- `class:ProjectionRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ProjectionRepository.kt:23` - dao/repository; Repository
 - `class:PeerSimulationService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/PeerSimulationService.kt:26` - service; Service
+- `class:ProjectionAggregator` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt:36` - utils; object
+- `class:ProjectionRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ProjectionRepository.kt:23` - dao/repository; Repository
 - `class:Product1Controller` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:21` - api; RestController
 - `class:Product1Manager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/Product1Manager.kt:26` - manager; Service
 - `class:SessionMovementInputRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/SessionMovementInputRepository.kt:10` - dao/repository; Repository
-- `class:ProjectionAggregator` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt:36` - utils; object
+- `class:PeerBenchmark` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt:19` - utils; object
 - `class:Product1ProjectionRefreshListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/Product1ProjectionRefreshListener.kt:17` - event; Component, KafkaListener
 - `class:SessionPeerSimulationRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/SessionPeerSimulationRepository.kt:9` - dao/repository; Repository
 - `class:MovementInputValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/MovementInputValidator.kt:18` - validator; Component
-- `class:PeerBenchmark` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt:19` - utils; object
 - `class:ProjectionRowMapper` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/mapper/ProjectionRowMapper.kt:9` - dao/mapper; class
 
 ## components
@@ -90,8 +90,11 @@ status: stable
 - `feature:Product1OverviewPage` -contains-> `hook:useProduct1Overview` (exact)
 - `feature:Product1OverviewPage` -contains-> `hook:useProduct1Projection` (exact)
 - `class:CoverManager` -depends-on-> `class:ProjectionService` (-> cover)
+- `class:PeerBenchmark` -depends-on-> `class:Rounding` (-> shared)
+- `class:PeerSimulationService` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:PeerSimulationService` -depends-on-> `class:MovementMonthlyRepository` (-> imports)
 - `class:PeerSimulationService` -depends-on-> `class:ParameterService` (-> admin)
+- `class:PeerSimulationService` -depends-on-> `class:PeerBenchmark`
 - `class:PeerSimulationService` -depends-on-> `class:SessionPeerSimulationRepository`
 - `class:Product1Controller` -depends-on-> `class:Product1Manager`
 - `class:Product1Manager` -depends-on-> `class:ClientRoleService` (-> clients)
@@ -106,15 +109,20 @@ status: stable
 - `class:Product2Manager` -depends-on-> `class:ProjectionInputAssembler` (-> product2)
 - `class:Product2Manager` -depends-on-> `class:ProjectionService` (-> product2)
 - `class:Product2ProjectionRefreshListener` -depends-on-> `class:ProjectionService` (-> product2)
+- `class:ProjectionAggregator` -depends-on-> `class:Rounding` (-> shared)
 - `class:ProjectionInputAssembler` -depends-on-> `class:BaselinePriceService` (-> market)
+- `class:ProjectionInputAssembler` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:ProjectionInputAssembler` -depends-on-> `class:MovementMonthlyRepository` (-> imports)
 - `class:ProjectionInputAssembler` -depends-on-> `class:ParameterService` (-> admin)
 - `class:ProjectionInputAssembler` -depends-on-> `class:SessionMovementInputRepository`
+- `class:ProjectionService` -depends-on-> `class:CoverRatioCalculator` (-> cover)
 - `class:ProjectionService` -depends-on-> `class:CoverRatioService` (-> cover)
+- `class:ProjectionService` -depends-on-> `class:ProjectionAggregator`
 - `class:ProjectionService` -depends-on-> `class:ProjectionInputAssembler`
 - `class:ProjectionService` -depends-on-> `class:ProjectionRepository`
 - `class:ProjectionService` -depends-on-> `class:SessionMovementInputRepository`
 - `class:ReportPayloadService` -depends-on-> `class:ProjectionRepository` (-> reports)
+- `class:StressTestService` -depends-on-> `class:ProjectionAggregator` (-> stress)
 - `class:StressTestService` -depends-on-> `class:ProjectionInputAssembler` (-> stress)
 - `feature:fe-app` -depends-on-> `feature:Product1OverviewPage` (-> fe-app) (exact)
 - `feature:PresentationPage` -depends-on-> `feature:Product1OverviewPage` (-> presentation) (exact)

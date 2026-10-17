@@ -65,7 +65,9 @@ only what the evidence shows.
 
 **B. A proposed `contexts.yml`** in the format of this repository's current file: one line per context with `spec`,
 the `fe` list of page folders (wildcards allowed, `[]` when the context has no page) and the list of `be` prefixes. Prefixes must not overlap ambiguously; where two groups share a prefix
-start, list the longer one so that longest-match wins. Present it as a proposal for section 4 of the playbook; do
+start, list the longer one so that longest-match wins. A class whose name starts with another context's prefix but
+belongs here (a product-first utility such as `Product1StressTestUtils` under `stress`) gets a wildcard entry
+(`"*StressTest"`; the longest literal part wins). Present it as a proposal for section 4 of the playbook; do
 not overwrite the existing file.
 
 **C. A report in chat (under 25 lines):** contexts found, product-type handling per context, the five most

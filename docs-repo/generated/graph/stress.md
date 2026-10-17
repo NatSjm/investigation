@@ -30,11 +30,11 @@ status: stable
 - `route:/session/:sessionId/stress-test` - `src/routing/SessionRoutes.tsx:22` - renders StressTestPage
 
 ## classes
-- `class:StressManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/StressManager.kt:30` - manager; Service
 - `class:StressTestService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/StressTestService.kt:26` - service; Service
+- `class:StressManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/StressManager.kt:30` - manager; Service
+- `class:StressTestCalculator` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/StressTestCalculator.kt:23` - utils; object
 - `class:StressTestController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/StressTestController.kt:17` - api; RestController
 - `class:StressTestResultRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/StressTestResultRepository.kt:10` - dao/repository; Repository
-- `class:StressTestCalculator` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/StressTestCalculator.kt:23` - utils; object
 
 ## components
 - `component:DimensionToggle` - `src/pages/StressTestPage/components/DimensionToggle/DimensionToggle.tsx:12`
@@ -64,12 +64,17 @@ status: stable
 - `class:ReportPayloadService` -depends-on-> `class:StressTestResultRepository` (-> reports)
 - `class:StressManager` -depends-on-> `class:ClientRoleService` (-> clients)
 - `class:StressManager` -depends-on-> `class:MarketScenarioRepository` (-> market)
+- `class:StressManager` -depends-on-> `class:StressTestCalculator`
 - `class:StressManager` -depends-on-> `class:StressTestResultRepository`
 - `class:StressManager` -depends-on-> `class:StressTestService`
 - `class:StressTestController` -depends-on-> `class:StressManager`
 - `class:StressTestService` -depends-on-> `class:BaselinePriceService` (-> market)
+- `class:StressTestService` -depends-on-> `class:CoverRatioCalculator` (-> cover)
 - `class:StressTestService` -depends-on-> `class:CoverRatioService` (-> cover)
+- `class:StressTestService` -depends-on-> `class:ProjectionAggregator` (-> product1)
 - `class:StressTestService` -depends-on-> `class:ProjectionInputAssembler` (-> product1)
+- `class:StressTestService` -depends-on-> `class:ScenarioPricePath` (-> market)
+- `class:StressTestService` -depends-on-> `class:StressTestCalculator`
 - `feature:fe-app` -depends-on-> `feature:StressTestPage` (-> fe-app) (exact)
 - `feature:PresentationPage` -depends-on-> `feature:StressTestPage` (-> presentation) (exact)
 - `feature:StressTestPage` -depends-on-> `feature:fe-app` (-> fe-app) (exact)

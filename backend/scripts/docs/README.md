@@ -60,6 +60,9 @@ classes are not detected); the parameter enum declares its constants as `NAME("k
 `@docs` line in the KDoc directly above the declaration.
 
 The business context of a class is its name prefix (docs repo `contexts.yml`, `be` lists), never its folder; the
-layered layout is why `components.md` carries the layer and the dependencies of every class. The precise graph
+layered layout is why `components.md` carries the layer and the dependencies of every class (`Depends on` = the
+constructor-injected classes plus the Kotlin `object`s called statically, such as `Rounding.money(v)`, so a service
+that calls a calculator without injecting it is still linked to it). A `be` entry with `*` in `contexts.yml` is a
+wildcard over the whole class name (`"*StressTest"` catches `Product1StressTestUtils`); the longest literal part wins. The precise graph
 (`GraphExportTest.kt`, DI edges through interfaces, exact mappings, entity -> table) is optional and comes from the
 Spring context in CI.

@@ -2,7 +2,9 @@
 #
 # The backend is layered (package-by-layer: api, manager, service, dao, event, job, utils, ...), so the business
 # area of a class is not in its folder but in its NAME PREFIX. A BE class belongs to the context whose `be` prefix
-# is the LONGEST match at the start of its simple class name; classes matching no prefix are `shared`.
+# is the LONGEST match at the start of its simple class name; classes matching no prefix are `shared`. An entry with
+# `*` is a wildcard over the whole class name ("*StressTest" catches a product-first name such as
+# Product1StressTestUtils); the longest literal part decides between two matching entries.
 # The FE is organised by page (src/pages/<Page>/): `fe` lists the page folder names of the context (wildcards allowed,
 # e.g. "*Product1Page"); pieces under src/pages/shared and the app shell belong to no page and are reached through
 # `@docs` tags and docs-map.yml path globs. `spec` is the spec ID prefix (CLI-001, ...).

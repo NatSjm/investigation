@@ -25,7 +25,7 @@ Examples: `spec:P1-001`, `context:product1`, `feature:stress`, `endpoint:GET /ap
 `topic:harbor.meetings.session-closed`, `table:projection_summary`, `class:Product1Manager`, `class:StressTestCalculator`.
 `context:` = BE side of a bounded context from `contexts.yml`, located at its `manager/<Ctx>Manager.kt`.
 Edges: `contains exposes handled-by depends-on calls renders uses produces consumed-by persists-to owns fk-* implemented-by`
-(`depends-on` = constructor injection class -> class; `persists-to` = class -> table).
+(`depends-on` = class -> class: constructor injection, or a static call on a Kotlin object such as `Rounding.money(v)`; `persists-to` = class -> table).
 Edge marks: `(exact)` = from Spring-context / TS-compiler export; `(heuristic)` = name match - verify before relying on it.
 
 ## Recipes

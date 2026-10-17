@@ -21,12 +21,12 @@ status: stable
 - `endpoint:POST /api/v1/session/cover/quotes` - `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:26` - operationId requestCoverQuote; handler CoverController.requestCoverQuote; params 
 
 ## classes
-- `class:CoverManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt:25` - manager; Service
 - `class:CoverRatioService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/CoverRatioService.kt:26` - service; Service
-- `class:CoverController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:20` - api; RestController
-- `class:CoverQuoteService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/CoverQuoteService.kt:23` - service; Service
-- `class:CoverPolicyRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/CoverPolicyRepository.kt:10` - dao/repository; Repository
+- `class:CoverManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt:25` - manager; Service
 - `class:CoverRatioCalculator` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/CoverRatioCalculator.kt:23` - utils; object
+- `class:CoverQuoteService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/CoverQuoteService.kt:23` - service; Service
+- `class:CoverController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/CoverController.kt:20` - api; RestController
+- `class:CoverPolicyRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/CoverPolicyRepository.kt:10` - dao/repository; Repository
 - `class:CoverQuoteRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/CoverQuoteRepository.kt:9` - dao/repository; Repository
 - `class:CoverProviderClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/CoverProviderClient.kt:19` - client/rest; Component
 
@@ -54,14 +54,22 @@ status: stable
 - `class:CoverManager` -depends-on-> `class:ClientProfileService` (-> clients)
 - `class:CoverManager` -depends-on-> `class:CoverPolicyRepository`
 - `class:CoverManager` -depends-on-> `class:CoverQuoteService`
+- `class:CoverManager` -depends-on-> `class:CoverRatioCalculator`
 - `class:CoverManager` -depends-on-> `class:CoverRatioService`
 - `class:CoverManager` -depends-on-> `class:ProjectionService` (-> product1)
 - `class:CoverQuoteService` -depends-on-> `class:CoverProviderClient`
 - `class:CoverQuoteService` -depends-on-> `class:CoverQuoteRepository`
 - `class:CoverQuoteService` -depends-on-> `class:ParameterService` (-> admin)
+- `class:CoverQuoteService` -depends-on-> `class:Rounding` (-> shared)
+- `class:CoverRatioCalculator` -depends-on-> `class:Rounding` (-> shared)
 - `class:CoverRatioService` -depends-on-> `class:CoverPolicyRepository`
+- `class:CoverRatioService` -depends-on-> `class:CoverRatioCalculator`
+- `class:CoverRatioService` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:CoverRatioService` -depends-on-> `class:MovementMonthlyRepository` (-> imports)
+- `class:CoverRatioService` -depends-on-> `class:Rounding` (-> shared)
+- `class:ProjectionService` -depends-on-> `class:CoverRatioCalculator` (-> product1)
 - `class:ProjectionService` -depends-on-> `class:CoverRatioService` (-> product1)
+- `class:StressTestService` -depends-on-> `class:CoverRatioCalculator` (-> stress)
 - `class:StressTestService` -depends-on-> `class:CoverRatioService` (-> stress)
 - `context:cover` -exposes-> `endpoint:GET /api/v1/clients/{clientId}/cover-policies`
 - `context:cover` -exposes-> `endpoint:GET /api/v1/session/cover/summary`

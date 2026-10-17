@@ -39,13 +39,13 @@ status: stable
 ## classes
 - `class:ClientRoleService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientRoleService.kt:28` - service; Service
 - `class:ClientProfileService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientProfileService.kt:16` - service; Service
+- `class:ClientOverviewService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientOverviewService.kt:23` - service; Service
 - `class:ClientController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:19` - api; RestController
 - `class:ClientManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ClientManager.kt:25` - manager; Service
-- `class:ClientOverviewService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ClientOverviewService.kt:23` - service; Service
 - `class:ClientRoleRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ClientRoleRepository.kt:10` - dao/repository; Repository
+- `class:RoleClassifier` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/RoleClassifier.kt:24` - utils; object
 - `class:ClientRoleSessionClosedListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/ClientRoleSessionClosedListener.kt:18` - event; Component, KafkaListener
 - `class:ClientProfileRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ClientProfileRepository.kt:10` - dao/repository; Repository
-- `class:RoleClassifier` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/RoleClassifier.kt:24` - utils; object
 - `class:ClientRegistryClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/ClientRegistryClient.kt:16` - client/rest; Component
 
 ## components
@@ -97,12 +97,16 @@ status: stable
 - `class:ClientOverviewService` -depends-on-> `class:ClientRoleService`
 - `class:ClientOverviewService` -depends-on-> `class:CoverRatioService` (-> cover)
 - `class:ClientOverviewService` -depends-on-> `class:MeetingSessionRepository` (-> meetings)
+- `class:ClientOverviewService` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:ClientOverviewService` -depends-on-> `class:MovementMonthlyRepository` (-> imports)
+- `class:ClientOverviewService` -depends-on-> `class:Rounding` (-> shared)
 - `class:ClientProfileService` -depends-on-> `class:ClientProfileRepository`
 - `class:ClientProfileService` -depends-on-> `class:ClientRegistryClient`
 - `class:ClientRoleService` -depends-on-> `class:ClientRoleRepository`
+- `class:ClientRoleService` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:ClientRoleService` -depends-on-> `class:MovementMonthlyRepository` (-> imports)
 - `class:ClientRoleService` -depends-on-> `class:ParameterService` (-> admin)
+- `class:ClientRoleService` -depends-on-> `class:RoleClassifier`
 - `class:ClientRoleSessionClosedListener` -depends-on-> `class:ClientRoleService`
 - `class:CoverManager` -depends-on-> `class:ClientProfileService` (-> cover)
 - `class:MeetingManager` -depends-on-> `class:ClientProfileService` (-> meetings)
@@ -110,6 +114,7 @@ status: stable
 - `class:Product1Manager` -depends-on-> `class:ClientRoleService` (-> product1)
 - `class:Product2Manager` -depends-on-> `class:ClientRoleService` (-> product2)
 - `class:ReportPayloadService` -depends-on-> `class:ClientProfileService` (-> reports)
+- `class:RoleClassifier` -depends-on-> `class:Rounding` (-> shared)
 - `class:StressManager` -depends-on-> `class:ClientRoleService` (-> stress)
 - `feature:ClientOverviewPage` -depends-on-> `feature:fe-app` (-> fe-app) (exact)
 - `feature:ClientOverviewPage` -depends-on-> `feature:shared` (-> fe-shared) (exact)

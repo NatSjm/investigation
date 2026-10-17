@@ -23,7 +23,7 @@ globs (prefixed `be/` and `fe/`, relative to the two repository roots) to the sp
   types file to confirm what it is). `generated/be/components.md` and `generated/fe/codebase-map.md` when they exist.
 
 ## Procedure
-1. For every context: BE globs `be/<main source root>/**/<Prefix>*.kt` for each `be` prefix (one glob per prefix; the
+1. For every context: BE globs `be/<main source root>/**/<Prefix>*.kt` for each `be` prefix (one glob per prefix, a wildcard entry `*StressTest` becomes `**/*StressTest*.kt`; the
    `**/` stands for any layer folder); FE globs `fe/<pages dir>/<Page>/**` for each page in `fe`, plus the context's
    types file (`fe/src/types/<context>.ts` or the `*.types.ts` of the page) and the shared pieces that belong to it
    (`fe/src/pages/shared/components/<Name>/**`, `fe/src/pages/shared/hook/use<Name>*.ts`) when the page component imports

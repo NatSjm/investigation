@@ -48,11 +48,12 @@ def main():
         contexts[c] = {'Name': c, 'Spec': sm.group(1) if sm else '', 'Fe': fe_list, 'Be': be}
     if not contexts:
         raise SystemExit('contexts.yml has no contexts')
-    prefixes = sorted(((c['Name'], p) for c in contexts.values() for p in c['Be']), key=lambda x: -len(x[1]))
+    # longest literal part wins; an entry with `*` is a wildcard over the whole class name (as in gen-graph.py)
+    prefixes = sorted(((c['Name'], p) for c in contexts.values() for p in c['Be']), key=lambda x: -len(re.sub(r'[*?]', '', x[1])))
 
     def context_of(cls):
         for ctx, p in prefixes:
-            if cls.startswith(p):
+            if like(cls, p) if re.search(r'[*?]', p) else cls.startswith(p):
                 return ctx
         return 'shared'
 

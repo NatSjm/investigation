@@ -4,7 +4,8 @@ default utils) with its current `@docs` tag and, where it is missing, the tag it
 Deterministic input for the `docs-tagger` agent (prompt /tag-docs): the agent adds the comment lines, a human reviews the table.
 
 Reads docs/_generated/components.md (run gen-all.py first) and the docs repo contexts.yml:
-  - entry layer: context = longest class-name prefix in contexts.yml (`be` list); proposed tag = `<spec prefix>-<next free NNN>`
+  - entry layer: context = longest class-name prefix in contexts.yml (`be` list; an entry with `*` is a wildcard over the
+    whole class name, e.g. `*StressTest` for `Product1StressTestUtils`, the longest literal part wins); proposed tag = `<spec prefix>-<next free NNN>`
     (NNN from the IDs already used in docs-tags.md, 001 when none). No matching prefix -> BLOCKED (add the prefix first).
   - calculation layer: proposed tag = snake_case of the class name; the agent refines it from the KDoc (e.g. `monthly_projection`).
 Status: tagged | PROPOSE | REVIEW (calculation class without a context prefix: shared helper or calculation?) | BLOCKED.
@@ -66,8 +67,10 @@ def main():
         best, best_len = '', 0
         for c, v in ctxs.items():
             for p in v['Prefixes']:
-                if class_name.startswith(p) and len(p) > best_len:
-                    best, best_len = c, len(p)
+                hit = like(class_name, p) if re.search(r'[*?]', p) else class_name.startswith(p)
+                lit = len(re.sub(r'[*?]', '', p))   # wildcard entry: its literal part decides the specificity
+                if hit and lit > best_len:
+                    best, best_len = c, lit
         return best
 
     # ---- IDs already in use per spec prefix (docs-tags.md, Spec ID column) ----

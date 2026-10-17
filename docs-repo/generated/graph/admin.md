@@ -79,6 +79,7 @@ status: stable
 - `class:CoverQuoteService` -depends-on-> `class:ParameterService` (-> cover)
 - `class:MeetingManager` -depends-on-> `class:ParameterService` (-> meetings)
 - `class:ParameterService` -depends-on-> `class:ParameterRepository`
+- `class:ParameterValidator` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:PeerSimulationService` -depends-on-> `class:ParameterService` (-> product1)
 - `class:ProjectionInputAssembler` -depends-on-> `class:ParameterService` (-> product1)
 - `feature:fe-app` -depends-on-> `feature:ImportsPage` (-> fe-app) (exact)

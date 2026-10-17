@@ -33,14 +33,14 @@ status: stable
 - `route:/session/:sessionId/scenarios` - `src/routing/SessionRoutes.tsx:21` - renders ScenariosPage
 
 ## classes
-- `class:ScenarioController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:20` - api; RestController
 - `class:BaselinePriceService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/BaselinePriceService.kt:23` - service; Service
+- `class:ScenarioController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:20` - api; RestController
 - `class:MarketScenarioRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MarketScenarioRepository.kt:9` - dao/repository; Repository
-- `class:ScenarioService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ScenarioService.kt:20` - service; Service
 - `class:MarketManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/MarketManager.kt:21` - manager; Service
 - `class:MarketPricesListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MarketPricesListener.kt:17` - event; Component, KafkaListener
-- `class:BaselinePriceRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/BaselinePriceRepository.kt:10` - dao/repository; Repository
+- `class:ScenarioService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/ScenarioService.kt:20` - service; Service
 - `class:ScenarioPricePath` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt:19` - utils; object
+- `class:BaselinePriceRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/BaselinePriceRepository.kt:10` - dao/repository; Repository
 - `class:ScenarioValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/ScenarioValidator.kt:15` - validator; Component
 - `class:MarketDataClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/MarketDataClient.kt:19` - client/rest; Component
 
@@ -85,9 +85,12 @@ status: stable
 - `feature:ScenariosPage` -contains-> `hook:useScenarios` (exact)
 - `class:BaselinePriceService` -depends-on-> `class:BaselinePriceRepository`
 - `class:BaselinePriceService` -depends-on-> `class:MarketDataClient`
+- `class:BaselinePriceService` -depends-on-> `class:Rounding` (-> shared)
 - `class:MarketManager` -depends-on-> `class:BaselinePriceService`
+- `class:MarketManager` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:MarketManager` -depends-on-> `class:ScenarioService`
 - `class:MarketPricesListener` -depends-on-> `class:BaselinePriceService`
+- `class:MarketPricesListener` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:ProjectionInputAssembler` -depends-on-> `class:BaselinePriceService` (-> product1)
 - `class:ReportPayloadService` -depends-on-> `class:MarketScenarioRepository` (-> reports)
 - `class:ScenarioController` -depends-on-> `class:MarketManager`
@@ -95,6 +98,7 @@ status: stable
 - `class:ScenarioService` -depends-on-> `class:ScenarioValidator`
 - `class:StressManager` -depends-on-> `class:MarketScenarioRepository` (-> stress)
 - `class:StressTestService` -depends-on-> `class:BaselinePriceService` (-> stress)
+- `class:StressTestService` -depends-on-> `class:ScenarioPricePath` (-> stress)
 - `feature:fe-app` -depends-on-> `feature:ScenariosPage` (-> fe-app) (exact)
 - `feature:PresentationPage` -depends-on-> `feature:ScenariosPage` (-> presentation) (exact)
 - `feature:ScenariosPage` -depends-on-> `feature:fe-app` (-> fe-app) (exact)

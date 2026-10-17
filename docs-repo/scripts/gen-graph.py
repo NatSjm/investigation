@@ -188,7 +188,8 @@ def main():
         return True
 
     # ---------- bounded contexts (contexts.yml) ----------
-    # Layered backend: the business context of a class is its NAME PREFIX (longest match wins), not its folder.
+    # Layered backend: the business context of a class is its NAME PREFIX (longest match wins), not its folder. An entry
+    # with `*` is a wildcard over the whole class name (`*StressTest` for `Product1StressTestUtils`); its literal part counts.
     ctx_prefixes = []
     ctx_of_feature = {}
     for line in split_lines(read_text_or_empty(os.path.join(root, 'contexts.yml'))):
@@ -209,11 +210,11 @@ def main():
             for p in (x.strip().strip('"\'') for x in raw.split(',')):
                 if p:
                     ctx_of_feature[p] = c
-    ctx_prefixes.sort(key=lambda x: -len(x[1]))
+    ctx_prefixes.sort(key=lambda x: -len(re.sub(r'[*?]', '', x[1])))
 
     def context_of(cls):
         for c, p in ctx_prefixes:
-            if cls.startswith(p):
+            if like(cls, p) if re.search(r'[*?]', p) else cls.startswith(p):
                 return c
         return 'shared'
 
@@ -245,7 +246,8 @@ def main():
             if ci['Layer'].lower() == 'manager':
                 nodes[f'context:{ctx}']['location'] = file_of(ci['Loc'])
                 nodes[f'context:{ctx}']['note'] = f'entry point {cls} (manager)'
-    # constructor injection between architectural classes (controller -> manager -> service -> dao / utils / client)
+    # constructor injection and static calls to Kotlin objects between architectural classes (controller -> manager ->
+    # service -> dao / utils / client, calculator -> helper object)
     for cls, ci in class_info.items():
         if f'class:{cls}' not in nodes:
             continue

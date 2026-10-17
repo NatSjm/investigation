@@ -6,7 +6,7 @@
 # Concepts
 * [REST API index (BE)](api-index.md) - Generated map: REST API index (BE), derived from harbor-core/src/main/resources/openapi/openapi_harbor.yaml (contract) + handler method named like the operationId (rest.handler_pattern) in @RestController classes; read instead of source files. · unverified
 * [Codebase map (BE)](codebase-map.md) - Backend modules, technical layers with their classes and resource folders; read the manager of a context first. · unverified
-* [Components (BE)](components.md) - One row per class (or per file of top-level functions): layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix. · unverified
+* [Components (BE)](components.md) - One row per class (or per file of top-level functions): layer, stereotype, dependencies (constructor-injected classes and the Kotlin objects called statically), tables, @docs tags and file:line; business context = class-name prefix. · unverified
 * [Datasets (BE)](datasets.md) - Generated catalogue of the named synthetic datasets - local seeds and integration-test fixtures - with purpose, tables and row counts, dependencies, the tests that load them and one sample row per table; cite a dataset by name in Gherkin instead of describing rows. · unverified
 * [DB schema (approximate, from migrations)](db-schema.md) - Generated map: DB schema (approximate, from migrations), derived from migrations V*.sql, R*.sql under /db/migration/; read instead of source files. · unverified
 * [Spec-to-code traceability (@docs tags)](docs-tags.md) - Generated map: Spec-to-code traceability (@docs tags), derived from @docs <ID> tags in KDoc/JSDoc; read instead of source files. · unverified

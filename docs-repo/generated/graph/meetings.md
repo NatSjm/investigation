@@ -38,16 +38,16 @@ status: stable
 
 ## classes
 - `class:MeetingManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/MeetingManager.kt:38` - manager; Service
-- `class:SessionController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:21` - api; RestController
 - `class:MeetingSessionDaoService` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/service/MeetingSessionDaoService.kt:19` - dao/service; Service
-- `class:MeetingSessionRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MeetingSessionRepository.kt:13` - dao/repository; Repository
+- `class:SessionController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/SessionController.kt:21` - api; RestController
 - `class:SessionScopeService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/SessionScopeService.kt:18` - service; Service
+- `class:MeetingSessionRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MeetingSessionRepository.kt:13` - dao/repository; Repository
 - `class:SessionClientConfigRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/SessionClientConfigRepository.kt:9` - dao/repository; Repository
+- `class:SessionHeaderFilter` - `harbor-core/src/main/kotlin/com/acme/harbor/component/SessionHeaderFilter.kt:33` - component; Component
 - `class:SessionEventsPublisher` - `harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt:13` - event; Component, KafkaProducer
 - `class:MeetingReportRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MeetingReportRepository.kt:9` - dao/repository; Repository
-- `class:SessionHeaderFilter` - `harbor-core/src/main/kotlin/com/acme/harbor/component/SessionHeaderFilter.kt:33` - component; Component
-- `class:RoleOverrideValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/RoleOverrideValidator.kt:15` - validator; Component
 - `class:MeetingSessionSpecifications` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/specification/MeetingSessionSpecifications.kt:10` - dao/specification; object
+- `class:RoleOverrideValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/RoleOverrideValidator.kt:15` - validator; Component
 
 ## topics
 - `topic:harbor.meetings.session-closed`
@@ -98,11 +98,13 @@ status: stable
 - `class:MeetingManager` -depends-on-> `class:ClientProfileService` (-> clients)
 - `class:MeetingManager` -depends-on-> `class:MeetingSessionDaoService`
 - `class:MeetingManager` -depends-on-> `class:MeetingSessionRepository`
+- `class:MeetingManager` -depends-on-> `class:MonthGrid` (-> shared)
 - `class:MeetingManager` -depends-on-> `class:ParameterService` (-> admin)
 - `class:MeetingManager` -depends-on-> `class:RoleOverrideValidator`
 - `class:MeetingManager` -depends-on-> `class:SessionClientConfigRepository`
 - `class:MeetingManager` -depends-on-> `class:SessionEventsPublisher`
 - `class:MeetingSessionDaoService` -depends-on-> `class:MeetingSessionRepository`
+- `class:MeetingSessionDaoService` -depends-on-> `class:MeetingSessionSpecifications`
 - `class:Product1ProjectionRefreshListener` -depends-on-> `class:SessionScopeService` (-> product1)
 - `class:Product2ProjectionRefreshListener` -depends-on-> `class:SessionScopeService` (-> product2)
 - `class:ReportManager` -depends-on-> `class:MeetingReportRepository` (-> reports)
@@ -113,6 +115,7 @@ status: stable
 - `class:SessionController` -depends-on-> `class:MeetingManager`
 - `class:SessionEventsPublisher` -depends-on-> `class:EventProducer` (-> shared)
 - `class:SessionHeaderFilter` -depends-on-> `class:MeetingSessionDaoService`
+- `class:SessionHeaderFilter` -depends-on-> `class:ProblemDetails` (-> shared)
 - `class:SessionHeaderFilter` -depends-on-> `class:SessionScopeService`
 - `class:SessionScopeService` -depends-on-> `class:MeetingSessionDaoService`
 - `class:SessionScopeService` -depends-on-> `class:MeetingSessionRepository`

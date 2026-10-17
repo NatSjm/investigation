@@ -16,24 +16,44 @@ status: stable
 - `endpoint:GET /api/v1/technical/version` - `harbor-core/src/main/kotlin/com/acme/harbor/api/technical/TechnicalController.kt:20` - operationId version; handler TechnicalController.version; params 
 
 ## classes
+- `class:Rounding` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt:16` - utils; object
+- `class:MonthGrid` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/MonthGrid.kt:13` - utils; class
 - `class:TechnicalController` - `harbor-core/src/main/kotlin/com/acme/harbor/api/technical/TechnicalController.kt:14` - api/technical; RestController
 - `class:EventProducer` - `harbor-core/src/main/kotlin/com/acme/harbor/client/kafka/EventProducer.kt:11` - client/kafka; Component, KafkaProducer
+- `class:HttpHeadersFactory` - `harbor-core/src/main/kotlin/com/acme/harbor/api/HttpHeadersFactory.kt:8` - api; object
+- `class:ProblemDetails` - `harbor-core/src/main/kotlin/com/acme/harbor/api/error/ProblemDetails.kt:12` - api/error; object
+- `class:Extensions` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/Extensions.kt:14` - utils; file (top-level functions)
 - `class:AvroJsonDeserializer` - `harbor-core/src/main/kotlin/com/acme/harbor/client/kafka/AvroJsonSerde.kt:30` - client/kafka; class
 - `class:AvroJsonSerializer` - `harbor-core/src/main/kotlin/com/acme/harbor/client/kafka/AvroJsonSerde.kt:17` - client/kafka; class
-- `class:Extensions` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/Extensions.kt:14` - utils; file (top-level functions)
-- `class:HttpHeadersFactory` - `harbor-core/src/main/kotlin/com/acme/harbor/api/HttpHeadersFactory.kt:8` - api; object
-- `class:MonthGrid` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/MonthGrid.kt:13` - utils; class
-- `class:ProblemDetails` - `harbor-core/src/main/kotlin/com/acme/harbor/api/error/ProblemDetails.kt:12` - api/error; object
-- `class:Rounding` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt:16` - utils; object
 - `class:StatisticalViewsInitializer` - `harbor-core/src/main/kotlin/com/acme/harbor/component/StatisticalViewsInitializer.kt:15` - component; Component
 
 ## tables
 - `table:shedlock` - `harbor-core/src/main/resources/db/migration/V10__shedlock.sql` - ShedLock table: distributed locks of the scheduled jobs (one row per job name). Technical. (4 columns)
 
 ## Edges
+- `class:BaselinePriceService` -depends-on-> `class:Rounding` (-> market)
+- `class:ClientOverviewService` -depends-on-> `class:MonthGrid` (-> clients)
+- `class:ClientOverviewService` -depends-on-> `class:Rounding` (-> clients)
+- `class:ClientRoleService` -depends-on-> `class:MonthGrid` (-> clients)
+- `class:CoverQuoteService` -depends-on-> `class:Rounding` (-> cover)
+- `class:CoverRatioCalculator` -depends-on-> `class:Rounding` (-> cover)
+- `class:CoverRatioService` -depends-on-> `class:MonthGrid` (-> cover)
+- `class:CoverRatioService` -depends-on-> `class:Rounding` (-> cover)
+- `class:Extensions` -depends-on-> `class:Rounding`
+- `class:MarketManager` -depends-on-> `class:MonthGrid` (-> market)
+- `class:MarketPricesListener` -depends-on-> `class:MonthGrid` (-> market)
+- `class:MeetingManager` -depends-on-> `class:MonthGrid` (-> meetings)
 - `class:MovementsLoadedPublisher` -depends-on-> `class:EventProducer` (-> imports)
+- `class:ParameterValidator` -depends-on-> `class:MonthGrid` (-> admin)
+- `class:PeerBenchmark` -depends-on-> `class:Rounding` (-> product1)
+- `class:PeerSimulationService` -depends-on-> `class:MonthGrid` (-> product1)
+- `class:ProjectionAggregator` -depends-on-> `class:Rounding` (-> product1)
+- `class:ProjectionInputAssembler` -depends-on-> `class:MonthGrid` (-> product1)
+- `class:ReportController` -depends-on-> `class:HttpHeadersFactory` (-> reports)
 - `class:ReportRenderRequester` -depends-on-> `class:EventProducer` (-> reports)
+- `class:RoleClassifier` -depends-on-> `class:Rounding` (-> clients)
 - `class:SessionEventsPublisher` -depends-on-> `class:EventProducer` (-> meetings)
+- `class:SessionHeaderFilter` -depends-on-> `class:ProblemDetails` (-> meetings)
 - `endpoint:GET /api/v1/technical/version` -handled-by-> `class:TechnicalController`
 
 ## Specs touching this community

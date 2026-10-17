@@ -82,6 +82,11 @@ ranges); 11 BE unit test next to a calculator `<app>-core/src/test/kotlin/<pkg>/
 `utils/<Class>.kt`, read after its test; then the FE rows; last controller (`api/`) -> service -> manager -> dao.
 `AGENTS.md` line 37 and `features/_template.md` `code_refs` name `service/<Ctx>Service.kt` as the entry point instead
 of the manager.
+Utility objects with a product-first name (`Product1StressTestUtils`) match the product prefix; when such an object
+belongs to another context, list a wildcard entry there (`stress: { be: [Stress, "*StressTest"] }`, the longest
+literal part wins, the docs-map glob becomes `**/*StressTest*.kt`). Objects that call other objects statically
+(`ClientSomethingUtils.hasSomething(...)`) are linked through `Depends on`, so the graph shows the helper chain of a
+calculator and a service that calls a calculator without injecting it.
 Frontend values: `pages_dir`, `hook_dirs`, `components_dir`, `route_files`, `route_constants`, `types`, `exclude_paths`
 (the Orval output) and `test_pattern` follow the layout you described; `/adapt-docs-scripts` confirms each with a path.
 
