@@ -239,7 +239,7 @@ def main():
             # the AsyncAPI document is optional: a backend with Avro / JSON schemas only has events.md (topic, producer,
             # consumer, payload type and the path of its schema file) as the Kafka source
             where = ('channels in `generated/asyncapi/backend.yaml`; producers/consumers in `generated/be/events.md`'
-                     if os.path.isfile(os.path.join(root, 'generated/asyncapi/backend.yaml'))
+                     if os.path.isfile(os.path.join(repo, 'generated/asyncapi/backend.yaml'))
                      else 'producers, consumers, payload types and schema file paths in `generated/be/events.md` (no AsyncAPI document)')
             parts.append('**Kafka**: ' + ', '.join(f'`{e}`' for e in event_refs) + ' - ' + where)
         add_section('Contracts', '\n\n'.join(parts), 4, 'generated/openapi/backend.yaml')
