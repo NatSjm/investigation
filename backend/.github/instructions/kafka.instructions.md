@@ -13,8 +13,8 @@ description: "Kafka listeners/publishers (event/) and topics/payloads (kafka-cli
   `client/kafka/EventProducer` is the only class that touches the `KafkaTemplate` and never knows a topic name.
 - Payload schemas live in `kafka-client/src/main/resources`: Avro (`avro/*.avsc`) for the events Harbor publishes, JSON Schema
   (`json_<service>/*.json`) for the events of external services; the classes are generated at build into
-  `com.acme.harbor.kafka.events[.<service>]` and never hand-written. A listener's parameter type names the schema (`events.md` links it). Breaking payload changes = new topic with a version suffix (`.v2`), never a silent field change.
-- `harbor-core/src/main/resources/openapi/harbor-events.yaml` must describe every topic produced or consumed; update it in the same change.
+  `com.acme.harbor.kafka.events[.<service>]` and never hand-written. A listener's parameter type names the schema (`events.md` links it: the generated class and the schema file share the simple name). The generated classes under `target/` are never read or cited: open the schema file. Breaking payload changes = new topic with a version suffix (`.v2`), never a silent field change.
+- `harbor-core/src/main/resources/openapi/harbor-events.yaml` (the AsyncAPI document, when the backend keeps one: `asyncapi` in `scripts/docs/docs-gen.json`) must describe every topic produced or consumed; update it in the same change. Without one, the schema files plus `docs/_generated/events.md` are the Kafka contract.
 - Topics produced or consumed by external services (`market-data`, `document-service`) are listed in
   `harbor-docs/architecture/integrations.md`; check it before adding a producer or consumer.
 - For "who consumes X" questions answer from `docs/_generated/events.md` - do not search the repository.
