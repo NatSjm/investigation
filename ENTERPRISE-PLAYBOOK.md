@@ -318,6 +318,11 @@ proposal. Nothing is ever copied from `contracts/proposed/` into `generated/` by
 `.github/instructions/contracts.instructions.md`; CI lints both folders with the same linters.
 
 **With an agent.** None for placing the contracts; this is platform work and the collector's validation is the test.
+Once they are in place, `/integrations-from-contracts <product>` (agent `architect`; in the CLI "Follow
+.github/prompts/integrations-from-contracts.prompt.md with product = <name>") rewrites the tables of
+`architecture/integrations.md` (Kafka, outbound REST per external contract, inbound REST per tag, jobs) and the C4
+context diagram plus the "Contexts at a glance" table of `architecture/overview.md` from `generated/`; the prose of
+both pages stays yours, and a contract no client class references is listed as held but not called.
 Two agent uses come later: `@architect` starts a proposed contract from `contracts/_template.openapi.yaml` when a spec
 needs an API before code exists (section 17.8), and `doc-sync` switches a spec from the proposal to the implemented
 contract once the collector brings it in (section 13).
@@ -826,7 +831,7 @@ it may use; forbid invention explicitly.
 | `docs-map.yml` (code paths to spec IDs) | `docs-repo/docs-map.yml` | `contexts.yml`, `generated/be/components.md`, `generated/fe/codebase-map.md` | every path pattern matches at least one file; `map-paths.py` agrees |
 | `domain/context-map.md` | `docs-repo/domain/context-map.md` | `contexts.yml`, `generated/graph/REPO_MAP.md` (cross-community edges), `generated/be/events.md` | the relationships are the real ones; direction of each dependency |
 | `domain/glossary.md` seed | `docs-repo/domain/glossary.md` | `generated/be/db-schema.md`, enum files named in `components.md`, the Confluence inventory | definitions; aliases in the source language |
-| `architecture/overview.md`, `integrations.md` | `docs-repo/architecture/overview.md`, `integrations.md` | `generated/be/codebase-map.md`, `api-index.md`, `events.md`, `generated/openapi/external/*.yaml` | boundaries, ownership, anything the maps cannot show (hosting, auth) |
+| `architecture/overview.md`, `integrations.md` | `docs-repo/architecture/overview.md`, `integrations.md` | `generated/be/codebase-map.md`, `api-index.md`, `events.md`, `generated/openapi/external/*.yaml`; the tables and the context diagram through `/integrations-from-contracts`, the prose by hand | boundaries, ownership, anything the maps cannot show (hosting, auth) |
 | `architecture/adr/*.md` | `docs-repo/architecture/adr/template.md`, `0002-openapi-first-contracts.md` | the decision as you would say it in one paragraph, plus the alternatives considered | the decision itself; an ADR is never generated from code |
 | `flows/*.md` | `docs-repo/flows/client-presentation.md` | the pack of each spec involved, `generated/graph/<community>.md` | steps and invariants; participants |
 | `features/conventions.md`, `contracts/conventions.md` | the files of the same name | your existing team rules (naming, ID scheme, review) | they match how the team works, not how the model thinks it should |

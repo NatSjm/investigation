@@ -21,7 +21,9 @@ external services behind OpenAPI contracts).
   NFRs (monthly projection and stress-test volumes: horizon months x scenarios x dimension values; report rendering
   latency; import batch sizes), risks.
 - **ADR**: copy `architecture/adr/template.md` -> `NNNN-<slug>.md` (`type: Decision`); status Proposed; >= 2 alternatives.
-- **Integration map refresh**: regenerate the table in `architecture/integrations.md` from the contracts and `generated/be/events.md`.
+- **Integration map refresh** (prompt `integrations-from-contracts`): regenerate the tables of `architecture/integrations.md`
+  and the C4 context diagram and "Contexts at a glance" table of `architecture/overview.md` from the contracts under
+  `generated/` and `generated/be/events.md`; prose stays human-owned.
 
 ## Style
 Mermaid only (`C4Context`, `C4Container`, `sequenceDiagram`, `erDiagram`, `flowchart`); one diagram <= 25 nodes.
