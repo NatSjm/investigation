@@ -122,6 +122,7 @@ product-first that call other objects statically). Plus playbook text you read, 
 | `scripts/migration-status.py` | `be` wildcard entries as in `gen-graph.py` |
 | `.github/prompts/context-map-from-code.prompt.md` | wildcard `be` entries for product-first class names (`"*StressTest"`) |
 | `.github/prompts/docs-map-from-contexts.prompt.md` | a wildcard entry becomes the glob `**/*StressTest*.kt` |
+| `.github/prompts/source-priority-from-code.prompt.md` | inputs `entry` (`manager` \| `service`) and `tests` (root of the unit tests when they live apart from the code); the manager row follows the entry row; the test row always precedes the calculator row; reads `entry_layer` / `calculation_layer` from the backend `docs-gen.json` when present |
 
 ### 6.2 Docs repository: files where single rows change
 
