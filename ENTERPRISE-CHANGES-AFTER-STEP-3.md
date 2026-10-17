@@ -74,6 +74,12 @@ your `application.yml`; `kafka.schema_dirs` = `["kafka-client/src/main/resources
 folder (`readme.md`, `schema.json`, `schema/tables/*.md`, `schema/erd/*.mmd`) from the comments in the migrations; the
 collector copies it as it is and the graph reads `schema.json` (table-level `parents`/`children` or column-level
 `references` entries name the foreign keys; send one table with relations to confirm the shape).
+`entry_layer` = `service` (the controller calls the service, which orchestrates and may call other services) and
+`calculation_layer` = `manager` (the hard logic and its unit tests live in the managers). With those two values the
+source-priority rows read: 9 BE context service `service/<Ctx>Service.kt`; 10 BE unit test next to the manager
+`<app>-core/src/test/kotlin/<pkg>/manager/<Class>Test.kt`; 11 BE manager `manager/<Class>.kt` (rules), read after the
+test; 14 controller (`api/`) -> service -> manager -> dao. `AGENTS.md` line 37 and `features/_template.md` `code_refs`
+name `service/<Ctx>Service.kt` as the entry point instead of the manager.
 Frontend values: `pages_dir`, `hook_dirs`, `components_dir`, `route_files`, `route_constants`, `types`, `exclude_paths`
 (the Orval output) and `test_pattern` follow the layout you described; `/adapt-docs-scripts` confirms each with a path.
 

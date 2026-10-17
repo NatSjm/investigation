@@ -322,6 +322,11 @@ everything at once; for the enterprise rollout copy selectively in this order an
 1. **`scripts/docs/`** with `gen-all.py`, `_common.py` and the generators (section 14 lists each). Run
    `python3 scripts/docs/gen-all.py --root .` and read every table in `docs/_generated/`. Both flavours read the
    repository layout from `scripts/docs/docs-gen.json`: fill that file first, it is the whole adaptation.
+   Two keys decide where agents start reading and are not about folder names: `entry_layer` is the layer of the one
+   class per context the controller hands the request to (in Harbor the manager; in a controller -> service -> manager
+   flow the service), and `calculation_layer` is the layer that holds the business rules and their unit tests (Harbor:
+   `utils`; a project whose managers carry the hard logic: `manager`). The read order in `AGENTS.md`, the source
+   priority rows, the `@docs` candidates and the context map's entry-point column all follow these two values.
    Backend keys (`code-repo-kit/be/scripts/docs/README.md` lists every key): the Maven modules, the base package,
    the layer list with the sub-packages that count as layers of their own (`dao/model`, `dao/repository`,
    `dao/service`, `client/rest`, `api/technical`, ...), the OpenAPI, AsyncAPI and external-contract paths, how
