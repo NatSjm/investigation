@@ -38,7 +38,8 @@ Deferred until the trigger named:
 
 - Hooks, CI workflows, the freshness gate and the migration board (section 6 items 5 to 7, section 7 in CI,
   section 13): when a second person writes specs, or the first time a map goes stale unnoticed.
-- `confluence-migrator` and section 9: when the first exported space arrives.
+- `confluence-migrator` and section 9: when the first exported space arrives, or earlier when another team hands you a
+  generated knowledge base (next paragraph).
 - `doc-sync`: with the first collector pull request. `impact-analyst`, `architect`, `test-designer`,
   `migration-lead`: with the first task of that kind.
 - `@docs` tags and `tag-docs` (section 6, item 8): when a calculation without a spec appears on the board.
@@ -47,6 +48,22 @@ Deferred until the trigger named:
   analytics tasks.
 - The analyst agent (section 12) and the gate of section 16 stay as written; the pilot track is week 1 of phase 1,
   not a shortcut around the gate.
+
+**A knowledge base another team already generated** (a tester's "RAG knowledge base" for the frontend and backend,
+an onboarding page written by an agent from the code) is an imported legacy page, not a source of truth: it is a
+snapshot of one day without `file:line`, and nothing regenerates it. Put it under `confluence-import/<SPACE>/` with
+the header block of that folder's README (`source`, `last_modified`, `author`) and let `confluence-migrator` take it
+section by section (`/agent confluence-migrator`, then "Migrate section <n> of confluence-import/<SPACE>/<file>.md").
+Migrate only what the generators cannot produce: the step-by-step user flows (one `flows/` document), business rules
+stated in prose ("starting a meeting reuses the matching active session"), the purposes of broadcast message types
+(`channels:` of the flow), enumerations with business meaning and the glossary (into `domain/`), architectural notes
+("technical routes are defined outside the OpenAPI file"), known limitations (into `work-items/` or the open questions
+of the affected spec) and the page-to-test-file table (into `test-design/`). The tech stack, folder schemas, route map,
+endpoint, entity, enumeration, job and integration tables are **cross-checks only**: diff them against
+`generated/fe/routes.md`, `generated/be/api-index.md`, `generated/be/jobs.md` and `architecture/integrations.md`; a
+mismatch is a generator gap to fix now or a stale line in the import. Test-framework internals (locator and keyword
+conventions) stay in the tests repository. Once the flow, the glossary rows and the first spec exist, the other
+team's agent reads the docs repository or a context pack instead, and the import moves to `_done/`.
 
 The pilot track is an afternoon after section 3 once `docs-gen.json` is right. The two places where it stalls are
 the generator regexes against your conventions (`/adapt-docs-scripts`, section 6) and the bounded-context cut in
