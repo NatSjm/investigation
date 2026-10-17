@@ -59,7 +59,7 @@ Source code: never.
    as the label (keep the people and the main system as they are); in "Contexts at a glance" refresh the entry point,
    tables and produces / consumes columns from `REPO_MAP.md` and the Kafka table. Keep the diagram under 25 nodes;
    when the external systems exceed that, group them by purpose and say so in chat.
-5b. **Whole overview** (scope `overview-draft` only; replaces step 5): rewrite `architecture/overview.md` section by
+5b. **Whole overview** (scope `overview-draft` only; replaces steps 1 to 5, the tables come from `integrations.md`): rewrite `architecture/overview.md` section by
    section, keeping its heading structure: the file table (one row per file that exists under `architecture/`, the
    `hld/` and `adr/` rows always); the repositories paragraph (names from `manifest.yml`, modules and technology from
    the two codebase maps: module purposes verbatim, frontend stack from the FE map header); the `C4Context` diagram
