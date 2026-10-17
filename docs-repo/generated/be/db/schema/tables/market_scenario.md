@@ -4,7 +4,7 @@ title: "market_scenario"
 description: "Market scenario defined in a session: named shocks on prices and transport prices used by the stress test."
 generated:
   by: process:db-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # market_scenario

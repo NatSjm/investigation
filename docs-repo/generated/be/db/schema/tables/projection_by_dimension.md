@@ -4,7 +4,7 @@ title: "projection_by_dimension"
 description: "Monthly projection per dimension value: city for Product 1, transport mode for Product 2 (dimension_kind says which)."
 generated:
   by: process:db-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # projection_by_dimension

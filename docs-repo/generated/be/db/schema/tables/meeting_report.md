@@ -4,7 +4,7 @@ title: "meeting_report"
 description: "The meeting report of a closed session: payload sent for rendering, PDF path and rendering status."
 generated:
   by: process:db-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # meeting_report

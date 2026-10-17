@@ -31,13 +31,3 @@ object Rounding {
     val ZERO_RATIO: BigDecimal = BigDecimal.ZERO.setScale(RATIO_SCALE)
 }
 
-/** Extension shortcuts used throughout the calculations in `com.acme.harbor.utils`. */
-fun BigDecimal.money(): BigDecimal = Rounding.money(this)
-
-fun BigDecimal.ratio(): BigDecimal = Rounding.ratio(this)
-
-fun Iterable<BigDecimal>.sumMoney(): BigDecimal = fold(BigDecimal.ZERO) { acc, v -> acc + v }.money()
-
-fun bd(value: String): BigDecimal = BigDecimal(value)
-
-fun bd(value: Int): BigDecimal = BigDecimal.valueOf(value.toLong())

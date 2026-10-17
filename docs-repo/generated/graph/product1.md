@@ -4,7 +4,7 @@ title: "Graph: product1 (be+fe)"
 description: "/session/:sessionId/product1` - first meeting step for Product 1: city filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals."
 generated:
   by: process:gen-graph
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # Graph: product1 (be+fe)

@@ -1,16 +1,16 @@
 ---
 type: Document
 title: "Components (BE)"
-description: "One row per class: layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix."
+description: "One row per class (or per file of top-level functions): layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix."
 generated:
   by: process:gen-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # Components (BE)
 
 > Generated from `top-level Kotlin declarations per layer` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
-157 declaration(s). Per layer: (root) 2, advice 1, api 10, api/error 1, api/technical 1, client/kafka 3, client/rest 5, component 8, config 4, context 3, dao/mapper 1, dao/model 16, dao/repository 17, dao/service 1, dao/specification 1, databind 2, enums 15, event 9, exception 6, job 2, manager 10, mapper 9, model 3, service 15, utils 8, validator 4. Business context of a class = its name prefix (docs repo `contexts.yml`).
+158 declaration(s). Per layer: (root) 2, advice 1, api 10, api/error 1, api/technical 1, client/kafka 3, client/rest 5, component 8, config 4, context 3, dao/mapper 1, dao/model 16, dao/repository 17, dao/service 1, dao/specification 1, databind 2, enums 15, event 9, exception 6, job 2, manager 10, mapper 9, model 3, service 15, utils 9, validator 4. Business context of a class = its name prefix (docs repo `contexts.yml`).
 
 | Class | Layer | Module | Kind | Depends on | Tables | @docs | Location |
 |---|---|---|---|---|---|---|---|
@@ -160,6 +160,7 @@ status: stable
 | `SessionScopeService` | service | harbor-core | Service | `MeetingSessionRepository`, `MeetingSessionDaoService`, `SessionClientConfigRepository` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/service/SessionScopeService.kt:18` |
 | `StressTestService` | service | harbor-core | Service | `ProjectionInputAssembler`, `BaselinePriceService`, `CoverRatioService` |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/service/StressTestService.kt:26` |
 | `CoverRatioCalculator` | utils | harbor-core | object |  |  | `cover_ratio` | `harbor-core/src/main/kotlin/com/acme/harbor/utils/CoverRatioCalculator.kt:23` |
+| `Extensions` | utils | harbor-core | file (top-level functions) |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/utils/Extensions.kt:14` |
 | `MonthGrid` | utils | harbor-core | class |  |  |  | `harbor-core/src/main/kotlin/com/acme/harbor/utils/MonthGrid.kt:13` |
 | `PeerBenchmark` | utils | harbor-core | object |  |  | `peer_benchmark_simulation` | `harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt:19` |
 | `ProjectionAggregator` | utils | harbor-core | object |  |  | `monthly_projection`, `horizon_totals` | `harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt:36` |

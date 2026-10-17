@@ -48,7 +48,3 @@ class MonthGrid(val start: YearMonth, val horizonMonths: Int) : Iterable<YearMon
     }
 }
 
-/** First day of the month, the representation used in the `period date` columns. */
-fun YearMonth.toPeriodDate(): LocalDate = atDay(1)
-
-fun LocalDate.toYearMonth(): YearMonth = YearMonth.from(this)

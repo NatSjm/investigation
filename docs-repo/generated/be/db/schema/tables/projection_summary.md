@@ -4,7 +4,7 @@ title: "projection_summary"
 description: "Monthly totals of the session projection with the cover ratio."
 generated:
   by: process:db-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # projection_summary

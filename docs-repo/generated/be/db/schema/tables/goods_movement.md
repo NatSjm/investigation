@@ -4,7 +4,7 @@ title: "goods_movement"
 description: "Daily movements as imported from the file exchange, one row per line of the file after validation."
 generated:
   by: process:db-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # goods_movement

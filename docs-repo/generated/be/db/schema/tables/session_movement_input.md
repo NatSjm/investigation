@@ -4,7 +4,7 @@ title: "session_movement_input"
 description: "Movements modelled by hand during a session (the movement modal); they replace the imported history for the months they cover."
 generated:
   by: process:db-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # session_movement_input

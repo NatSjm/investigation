@@ -24,7 +24,7 @@ from _common import (read_text, write_text, resolve_out, rel_path, line_number, 
 
 FUN_RX = re.compile(r'(?s)(?:/\*\*(?P<doc>(?:(?!\*/).)*)\*/\s*)?(?:@\w+(?:\([^)]*\))?\s*)*'
                     r'(?P<mods>(?:(?:private|internal|protected|public|override|operator|inline|infix|suspend|tailrec|open|abstract)\s+)*)'
-                    r'fun\s+(?:<[^>]*>\s*)?(?P<name>\w+)\s*\(')
+                    r'fun\s+(?:<[^>]*>\s*)?(?:[\w.]+(?:<[^>]*>)?\??\.)?(?P<name>\w+)\s*\(')   # receiver of an extension function allowed
 DEFAULTS = {'entry_layer': 'manager', 'calculation_layer': 'utils'}
 
 
@@ -99,8 +99,8 @@ def main():
         loc = cells[7].strip('`')
         if layer.lower() not in (entry_layer, calc_layer):
             continue
-        if layer.lower() == calc_layer and not re.match(r'^(object|class)$', kind, re.I):
-            continue   # enums, data classes, interfaces are not calculations
+        if layer.lower() == calc_layer and not re.match(r'^(object|class|file\b.*)$', kind, re.I):
+            continue   # enums, data classes, interfaces are not calculations; files of top-level functions are
         ctx = resolve_context(name)
         proposed = ''
         if layer.lower() == entry_layer:

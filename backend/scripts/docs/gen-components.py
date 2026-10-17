@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Component index for a layered (package-by-layer) Kotlin backend: one row per top-level class / object /
+interface, plus one row per file that declares only top-level functions (Kotlin extension or helper files such as
+`utils/Extensions.kt`): that row carries the file name, kind `file`, and the @docs tags of the file's KDoc blocks.
 interface with its layer (package segments after the base package, `dao/model` style for configured sub-layers),
 Spring stereotype, constructor-injected dependencies, tables it touches, @docs tags and file:line. This is the map
 that replaces "one module per business area": agents and the docs graph read layer + name prefix + dependencies
@@ -20,6 +22,7 @@ from _common import (read_text, write_text, source_files, resolve_out, rel_path,
 
 DECL_RX = re.compile(r'(?m)^(?:@[\w.]+(?:\([^)]*\))?\s+)*(?:(?:public|internal|private|data|abstract|open|sealed|enum|annotation|value|fun)\s+)*(class|object|interface)\s+(\w+)')
 ANN_RX = re.compile(r'(?:@[\w.]+(?:\([^)]*\))?\s*)*$')
+TOP_FUN_RX = re.compile(r'(?m)^(?:(?:public|internal|private|inline|operator|infix|suspend|tailrec)\s+)*fun\s')
 DEFAULTS = {
     'modules': [], 'source_root': 'src/main/kotlin', 'base_package': '', 'layers': {}, 'test_pattern': '', 'exclude_paths': [],
     'stereotypes': ['RestControllerAdvice', 'RestController', 'Service', 'Component', 'Configuration', 'Repository', 'Entity', 'SpringBootApplication'],
@@ -72,6 +75,14 @@ def main():
         layer = layer_of(pkgs[f], base_pkg.get(mod, ''), layers_cfg)
         # comments blanked for the dependency / table scan (keeps offsets for line numbers)
         code = blank_comments(t)
+        if not DECL_RX.search(code):
+            fm = TOP_FUN_RX.search(code)
+            if fm:
+                # a file of top-level functions: one row named after the file, tags from every KDoc block of the file
+                rows.append({'Name': os.path.splitext(os.path.basename(f))[0], 'Layer': layer, 'Module': mod,
+                             'Kind': 'file (top-level functions)', 'Deps': [], 'Super': '', 'Tables': [],
+                             'Docs': unique(re.findall(r'@docs\s+([\w.-]+)', t)), 'Loc': f'{rel}:{line_number(t, fm.start())}'})
+            continue
         for d in DECL_RX.finditer(code):
             name = d.group(2)
             start = d.start()
@@ -140,7 +151,7 @@ def main():
         counts[r['Layer']] = counts.get(r['Layer'], 0) + 1
     layers = [f'{k} {counts[k]}' for k in sorted(counts, key=sort_key)]
     sb = [header('Components (BE)', 'top-level Kotlin declarations per layer',
-                 'One row per class: layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix.')]
+                 'One row per class (or per file of top-level functions): layer, stereotype, injected dependencies, tables, @docs tags and file:line; business context = class-name prefix.')]
     sb.append(f"{len(rows)} declaration(s). Per layer: {', '.join(layers)}. Business context of a class = its name prefix (docs repo `contexts.yml`).\n\n")
     sb.append('| Class | Layer | Module | Kind | Depends on | Tables | @docs | Location |\n|---|---|---|---|---|---|---|---|\n')
     for r in sorted(rows, key=lambda r: (sort_key(r['Layer']), sort_key(r['Name']))):

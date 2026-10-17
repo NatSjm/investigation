@@ -4,7 +4,7 @@ title: "Codebase map (BE)"
 description: "Backend modules, technical layers with their classes and resource folders; read the manager of a context first."
 generated:
   by: process:gen-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # Codebase map (BE)
@@ -17,7 +17,7 @@ Read order: the context's `manager/*` class (KDoc + `@docs`) -> the classes it d
 
 | Module | Purpose | Base package | Kotlin files | Layers |
 |---|---|---|---|---|
-| `harbor-core` | The Harbor Spring Boot application: all business code, package-by-layer under src/main/kotlin/com/acme/harbor/ | `com.acme.harbor` | 156 | `(root)` `advice` `api` `api/error` `api/technical` `client/kafka` `client/rest` `component` `config` `context` `dao/mapper` `dao/model` `dao/repository` `dao/service` `dao/specification` `databind` `enums` `event` `exception` `job` `manager` `mapper` `model` `service` `utils` `validator` |
+| `harbor-core` | The Harbor Spring Boot application: all business code, package-by-layer under src/main/kotlin/com/acme/harbor/ | `com.acme.harbor` | 157 | `(root)` `advice` `api` `api/error` `api/technical` `client/kafka` `client/rest` `component` `config` `context` `dao/mapper` `dao/model` `dao/repository` `dao/service` `dao/specification` `databind` `enums` `event` `exception` `job` `manager` `mapper` `model` `service` `utils` `validator` |
 | `kafka-client` | Event contracts of the Harbor topics, no hand-written code: Avro schemas (src/main/resources/avro) of the events Harbor publishes and JSON schemas (src/main/resources/json_<service>) of the events consumed from external services. The payload classes are generated at build time into target/generated-sources (avro-maven-plugin -> com.acme.harbor.kafka.events, jsonschema2pojo -> com.acme.harbor.kafka.events.<service>) and never committed. | `` | 0 |  |
 
 Other top-level folders (not build modules): `init_docker_compose/`
@@ -50,7 +50,7 @@ Other top-level folders (not build modules): `init_docker_compose/`
 | `mapper` | domain <-> API model mappers | 9 | `ClientMapper`, `CoverMapper`, `ImportBatchMapper`, `ParameterMapper`, `ProjectionMapper`, `ReportMapper`, `ScenarioMapper`, `SessionMapper`, `StressMapper` |
 | `model` | domain models that are not entities (calculation inputs and results) | 3 | `ClientOverviewIndicators`, `ProjectionRow`, `ScenarioShock` |
 | `service` | business services used by managers | 15 | `BaselinePriceService`, `ClientOverviewService`, `ClientProfileService`, `ClientRoleService`, `CoverQuoteService`, `CoverRatioService`, `MovementImportService`, `ParameterService`, `PeerSimulationService`, `ProjectionInputAssembler`, `ProjectionService`, `ReportPayloadService`, `ScenarioService`, `SessionScopeService`, `StressTestService` |
-| `utils` | calculations (pure Kotlin, @docs <calculation>) and helpers | 8 | `CoverRatioCalculator`, `MonthGrid`, `PeerBenchmark`, `ProjectionAggregator`, `RoleClassifier`, `Rounding`, `ScenarioPricePath`, `StressTestCalculator` |
+| `utils` | calculations (pure Kotlin, @docs <calculation>) and helpers | 9 | `CoverRatioCalculator`, `Extensions`, `MonthGrid`, `PeerBenchmark`, `ProjectionAggregator`, `RoleClassifier`, `Rounding`, `ScenarioPricePath`, `StressTestCalculator` |
 | `validator` | business validation of requests and inputs | 4 | `MovementInputValidator`, `ParameterValidator`, `RoleOverrideValidator`, `ScenarioValidator` |
 
 ## Resources of `harbor-core` (`harbor-core/src/main/resources`)

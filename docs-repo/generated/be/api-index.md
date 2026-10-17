@@ -4,7 +4,7 @@ title: "REST API index (BE)"
 description: "Generated map: REST API index (BE), derived from harbor-core/src/main/resources/openapi/openapi_harbor.yaml (contract) + handler method named like the operationId (rest.handler_pattern) in @RestController classes; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # REST API index (BE)

@@ -11,7 +11,8 @@ description: "Pure Kotlin calculations in utils/: KDoc formula, @docs <calculati
 - Money and quantities: `BigDecimal`, `RoundingMode.HALF_EVEN`, scale from the spec (`monthly_projection` 2, `cover_ratio` 4).
   Round once at the end of a step, not per intermediate product.
 - Monthly series iterate `YearMonth` via `MonthGrid`; cumulative columns are running sums over the horizon in month order.
-- The worked examples live in the unit test (`harbor-core/src/test/kotlin/com/acme/harbor/utils/<Class>Test.kt`),
+- The worked examples live in the unit test (`harbor-core/src/test/kotlin/com/acme/harbor/utils/<Class>Test.kt`; for a
+  file of top-level functions such as `Extensions.kt` the test is `<File>Test.kt` and the maps list the file under its name),
   named `<calculation_id>__<case>`; `harbor-docs/domain/calculations/<calculation_id>.md` quotes them verbatim.
   Changing a formula = change the test, the KDoc and the docs page in the same change and set the page `status: draft`.
 - Scenario/stress parameters (shock percentages, horizon, dimension kind) are explicit arguments - no hidden config reads.

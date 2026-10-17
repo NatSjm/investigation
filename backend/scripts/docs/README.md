@@ -4,6 +4,7 @@
 |---|---|---|
 | `gen-*.py`, `gen-all.py [--check]` | Python 3.11+ (standard library) | `docs/_generated/*.md` regex maps (`codebase-map`, `components`, `api-index`, `events`, `db-schema`, `jobs`, `docs-tags`, `parameters`, `datasets`, `index`) |
 | `tag-candidates.py --contexts <docs repo>/contexts.yml` | same | inventory for the docs-tagger agent (stdout or `--out`) |
+| (components) files of top-level functions | - | a Kotlin file without a class (`utils/Extensions.kt`) is one row of `components.md` named after the file, kind `file`; `tag-candidates.py` lists its functions, extension receivers included |
 | `gen-db-docs.py` (run by `gen-all.py`) | same | `docs/db/`: `schema.json`, `schema/tables/<table>.md`, `schema/erd/overview.mmd`, `readme.md` from the migrations and their `COMMENT ON` statements; off when a database tool writes that folder |
 | `templates/GraphExportTest.kt` (kit) | the repo's Spring test classpath | `docs/_generated/graph-export-be.json` precise graph from the running context |
 

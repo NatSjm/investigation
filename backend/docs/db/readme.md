@@ -1,6 +1,6 @@
 # Database documentation: harbor
 
-postgresql, schema `public`; 21 table(s). Generated from the migrations by `scripts/docs/gen-db-docs.py` on 2026-10-16; descriptions are the `COMMENT ON` statements. Machine-readable: [schema.json](schema.json). Diagram: [ER overview](schema/erd/overview.mmd).
+postgresql, schema `public`; 21 table(s). Generated from the migrations by `scripts/docs/gen-db-docs.py` on 2026-10-17; descriptions are the `COMMENT ON` statements. Machine-readable: [schema.json](schema.json). Diagram: [ER overview](schema/erd/overview.mmd).
 
 | Table | Description | Columns |
 |---|---|---|

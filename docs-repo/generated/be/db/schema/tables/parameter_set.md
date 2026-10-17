@@ -4,7 +4,7 @@ title: "parameter_set"
 description: "Admin parameters: one value per key and scope (product group, country, value), valid from a date."
 generated:
   by: process:db-docs
-  at: 2026-10-16
+  at: 2026-10-17
 status: stable
 ---
 # parameter_set
