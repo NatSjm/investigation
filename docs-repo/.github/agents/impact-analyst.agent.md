@@ -24,7 +24,7 @@ description, or a list of changed file paths (`git diff --name-only`).
 - **Subject**: node id, community, `file:line`.
 - **BE**: classes / endpoints (with `operationId`) / tables / topics / jobs affected, one line each with location.
 - **FE**: features / hooks / components / routes affected.
-- **Contracts**: operations in `generated/openapi/backend.yaml` or channels in `asyncapi/backend.yaml` to change (breaking? version?).
+- **Contracts**: operations in `generated/openapi/backend.yaml` or channels in `asyncapi/backend.yaml` (topics and schema files in `generated/be/events.md` when there is no AsyncAPI document) to change (breaking? version?).
 - **Docs to update**: spec and calculation IDs in radius; `code only` items from REPO_MAP spec coverage that overlap.
 - **Tests**: layers to touch (`@api @ui @calc @kafka`) per `references/subtask-mapping.md`.
 - **Cross-context**: edges into other communities -> stories that need `depends_on`.

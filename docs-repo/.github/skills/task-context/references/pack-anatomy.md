@@ -9,7 +9,7 @@
 | `## Calculations` | `domain/calculations/<name>.md` for every `calculations[]` entry | 2 |
 | `## Flows` | `flows/<name>.md` for every `flows[]` entry of the spec plus every flow whose `specs[]` names the ID (Purpose, Trigger, Participants, Steps, Invariants) | 3 |
 | `## Graph neighbourhood` | `scripts/graph-query.py --node spec:<ID> --depth 2` (or `context:`/`feature:` for a community); class detail from `generated/be/components.md` | 2 |
-| `## Contracts` | `generated/openapi/backend.yaml` path blocks for `api[]`; `generated/asyncapi/backend.yaml` channel names for `events[]` | 4 |
+| `## Contracts` | `generated/openapi/backend.yaml` path blocks for `api[]`; `generated/asyncapi/backend.yaml` channel names for `events[]` (when the backend has no AsyncAPI document, the line points at `generated/be/events.md` instead) | 4 |
 | `## Data` | the page of every `tables[]` entry from `generated/be/db/schema/tables/<table>.md` (table comment, columns with comments, relations, constraints; first 60 lines), else the `generated/be/db-schema.md` section | 4 |
 | `## Related work items and tests` | `work-items/<ID>.yml` (`summary:` lines), `test-design/features/<ID>.feature` (`Scenario` lines) | 3 |
 | `## Legacy pages` | `confluence-import/**/*.md` containing the ID or 2+ title keywords; first 5 lines each | 5 |

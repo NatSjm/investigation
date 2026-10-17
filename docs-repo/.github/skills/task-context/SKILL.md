@@ -28,7 +28,7 @@ Output: `.context/<slug>.md` (git-ignored). Attach it with `#file` (VS Code) or 
 5. **Graph neighbourhood** - `graph-query.py --node spec:<ID> --depth 2`: nodes by kind with `file:line`, edges,
    cross-community edges, heuristic marks.
 6. **Contracts** - the `paths` blocks of `generated/openapi/backend.yaml` for the spec's `api[]` entries; channel
-   names from `asyncapi/backend.yaml` for `events[]`.
+   names from `asyncapi/backend.yaml` for `events[]` (from `generated/be/events.md` when there is no AsyncAPI document).
 7. **Data** - the `db-schema.md` sections for `tables[]`.
 8. **Related** - `work-items/<ID>.yml` story summaries, `test-design/features/<ID>.feature` scenario names.
 9. **Legacy** - `confluence-import/**` pages mentioning the ID or title keywords (listed, first lines only, marked unverified).

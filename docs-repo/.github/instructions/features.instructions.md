@@ -17,7 +17,8 @@ description: Rules for feature specs (structure, numbering, traceability, proven
   can cite them. Renumbering is forbidden once a rule is cited; deprecate instead.
 - Reference calculations by link to `domain/calculations/<name>.md`; do not duplicate formulas.
 - Reference endpoints as `METHOD /path` with the `operationId` from `generated/openapi/backend.yaml`; reference
-  Kafka topics by exact name from `generated/asyncapi/backend.yaml`; reference tables by name from
+  Kafka topics by exact name from `generated/asyncapi/backend.yaml` (or from `generated/be/events.md`, which also
+  names the schema file of each payload, when there is no AsyncAPI document); reference tables by name from
   `generated/be/db-schema.md`. Session-scoped endpoints (`/session/**`) mention the `X-Harbor-Session` header once.
 - `code_refs` are paths relative to the code repo roots (`be/harbor-core/src/main/kotlin/com/acme/harbor/<layer>/<Class>.kt`,
   `fe/src/pages/<Page>/...`), taken from the graph neighbourhood (`generated/graph/<community>.md`),

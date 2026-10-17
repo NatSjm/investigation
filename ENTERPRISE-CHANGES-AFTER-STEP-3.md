@@ -120,6 +120,7 @@ product-first that call other objects statically). Plus playbook text you read, 
 | `scripts/map-paths.py` | prints the spec of a matched row; `BACKLOG` for a matched row whose `specs: []` is empty (was `UNMAPPED`); `UNMAPPED` only when no glob matches |
 | `scripts/check-freshness.py` | reports `BACKLOG <path>` for changed files of a backlog row and never fails on them |
 | `scripts/migration-status.py` | `be` wildcard entries as in `gen-graph.py` |
+| `scripts/context-pack.py` (again) | the Kafka line of the Contracts section points at `generated/be/events.md` when `generated/asyncapi/backend.yaml` does not exist |
 | `.github/prompts/context-map-from-code.prompt.md` | wildcard `be` entries for product-first class names (`"*StressTest"`) |
 | `.github/prompts/docs-map-from-contexts.prompt.md` | a wildcard entry becomes the glob `**/*StressTest*.kt` |
 | `.github/prompts/source-priority-from-code.prompt.md` | inputs `entry` (`manager` \| `service`) and `tests` (root of the unit tests when they live apart from the code); the manager row follows the entry row; the test row always precedes the calculator row; reads `entry_layer` / `calculation_layer` from the backend `docs-gen.json` when present |
@@ -135,6 +136,7 @@ product-first that call other objects statically). Plus playbook text you read, 
 | `.github/agents/spec-writer.agent.md` | Data line (line 26) | "`table:*` nodes with the table and column comments from `generated/be/db/schema/tables/<table>.md` (column lists from `db-schema.md` when a table has no page)" |
 | `.github/agents/architect.agent.md` | sources item 3 (line 14) | `generated/be/db/schema/tables/*.md` (`generated/be/db-schema.md` as fallback) |
 | `contexts.yml` | comment header (lines 6-8) | the wildcard sentence: an entry with `*` is a wildcard over the whole class name, the longest literal part decides |
+| `.github/agents/architect.agent.md` (line 14), `doc-sync.agent.md` (line 19), `impact-analyst.agent.md` (line 27), `.github/instructions/features.instructions.md` (line 20), `generated.instructions.md` (line 25), `.github/skills/task-context/SKILL.md` (line 31), `task-context/references/pack-anatomy.md` (line 12), `gherkin-test-design/references/coverage-checklist.md` (line 28) | the `asyncapi/backend.yaml` mentions | "when present; else `generated/be/events.md`" - your backend has Avro and JSON schemas but no AsyncAPI document, so `events.md` (topic, producer, consumer, payload type, schema file path) is the Kafka source; step 6 value `asyncapi: ""`, `kafka.schema_dirs` = your schema folders |
 | `generated/manifest.yml` | - | written by the collector; the `db` entry (`Dir: generated/be/db`, `Source: backend`) appears on the next run, nothing to edit |
 
 ### 6.3 Step 4 (contexts.yml, docs-map.yml)
