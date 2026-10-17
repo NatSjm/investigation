@@ -16,7 +16,7 @@ with `> ⚠️ REVIEW (integrations refresh, <date>)` instead of rewriting it.
 
 Scope `overview-draft` is the exception to the prose rule: it rewrites the whole `architecture/overview.md` as a first
 draft (playbook section 18: human-owned documents an agent may draft) for a repository whose overview still carries the
-reference text of another product. Everything the evidence cannot show is left as a marked gap, never invented.
+reference text of another product. Everything the evidence cannot show is left as a marked gap, never invented. Run it in a run of its own, after a run with `scope = integrations`: the draft takes the Kafka, outbound REST and jobs rows from the refreshed `architecture/integrations.md` instead of repeating steps 1 to 4, and reads nothing else from that page.
 
 ## Inputs (read-only, in this order)
 1. The two pages as they are (read them first; note which rows are `gen` and which `manual`).
