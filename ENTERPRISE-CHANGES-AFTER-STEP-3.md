@@ -8,6 +8,10 @@ will expect. Nothing in your code repositories changes yet (that is step 6).
 Paths below are the Harbor paths; in your repository replace `harbor-core` by `<app>-core`, `com/acme/harbor` by your
 package path, `openapi_harbor.yaml` by `openapi_<app>.yaml`.
 
+**Already applied sections 1 to 5 before 2026-10-16 midday?** Then only section 6 is left. It lists every change made after
+investigation commit `5c8233a` (2026-10-16 09:55) on its own; the rows it repeats were added to sections 1 to 4 later and
+need no second pass.
+
 ## 1. Docs repository: files to re-copy whole
 
 | File | Why |
@@ -99,3 +103,80 @@ Frontend values: `pages_dir`, `hook_dirs`, `components_dir`, `route_files`, `rou
 Sections 1, 3, 4, 5, 6 and 14 were updated for the page layout, the backend sub-packages, the config-driven generators,
 the `/adapt-docs-scripts` flow (section 6, "With an agent") and the schema-only Kafka module (section 5). Sections 7 to
 13 and 15 to 20 did not need changes.
+
+## 6. Changes after 2026-10-16 midday (investigation commits `e0d96dc` to `af46327`)
+
+Three topics: the database documentation folder as evidence (`docs/db` -> `generated/be/db/`), the backlog state of
+the mapping check, and the two conventions of your utils layer (files of top-level functions, objects named
+product-first that call other objects statically). Plus playbook text you read, not copy.
+
+### 6.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/collect-evidence.py` | copies the backend folder named by `db_docs.dir` in `docs-gen.json` (default `docs/db`) to `generated/be/db/`: `.md`, `.json`, `.mmd`, `.svg`, `.png` only, `index.md` skipped, `readme.md` -> `README.md`, OKF frontmatter prepended to every page; the tool's own scripts under `docs/db/scripts/` are never copied |
+| `scripts/gen-graph.py` | reads `generated/be/db/schema.json`: table note = table comment, foreign-key edges `fk <column>` from `parents` / `children` / column-level `references` (tolerant key names: `table`, `refTable`, `parentTable`, `tableName`, `column`, `refColumn`, `fkColumn`, ...), relations with `implied: true` kept and labelled `(implied, no constraint)`; regex foreign keys only when no `schema.json`; `be` entries with a wildcard (`"*StressTest"`, longest literal part wins); `depends-on` edges from the static calls that `components.md` now lists |
+| `scripts/context-pack.py` | the `## Data` section carries the table page `generated/be/db/schema/tables/<table>.md` (H1 stripped, links rewritten, first 60 lines) and falls back to the `db-schema.md` section |
+| `scripts/map-paths.py` | prints the spec of a matched row; `BACKLOG` for a matched row whose `specs: []` is empty (was `UNMAPPED`); `UNMAPPED` only when no glob matches |
+| `scripts/check-freshness.py` | reports `BACKLOG <path>` for changed files of a backlog row and never fails on them |
+| `scripts/migration-status.py` | `be` wildcard entries as in `gen-graph.py` |
+| `.github/prompts/context-map-from-code.prompt.md` | wildcard `be` entries for product-first class names (`"*StressTest"`) |
+| `.github/prompts/docs-map-from-contexts.prompt.md` | a wildcard entry becomes the glob `**/*StressTest*.kt` |
+
+### 6.2 Docs repository: files where single rows change
+
+| File | Row | Change |
+|---|---|---|
+| `.github/skills/write-feature-spec/references/source-priority.md` | row 4 (line 8) | add `generated/be/db/schema/tables/<table>.md` (table and column comments, relations) before `db-schema.md`; "Gives you" = "tables with their meaning" |
+| `.github/skills/task-context/references/pack-anatomy.md` | `## Data` row (line 13) | "the page of every `tables[]` entry from `generated/be/db/schema/tables/<table>.md` (table comment, columns with comments, relations, constraints; first 60 lines), else the `generated/be/db-schema.md` section" |
+| `.github/skills/code-graph/SKILL.md` | line 28 | `depends-on` = class -> class: constructor injection **or a static call on a Kotlin object** (`Rounding.money(v)`) |
+| `.github/instructions/generated.instructions.md` | new row after `be/events.md` (line 21) | `be/db/README.md`, `be/db/schema.json`, `be/db/schema/tables/<table>.md`, `be/db/schema/erd/overview.mmd`: the database documentation (data dictionary, relations, constraints, ER diagram), from the backend `docs/db` folder, copied by the collector |
+| `.github/agents/spec-writer.agent.md` | Data line (line 26) | "`table:*` nodes with the table and column comments from `generated/be/db/schema/tables/<table>.md` (column lists from `db-schema.md` when a table has no page)" |
+| `.github/agents/architect.agent.md` | sources item 3 (line 14) | `generated/be/db/schema/tables/*.md` (`generated/be/db-schema.md` as fallback) |
+| `contexts.yml` | comment header (lines 6-8) | the wildcard sentence: an entry with `*` is a wildcard over the whole class name, the longest literal part decides |
+| `generated/manifest.yml` | - | written by the collector; the `db` entry (`Dir: generated/be/db`, `Source: backend`) appears on the next run, nothing to edit |
+
+### 6.3 Step 4 (contexts.yml, docs-map.yml)
+
+- `contexts.yml`: a `be` entry may be a wildcard (`stress: { be: [Stress, "*StressTest"] }`) for utility objects named
+  product-first (`Product1StressTestUtils`); between two matching entries the longest literal part wins. Without it such
+  a class lands in the product context, which is also a defensible cut.
+- `docs-map.yml`: a row whose context has no spec yet keeps `specs: []`; `map-paths.py` prints `BACKLOG` for its paths,
+  the freshness gate reports and passes. `UNMAPPED` now means "no glob matches", i.e. a missing row.
+- The step 4 check in the playbook reads: one real path per context prints its spec, `BACKLOG` for a backlog row, and
+  `UNMAPPED` only for paths you meant to leave out.
+
+### 6.4 Step 6 (later): what changed in the kits
+
+Take the kits as they are (section 4 still holds). The differences since midday, so you recognise them:
+
+- `scripts/docs/docs-gen.json`: new key `db_docs: { dir, generate, database }`. Your value: `{ "dir": "docs/db", "generate": false }`
+  because your database tool and its converter already write that folder from the migration comments; the collector
+  copies it, the graph reads its `schema.json` (your `parents` entries `{ table, column, refColumn, onDeleteCascade, implied }`
+  are read as they are).
+- `scripts/docs/gen-db-docs.py` (new, run by `gen-all.py` unless `db_docs.generate` is false or it is in `skip_generators`):
+  the kit's own writer of that folder from `COMMENT ON TABLE|COLUMN`; you do not run it.
+- `scripts/docs/gen-all.py`: runs and checks the folder above (`--check` compares it, date line normalised).
+- `scripts/docs/gen-components.py`: a Kotlin file with only top-level functions (`utils/Extensions.kt`) gets one row named
+  after the file, kind `file (top-level functions)`; `Depends on` also lists the Kotlin objects (and classes with a
+  companion) a declaration calls statically, so `Product1StressTestUtils -> ClientSomethingUtils` and
+  `<Ctx>Service -> <Calculator>` become edges without injection.
+- `scripts/docs/tag-candidates.py`: files of top-level functions are calculation candidates; extension functions
+  (`fun BigDecimal.money()`) are listed as sub-calculations; wildcard `be` entries resolved as in `gen-graph.py`.
+- `scripts/docs/README.md`: rows for `gen-db-docs.py`, the `db_docs.*` keys, the file-row and static-call conventions.
+- `.github/instructions/migrations.instructions.md`: every new table gets `COMMENT ON TABLE`, every non-obvious column
+  `COMMENT ON COLUMN`, in the same migration; the `docs/db` folder is committed with the migration when the kit generates
+  it (for you: regenerated by your tool). `calculations.instructions.md`: the test of a file of top-level functions is
+  `<File>Test.kt`. `AGENTS.md` and `copilot-instructions.md`: the `gen-all.py` lines mention `docs/db`.
+
+### 6.5 Playbook text (read, nothing to copy)
+
+- Pilot track before section 0: the five pieces, the deferred list, and the note on a knowledge base another team
+  generated (quarantine under `confluence-import/`, migrate flows, rules, glossary, cross-check the tables).
+- Section 1 item 6, section 3 acceptance, section 10 and the everyday sequence: the Copilot CLI does not load prompt
+  files; after `/agent <name>` type `Follow .github/prompts/<name>.prompt.md with <input> = <value>, ...`.
+- Section 5 contracts table: the database documentation row. Section 6 item 1: `db_docs`, and the paragraph on choosing
+  `entry_layer` (the class the controller hands the request to: `service` for you) and `calculation_layer` (`utils`),
+  with the managers as an ordinary source-priority row between them. Section 14: `gen-db-docs.py`.
+- Section 4 check reworded (spec / `BACKLOG` / `UNMAPPED`); the `be` comment in the `contexts.yml` example mentions the
+  wildcard form.
