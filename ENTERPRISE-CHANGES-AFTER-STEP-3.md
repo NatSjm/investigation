@@ -8,9 +8,12 @@ will expect. Nothing in your code repositories changes yet (that is step 6).
 Paths below are the Harbor paths; in your repository replace `harbor-core` by `<app>-core`, `com/acme/harbor` by your
 package path, `openapi_harbor.yaml` by `openapi_<app>.yaml`.
 
-**Already applied sections 1 to 5 before 2026-10-16 midday?** Then only section 6 is left. It lists every change made after
+**Already applied sections 1 to 5 before 2026-10-16 midday?** Then start at section 6. It lists every change made after
 investigation commit `5c8233a` (2026-10-16 09:55) on its own; the rows it repeats were added to sections 1 to 4 later and
-need no second pass.
+need no second pass. **Applied section 6 as well?** Then only the sections after it are left: from section 7 on, every
+batch of changes to this investigation repository gets a section of its own, headed by its commit range, with the
+same four parts (re-copy whole, single rows, step 4 and later steps, playbook text). Apply the sections you have not
+applied yet, in order.
 
 ## 1. Docs repository: files to re-copy whole
 
@@ -104,7 +107,7 @@ Sections 1, 3, 4, 5, 6 and 14 were updated for the page layout, the backend sub-
 the `/adapt-docs-scripts` flow (section 6, "With an agent") and the schema-only Kafka module (section 5). Sections 7 to
 13 and 15 to 20 did not need changes.
 
-## 6. Changes after 2026-10-16 midday (investigation commits `e0d96dc` to `af46327`)
+## 6. Changes after 2026-10-16 midday (investigation commits `e0d96dc` to `8df619a`, handed over 2026-10-17 08:00)
 
 Three topics: the database documentation folder as evidence (`docs/db` -> `generated/be/db/`), the backlog state of
 the mapping check, and the two conventions of your utils layer (files of top-level functions, objects named
@@ -120,11 +123,8 @@ product-first that call other objects statically). Plus playbook text you read, 
 | `scripts/map-paths.py` | prints the spec of a matched row; `BACKLOG` for a matched row whose `specs: []` is empty (was `UNMAPPED`); `UNMAPPED` only when no glob matches |
 | `scripts/check-freshness.py` | reports `BACKLOG <path>` for changed files of a backlog row and never fails on them |
 | `scripts/migration-status.py` | `be` wildcard entries as in `gen-graph.py` |
-| `scripts/context-pack.py` (again) | the Kafka line of the Contracts section points at `generated/be/events.md` when `generated/asyncapi/backend.yaml` does not exist |
 | `.github/prompts/context-map-from-code.prompt.md` | wildcard `be` entries for product-first class names (`"*StressTest"`) |
 | `.github/prompts/docs-map-from-contexts.prompt.md` | a wildcard entry becomes the glob `**/*StressTest*.kt` |
-| `.github/prompts/integrations-from-contracts.prompt.md` | **new** (agent `architect`): refreshes the tables of `architecture/integrations.md` and the C4 context diagram / "Contexts at a glance" of `architecture/overview.md` from `generated/openapi/external/*`, `backend.yaml`, `events.md`, `components.md`, `jobs.md`, `REPO_MAP.md`; run it after placing the external contracts (step 5) and after every collector run that changes them |
-| `.github/prompts/source-priority-from-code.prompt.md` | inputs `entry` (`manager` \| `service`) and `tests` (root of the unit tests when they live apart from the code); the manager row follows the entry row; the test row always precedes the calculator row; reads `entry_layer` / `calculation_layer` from the backend `docs-gen.json` when present |
 
 ### 6.2 Docs repository: files where single rows change
 
@@ -137,7 +137,6 @@ product-first that call other objects statically). Plus playbook text you read, 
 | `.github/agents/spec-writer.agent.md` | Data line (line 26) | "`table:*` nodes with the table and column comments from `generated/be/db/schema/tables/<table>.md` (column lists from `db-schema.md` when a table has no page)" |
 | `.github/agents/architect.agent.md` | sources item 3 (line 14) | `generated/be/db/schema/tables/*.md` (`generated/be/db-schema.md` as fallback) |
 | `contexts.yml` | comment header (lines 6-8) | the wildcard sentence: an entry with `*` is a wildcard over the whole class name, the longest literal part decides |
-| `.github/agents/architect.agent.md` (line 14), `doc-sync.agent.md` (line 19), `impact-analyst.agent.md` (line 27), `.github/instructions/features.instructions.md` (line 20), `generated.instructions.md` (line 25), `.github/skills/task-context/SKILL.md` (line 31), `task-context/references/pack-anatomy.md` (line 12), `gherkin-test-design/references/coverage-checklist.md` (line 28) | the `asyncapi/backend.yaml` mentions | "when present; else `generated/be/events.md`" - your backend has Avro and JSON schemas but no AsyncAPI document, so `events.md` (topic, producer, consumer, payload type, schema file path) is the Kafka source; step 6 value `asyncapi: ""`, `kafka.schema_dirs` = your schema folders |
 | `generated/manifest.yml` | - | written by the collector; the `db` entry (`Dir: generated/be/db`, `Source: backend`) appears on the next run, nothing to edit |
 
 ### 6.3 Step 4 (contexts.yml, docs-map.yml)
@@ -184,3 +183,50 @@ Take the kits as they are (section 4 still holds). The differences since midday,
   with the managers as an ordinary source-priority row between them. Section 14: `gen-db-docs.py`.
 - Section 4 check reworded (spec / `BACKLOG` / `UNMAPPED`); the `be` comment in the `contexts.yml` example mentions the
   wildcard form.
+
+## 7. Changes after the section 6 hand-over (investigation commits `eeede0f` to `c70859f`, 2026-10-17 morning)
+
+Two topics: the backend has Avro and JSON schemas but no AsyncAPI document, and two prompts for work you do now
+(source priority after the layer decisions; the architecture pages after the external contracts).
+
+### 7.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/context-pack.py` | the Kafka line of the Contracts section points at `generated/be/events.md` when `generated/asyncapi/backend.yaml` does not exist |
+| `.github/prompts/source-priority-from-code.prompt.md` | inputs `entry` (`manager` \| `service`) and `tests` (root of the unit tests when they live apart from the code); the manager row follows the entry row; the test row always precedes the calculator row; reads `entry_layer` / `calculation_layer` from the backend `docs-gen.json` when present. Run: `/agent architect`, then `Follow .github/prompts/source-priority-from-code.prompt.md with product = <name>, backend = <path>, frontend = <path>, entry = service, tests = <unit-test root>` |
+| `.github/prompts/integrations-from-contracts.prompt.md` | **new** (agent `architect`): refreshes the tables of `architecture/integrations.md` (Kafka, outbound REST per external contract, inbound REST per tag, jobs) and the C4 context diagram / "Contexts at a glance" of `architecture/overview.md` from `generated/openapi/external/*`, `backend.yaml`, `events.md`, `components.md`, `jobs.md`, `REPO_MAP.md`; prose stays yours. Run it after placing the external contracts (step 5) and after every collector run that changes them: `Follow .github/prompts/integrations-from-contracts.prompt.md with product = <name>, scope = both` |
+
+### 7.2 Docs repository: files where single rows change
+
+| File | Row | Change |
+|---|---|---|
+| `.github/agents/architect.agent.md` | sources item 3 (line 14) | `generated/asyncapi/backend.yaml` "(when present; else `generated/be/events.md` with the schema file paths)" |
+| `.github/agents/architect.agent.md` | "Integration map refresh" task | names the prompt `integrations-from-contracts` and the overview parts it refreshes |
+| `.github/agents/doc-sync.agent.md` | line 19 | "(or `generated/be/events.md` when the backend has no AsyncAPI document)" |
+| `.github/agents/impact-analyst.agent.md` | line 27 | "(topics and schema files in `generated/be/events.md` when there is no AsyncAPI document)" |
+| `.github/instructions/features.instructions.md` | line 20 | topics "from `generated/asyncapi/backend.yaml` (or from `generated/be/events.md`, which also names the schema file of each payload, when there is no AsyncAPI document)" |
+| `.github/instructions/generated.instructions.md` | `asyncapi/backend.yaml` row (line 25) | "optional - a backend with Avro / JSON schemas only has none, and `be/events.md` (topic, producer, consumer, payload type, schema file path) is the Kafka source"; origin "`asyncapi` in the backend `docs-gen.json`; empty = none" |
+| `.github/skills/task-context/SKILL.md` | line 31 | "(from `generated/be/events.md` when there is no AsyncAPI document)" |
+| `.github/skills/task-context/references/pack-anatomy.md` | `## Contracts` row (line 12) | "(when the backend has no AsyncAPI document, the line points at `generated/be/events.md` instead)" |
+| `.github/skills/gherkin-test-design/references/coverage-checklist.md` | line 28 | "(or with the schema file `generated/be/events.md` names for the topic)" |
+
+### 7.3 Step 5 (contracts) and step 6 (later)
+
+- Step 5: nothing goes under `generated/asyncapi/`; the own API and the external services' OpenAPI files under
+  `generated/openapi/` are the whole hand-copied set. Then run `integrations-from-contracts` (7.1).
+- Step 6 values: `asyncapi: ""`, `kafka.schema_dirs` = your schema folders (Avro and JSON). The collector copies
+  nothing for an empty key; `events.md` links each payload type to the schema file of the same simple name; the
+  classes generated from the schemas at build live under `target/` and are never scanned or read (a generated folder
+  inside the source tree goes into `exclude_paths`). Check the payload column of `events.md` after the first run: a
+  type without a link means the schema file name differs from the record or class name.
+- Kit text (taken with the kits): `.github/instructions/kafka.instructions.md` (the AsyncAPI document is optional;
+  generated event classes are never read or cited, the schema file is the contract); `scripts/docs/README.md`
+  (`asyncapi` key: `""` when there is none).
+
+### 7.4 Playbook text (read, nothing to copy)
+
+- Section 5: the schemas-only row says to set `asyncapi: ""`; the "With an agent" paragraph names
+  `integrations-from-contracts`. Section 18: the architecture-pages row names the prompt for the tables and diagram.
+- Pilot track: the note on a knowledge base another team generated (quarantine, migrate, cross-check) - already in
+  section 6.5 of this list.
