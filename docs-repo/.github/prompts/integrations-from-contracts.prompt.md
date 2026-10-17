@@ -1,7 +1,7 @@
 ---
 name: integrations-from-contracts
-description: Refresh architecture/integrations.md (Kafka, outbound REST, inbound REST, jobs) and the integration-facing parts of architecture/overview.md (C4 context diagram, "Contexts at a glance") from the contracts under generated/ and the generated maps; prose and decisions stay human-owned.
-argument-hint: "product name; optional: scope = integrations | overview | both (default both)"
+description: Refresh architecture/integrations.md (Kafka, outbound REST, inbound REST, jobs) and the integration-facing parts of architecture/overview.md (C4 context diagram, "Contexts at a glance") from the contracts under generated/ and the generated maps; with scope overview-draft, a complete first draft of overview.md as status draft. Prose and decisions stay human-owned.
+argument-hint: "product name; optional: scope = integrations | overview | both (default both) | overview-draft (whole overview page as a draft, for a repository whose overview is still the Harbor text)"
 agent: architect
 ---
 Product: ${input:product:Harbor}
@@ -13,6 +13,10 @@ integration-facing parts of `architecture/overview.md`. You rewrite tables and d
 paragraphs, the ADR links and anything the maps cannot show (hosting, authentication, environments) are human-owned
 text that you keep word for word unless a row you rewrite makes a sentence false, in which case you mark the sentence
 with `> ⚠️ REVIEW (integrations refresh, <date>)` instead of rewriting it.
+
+Scope `overview-draft` is the exception to the prose rule: it rewrites the whole `architecture/overview.md` as a first
+draft (playbook section 18: human-owned documents an agent may draft) for a repository whose overview still carries the
+reference text of another product. Everything the evidence cannot show is left as a marked gap, never invented.
 
 ## Inputs (read-only, in this order)
 1. The two pages as they are (read them first; note which rows are `gen` and which `manual`).
@@ -27,7 +31,12 @@ with `> ⚠️ REVIEW (integrations refresh, <date>)` instead of rewriting it.
 7. `generated/graph/REPO_MAP.md`: communities, for the "Contexts at a glance" table (entry point, tables, topics).
 8. `contexts.yml` and `features/**` frontmatter only (`id`, `context`, `api`, `events`) via `search`: the owning
    feature of a row is the spec whose `api[]` or `events[]` names the operation or topic; `-` when none yet.
-9. `generated/manifest.yml`: the collector run that produced the files (date for the `generated:` line).
+9. `generated/manifest.yml`: the collector run that produced the files (date for the `generated:` line) and the
+   `sources:` remotes (repository names).
+10. For `overview-draft` only: `generated/be/codebase-map.md` (modules with purpose and base package; layers with role,
+    file count and classes), `generated/fe/codebase-map.md` (pages with route and purpose, hooks, channels),
+    `generated/be/db-schema.md` or `generated/be/db/schema/index.md` (table count, first and last table name), the
+    files present under `architecture/` (for the file table) and `architecture/adr/*.md` titles.
 Source code: never.
 
 ## Procedure
@@ -50,6 +59,23 @@ Source code: never.
    as the label (keep the people and the main system as they are); in "Contexts at a glance" refresh the entry point,
    tables and produces / consumes columns from `REPO_MAP.md` and the Kafka table. Keep the diagram under 25 nodes;
    when the external systems exceed that, group them by purpose and say so in chat.
+5b. **Whole overview** (scope `overview-draft` only; replaces step 5): rewrite `architecture/overview.md` section by
+   section, keeping its heading structure: the file table (one row per file that exists under `architecture/`, the
+   `hld/` and `adr/` rows always); the repositories paragraph (names from `manifest.yml`, modules and technology from
+   the two codebase maps: module purposes verbatim, frontend stack from the FE map header); the `C4Context` diagram
+   (people: keep the current ones when they exist, else one `Person` per role named in `features/**` frontmatter
+   or, when none, a single `Person(user, "User")` with a TODO; external systems and relations as in step 5); the
+   `C4Container` diagram (one `Container` per backend module with its purpose, one for the frontend, `ContainerDb`
+   with the table count, `ContainerQueue` with the topic count and topic prefixes, one `System_Ext` for the external
+   systems; relations from the layers that exist: `dao` -> database, `event` / `client/kafka` -> queue, `client/rest`
+   -> external systems); the layers table (one row per layer of the BE codebase map with its role column verbatim
+   and up to two class names as examples; merge sub-layers of one parent into one row); "Contexts at a glance" as
+   in step 5; "Cross-cutting rules": keep only the rules the evidence supports (contract-first when a contract
+   exists and controllers carry the `*Api` kind in `components.md`; layers and prefixes from `contexts.yml`; pure
+   calculations when a `utils` layer exists), each linked to an ADR only when that ADR file exists; every other
+   rule of the old text becomes one line `> ❓ TODO (human): <topic>` (hosting, authentication, session scoping,
+   environments). Set `status: draft`, `title` and `description` for this product, `tags` kept; remove every
+   reference to the reference product's names, IDs and files.
 6. **Frontmatter**: `generated: { by: copilot/architect, at: <now> }`, `sources[]` listing every file you read with
    its `generated/manifest.yml` entry when it has one; keep `status` as it is unless rows changed, then `status: draft`
    until a human re-verifies. Do not touch `verified`.
@@ -57,7 +83,8 @@ Source code: never.
 
 ## Output
 **A.** The edited page(s). **B. In chat, under 15 lines:** rows added, removed or changed per table; contracts
-without a client class; topics with an external party; tags matching no context; sentences marked REVIEW.
+without a client class; topics with an external party; tags matching no context; sentences marked REVIEW; for
+`overview-draft` the list of TODO gaps a human must fill.
 
 ## Rules
 - Every row cites evidence under `generated/`; nothing comes from memory or from source code.
