@@ -11,7 +11,9 @@ kafka.schema_dirs, modules, source_root, test_pattern, exclude_paths."""
 import argparse
 import os
 import re
+import sys
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, line_number, header, blank_comments,
                      sort_key, utf8_stdout, load_config, module_dirs, main_sources, const_strings, load_properties,
                      resolve_string_expr)

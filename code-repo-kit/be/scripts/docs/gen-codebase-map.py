@@ -8,8 +8,10 @@ Example: python3 scripts/docs/gen-codebase-map.py --root . --out docs/_generated
 import argparse
 import os
 import re
+import sys
 import xml.etree.ElementTree as ET
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, header, escape_cell, sort_key,
                      utf8_stdout, load_config, module_dirs, main_sources, package_of, base_package, layer_of)
 

@@ -25,9 +25,13 @@ person reviews your output for safety first and then runs the generators.
    exporter) | verdict. `gen-all.py` is the only script expected to start processes (the sibling generators with
    `sys.executable`); every other row must say "none" for processes and network, "none" for non-standard imports,
    and "under `--out` only" for writes (`tag-candidates.py` writes only with `--out`; the exporter writes only its
-   output JSON). Quote the line for anything else and stop there: a script that downloads, uploads, deletes outside
-   `docs/_generated`, edits source files or evaluates code (`exec`, `eval`, `pickle`, `subprocess` with a shell,
-   `child_process`) is reported, never adapted.
+   output JSON). Every script sets `sys.dont_write_bytecode = True` before importing `_common` and `gen-all.py`
+   starts the generators with `-B`, so a bytecode cache (`__pycache__`) is not a write to review; `gen-all.py
+   --check` compares a throwaway copy in a folder it creates with `tempfile.mkdtemp` and removes in a `finally`
+   block on every exit path (its own output, not a deletion to stop on); a theoretical failure path or a property
+   of the interpreter is a note in the verdict column, not a stop. Quote the line for anything else and stop there:
+   a script that downloads, uploads, deletes outside `docs/_generated`, edits source files or evaluates code (`exec`,
+   `eval`, `pickle`, `subprocess` with a shell, `child_process`) is reported, never adapted.
 2. **Layout evidence.** For every key in the README table write the value for this repository and one path that
    proves it (the pages folder, a hook folder, a component folder with its `index.ts`, the routing file and the
    route object or `<Route>` it contains, the route-constants export, a types file, the generated client folder, a

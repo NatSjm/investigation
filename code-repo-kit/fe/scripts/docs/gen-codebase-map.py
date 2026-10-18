@@ -13,7 +13,9 @@ or channel hook module, `sub`scribes for /subscri/i; the row whose folder holds 
 import argparse
 import os
 import re
+import sys
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files_cfg, resolve_out, rel_path, header, escape_cell,
                      unique, sort_key, under, load_config, utf8_stdout)
 

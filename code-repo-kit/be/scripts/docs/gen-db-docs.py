@@ -16,7 +16,9 @@ import argparse
 import json
 import os
 import re
+import sys
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import read_text, write_text, source_files, posix, rel_path, sort_key, utf8_stdout, load_config, utc_date
 
 DEFAULTS = {'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql']},

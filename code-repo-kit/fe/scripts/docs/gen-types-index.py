@@ -5,7 +5,9 @@ listed in `exclude_paths` are never read. `--pattern` overrides the globs for on
 import argparse
 import os
 import re
+import sys
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files_cfg, resolve_out, rel_path, header, sort_key, glob_match,
                      load_config, utf8_stdout)
 

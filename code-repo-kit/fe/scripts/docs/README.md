@@ -2,7 +2,7 @@
 
 | Script | Needs | Output |
 |---|---|---|
-| `gen-*.py`, `gen-all.py [--check]` | Python 3.11+ (standard library) | `docs/_generated/*.md` regex maps (`codebase-map`, `components`, `routes`, `types-index`, `docs-tags`, `index`) |
+| `gen-*.py`, `gen-all.py [--check]` | Python 3.11+ (standard library) | `docs/_generated/*.md` regex maps (`codebase-map`, `components`, `routes`, `types-index`, `docs-tags`, `index`); `--check` writes a throwaway copy into a system temp folder it creates and removes in a `finally` block (also after a failed generator or stale output), nothing under the repository; no bytecode cache (`sys.dont_write_bytecode`, children started with `-B`) |
 | `tag-candidates.py --contexts <docs repo>/contexts.yml` | same | inventory for the docs-tagger agent (stdout or `--out`) |
 | `gen-graph-fe.ts` | the repo's existing `typescript` + `@types/node` devDependencies (no new library) | `docs/_generated/graph-export-fe.json` precise graph (TS compiler API) |
 

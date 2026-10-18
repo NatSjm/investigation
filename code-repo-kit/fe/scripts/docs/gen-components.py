@@ -8,7 +8,9 @@ Example: python3 scripts/docs/gen-components.py --root . --out docs/_generated/c
 import argparse
 import os
 import re
+import sys
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files_cfg, resolve_out, rel_path, line_number, header, escape_cell,
                      first_doc_line, sort_key, load_config, utf8_stdout)
 

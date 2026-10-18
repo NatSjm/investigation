@@ -325,3 +325,42 @@ Nothing else in the gate changed; a stop on downloads, uploads, source edits or 
 
 - Section 6, "With an agent", item 1: the parenthesis on what a person checks in the security table names
   `db_docs.dir`, the file-by-file removal and the `--check` temp folder.
+
+## 11. Bytecode cache and temp-folder cleanup in the kit scripts (investigation commits after `6b48a81`, 2026-10-18)
+
+One topic: the agent running `/adapt-docs-scripts` stopped at step 1 again, this time on two findings in `gen-all.py`.
+Importing `_common.py` created `scripts/docs/__pycache__` (a write next to the scripts, and the child interpreters were
+started without `-B`), and `--check` created `tempfile.mkdtemp` folders whose `shutil.rmtree` was skipped by the early
+`sys.exit` after a failed generator and by the `sys.exit(1)` on stale output (no `try/finally`). Every script now sets
+`sys.dont_write_bytecode = True` before its `from _common import` line, `gen-all.py` starts the generators with `-B`,
+and every temp folder a `--check` run creates is removed in a `finally` block on every exit path. Output text and exit
+codes are unchanged. The prompt says that a bytecode cache is not a write to review and that a theoretical failure
+path or a property of the interpreter is a note in the table, not a stop; the stop sentence itself is unchanged.
+`_common.py` and `docs-gen.json` are not touched.
+
+### 11.1 Step 6 (kit): files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/docs/gen-all.py` (both kits) | `sys.dont_write_bytecode = True` before the `_common` import; the generators are started with `[sys.executable, '-B', script, ...]`; the body from the first `mkdtemp` to the end runs inside `try/finally`, and the `finally` removes every folder this run created with `tempfile.mkdtemp` (a `tmp_dirs` list, nothing else), also after a failed generator (`sys.exit(r.returncode)`) and after stale output (`sys.exit(1)`); messages and exit codes as before |
+| `scripts/docs/gen-api-index.py`, `gen-codebase-map.py`, `gen-components.py`, `gen-datasets.py`, `gen-db-docs.py`, `gen-db-schema.py`, `gen-docs-tags.py`, `gen-events.py`, `gen-jobs.py`, `gen-parameters.py`, `tag-candidates.py` (backend kit) | one line each: `sys.dont_write_bytecode = True` before `from _common import` (`import sys` added where it was missing); nothing else |
+| `scripts/docs/gen-codebase-map.py`, `gen-components.py`, `gen-docs-tags.py`, `gen-routes.py`, `gen-types-index.py`, `tag-candidates.py` (frontend kit) | the same line |
+| `scripts/docs/README.md` (both kits) | the `gen-all.py` row: the `--check` temp folder is removed in a `finally` block, also after a failed generator or stale output; no bytecode cache (`sys.dont_write_bytecode`, children started with `-B`) |
+| `.github/prompts/adapt-docs-scripts.prompt.md` (both kits) | step 1, one sentence before the stop sentence: the scripts set `sys.dont_write_bytecode = True` and `gen-all.py` starts the generators with `-B`, so a bytecode cache (`__pycache__`) is not a write to review; the `--check` temp folders are removed in a `finally` block on every exit path; a theoretical failure path or a property of the interpreter is a note in the verdict column, not a stop |
+
+### 11.2 What to do
+
+- Re-copy the files of 11.1 (in the backend: twelve scripts, the README, the prompt; your `docs-gen.json` and
+  `_common.py` stay as they are). Delete a `scripts/docs/__pycache__` folder an earlier run left behind (untracked;
+  `__pycache__/` in `.gitignore` if it is not there yet). Then run the prompt again.
+- Expected security table rows: `gen-all.py` - writes "`docs/_generated` (and `db_docs.dir` when enabled); `--check`:
+  temp folders it creates and removes in a `finally` block", processes "the sibling generators with
+  `sys.executable -B`"; every other script "under `--out` only"; no row names `__pycache__` as a write; a verdict may
+  carry a note (a theoretical path), not a stop.
+- Checked on Harbor: no `__pycache__` under `scripts/docs` after `gen-all.py` and after `gen-all.py --check`; no temp
+  folder left after a generator crash (bad config values), a forced failure of `gen-db-docs.py` or of a generator in
+  the middle of the list, and stale output (exit 1).
+
+### 11.3 Docs repository
+
+Nothing changes: no file of the docs repository and no playbook text is touched by this section.

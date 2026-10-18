@@ -6,7 +6,9 @@ Migrations are the SQL files matching `migrations.file_patterns` under a folder 
 import argparse
 import os
 import re
+import sys
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, header, escape_cell, posix,
                      sort_key, utf8_stdout, load_config, module_dirs, main_sources)
 

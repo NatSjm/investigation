@@ -8,7 +8,9 @@ Layout keys (route_files, route_constants) come from docs-gen.json."""
 import argparse
 import os
 import re
+import sys
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files_cfg, resolve_out, rel_path, line_number, header, sort_key,
                      blank_comments, load_config, utf8_stdout)
 

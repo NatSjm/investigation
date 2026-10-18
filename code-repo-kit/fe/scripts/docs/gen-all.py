@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import read_text, write_text, utf8_stdout
 
 GENERATORS = [
@@ -47,28 +48,39 @@ def main():
     root = os.path.abspath(a.root)
     here = os.path.dirname(os.path.abspath(__file__))
     target = os.path.join(root, a.out_dir)
-    work = tempfile.mkdtemp(prefix='gen-docs-') if a.check else target
-    os.makedirs(work, exist_ok=True)
-    rel = work if a.check else a.out_dir
-    for script, out, extra in GENERATORS:
-        r = subprocess.run([sys.executable, os.path.join(here, script), '--root', root, '--out', rel + '/' + out] + extra)
-        if r.returncode:
-            sys.exit(r.returncode)
-    write_text(os.path.join(work, 'index.md'), INDEX)
-    if a.check:
-        diff = 0
-        for name in sorted(os.listdir(work), key=str.lower):
-            cur = os.path.join(target, name)
-            a_text = norm(read_text(cur)) if os.path.isfile(cur) else ''
-            b_text = norm(read_text(os.path.join(work, name)))
-            if a_text != b_text:
-                print(f'STALE: {a.out_dir}/{name}')
-                diff += 1
-        shutil.rmtree(work, ignore_errors=True)
-        if diff:
-            print(f'{diff} generated file(s) out of date. Run scripts/docs/gen-all.py', file=sys.stderr)
-            sys.exit(1)
-        print('generated docs up to date')
+    # --check: the generators write a throwaway copy into a folder this run creates in the system temp directory
+    # (tempfile.mkdtemp); the finally block removes that folder, and nothing else, on every exit path (a failed
+    # generator, stale output); nothing under the repository is written or deleted by --check
+    tmp_dirs = []
+    try:
+        work = tempfile.mkdtemp(prefix='gen-docs-') if a.check else target
+        if a.check:
+            tmp_dirs.append(work)
+        os.makedirs(work, exist_ok=True)
+        rel = work if a.check else a.out_dir
+        for script, out, extra in GENERATORS:
+            # -B: the child interpreter writes no __pycache__ next to the scripts either
+            r = subprocess.run([sys.executable, '-B', os.path.join(here, script),
+                                '--root', root, '--out', rel + '/' + out] + extra)
+            if r.returncode:
+                sys.exit(r.returncode)
+        write_text(os.path.join(work, 'index.md'), INDEX)
+        if a.check:
+            diff = 0
+            for name in sorted(os.listdir(work), key=str.lower):
+                cur = os.path.join(target, name)
+                a_text = norm(read_text(cur)) if os.path.isfile(cur) else ''
+                b_text = norm(read_text(os.path.join(work, name)))
+                if a_text != b_text:
+                    print(f'STALE: {a.out_dir}/{name}')
+                    diff += 1
+            if diff:
+                print(f'{diff} generated file(s) out of date. Run scripts/docs/gen-all.py', file=sys.stderr)
+                sys.exit(1)
+            print('generated docs up to date')
+    finally:
+        for d in tmp_dirs:
+            shutil.rmtree(d, ignore_errors=True)
 
 
 if __name__ == '__main__':

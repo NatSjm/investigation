@@ -9,7 +9,9 @@ valid_from_column, validator_layer}, migrations, modules, source_root, test_patt
 import argparse
 import os
 import re
+import sys
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, line_number, header,
                      escape_cell, posix, sort_key, utf8_stdout, load_config, module_dirs, main_sources, package_of,
                      base_package, layer_of, module_of)

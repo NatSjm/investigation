@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 
+sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import read_text, write_text, utf8_stdout, load_config
 
 GENERATORS = [
@@ -91,57 +92,71 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     cfg = load_config(root, DEFAULTS, a.config)
     target = os.path.join(root, a.out_dir)
-    # --check: the generators write a throwaway copy into a folder this run creates in the system temp directory
-    # (tempfile.mkdtemp) and removes below; nothing under the repository is written or deleted by --check
-    work = tempfile.mkdtemp(prefix='gen-docs-') if a.check else target
-    os.makedirs(work, exist_ok=True)
-    rel = work if a.check else a.out_dir
-    extra = ['--config', a.config] if a.config else []
-    skip = set(cfg.get('skip_generators', []))
-    skipped_outputs = []
-    for script, out in GENERATORS:
-        if script in skip:
-            skipped_outputs.append(out)
-            print(f'{script}: skipped (skip_generators in docs-gen.json)')
-            continue
-        r = subprocess.run([sys.executable, os.path.join(here, script), '--root', root, '--out', rel + '/' + out] + extra)
-        if r.returncode:
-            sys.exit(r.returncode)
-    db_cfg = cfg['db_docs']
-    db_on = db_cfg.get('generate', True) and 'gen-db-docs.py' not in skip
-    if db_on:
-        db_out = os.path.join(tempfile.mkdtemp(prefix='gen-db-docs-'), 'db') if a.check else db_cfg['dir']
-        r = subprocess.run([sys.executable, os.path.join(here, 'gen-db-docs.py'), '--root', root, '--out', db_out] + extra)
-        if r.returncode:
-            sys.exit(r.returncode)
-    else:
-        print(f"gen-db-docs.py: skipped ({db_cfg['dir']} is written by your database documentation tool)")
-    index = INDEX.format(contracts=contracts_line(cfg), enum=cfg['parameters']['enum_name'], entry=cfg['entry_layer'], db_dir=db_cfg['dir'])
-    index = '\n'.join(line for line in index.split('\n') if not any(f'[{o}]' in line for o in skipped_outputs))
-    write_text(os.path.join(work, 'index.md'), index)
-    if a.check:
-        diff = 0
-        for name in sorted(os.listdir(work), key=str.lower):
-            cur = os.path.join(target, name)
-            a_text = norm(read_text(cur)) if os.path.isfile(cur) else ''
-            b_text = norm(read_text(os.path.join(work, name)))
-            if a_text != b_text:
-                print(f'STALE: {a.out_dir}/{name}')
-                diff += 1
-        shutil.rmtree(work, ignore_errors=True)
+    # --check: the generators write a throwaway copy into folders this run creates in the system temp directory
+    # (tempfile.mkdtemp); the finally block removes those folders, and nothing else, on every exit path (a failed
+    # generator, stale output); nothing under the repository is written or deleted by --check
+    tmp_dirs = []
+    try:
+        work = tempfile.mkdtemp(prefix='gen-docs-') if a.check else target
+        if a.check:
+            tmp_dirs.append(work)
+        os.makedirs(work, exist_ok=True)
+        rel = work if a.check else a.out_dir
+        extra = ['--config', a.config] if a.config else []
+        skip = set(cfg.get('skip_generators', []))
+        skipped_outputs = []
+        for script, out in GENERATORS:
+            if script in skip:
+                skipped_outputs.append(out)
+                print(f'{script}: skipped (skip_generators in docs-gen.json)')
+                continue
+            # -B: the child interpreter writes no __pycache__ next to the scripts either
+            r = subprocess.run([sys.executable, '-B', os.path.join(here, script),
+                                '--root', root, '--out', rel + '/' + out] + extra)
+            if r.returncode:
+                sys.exit(r.returncode)
+        db_cfg = cfg['db_docs']
+        db_on = db_cfg.get('generate', True) and 'gen-db-docs.py' not in skip
         if db_on:
-            cur_t, new_t = tree(os.path.join(root, db_cfg['dir'])), tree(db_out)
-            for name in sorted(set(cur_t) | set(new_t), key=str.lower):
-                a_text = norm_db(read_text(cur_t[name])) if name in cur_t else ''
-                b_text = norm_db(read_text(new_t[name])) if name in new_t else ''
+            if a.check:
+                tmp_dirs.append(tempfile.mkdtemp(prefix='gen-db-docs-'))
+                db_out = os.path.join(tmp_dirs[-1], 'db')
+            else:
+                db_out = db_cfg['dir']
+            r = subprocess.run([sys.executable, '-B', os.path.join(here, 'gen-db-docs.py'),
+                                '--root', root, '--out', db_out] + extra)
+            if r.returncode:
+                sys.exit(r.returncode)
+        else:
+            print(f"gen-db-docs.py: skipped ({db_cfg['dir']} is written by your database documentation tool)")
+        index = INDEX.format(contracts=contracts_line(cfg), enum=cfg['parameters']['enum_name'], entry=cfg['entry_layer'],
+                             db_dir=db_cfg['dir'])
+        index = '\n'.join(line for line in index.split('\n') if not any(f'[{o}]' in line for o in skipped_outputs))
+        write_text(os.path.join(work, 'index.md'), index)
+        if a.check:
+            diff = 0
+            for name in sorted(os.listdir(work), key=str.lower):
+                cur = os.path.join(target, name)
+                a_text = norm(read_text(cur)) if os.path.isfile(cur) else ''
+                b_text = norm(read_text(os.path.join(work, name)))
                 if a_text != b_text:
-                    print(f"STALE: {db_cfg['dir']}/{name}")
+                    print(f'STALE: {a.out_dir}/{name}')
                     diff += 1
-            shutil.rmtree(os.path.dirname(db_out), ignore_errors=True)
-        if diff:
-            print(f'{diff} generated file(s) out of date. Run scripts/docs/gen-all.py', file=sys.stderr)
-            sys.exit(1)
-        print('generated docs up to date')
+            if db_on:
+                cur_t, new_t = tree(os.path.join(root, db_cfg['dir'])), tree(db_out)
+                for name in sorted(set(cur_t) | set(new_t), key=str.lower):
+                    a_text = norm_db(read_text(cur_t[name])) if name in cur_t else ''
+                    b_text = norm_db(read_text(new_t[name])) if name in new_t else ''
+                    if a_text != b_text:
+                        print(f"STALE: {db_cfg['dir']}/{name}")
+                        diff += 1
+            if diff:
+                print(f'{diff} generated file(s) out of date. Run scripts/docs/gen-all.py', file=sys.stderr)
+                sys.exit(1)
+            print('generated docs up to date')
+    finally:
+        for d in tmp_dirs:
+            shutil.rmtree(d, ignore_errors=True)
 
 
 if __name__ == '__main__':

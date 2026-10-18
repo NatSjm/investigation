@@ -31,9 +31,12 @@ runs the generators.
    temporary directory it creates itself with `tempfile.mkdtemp` and removes in the same run (`gen-all.py --check`
    compares a throwaway copy, so its writes column reads "none under the repository; a temp folder it removes").
    Whether `gen-db-docs.py` runs at all is a config value you propose in step 2 (`db_docs.generate`), not a reason
-   to stop. Quote the line for anything else and stop there: a script that downloads, uploads, deletes or writes
-   outside its own output as defined above, edits source files or evaluates code (`exec`, `eval`, `pickle`,
-   `subprocess` with a shell) is reported, never adapted.
+   to stop. Every script sets `sys.dont_write_bytecode = True` before importing `_common` and `gen-all.py` starts
+   the generators with `-B`, so a bytecode cache (`__pycache__`) is not a write to review; the temp folders of
+   `--check` are removed in a `finally` block on every exit path; a theoretical failure path or a property of
+   the interpreter is a note in the verdict column, not a stop. Quote the line for anything else and stop there:
+   a script that downloads, uploads, deletes or writes outside its own output as defined above, edits source files
+   or evaluates code (`exec`, `eval`, `pickle`, `subprocess` with a shell) is reported, never adapted.
 2. **Layout evidence.** For every key in the README table write the value for this repository and one path that
    proves it (the module folder, the package line of the application class, a file in the sub-package, the contract
    file, the annotation in a listener, the migrations folder, the enum, the fixture folder). Unknown or absent
