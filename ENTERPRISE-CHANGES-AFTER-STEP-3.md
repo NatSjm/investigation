@@ -295,3 +295,33 @@ names further folders.
 ### 9.3 Playbook text (read, nothing to copy)
 
 - Section 6, pilot checklist row for `docs-gen.json`: the clause on `migrations.view_dirs`.
+
+## 10. The adapt-docs-scripts safety gate (investigation commits after `d7dd720`, 2026-10-18)
+
+One topic: the agent running `/adapt-docs-scripts` stopped at step 1 on two deletions, as the prompt told it to:
+`gen-db-docs.py` removed its whole `schema/` folder before rewriting it, and `gen-all.py --check` creates and removes
+temporary folders in the system temp directory. Both were the scripts' own output, but the rule said "deletes outside
+`docs/_generated`" and nothing more. The script now deletes files only, and the rule says what a script's own output is.
+Nothing else in the gate changed; a stop on downloads, uploads, source edits or `exec` / `eval` still holds.
+
+### 10.1 Step 6 (kit): files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/docs/gen-db-docs.py` | no `rmtree`: pages of tables dropped since the last run are removed file by file inside `schema/tables/` and `schema/erd/` of `--out`; other files in the folder are left alone; `shutil` no longer imported |
+| `scripts/docs/gen-all.py` | a comment at the `--check` branch: throwaway copy in a `tempfile.mkdtemp` folder, removed in the same run, nothing under the repository written or deleted |
+| `scripts/docs/README.md` | the `gen-all.py` and `gen-db-docs.py` rows say the same in one clause each |
+| `.github/prompts/adapt-docs-scripts.prompt.md` | step 1 defines "a script's own output": its `--out` folder (`docs/_generated/<file>`; `db_docs.dir` for `gen-db-docs.py`, file-by-file removal of dropped pages included) and a temp folder it creates with `tempfile.mkdtemp` and removes in the same run; `db_docs.generate` is a value the agent proposes in step 2, not a reason to stop; the stop sentence now reads "deletes or writes outside its own output as defined above" |
+
+### 10.2 What to do
+
+- Re-copy the four files, then run the prompt again. With `db_docs.generate = false` (your value, section 6.4)
+  `gen-db-docs.py` never runs in your repository; the gate judges the script text, so the wording matters anyway.
+- Expected security table rows: `gen-all.py` - writes "`docs/_generated` (and `db_docs.dir` when enabled); `--check`: a
+  temp folder it removes", processes "the sibling generators with `sys.executable`"; `gen-db-docs.py` - writes "under
+  `--out` only (removes dropped table pages there, file by file)"; every other script "under `--out` only".
+
+### 10.3 Playbook text (read, nothing to copy)
+
+- Section 6, "With an agent", item 1: the parenthesis on what a person checks in the security table names
+  `db_docs.dir`, the file-by-file removal and the `--check` temp folder.

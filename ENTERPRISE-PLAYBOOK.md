@@ -446,7 +446,7 @@ everything at once; for the enterprise rollout copy selectively in this order an
    (what it reads, writes, starts, downloads; imports outside the standard library), the `docs-gen.json` with one
    evidence path per key, the smallest regex diff for what the config cannot express, and what every table must show
    for this repository. A person checks the security table against the scripts (the only process start is `gen-all.py`
-   calling its sibling generators; writes go under `docs/_generated`, or under `--out`), pastes the config, applies the
+   calling its sibling generators; writes go under `docs/_generated` or `--out`, plus `db_docs.dir` when the kit generates it, where `gen-db-docs.py` removes pages of dropped tables file by file; `--check` works in a system temp folder it creates and removes), pastes the config, applies the
    diffs it agrees with, then runs `gen-all.py` and compares `codebase-map.md` (every layer with a role; business classes
    under `(root)` mean a wrong base package), `api-index.md` (no `_not implemented_` row for an operation that exists;
    hand-written routes tagged `(no contract)`), `events.md` (no `<expr>` topic, a schema next to every payload),

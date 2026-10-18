@@ -91,6 +91,8 @@ def main():
     here = os.path.dirname(os.path.abspath(__file__))
     cfg = load_config(root, DEFAULTS, a.config)
     target = os.path.join(root, a.out_dir)
+    # --check: the generators write a throwaway copy into a folder this run creates in the system temp directory
+    # (tempfile.mkdtemp) and removes below; nothing under the repository is written or deleted by --check
     work = tempfile.mkdtemp(prefix='gen-docs-') if a.check else target
     os.makedirs(work, exist_ok=True)
     rel = work if a.check else a.out_dir

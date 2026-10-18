@@ -16,7 +16,6 @@ import argparse
 import json
 import os
 import re
-import shutil
 
 from _common import read_text, write_text, source_files, posix, rel_path, sort_key, utf8_stdout, load_config, utc_date
 
@@ -204,11 +203,16 @@ def main():
             'parents': parents.get(tn, []), 'children': children.get(tn, []),
             'checks': t['checks'], 'uniques': t['uniques'],
         })
-    # replace the folder content we own (tables pages of dropped tables disappear); keep nothing else
-    for sub in ('schema',):
-        shutil.rmtree(os.path.join(out, sub), ignore_errors=True)
+    # what this script owns under --out: schema.json, readme.md, schema/index.md, schema/tables/*.md, schema/erd/*.mmd.
+    # Pages of tables dropped since the last run are removed file by file at the end; no folder is deleted and nothing
+    # outside --out is touched
     os.makedirs(os.path.join(out, 'schema', 'tables'), exist_ok=True)
     os.makedirs(os.path.join(out, 'schema', 'erd'), exist_ok=True)
+    written = set()
+
+    def emit(path, text):
+        write_text(path, text)
+        written.add(os.path.normcase(os.path.abspath(path)))
     write_text(os.path.join(out, 'schema.json'), json.dumps(js, indent=2, ensure_ascii=False) + '\n')
 
     # ---------- ER diagram ----------
@@ -222,7 +226,7 @@ def main():
     for tn in names:
         for p in parents.get(tn, []):
             erd.append(f"  {p['table']} ||--o{{ {tn} : {','.join(p['columns'])}\n")
-    write_text(os.path.join(out, 'schema', 'erd', 'overview.mmd'), ''.join(erd))
+    emit(os.path.join(out, 'schema', 'erd', 'overview.mmd'), ''.join(erd))
 
     # ---------- one page per table ----------
     for tn in names:
@@ -245,7 +249,14 @@ def main():
                 sb.append(f"- unique{(' `' + u['name'] + '`') if u['name'] else ''}: `{', '.join(u['columns'])}`\n")
             for ck in t['checks']:
                 sb.append(f"- check{(' `' + ck['name'] + '`') if ck['name'] else ''}: `{ck['expression']}`\n")
-        write_text(os.path.join(out, 'schema', 'tables', f'{tn}.md'), ''.join(sb))
+        emit(os.path.join(out, 'schema', 'tables', f'{tn}.md'), ''.join(sb))
+    # stale pages of our own output (tables dropped since the last run): files only, inside the two folders above
+    for sub, ext in (('tables', '.md'), ('erd', '.mmd')):
+        d = os.path.join(out, 'schema', sub)
+        for fn in os.listdir(d):
+            p = os.path.join(d, fn)
+            if fn.lower().endswith(ext) and os.path.isfile(p) and os.path.normcase(os.path.abspath(p)) not in written:
+                os.remove(p)
 
     # ---------- indexes ----------
     rows = ''.join(f"| [{tn}](schema/tables/{tn}.md) | {md_cell(tables[tn]['comment'])} | {len(tables[tn]['columns'])} |\n" for tn in names)

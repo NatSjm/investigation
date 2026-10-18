@@ -26,9 +26,14 @@ runs the generators.
    network | imports outside the Python standard library | verdict. `gen-all.py` is the only script expected to start
    processes (the sibling generators with `sys.executable`); every other row must say "none" for processes and
    network, "none" for non-standard imports, and "under `--out` only" for writes (`tag-candidates.py` writes only with
-   `--out`). Quote the line for anything else and stop there: a script that downloads, uploads, deletes outside
-   `docs/_generated`, edits source files or evaluates code (`exec`, `eval`, `pickle`, `subprocess` with a shell) is
-   reported, never adapted.
+   `--out`). A script's own output is: its `--out` folder (`docs/_generated/<file>` for the generators;
+   `db_docs.dir` for `gen-db-docs.py`, which also removes table pages of dropped tables there, file by file) and a
+   temporary directory it creates itself with `tempfile.mkdtemp` and removes in the same run (`gen-all.py --check`
+   compares a throwaway copy, so its writes column reads "none under the repository; a temp folder it removes").
+   Whether `gen-db-docs.py` runs at all is a config value you propose in step 2 (`db_docs.generate`), not a reason
+   to stop. Quote the line for anything else and stop there: a script that downloads, uploads, deletes or writes
+   outside its own output as defined above, edits source files or evaluates code (`exec`, `eval`, `pickle`,
+   `subprocess` with a shell) is reported, never adapted.
 2. **Layout evidence.** For every key in the README table write the value for this repository and one path that
    proves it (the module folder, the package line of the application class, a file in the sub-package, the contract
    file, the annotation in a listener, the migrations folder, the enum, the fixture folder). Unknown or absent

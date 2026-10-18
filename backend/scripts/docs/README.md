@@ -2,10 +2,10 @@
 
 | Script | Needs | Output |
 |---|---|---|
-| `gen-*.py`, `gen-all.py [--check]` | Python 3.11+ (standard library) | `docs/_generated/*.md` regex maps (`codebase-map`, `components`, `api-index`, `events`, `db-schema`, `jobs`, `docs-tags`, `parameters`, `datasets`, `index`) |
+| `gen-*.py`, `gen-all.py [--check]` | Python 3.11+ (standard library) | `docs/_generated/*.md` regex maps (`codebase-map`, `components`, `api-index`, `events`, `db-schema`, `jobs`, `docs-tags`, `parameters`, `datasets`, `index`); `--check` writes a throwaway copy into a system temp folder it creates and removes, nothing under the repository |
 | `tag-candidates.py --contexts <docs repo>/contexts.yml` | same | inventory for the docs-tagger agent (stdout or `--out`) |
 | (components) files of top-level functions | - | a Kotlin file without a class (`utils/Extensions.kt`) is one row of `components.md` named after the file, kind `file`; `tag-candidates.py` lists its functions, extension receivers included |
-| `gen-db-docs.py` (run by `gen-all.py`) | same | `docs/db/`: `schema.json`, `schema/tables/<table>.md`, `schema/erd/overview.mmd`, `readme.md` from the migrations and their `COMMENT ON` statements; off when a database tool writes that folder |
+| `gen-db-docs.py` (run by `gen-all.py`) | same | `docs/db/`: `schema.json`, `schema/tables/<table>.md`, `schema/erd/overview.mmd`, `readme.md` from the migrations and their `COMMENT ON` statements; pages of dropped tables are removed file by file inside `schema/tables/` and `schema/erd/`, nothing else is deleted; off when a database tool writes that folder |
 | `templates/GraphExportTest.kt` (kit) | the repo's Spring test classpath | `docs/_generated/graph-export-be.json` precise graph from the running context |
 
 ## Layout: `docs-gen.json`
@@ -24,6 +24,8 @@ merged key by key, so a partial block keeps the other defaults.
 | `list_all_layers` | layers whose classes are all listed in `codebase-map.md` (others cut at 12) | api, manager, job, event, client/*, utils, validator, component, service, dao/service |
 | `entry_layer` | the layer read first per context; `tag-candidates.py` proposes `<PREFIX>-NNN` tags for its classes | `manager` |
 | `calculation_layer` | pure calculations; `tag-candidates.py` proposes `snake_case` calculation IDs for its classes | `utils` |
+| `graph_layers` | read by the docs repository's `gen-graph.py` (the collector copies this file to `generated/be/docs-gen.json`): layers whose classes become graph nodes; a sub-layer (`dao/repository`) counts through its parent; the `entry_layer` is always included | api, manager, service, dao, event, job, client, utils, validator, component |
+| `graph_exclude_layers` | same reader: data layers without class nodes (entities, API models) | `dao/model`, `api/model` |
 | `stereotypes` | annotations shown in the Kind column | RestControllerAdvice, RestController, Service, Component, Configuration, Repository, Entity, SpringBootApplication |
 | `repository_bases` | Spring Data base interfaces whose first type argument is the entity (table inherited) | JpaRepository, CrudRepository, PagingAndSortingRepository, ListCrudRepository |
 | `test_pattern` | regex on file names that marks tests (never scanned as components) | `(Test\|IT\|Spec)\.(kt\|java)$` |
@@ -33,7 +35,7 @@ merged key by key, so a partial block keeps the other defaults.
 | `rest.handler_pattern` | regex with one group = the operationId of a handler method | `override\s+fun\s+(\w+)\s*\(` |
 | `rest.controller_annotation` | classes scanned for handlers | `RestController` |
 | `rest.session_header` / `rest.session_marker` | header name added to the Params column when the operation's contract text contains the marker | `X-Harbor-Session` / `SessionHeader` |
-| `asyncapi` | the Kafka contract (index.md, collector) | `harbor-core/src/main/resources/openapi/harbor-events.yaml` |
+| `asyncapi` | the Kafka contract (index.md, collector); `""` when the backend has none (Avro / JSON schemas only): the collector copies nothing and `events.md` is the Kafka source | `harbor-core/src/main/resources/openapi/harbor-events.yaml` |
 | `external_contracts_dir` | OpenAPI files of the external services the backend calls, directly in the folder or one sub-folder per service (`api/<service>/<file>.yaml\|.yml\|.json`); read by index.md and the docs collector | `harbor-core/src/main/resources/api` |
 | `db_docs.dir` | the database documentation folder the docs collector copies (`readme.md`, `schema.json`, `schema/tables/*.md`, `schema/erd/*.mmd`), whoever writes it | `docs/db` |
 | `db_docs.generate` | `true`: `gen-all.py` rebuilds that folder from the migrations with `gen-db-docs.py` (comments from `COMMENT ON TABLE\|COLUMN`); `false`: a database documentation tool (tbls, SchemaSpy, ...) owns the folder and only its layout must match | `true` |
