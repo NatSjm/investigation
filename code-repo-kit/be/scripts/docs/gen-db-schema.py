@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Approximate DB schema from Flyway SQL migrations (CREATE TABLE / ALTER TABLE ADD|DROP COLUMN). No database needed.
 Migrations are the SQL files matching `migrations.file_patterns` under a folder matching `migrations.dir_pattern`
-(docs-gen.json). Liquibase changelogs (XML/YAML) are not parsed; point the pattern at the SQL-formatted changelogs."""
+(docs-gen.json). Views are the files matching `migrations.view_patterns` under that folder or under any folder of
+`migrations.view_dirs`. Liquibase changelogs (XML/YAML) are not parsed; point the pattern at the SQL-formatted changelogs."""
 import argparse
 import os
 import re
@@ -10,7 +11,8 @@ from _common import (read_text, write_text, source_files, resolve_out, rel_path,
                      sort_key, utf8_stdout, load_config, module_dirs, main_sources)
 
 DEFAULTS = {'modules': [], 'source_root': 'src/main/kotlin', 'test_pattern': '', 'exclude_paths': [],
-            'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql'], 'view_patterns': []}}
+            'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql'], 'view_patterns': [],
+                           'view_dirs': []}}
 
 
 def version_key(path):
@@ -72,9 +74,12 @@ def main():
             if tn in tables:
                 tables[tn]['cols'].pop(m.group(2).lower(), None)
 
-    # views: SQL files under the migrations folder matching migrations.view_patterns (CREATE [OR REPLACE] VIEW ... AS SELECT ...)
+    # views: SQL files matching migrations.view_patterns under the migrations folder or under any of migrations.view_dirs
+    # (CREATE [OR REPLACE] VIEW ... AS SELECT ...)
+    view_dirs = [mig['dir_pattern']] + list(mig.get('view_dirs') or [])
     views = {}
-    for f in sorted((f for f in source_files(root, mig.get('view_patterns', [])) if re.search(re.escape(mig['dir_pattern']), posix(f), re.I)), key=sort_key):
+    for f in sorted((f for f in source_files(root, mig.get('view_patterns', []))
+                     if any(re.search(re.escape(d), posix(f), re.I) for d in view_dirs)), key=sort_key):
         sql = read_text(f)
         rel = rel_path(root, f)
         for m in re.finditer(r'(?is)CREATE\s+(?:OR\s+REPLACE\s+)?VIEW\s+(\w+)\s+AS\s+(.*?);', sql):

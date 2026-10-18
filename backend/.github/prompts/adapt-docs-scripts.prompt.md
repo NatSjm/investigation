@@ -41,8 +41,10 @@ runs the generators.
    split into behaviour (controllers, services, managers, repositories, listeners, jobs, clients, calculators,
    validators) and data (entities, API models, enums); `db_docs.generate` is `false` when a database tool already
    writes the `docs/db` folder and `asyncapi` is `""` when the backend keeps Avro / JSON schemas but no AsyncAPI
-   document (then `kafka.schema_dirs` lists the schema folders). Use the known facts above when given; otherwise
-   decide from the files and say which file decided it.
+   document (then `kafka.schema_dirs` lists the schema folders). Views: `migrations.view_patterns` names the view
+   files, and when they live outside the migrations folder (a `db/statistical-views/` folder next to it)
+   `migrations.view_dirs` lists that folder's path fragment, else the Views section stays empty. Use the known facts
+   above when given; otherwise decide from the files and say which file decided it.
 3. **Proposed `docs-gen.json`**, complete, as a code block, with a `_comment` naming the repository and the date.
 4. **Gaps the config cannot express.** When a convention of this repository is outside the config (a Liquibase
    changelog, a Quartz job class, a topic name built by an expression, a controller that is neither a generated

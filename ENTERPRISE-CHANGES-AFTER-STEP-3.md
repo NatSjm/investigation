@@ -271,3 +271,27 @@ One topic: the graph builder no longer hard-codes Harbor's layer names and `mana
 
 - Pilot track piece 4 and section 6 item 1: the sentence on layer names that differ; the pilot checklist row for
   `docs-gen.json` names the three keys and the `applyTo` globs.
+
+## 9. Views outside the migrations folder (investigation commits after `26d3618`, 2026-10-18)
+
+One topic: `gen-db-schema.py` found view files only under `migrations.dir_pattern` (`/db/migration/`), so your
+`<app>-core/src/main/resources/db/statistical-views/` folder produced an empty Views section. A new optional key
+names further folders.
+
+### 9.1 Step 6 (kit): files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/docs/gen-db-schema.py` | a view file is taken when its path matches `migrations.dir_pattern` **or** any fragment of the new `migrations.view_dirs` (default `[]`, today's behaviour); the docstring says so |
+| `scripts/docs/docs-gen.json` | the key `migrations.view_dirs` with its default `[]` |
+| `scripts/docs/README.md` | one row for `migrations.view_dirs`; the `view_patterns` row mentions it |
+| `.github/prompts/adapt-docs-scripts.prompt.md` | step 2 asks for `view_patterns` and `view_dirs` next to the other decision keys |
+
+### 9.2 Your `docs-gen.json`
+
+- Set `migrations.view_dirs` to `["/db/statistical-views/"]` (keep `migrations.view_patterns` = `["*view*.sql"]`);
+  `gen-all.py` then lists your statistical views in the Views section of `db-schema.md`.
+
+### 9.3 Playbook text (read, nothing to copy)
+
+- Section 6, pilot checklist row for `docs-gen.json`: the clause on `migrations.view_dirs`.

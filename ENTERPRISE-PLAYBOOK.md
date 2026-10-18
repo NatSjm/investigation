@@ -361,7 +361,7 @@ Backend repository:
 | From `code-repo-kit/be/` | To `<backend>/` | Then |
 |---|---|---|
 | `scripts/docs/*.py`, `scripts/docs/README.md` | `scripts/docs/` | nothing to edit; the scripts read the config below |
-| `scripts/docs/docs-gen.json` | `scripts/docs/docs-gen.json` | fill every key for your repository (`README.md` next to it explains each; your known values: change list sections 4 and 7.3); when your layer folders are not Harbor's, set `layers`, `graph_layers`, `graph_exclude_layers` to your names and rename the folders in the `applyTo` lines of the instruction files |
+| `scripts/docs/docs-gen.json` | `scripts/docs/docs-gen.json` | fill every key for your repository (`README.md` next to it explains each; your known values: change list sections 4 and 7.3); when your layer folders are not Harbor's, set `layers`, `graph_layers`, `graph_exclude_layers` to your names and rename the folders in the `applyTo` lines of the instruction files; when your SQL views live outside the migrations folder, list that folder in `migrations.view_dirs` (`["/db/statistical-views/"]`, change list section 9) |
 | `AGENTS.md` | `AGENTS.md` | reword; keep it under 60 lines; the read order names your entry layer (`service/<Ctx>Service.kt`) |
 | `.github/copilot-instructions.md` | `.github/copilot-instructions.md` | reword the never-open list (your generated client folders, build output) |
 | `.github/instructions/*.instructions.md` | `.github/instructions/` | keep `api`, `calculations`, `kafka`, `migrations`, `tests`, `layers`; reword paths; delete a file whose stack you do not have |

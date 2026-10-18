@@ -45,7 +45,8 @@ merged key by key, so a partial block keeps the other defaults.
 | `jobs.annotation` | scheduling annotation (`cron`, `fixedDelay`, `fixedRate`) | `Scheduled` |
 | `jobs.lock_annotation` | distributed-lock annotation on the same method (ShedLock `@SchedulerLock(name, lockAtMostFor)`), shown in the Lock column; empty = none | `SchedulerLock` |
 | `migrations.dir_pattern` / `migrations.file_patterns` | where the SQL migrations live and how they are named (Flyway) | `/db/migration/`, `V*.sql`, `R*.sql` |
-| `migrations.view_patterns` | SQL files under the migrations folder that define views (`CREATE [OR REPLACE] VIEW`), listed in a Views section | `*view*.sql` |
+| `migrations.view_patterns` | SQL files under the migrations folder (or under `migrations.view_dirs`) that define views (`CREATE [OR REPLACE] VIEW`), listed in a Views section | `*view*.sql` |
+| `migrations.view_dirs` | path fragments of further folders searched for view files, in addition to `migrations.dir_pattern` (a backend that keeps its views outside the migrations folder sets `["/db/statistical-views/"]`); `[]` = the migrations folder only | `[]` |
 | `parameters.*` | the parameter-key enum, its table and columns (`key_column`, `value_column`, `scope_columns`, `valid_from_column`) and the layer of the validators | `ParameterKey`, `parameter_set`, `key`, `value`, `scope_product_group`/`scope_country`/`scope_value`, `valid_from`, `validator` |
 | `datasets.seed_dirs` / `datasets.fixture_dirs` | folders of the local seeds and of the integration-test fixtures (header contract in `gen-datasets.py`) | `scripts/db/seed`, `harbor-core/src/test/resources/datasets` |
 | `docs_tags_include` | file patterns scanned for `@docs` tags (whole repo minus `exclude_paths`) | `*.kt`, `*.java` |
