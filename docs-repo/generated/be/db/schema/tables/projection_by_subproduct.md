@@ -4,7 +4,7 @@ title: "projection_by_subproduct"
 description: "Monthly projection table per sub-product of the session (cumulative values over the horizon)."
 generated:
   by: process:db-docs
-  at: 2026-10-17
+  at: 2026-10-18
 status: stable
 ---
 # projection_by_subproduct

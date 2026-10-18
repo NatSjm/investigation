@@ -4,7 +4,7 @@ title: "Database documentation: harbor"
 description: "postgresql, schema `public`; 21 table(s). Generated from the migrations by `scripts/docs/gen-db-docs.py` on 2026-10-17; descriptions are the `COMMENT ON` statements. Machine-readable: [schema.json](schema.json). Diagram: [ER overview](schema/erd/overview.mmd)."
 generated:
   by: process:db-docs
-  at: 2026-10-17
+  at: 2026-10-18
 status: stable
 ---
 # Database documentation: harbor

@@ -31,7 +31,7 @@ else is added when its absence hurts. Each section from 2 to 13 is marked **Pilo
 | 1 | Docs repo skeleton, `AGENTS.md`, three agents (`analyst`, `spec-writer`, `calc-auditor`), the instructions and skills; prompt files are optional in the CLI (section 1, item 6) | 2, 3 | validators green on the empty repo; `/agent` lists the three agents |
 | 2 | Contracts copied by hand into `generated/openapi/` (own API, external services) with a line each in `generated/manifest.yml` | 5 | `okf-validate.py --strict` accepts them; `architecture/integrations.md` cites them |
 | 3 | Backend and frontend generators run once by hand in the pilot repositories (`docs-gen.json` through `/adapt-docs-scripts`, then `gen-all.py`), `docs/_generated/` committed; the database documentation folder (`docs/db`, from your tool or from the kit) next to it | 6, items 1 and 9 | every endpoint, topic, table, job, route and hook of the pilot context appears once; every table page carries its comment |
-| 4 | `contexts.yml`, a `docs-map.yml` with one row per context, the maps copied into `generated/be` and `generated/fe` (by hand or by one local collector run), then `gen-graph.py` and `build-index.py` | 4, 7 (local run only), 8 | `REPO_MAP.md` shows the pilot community; its spec is listed as "code only" |
+| 4 | `contexts.yml`, a `docs-map.yml` with one row per context, the maps copied into `generated/be` and `generated/fe` (by hand or by one local collector run; by hand, copy the backend `scripts/docs/docs-gen.json` to `generated/be/docs-gen.json` too, the graph reads the layer names from it), then `gen-graph.py` and `build-index.py` | 4, 7 (local run only), 8 | `REPO_MAP.md` shows the pilot community; its spec is listed as "code only" |
 | 5 | One context pack per task and Runs 1 to 4 for the pilot spec, with the calculations it links | 10, 11 | a spec with `file:line` citations, reviewed by its owner |
 
 Deferred until the trigger named:
@@ -361,7 +361,7 @@ Backend repository:
 | From `code-repo-kit/be/` | To `<backend>/` | Then |
 |---|---|---|
 | `scripts/docs/*.py`, `scripts/docs/README.md` | `scripts/docs/` | nothing to edit; the scripts read the config below |
-| `scripts/docs/docs-gen.json` | `scripts/docs/docs-gen.json` | fill every key for your repository (`README.md` next to it explains each; your known values: change list sections 4 and 7.3) |
+| `scripts/docs/docs-gen.json` | `scripts/docs/docs-gen.json` | fill every key for your repository (`README.md` next to it explains each; your known values: change list sections 4 and 7.3); when your layer folders are not Harbor's, set `layers`, `graph_layers`, `graph_exclude_layers` to your names and rename the folders in the `applyTo` lines of the instruction files |
 | `AGENTS.md` | `AGENTS.md` | reword; keep it under 60 lines; the read order names your entry layer (`service/<Ctx>Service.kt`) |
 | `.github/copilot-instructions.md` | `.github/copilot-instructions.md` | reword the never-open list (your generated client folders, build output) |
 | `.github/instructions/*.instructions.md` | `.github/instructions/` | keep `api`, `calculations`, `kafka`, `migrations`, `tests`, `layers`; reword paths; delete a file whose stack you do not have |
@@ -408,7 +408,10 @@ everything at once; for the enterprise rollout copy selectively in this order an
    column all follow these two values.
    Backend keys (`code-repo-kit/be/scripts/docs/README.md` lists every key): the Maven modules, the base package,
    the layer list with the sub-packages that count as layers of their own (`dao/model`, `dao/repository`,
-   `dao/service`, `client/rest`, `api/technical`, ...), the OpenAPI, AsyncAPI and external-contract paths, how
+   `dao/service`, `client/rest`, `api/technical`, ...; your folder names, which may differ from Harbor's: the keys
+   of `layers` are what the maps print, `graph_layers` and `graph_exclude_layers` tell the docs repository's graph
+   which of them are behaviour and which are data, and the `applyTo` globs of the instruction files name the same
+   folders), the OpenAPI, AsyncAPI and external-contract paths, how
    controllers relate to the contract (`override fun <operationId>` on a generated interface, or hand-written
    `@GetMapping` routes matched by verb and path), the Kafka listener annotation and the property files that resolve
    `${...}` topic names, the migrations folder, the parameter-key enum and its table, the seed and fixture folders,

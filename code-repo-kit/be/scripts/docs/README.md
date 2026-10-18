@@ -24,6 +24,8 @@ merged key by key, so a partial block keeps the other defaults.
 | `list_all_layers` | layers whose classes are all listed in `codebase-map.md` (others cut at 12) | api, manager, job, event, client/*, utils, validator, component, service, dao/service |
 | `entry_layer` | the layer read first per context; `tag-candidates.py` proposes `<PREFIX>-NNN` tags for its classes | `manager` |
 | `calculation_layer` | pure calculations; `tag-candidates.py` proposes `snake_case` calculation IDs for its classes | `utils` |
+| `graph_layers` | read by the docs repository's `gen-graph.py` (the collector copies this file to `generated/be/docs-gen.json`): layers whose classes become graph nodes; a sub-layer (`dao/repository`) counts through its parent; the `entry_layer` is always included | api, manager, service, dao, event, job, client, utils, validator, component |
+| `graph_exclude_layers` | same reader: data layers without class nodes (entities, API models) | `dao/model`, `api/model` |
 | `stereotypes` | annotations shown in the Kind column | RestControllerAdvice, RestController, Service, Component, Configuration, Repository, Entity, SpringBootApplication |
 | `repository_bases` | Spring Data base interfaces whose first type argument is the entity (table inherited) | JpaRepository, CrudRepository, PagingAndSortingRepository, ListCrudRepository |
 | `test_pattern` | regex on file names that marks tests (never scanned as components) | `(Test\|IT\|Spec)\.(kt\|java)$` |

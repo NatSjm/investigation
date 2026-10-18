@@ -4,7 +4,7 @@ title: "cover_quote"
 description: "Quote requested from the cover provider for the uncovered value of a session."
 generated:
   by: process:db-docs
-  at: 2026-10-17
+  at: 2026-10-18
 status: stable
 ---
 # cover_quote

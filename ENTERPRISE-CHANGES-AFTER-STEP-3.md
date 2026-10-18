@@ -240,3 +240,33 @@ Two topics: the backend has Avro and JSON schemas but no AsyncAPI document, and 
   `integrations-from-contracts`. Section 18: the architecture-pages row names the prompt for the tables and diagram.
 - Pilot track: the note on a knowledge base another team generated (quarantine, migrate, cross-check) - already in
   section 6.5 of this list.
+
+## 8. Layer names that differ from Harbor's (investigation commits after `79df6ad`, 2026-10-18)
+
+One topic: the graph builder no longer hard-codes Harbor's layer names and `manager` as the entry point.
+
+### 8.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/gen-graph.py` | reads `generated/be/docs-gen.json` (`entry_layer`, `graph_layers`, `graph_exclude_layers`; Harbor's names when missing; `--be-config` overrides); the context node's entry point is the class `<Prefix><Layer>` of the entry layer (`<Ctx>Service` for you), else the shortest entry-layer class of the context; its note reads `entry point X (service)` |
+| `scripts/collect-evidence.py` | copies the backend `scripts/docs/docs-gen.json` to `generated/be/docs-gen.json` (and the frontend one to `generated/fe/`) |
+
+### 8.2 Step 4 / pilot piece 4
+
+- Copying the maps by hand: copy the backend `scripts/docs/docs-gen.json` to `generated/be/docs-gen.json` as well,
+  else the graph falls back to Harbor's layer names and to `manager` as the entry layer (your context nodes would
+  carry no entry point and classes of layers Harbor does not have would be left out).
+
+### 8.3 Step 6 (kits)
+
+- `docs-gen.json`: two new keys, `graph_layers` (layers whose classes become graph nodes; the entry layer is always
+  included; a sub-layer counts through its parent) and `graph_exclude_layers` (data layers: entities, API models).
+  Set them when your folder names differ from Harbor's; with Harbor's names they can stay as copied.
+- The `applyTo` globs of `.github/instructions/*.instructions.md` name folders (`api`, `utils`, `event`,
+  `client/kafka`, `db/migration`): rename them to your folders when you reword the files.
+
+### 8.4 Playbook text (read, nothing to copy)
+
+- Pilot track piece 4 and section 6 item 1: the sentence on layer names that differ; the pilot checklist row for
+  `docs-gen.json` names the three keys and the `applyTo` globs.

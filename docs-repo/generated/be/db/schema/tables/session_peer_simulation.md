@@ -4,7 +4,7 @@ title: "session_peer_simulation"
 description: "Peer simulation requested in a session: the peer segment and the scaling factor applied to the projection of the client."
 generated:
   by: process:db-docs
-  at: 2026-10-17
+  at: 2026-10-18
 status: stable
 ---
 # session_peer_simulation

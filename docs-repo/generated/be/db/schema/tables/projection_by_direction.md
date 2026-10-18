@@ -4,7 +4,7 @@ title: "projection_by_direction"
 description: "Monthly projection per direction (IN, OUT)."
 generated:
   by: process:db-docs
-  at: 2026-10-17
+  at: 2026-10-18
 status: stable
 ---
 # projection_by_direction

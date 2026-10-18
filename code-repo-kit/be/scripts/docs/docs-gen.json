@@ -38,6 +38,8 @@
   "list_all_layers": ["api", "api/technical", "manager", "job", "event", "client/rest", "client/kafka", "utils", "validator", "component", "service", "dao/service"],
   "entry_layer": "manager",
   "calculation_layer": "utils",
+  "graph_layers": ["api", "manager", "service", "dao", "event", "job", "client", "utils", "validator", "component"],
+  "graph_exclude_layers": ["dao/model", "api/model"],
   "stereotypes": ["RestControllerAdvice", "RestController", "Service", "Component", "Configuration", "Repository", "Entity", "SpringBootApplication"],
   "repository_bases": ["JpaRepository", "CrudRepository", "PagingAndSortingRepository", "ListCrudRepository"],
   "test_pattern": "(Test|IT|Spec)\\.(kt|java)$",

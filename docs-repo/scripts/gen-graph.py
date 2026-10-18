@@ -7,6 +7,9 @@ Inputs  (default: generated/be, generated/fe as pushed by the code-repo CI):
   api-index.md, events.md, db-schema.md, codebase-map.md, docs-tags.md     (BE)
   codebase-map.md, routes.md, docs-tags.md                                  (FE)
   optional generated/be/db/schema.json (database documentation) -> table comments, exact foreign keys
+  optional generated/be/docs-gen.json (the backend layout, copied by the collector): entry_layer (the layer whose
+    class is a context's entry point), graph_layers (layers whose classes become nodes), graph_exclude_layers
+    (data layers without nodes); Harbor's names are the defaults when the file or a key is missing (--be-config overrides)
   optional graph-export-be.json / graph-export-fe.json  -> precise edges from
     GraphExportTest.kt (Spring context) / gen-graph-fe.ts (TS compiler API); merged, win over regex.
   features/**/<ID>.md, domain/calculations/<id>.md  -> spec nodes get path + status.
@@ -31,9 +34,12 @@ from collections import deque
 from _common import (repo_root, read_text, read_text_or_empty, write_text, rel, like, sort_key, split_lines, now_utc,
                      walk_files, utf8_stdout)
 
+# defaults = the Harbor layout; a backend with other layer names states them in its docs-gen.json (graph_layers,
+# graph_exclude_layers, entry_layer), which the collector copies to generated/be/docs-gen.json
 GRAPH_LAYERS = ('api', 'manager', 'service', 'dao', 'event', 'job', 'client', 'utils', 'validator', 'component')
 # layers (first segment or `first/second` as components.md prints them) that are data, not behaviour: no class node
 GRAPH_EXCLUDE = ('dao/model', 'api/model')
+ENTRY_LAYER = 'manager'
 KIND_ORDER = ('context', 'feature', 'endpoint', 'route', 'class', 'topic', 'channel', 'component', 'table', 'url', 'unknown')
 
 
@@ -122,6 +128,7 @@ def main():
     ap.add_argument('--out', default='generated/graph')
     ap.add_argument('--budget', type=int, default=120)
     ap.add_argument('--check', action='store_true')
+    ap.add_argument('--be-config', default='', help='backend docs-gen.json (default: <be-maps>/docs-gen.json when present)')
     a = ap.parse_args()
     root = os.path.abspath(a.root)
 
@@ -227,6 +234,23 @@ def main():
         # collide with the BE `shared` community (classes matching no prefix)
         return 'fe-shared' if page.lower() == 'shared' else page
 
+    # ---------- backend layout: which layers are graph nodes, which layer holds the entry point ----------
+    graph_layers, graph_exclude, entry_layer = set(GRAPH_LAYERS), set(GRAPH_EXCLUDE), ENTRY_LAYER
+    be_cfg_path = a.be_config or os.path.join(be_maps, 'docs-gen.json')
+    if os.path.isfile(be_cfg_path):
+        try:
+            be_cfg = json.loads(read_text(be_cfg_path).lstrip('\ufeff'))
+        except ValueError as e:
+            raise SystemExit(f'{be_cfg_path}: not valid JSON ({e})')
+        if be_cfg.get('graph_layers'):
+            graph_layers = {str(x).lower() for x in be_cfg['graph_layers']}
+        if 'graph_exclude_layers' in be_cfg:
+            graph_exclude = {str(x).lower() for x in be_cfg['graph_exclude_layers']}
+        if be_cfg.get('entry_layer'):
+            entry_layer = str(be_cfg['entry_layer']).lower()
+    # the entry layer and the layers that are a sub-package of a graph layer count as graph layers themselves
+    graph_layers.add(entry_layer)
+
     # ---------- BE (components.md: one row per class with layer, deps, tables) ----------
     class_info = {}
     for r in table_rows(read_text_or_empty(os.path.join(be_maps, 'components.md'))):
@@ -235,17 +259,29 @@ def main():
             continue
         class_info[cls] = {'Layer': strip(r.get('Layer')), 'Loc': strip(r.get('Location')), 'Kind': strip(r.get('Kind')),
                            'Deps': re.findall(r'`(\w+)`', r.get('Depends on', '')), 'Tables': re.findall(r'`(\w+)`', r.get('Tables', ''))}
+    entry_candidates = {}   # context -> [class] of the entry layer
     for cls, ci in class_info.items():
-        if ci['Layer'].lower() in GRAPH_EXCLUDE or ci['Layer'].lower().split('/')[0] not in GRAPH_LAYERS:
+        layer = ci['Layer'].lower()
+        if layer in graph_exclude or (layer not in graph_layers and layer.split('/')[0] not in graph_layers):
             continue
         ctx = context_of(cls)
         add_node(f'class:{cls}', 'class', cls, ctx, 'be', ci['Loc'], ci['Layer'] + ('; ' + ci['Kind'] if ci['Kind'] else ''))
         if ctx != 'shared':
             add_node(f'context:{ctx}', 'context', ctx, ctx, 'be')
             add_edge(f'context:{ctx}', f'class:{cls}', 'contains')
-            if ci['Layer'].lower() == 'manager':
-                nodes[f'context:{ctx}']['location'] = file_of(ci['Loc'])
-                nodes[f'context:{ctx}']['note'] = f'entry point {cls} (manager)'
+            if layer == entry_layer:
+                entry_candidates.setdefault(ctx, []).append(cls)
+    # one entry point per context: the class named <prefix><Layer> (StressManager, StressService) when it exists,
+    # else the shortest name of the entry layer (a service layer holds several classes per context)
+    prefixes_of = {}
+    for c, p in ctx_prefixes:
+        prefixes_of.setdefault(c, []).append(p)
+    for ctx, classes in entry_candidates.items():
+        suffix = entry_layer.split('/')[-1].capitalize()
+        named = [c for c in classes for p in prefixes_of.get(ctx, []) if not re.search(r'[*?]', p) and c == p + suffix]
+        entry = named[0] if named else sorted(classes, key=lambda c: (len(c), c))[0]
+        nodes[f'context:{ctx}']['location'] = file_of(class_info[entry]['Loc'])
+        nodes[f'context:{ctx}']['note'] = f'entry point {entry} ({entry_layer})'
     # constructor injection and static calls to Kotlin objects between architectural classes (controller -> manager ->
     # service -> dao / utils / client, calculator -> helper object)
     for cls, ci in class_info.items():

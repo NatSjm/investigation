@@ -179,6 +179,8 @@ def main():
             full = os.path.join(d, f)
             if os.path.isfile(full) and ((f.lower().endswith('.md') and f.lower() != 'index.md') or like(f, 'graph-export-*.json')):
                 stage_file(set_, full, f)
+        # the repository layout the generators read (layers, entry layer): gen-graph.py reads it as generated/<set>/docs-gen.json
+        stage_file(set_, os.path.join(p, 'scripts', 'docs', 'docs-gen.json'), 'docs-gen.json')
     contracts = backend_contracts(backend)
     stage_file('openapi', os.path.join(backend, contracts['open_api']), 'backend.yaml')
     stage_file('asyncapi', os.path.join(backend, contracts['asyncapi']), 'backend.yaml')
