@@ -251,6 +251,7 @@ One topic: the graph builder no longer hard-codes Harbor's layer names and `mana
 |---|---|
 | `scripts/gen-graph.py` | reads `generated/be/docs-gen.json` (`entry_layer`, `graph_layers`, `graph_exclude_layers`; Harbor's names when missing; `--be-config` overrides); the context node's entry point is the class `<Prefix><Layer>` of the entry layer (`<Ctx>Service` for you), else the shortest entry-layer class of the context; its note reads `entry point X (service)` |
 | `scripts/collect-evidence.py` | copies the backend `scripts/docs/docs-gen.json` to `generated/be/docs-gen.json` (and the frontend one to `generated/fe/`) |
+| `scripts/graph-viewer.py` | **new**: `python3 scripts/graph-viewer.py --community <id>` writes `.context/graph-viewer.html`, a self-contained page you open in any browser (Python and a browser, no server, no other tool); one community at a time, filter, neighbours, node details |
 
 ### 8.2 Step 4 / pilot piece 4
 

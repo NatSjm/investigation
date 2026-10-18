@@ -172,6 +172,7 @@ Key files worth reading once: `AGENTS.md` (the contract between people and agent
 | Script | What it does | Input | Output | When |
 |---|---|---|---|---|
 | `context-pack.py --task <x> [--budget N] [--print]` | builds the task-scoped pack (2.6) | spec ID, calculation, graph node or free text | `.context/<task>.md` | start of every agent task |
+| `graph-viewer.py [--community <id>]` | draws the graph in a self-contained HTML page (`.context/graph-viewer.html`, open in a browser): one community at a time, text filter, direct neighbours, node details with `file:line` | `generated/graph/graph.json` | HTML | looking at a community before writing its spec; showing the graph to a colleague |
 | `graph-query.py --node <id> --depth n` / `--files <paths>` / `--find <text>` | queries the graph: neighbourhood, impacted specs for changed files, text search | `generated/graph/graph.json` | text (or `--json`) | impact questions, CI PR comment, IntelliJ users |
 | `gen-graph.py [--check]` | joins BE/FE maps + `@docs` tags + `docs-map.yml` rows (+ precise exports) into the graph; a mapping row gives the same `implemented-by` edges as a tag, so tags are optional at the start | `generated/be`, `generated/fe`, `contexts.yml` | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json`; prunes orphan community files | after publish; `--check` in CI |
 | `build-index.py [--check]` | regenerates every `index.md` with trust badges | frontmatter of all concepts | `index.md` per folder | after any edit; hook; CI |

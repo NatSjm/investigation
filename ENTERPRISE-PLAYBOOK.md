@@ -515,7 +515,9 @@ endpoint, class, topic or table) and the **spec coverage** list, where every con
 without a document appears as "code only". That list is your backlog. Then:
 
 - `python3 scripts/graph-query.py --node context:billing --depth 2` must show the classes, endpoints, tables and topics you
-  expect. Iterate `contexts.yml` until it does.
+  expect. Iterate `contexts.yml` until it does. To look at a community instead of reading it:
+  `python3 scripts/graph-viewer.py --community billing` writes `.context/graph-viewer.html`; open the file in a browser
+  (Python and a browser, nothing else).
 - `python3 scripts/migration-status.py --scope all` writes `migration/all.md`: per context the runs due with the command.
 
 **With an agent.** 1. `/migration-plan all` (agent `migration-lead`) runs `migration-status.py`, reads `REPO_MAP.md` and
@@ -705,6 +707,7 @@ Docs repository, `scripts/` (Python 3.11+, standard library only, no network unl
 |---|---|---|---|
 | `context-pack.py --task <x> [--budget N] [--print]` | specs, calculations, `graph.json`, contracts, db schema, work items | `.context/<task>.md` (git-ignored) | yes |
 | `graph-query.py --node <id> --depth n` / `--files <paths>` / `--find <text>` | `generated/graph/graph.json` | stdout | yes |
+| `graph-viewer.py [--community <id>] [--out <file>]` | `generated/graph/graph.json` | `.context/graph-viewer.html` (git-ignored), a self-contained page to open in any browser: one community at a time, filter, neighbours, node details | - |
 | `gen-graph.py [--check]` | `generated/be|fe/*.md`, `contexts.yml`, `docs-map.yml`, optional precise exports | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json` | yes; `--check` writes nothing |
 | `build-index.py [--check]` | frontmatter of every concept | every `index.md` | yes |
 | `okf-validate.py [--strict]` | the bundle | stdout, exit code | yes |
