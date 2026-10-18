@@ -4,6 +4,8 @@ description: Review the scripts/docs generators for safety and adapt them to thi
 argument-hint: "optional: what to focus on, e.g. kafka, api, migrations (default all)"
 ---
 Focus: ${input:focus:all}
+Known facts (optional, from the person: the call flow, where calculations and tests live, what the backend has no
+document for): ${input:facts:none}
 
 ## Role
 You are adapting the documentation generators of `scripts/docs/` (standard-library Python, regex scanners, no build)
@@ -32,7 +34,15 @@ runs the generators.
    file, the annotation in a listener, the migrations folder, the enum, the fixture folder). Unknown or absent
    things get the default and the reason (for example `parameters.enum_name` empty and `skip_generators` listing
    `gen-parameters.py` when the repository has no parameter-key enum; `datasets` skipped when there are no SQL
-   datasets with the header convention).
+   datasets with the header convention). Four keys are decisions, not folder facts, and get a sentence each:
+   `entry_layer` is the layer of the class the controllers inject (open one controller: `service` when it injects
+   a service that delegates to managers, `manager` when it injects a manager); `calculation_layer` is the layer of
+   the pure calculators that have unit tests; `graph_layers` / `graph_exclude_layers` are every key of `layers`
+   split into behaviour (controllers, services, managers, repositories, listeners, jobs, clients, calculators,
+   validators) and data (entities, API models, enums); `db_docs.generate` is `false` when a database tool already
+   writes the `docs/db` folder and `asyncapi` is `""` when the backend keeps Avro / JSON schemas but no AsyncAPI
+   document (then `kafka.schema_dirs` lists the schema folders). Use the known facts above when given; otherwise
+   decide from the files and say which file decided it.
 3. **Proposed `docs-gen.json`**, complete, as a code block, with a `_comment` naming the repository and the date.
 4. **Gaps the config cannot express.** When a convention of this repository is outside the config (a Liquibase
    changelog, a Quartz job class, a topic name built by an expression, a controller that is neither a generated
