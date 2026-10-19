@@ -537,13 +537,18 @@ file names its entry point.
 
 **Later** (with the first exported space).
 
-Export the space to HTML (the standard space export, no API needed) and run the importer: the specification is in
-[MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md) step 3 and the stub `scripts/confluence-export.py`. It writes one Markdown
-file per page under `confluence-import/<SPACE>/` with a header block (`source`, `last_modified`, `author`,
-`confluence_id`, `url`) and an inventory table in `confluence-import/README.md`. Rules, all enforced by
-`confluence-import.instructions.md` and the quarantine README: nothing in that folder is authoritative; pages are
-migrated one per run; processed pages move to `_done/` with `status: migrated|obsolete`; attachments and anything with
-customer data are not imported; the folder is excluded from the validators.
+Export the space to HTML (the standard space export, no API needed), put each page tree you migrate under
+`confluence-import/raw-html/<section>/` and run `scripts/confluence-import.py --src confluence-import/raw-html --space
+<KEY> --lang <code> --base-url <url>` ([MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md) step 3; the REST stub
+`scripts/confluence-export.py` is the alternative route). It writes one Markdown file per page under
+`confluence-import/<SPACE>/<section>/` with a header block (`source`, `title`, `section`, `confluence_id`, `url`,
+`author`, `last_modified`, `path`, `parent`, `status`), copies the images a page shows to
+`confluence-import/<SPACE>/_attachments/<slug>/`, rewrites the links between pages, and fills the inventory table in
+`confluence-import/README.md` (the analysts write only its **Known state** column). It is idempotent and has `--check`.
+Rules, all enforced by `confluence-import.instructions.md` and the quarantine README: nothing in that folder is
+authoritative; `raw-html/` and the generated pages are never edited by hand; pages are migrated one per run; processed
+pages move to `_done/` with `status: migrated|obsolete`; only the images a page shows are imported, and anything with
+customer data is deleted before the import; the folder is excluded from the validators.
 
 Triage the inventory with the analysts: for each page the target context and a known state (current, partly outdated,
 obsolete, formula page). Formula pages are routed to the calculation audit, never merged by hand.
@@ -686,7 +691,8 @@ questions per spec, Copilot premium requests per run.
   context. A person reviews and merges. The freshness gate in the code repos (`check-freshness.py`,
   `ci-examples/code-repo-freshness-gate.yml`) requires a PR touching a mapped path to bump `last_verified` or carry
   the label `docs-not-affected`.
-- **Confluence changes.** Re-export, re-import; the inventory shows pages newer than their `_done/` copy; Run 2 again.
+- **Confluence changes.** Re-export, run `confluence-import.py` again; it skips pages already under `_done/` and the
+  inventory flags those whose export is newer than the migrated copy; Run 2 again.
 - **Drift found by a reader.** Open question in the spec, status back to draft, owner decides; never a silent edit.
 - **The board.** `migration-status.py --scope all` weekly; the `migration-lead` agent annotates order and blockers.
 
@@ -719,6 +725,7 @@ Docs repository, `scripts/` (Python 3.11+, standard library only, no network unl
 | `check-freshness.py` | PR diff, specs | exit code | CI |
 | `collect-evidence.py [--generate] [--graph] [--dry-run]` | the code checkouts (`git`, `docs/_generated`, contracts) | `generated/be|fe|openapi|asyncapi/**`, `generated/manifest.yml`; with `--graph` also graph and indexes | yes; `--dry-run` writes nothing; the only script that runs `git` |
 | `migration-status.py --scope <ctx|all>` | `contexts.yml`, specs, calculations, docs tags, REPO_MAP, pending pages | `migration/<scope>.md` | yes |
+| `confluence-import.py --src <export> --space <KEY> [--section <tree>] [--lang <code>] [--base-url <url>] [--no-images] [--body md\|html] [--check]` | a Confluence HTML export under `confluence-import/raw-html/<section>/`, `contexts.yml` (guessed context), `<KEY>/_done/` (pages already migrated) | `confluence-import/<KEY>/<section>/<slug>.md`, `<KEY>/_attachments/<slug>/`, the inventory in `confluence-import/README.md`; removes the generated files of pages gone from the export | yes; `--check` writes nothing |
 | `hooks/guard-generated.py` | the hook payload | permission decision | hook |
 | `confluence-export.py`, `confluence-publish.py`, `jira-push.py`, `push-to-tests-repo.py` | - | - | stubs; implement per environment |
 
@@ -897,7 +904,7 @@ it may use; forbid invention explicitly.
 | `architecture/adr/*.md` | `docs-repo/architecture/adr/template.md`, `0002-openapi-first-contracts.md` | the decision as you would say it in one paragraph, plus the alternatives considered | the decision itself; an ADR is never generated from code |
 | `flows/*.md` | `docs-repo/flows/client-presentation.md` | the pack of each spec involved, `generated/graph/<community>.md` | steps and invariants; participants |
 | `features/conventions.md`, `contracts/conventions.md` | the files of the same name | your existing team rules (naming, ID scheme, review) | they match how the team works, not how the model thinks it should |
-| `confluence-import/README.md` inventory | `docs-repo/confluence-import/README.md` | the export folder listing | which pages are in scope and who owns them |
+| `confluence-import/README.md` inventory | `docs-repo/confluence-import/README.md` | the table `confluence-import.py` generates (page, id, date, author, images, guessed context) | the **Known state** column: which pages are in scope, their class and target, who owns them |
 | `test-design/README.md` step vocabulary | `docs-repo/test-design/README.md` | the step definitions of the tests repository | one meaning per step; no synonyms |
 | `work-items/_schema.yml` | `docs-repo/work-items/_schema.yml` | your Jira field names and story template | field names match Jira |
 | `AGENTS.md`, `.github/copilot-instructions.md`, agent files | `docs-repo/AGENTS.md`, `docs-repo/.github/**` | the rendered versions here, your product name and context list | every hard rule; the never-open list; the safety section |

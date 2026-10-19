@@ -439,3 +439,51 @@ repository those pages gain `calls` edges to the backend endpoints.
 Section 6, the `docs-gen.json` row of the frontend table: `generated_client.dirs` among the keys to fill. Section 14,
 the `gen-codebase-map.py` catalogue row: API calls are literal paths and `METHOD /path` for generated-client calls. No
 backend kit file changes.
+
+## 14. Confluence HTML export importer (investigation commits after `dce39f5`, 2026-10-19)
+
+One topic: the Confluence pages arrive as the standard "Export space to HTML" (or the same pages re-arranged one folder
+per page, `<Title>_<pageId>/<pageId>.html` with the images next to it), two page trees of one space (business,
+technical), and the quarantine wants one Markdown page per Confluence page with the header block. The new
+`scripts/confluence-import.py` (standard library, no pandoc) reads the export kept under
+`confluence-import/raw-html/<section>/` and writes `confluence-import/<KEY>/<section>/<slug>.md`: header block
+(`source`, `title`, `section`, `confluence_id`, `url` with `--base-url`, `author`, `last_modified` parsed from the
+page-metadata line, `path` and `parent` from the breadcrumbs, `source_lang` with `--lang`, `status: imported`,
+`attachments`, `attachments_not_imported`, `imported_from`), the quarantine banner, and the body converted to GitHub
+Markdown (headings shifted under the title, nested and task lists, tables with merged cells flattened and marked, code
+macros with their language, info/note/warning/tip panels as quoted blocks, expand sections, status lozenges, links
+between exported pages rewritten to the Markdown files, images the page shows copied to `<KEY>/_attachments/<slug>/`,
+anything unknown kept as raw HTML with a comment; `--body html` keeps the body as HTML instead). A page whose
+`confluence_id` already sits under `<KEY>/_done/` is never rewritten (the export newer than the migrated copy is
+flagged); the generated files of a page gone from the export are removed (only files with `imported_from`, never
+`_done/`). The inventory of `confluence-import/README.md` is regenerated between markers, one table per section, with
+the guessed context from `contexts.yml` (title and spec IDs, as `migration-status.py` does); only its **Known state**
+column is hand-edited and survives a re-import. `--check` writes nothing and exits 1 when the quarantine is out of
+date. Checked on a synthetic Harbor export (both layouts, images, cross-section links, page links by id, an attachment
+that is not an image, a page already in `_done/`, a page removed from the export, `--section`, `--no-images`,
+`--body html`); `migration-status.py` lists the imported pages as Run 2 due without a change.
+
+### 14.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/confluence-import.py` | **new**: the importer described above |
+| `scripts/README.md` | the `confluence-import.py` row; `confluence-export.py` marked as the REST route |
+| `confluence-import/README.md` | the two ways in, the folder layout, the import commands, rule 6 (only the images a page shows are imported; client data deleted before the import) and rule 8 (generated pages are regenerated, only the Known state column is hand-edited) - keep your own inventory rows; the generated part is added between markers on the first run |
+| `.github/instructions/confluence-import.instructions.md` | `raw-html/` never edited or read; pages with `imported_from` regenerated; images are evidence of a screen |
+| `.github/agents/confluence-migrator.agent.md` | input accepts `<space>/<section>/<page>.md` and reads the `section`, `path`, `attachments` headers; step 6 moves the page to `<space>/_done/` and leaves `_attachments/` in place |
+
+### 14.2 What to do
+
+1. Keep the HTML export under `confluence-import/raw-html/<section>/` (one folder per page tree you migrate: business,
+   technical). Delete every screenshot or table with client data from it first.
+2. `python3 scripts/confluence-import.py --src confluence-import/raw-html --space <KEY> --lang <code> --base-url <url>`
+   with your space key; then `--check` must be clean, `migration-status.py --scope all` lists the pages as Run 2 due.
+3. Fill the **Known state** column of the generated inventory (class and target concept per page); everything else in
+   that table is regenerated.
+4. Do not copy the synthetic pages of this repository (`confluence-import/raw-html/**`, `confluence-import/HARBOR/**`).
+
+### 14.3 Playbook, runbook, handbook (read only)
+
+Playbook section 9 (the import paragraph), section 13 (Confluence changes), section 14 (the catalogue row) and section
+18 (the inventory row); runbook step 3 and the layout table row; handbook tree and flow C. No kit file changes.

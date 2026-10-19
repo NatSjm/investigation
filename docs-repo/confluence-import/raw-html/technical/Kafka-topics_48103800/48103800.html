@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head><title>HARBOR : Kafka topics</title></head>
+<body class="theme-default aui-theme-default">
+<div id="page"><div id="main" class="aui-page-panel">
+<div id="main-header">
+    <div id="breadcrumb-section"><ol id="breadcrumbs"><li class="first"><span><a href="../index.html">HARBOR</a></span></li><li><span><a href="../index.html">Technical</a></span></li></ol></div>
+    <h1 id="title-heading" class="pagetitle"><span id="title-text">HARBOR : Kafka topics</span></h1>
+</div>
+<div id="content" class="view">
+    <div class="page-metadata">Created by <span class='author'> Tom Brown</span>, last modified on 02.09.2025</div>
+    <div id="main-content" class="wiki-content group">
+    <p>Topics the backend produces. Consumers are listed in <a href="../Deployment-notes_48103801.html">Deployment notes</a>; the parameter topic feeds the <a href="../../business/Admin-parameters-page_48103700/48103700.html">admin parameters page</a>.</p>
+    <h2 id="Kafkatopics-Parameters">Parameters</h2>
+    <div class="table-wrap"><table class="confluenceTable"><thead><tr><th class="confluenceTh">Topic</th><th class="confluenceTh">Key</th><th class="confluenceTh">Payload</th></tr></thead><tbody>
+        <tr><td class="confluenceTd"><code>harbor.parameters.changed</code></td><td class="confluenceTd">parameter key</td><td class="confluenceTd">ParameterChanged</td></tr>
+        <tr><td class="confluenceTd"><code>harbor.session.closed</code></td><td class="confluenceTd">session id</td><td class="confluenceTd">SessionClosed</td></tr>
+    </tbody></table></div>
+    <h2 id="Kafkatopics-Payload">Payload</h2>
+    <div class="code panel pdl"><div class="codeContent panelContent pdl">
+<pre class="syntaxhighlighter-pre" data-syntaxhighlighter-params="brush: js; gutter: false; theme: Confluence">{ "key": "cover.factor", "value": "1.15", "changedBy": "admin" }</pre>
+</div></div>
+    <dl><dt>Retention</dt><dd>7 days</dd><dt>Partitions</dt><dd>3</dd></dl>
+    </div>
+</div>
+</div></div>
+</body>
+</html>

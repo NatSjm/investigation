@@ -1,5 +1,15 @@
 # Update Log
 
+## 2026-10-19
+* **Confluence HTML export importer; four legacy pages imported.** `scripts/confluence-import.py` (standard library)
+  turns a Confluence HTML space export kept under `confluence-import/raw-html/<section>/` into
+  `confluence-import/<SPACE>/<section>/<slug>.md` pages with the quarantine header block, copies the images a page
+  shows to `<SPACE>/_attachments/<slug>/`, rewrites the links between pages and regenerates the inventory of
+  `confluence-import/README.md`; pages already under `_done/` are skipped, `--check` for CI. Imported (synthetic
+  fixture, two page trees): `HARBOR/business/admin-parameters-page.md`, `HARBOR/business/cover-quote-rules.md`,
+  `HARBOR/technical/kafka-topics.md`, `HARBOR/technical/deployment-notes.md` (`status: imported`, Run 2 due; listed
+  in `migration/all.md`).
+
 ## 2026-10-15
 * **Meetings prefix renamed `MTG` → `SES`.** [SES-001](/features/meetings/SES-001.md) (was `MTG-001`), rule IDs `BR-SES-001-n`, dataset `ses-session-snapshot`, `contexts.yml`, `docs-map.yml`, every citation in specs, flows, work items and the `@docs` tags of the meetings classes and hooks; generated maps, graph and boards regenerated.
 * **Specs cut by screen and modal; product mirrors; two flows.** `features/conventions.md` gains the section

@@ -19,7 +19,7 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
 | `domain/calculations/<name>.md` | one concept per calculation: formula, parameters, worked examples, audit table | `calc-auditor`, `spec-writer` |
 | `domain/glossary.md`, `domain/context-map.md` | terminology (with `Aliases` for legacy / source-language terms), bounded contexts | humans + `confluence-migrator` |
 | `architecture/` | overview, integration map, ADRs, HLDs | `architect` |
-| `confluence-import/<SPACE>/` | raw exported pages (quarantine); `_done/` after migration | `scripts/confluence-export.py` |
+| `confluence-import/<SPACE>/` | raw exported pages (quarantine): `<section>/<slug>.md` per page tree, `_attachments/<slug>/` images, `_done/` after migration; `raw-html/` the HTML export as received | `scripts/confluence-import.py` (HTML export), `scripts/confluence-export.py` (REST, stub) |
 | `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi` | code maps and contracts collected from the code repos as one validated snapshot (`generated/manifest.yml` names the source commits); never edited by hand | the docs repo's collector `scripts/collect-evidence.py` (CI: `ci-examples/collect-evidence.yml`, one PR per snapshot) |
 | `generated/graph/` | architectural graph: `REPO_MAP.md`, one `<context>.md` per bounded context, `graph.json` | `scripts/gen-graph.py` |
 | `generated/analytics/` | coverage matrix (BR -> story -> scenario) | `scripts/coverage-matrix.py` |
@@ -50,15 +50,23 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
 
 ### Step 3: export and triage Confluence (analysts, half a day per space)
 
-1. Implement the real `scripts/confluence-export.py` (today a stub): Confluence REST
-   `content?spaceKey=..&expand=body.storage,version,history` -> one file per page under
-   `confluence-import/<SPACE>/<slug>.md` with the header block `source`, `confluence_id`, `url`, `author`,
-   `last_modified`, `status: imported`. Converting HTML to Markdown is optional: Copilot reads storage HTML, so the
-   minimal version just saves the HTML body under the header.
-2. Drop attachments and any table containing client data at export time (synthetic data rule).
-3. Build the inventory table in `confluence-import/README.md`: page, `last_modified`, guessed class
-   (`feature-spec | calculation | architecture | decision | glossary | process | obsolete`), target concept.
-   Sort by business value and age; pages older than the last major release are suspects by default.
+1. Export the space to HTML (Confluence "Export space to HTML", no API needed) and put each page tree you migrate
+   under `confluence-import/raw-html/<section>/` (one folder per page `<Title>_<pageId>/<pageId>.html` with its images
+   next to it, or the standard export files `<Title>_<pageId>.html` + `attachments/<pageId>/`). Then
+   `python3 scripts/confluence-import.py --src confluence-import/raw-html --space <KEY> --lang <code> --base-url <url>`:
+   one file per page under `confluence-import/<KEY>/<section>/<slug>.md` with the header block `source`, `title`,
+   `section`, `confluence_id`, `url`, `author`, `last_modified`, `path`, `parent`, `source_lang`, `status: imported`,
+   `attachments`, `imported_from`; the body converted to Markdown (`--body html` keeps it as HTML: Copilot reads both).
+   The REST route (`scripts/confluence-export.py`, a stub) remains for a space you cannot export as HTML.
+2. Images the pages show are copied to `confluence-import/<KEY>/_attachments/<slug>/`; nothing else is. Delete every
+   screenshot or table containing client data from `raw-html/` before the import (synthetic data rule); the importer
+   is idempotent, so re-run it after every such deletion and keep `--check` clean.
+3. The importer writes the inventory table into `confluence-import/README.md` (page, `confluence_id`,
+   `last_modified`, author, images, guessed context from the title and the spec IDs the page cites); the analysts fill
+   the **Known state** column: guessed class (`feature-spec | calculation | architecture | decision | glossary |
+   process | obsolete`) and target concept. Sort the work by business value and age; pages older than the last major
+   release are suspects by default. A later export is imported the same way: pages already under `_done/` are not
+   rewritten, and the inventory flags those whose export is newer than their migrated copy (Run 2 again).
 
 ### Step 4: skeletons from the code (one agent run per context)
 

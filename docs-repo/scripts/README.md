@@ -22,7 +22,8 @@ environment variables. Flags are long options (`--check`, `--task P1-001`); `pyt
 | `publish-local.py` | deprecated name of `collect-evidence.py` (kept as a wrapper) | - |
 | `hooks/guard-generated.py` | Copilot `preToolUse` hook: denies edits under `generated/**` and of `index.md` files | - |
 | `jira-push.py` | create/update epic/stories/subtasks via Jira REST v3, write back keys | `JIRA_URL`, `JIRA_USER`, `JIRA_TOKEN` |
-| `confluence-export.py` | Confluence REST -> Markdown into `confluence-import/` | `CONFLUENCE_URL`, `CONFLUENCE_TOKEN` |
+| `confluence-import.py --src <export> --space <KEY> [--section <tree>] [--lang <code>] [--base-url <url>] [--no-images] [--body md\|html] [--check]` | a Confluence **HTML export** (standard space export, or one folder per page `<Title>_<pageId>/<pageId>.html`) -> `confluence-import/<KEY>/<section>/<slug>.md` with the header block, images copied to `<KEY>/_attachments/<slug>/`, links between pages rewritten, the inventory of `confluence-import/README.md` regenerated between its markers; pages already under `_done/` are skipped, pages gone from the export removed; `--check` for CI | - |
+| `confluence-export.py` | Confluence REST -> Markdown into `confluence-import/` (the API route; a stub) | `CONFLUENCE_URL`, `CONFLUENCE_TOKEN` |
 | `confluence-publish.py` | Markdown -> Confluence page (one-way), keeps page id map in `.confluence-map.json` | same |
 | `push-to-tests-repo.py` | copy `test-design/**` into the tests repo branch + open PR | `TESTS_REPO_URL`, `GIT_TOKEN` |
 

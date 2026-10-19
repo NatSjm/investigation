@@ -11,7 +11,10 @@ handoffs:
 You are migrating legacy documentation into this docs-as-code repository.
 
 ## Input
-Path(s) under `confluence-import/<space>/<page>.md` (converted by `scripts/confluence-export.py`).
+Path(s) under `confluence-import/<space>/<page>.md` (REST export, `scripts/confluence-export.py`) or
+`confluence-import/<space>/<section>/<page>.md` (HTML export, `scripts/confluence-import.py`; `section:` and `path:`
+headers say where the page sat in the Confluence tree, `attachments:` lists the images it shows under
+`<space>/_attachments/<slug>/`, `attachments_not_imported:` the files that were not copied).
 
 ## Procedure
 1. Read the page. Classify: `feature-spec` | `calculation` | `architecture` | `decision` | `glossary` |
@@ -30,7 +33,8 @@ Path(s) under `confluence-import/<space>/<page>.md` (converted by `scripts/confl
 4. Extract domain terms into `domain/glossary.md` (alphabetical, one line each).
 5. Provenance: add a `sources[]` entry (`{ id: conf-<slug>, title, resource, author: human:<page author>, last_modified }`)
    and cite it with `[^conf-<slug>]`; set `generated.by: copilot/confluence-migrator`, `generated.at`, `status: draft`.
-6. Move the processed page to `confluence-import/_done/` (keep the file for audit); set its header `status: migrated|obsolete`.
+6. Move the processed page to `confluence-import/<space>/_done/` (keep the file for audit; its image links keep
+   working there, the `_attachments/` folder stays where it is); set its header `status: migrated|obsolete`.
 7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log the migration in `log.md`.
 
 ## Never

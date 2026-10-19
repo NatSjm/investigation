@@ -149,7 +149,8 @@ docs-repo/
     overview.md, integrations.md, adr/NNNN-*.md, adr/template.md, (hld/<ID>.md)
   flows/                      cross-context behaviour (`type: Flow`): trigger, participants, steps with file:line, invariants, source map
     _template.md, client-presentation.md
-  confluence-import/          quarantine for exported legacy pages; README with rules + inventory; <SPACE>/_done/
+  confluence-import/          quarantine for exported legacy pages; README with rules + inventory; raw-html/<section>/ the HTML export as received,
+                              <SPACE>/<section>/<slug>.md the imported pages (scripts/confluence-import.py), <SPACE>/_attachments/<slug>/ their images, <SPACE>/_done/
   generated/                  collected from the code repos by scripts/collect-evidence.py (manifest.yml names the source commits); never edited by hand
     be/, fe/                  the maps; openapi/, asyncapi/ the contracts; graph/ the graph; analytics/ the coverage matrix
   migration/                  migration board(s) written by migration-status.py / migration-lead
@@ -315,9 +316,11 @@ Run 1 skeleton from the graph and the manager (`spec-writer`), Run 2 legacy page
 `verified.by`). One run, one review, one commit. `migration-status.py` says what is still due.
 
 ### C. Confluence migration
-Space export to HTML, imported into `confluence-import/<SPACE>/` with a header block by the importer script
-(spec in [MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md)), triaged in the inventory table, then flow B. Pages are
-evidence, never copied; numbers always go through Run 3.
+Space export to HTML under `confluence-import/raw-html/<section>/`, imported by `scripts/confluence-import.py` into
+`confluence-import/<SPACE>/<section>/<slug>.md` with a header block, the images a page shows under
+`<SPACE>/_attachments/<slug>/` (spec in [MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md)), triaged in the generated
+inventory table (the **Known state** column), then flow B. Pages are evidence, never copied; numbers always go through
+Run 3.
 
 ### D. An analyst task
 `/context-pack <task>` resolves the task to a spec, builds the pack. `@analyst /jira-from-spec <ID>` reads it, checks
