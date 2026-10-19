@@ -364,3 +364,28 @@ path or a property of the interpreter is a note in the table, not a stop; the st
 ### 11.3 Docs repository
 
 Nothing changes: no file of the docs repository and no playbook text is touched by this section.
+
+## 12. Whole-graph view in the graph viewer (investigation commits after `b3fd6f8`, 2026-10-19)
+
+One topic: while tuning `contexts.yml` you want to see every community in one picture, to spot a page or a class that
+landed in the wrong context. `scripts/graph-viewer.py` now opens its dropdown with a first entry `(all communities)`
+that draws every node and edge of `graph.json`, nodes coloured by community (a stable palette, a legend in the side
+panel; a legend entry opens that community). The layout is per community: cluster centres on a circle, members around
+them, repulsion only inside a community, so the page stays usable at 1500 nodes / 4000 edges (checked with a synthetic
+graph of that size; the Harbor graph, 301 nodes, lays out in well under a second). The text filter works across the
+whole graph and dims what does not match (the single-community mode hides it, as before); click for details, drag and
+wheel zoom are unchanged; the neighbours checkbox is disabled in this mode because it has nothing to add. A new flag
+`--all` opens the page on that entry, the same as `--community "(all communities)"`; `--community <id>` and the output
+path and defaults are as before. Standard library only, no network, no library in the page.
+
+### 12.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/graph-viewer.py` | `(all communities)` entry (whole graph, community colours and legend, per-community cluster layout, filter dims non-matching nodes, neighbours checkbox disabled), `--all` flag; the single-community mode, `--community`, `--out` and the default output `.context/graph-viewer.html` unchanged |
+
+### 12.2 Kits
+
+Nothing changes: no file of the backend or frontend kit is touched by this section. The `scripts/README.md` row of the
+docs repository and the playbook (section 8, the sentence on `--all`; the section 14 catalogue row) say the same as
+12.1 and are read, not copied.
