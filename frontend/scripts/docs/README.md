@@ -25,12 +25,26 @@ Every key is optional and falls back to the values below (the Harbor layout):
 | `exclude_paths` | never read (generated clients such as Orval or openapi-typescript output) | `["src/services/openapi", "src/api/generated"]` |
 | `test_pattern` | regex on file names that marks tests, stories, specs | `\.(test\|spec\|stories)\.` |
 | `api_call_pattern` | regex whose first non-empty group is the literal path of an API call | openapi-fetch / fetch / axios calls |
+| `generated_client` | generated API client (Orval output) whose exported functions the hooks call: `dirs` (its folders, repo-relative; read by `gen-codebase-map.py` only, so they may stay in `exclude_paths`), `function_pattern` (group 1 = exported function name), `call_pattern` (first non-empty group = the literal path in the function body), `method_pattern` (first non-empty group = the HTTP method), `alias_pattern` (group 1 = the operation a wrapper such as `use<Name>` / `get<Name>QueryKey` belongs to). `dirs: []` = off | `dirs: []`; patterns = Orval's shapes (`export const <op> =`, `` `/path` `` / `'/path'`, `method: 'GET'` or `axios.get(`, `use|get<Op>[Suspense|Infinite][QueryKey|QueryOptions|MutationOptions|MutationKey|MutationFetcher|Url|Key]`) |
 
 What a generator still assumes beyond the config: hooks are named `use<Name>`; components are PascalCase exports; the
 page's purpose is the first sentence of the JSDoc above `export function <Page>`; `@docs <ID>` is one ID per `@docs`
 line; a BroadcastChannel is opened in exactly one module per channel (`new BroadcastChannel(`), with the channel name
-in a `*CHANNEL*` constant. With a generated client (Orval) the `API calls` column stays empty because hooks call
-generated functions instead of literal paths; the backend `api-index.md` plus `@docs` tags carry that link instead.
+in a `*CHANNEL*` constant.
+
+With a generated client (Orval) the hooks call generated functions instead of literal paths; set `generated_client.dirs`
+to the generated folders and the `API calls` column lists those calls as `METHOD /path` (literal calls found by
+`api_call_pattern` stay bare paths). `gen-codebase-map.py` reads every exported function of the generated files once:
+the first literal path in its body (template or quoted string starting with `/`; host, leading `${baseURL}` and
+`?query` dropped, `${param}` -> `{*}`) and its method (`method: 'GET'` or an `axios.get(`-style verb); a fetch-client
+request function takes the path of the `get<Name>Url` helper it calls, and the helpers themselves take the method of
+their operation. Wrapper names map back to the operation (`useListPets`, `getListPetsQueryKey`, `getListPetsQueryOptions`,
+`getCreatePetsMutationOptions`, `getListPetsUrl`, `getListPetsKey`, Suspense/Infinite variants -> `listPets` /
+`createPets`), so react-query and swr hooks resolve too. A hook contributes a call when it imports the name from a
+generated folder (relative, `@/` or alias import, `import * as api` members included) and uses it; names the table
+does not know are ignored, `*.msw.ts` mocks yield nothing (their paths start with `*`). The docs repository's
+`gen-graph.py` folds a `METHOD /path` entry onto the backend endpoint with that method and path suffix, a bare path
+onto every method as before.
 
 Run the exporter from the repo root so `node_modules` resolves:
 
@@ -42,6 +56,8 @@ node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json
 What the exporter sees: one `feature:` node per page folder (and per `not_pages` folder), exported hooks (`use*`) and
 components (PascalCase), `calls` edges from `api.GET('/session/product1/overview', ...)`-style calls (literal contract
 path + method), `uses` / `renders` edges resolved through the type checker and `depends-on` edges between pages.
+The exporter keeps literal calls only: it does not read `generated_client` and emits no `calls` edge for a call to a
+generated function; those come from the `API calls` column of `codebase-map.md` through the docs repository's graph.
 
 IDE note: in the investigation workspace (`code-repo-kit/fe/...`) there is no `node_modules`, so the editor shows
 `Cannot find module 'typescript'` / implicit-any errors for `gen-graph-fe.ts`. They disappear in the real frontend repo

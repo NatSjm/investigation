@@ -389,3 +389,53 @@ path and defaults are as before. Standard library only, no network, no library i
 Nothing changes: no file of the backend or frontend kit is touched by this section. The `scripts/README.md` row of the
 docs repository and the playbook (section 8, the sentence on `--all`; the section 14 catalogue row) say the same as
 12.1 and are read, not copied.
+
+## 13. API calls of hooks that call a generated client (investigation commits after `3b4db43`, 2026-10-19)
+
+One topic: in a frontend whose hooks call an Orval-generated client (`src/services/openapi/...`), the `API calls`
+column of `codebase-map.md` was empty because the hooks name generated functions, not literal paths, and the
+page-to-endpoint `calls` edges of the graph were missing for those pages. `gen-codebase-map.py` now reads the generated
+client itself when the new `docs-gen.json` key `generated_client.dirs` names its folders (the folders may stay in
+`exclude_paths`: only this generator reads them, the page scan still skips them). Every exported function of the
+generated files yields the literal path of its body and its method (Orval's axios, custom-mutator, fetch and
+react-query / swr shapes, including the `use<Name>` / `get<Name>QueryKey` / `get<Name>Url` wrappers, which map back
+to the operation); a hook that imports such a name from a generated folder and uses it adds `METHOD /path` to the
+column. Literal calls found by `api_call_pattern` are unchanged (bare paths); with `dirs: []` (the default, and the
+Harbor value) the output is byte-identical to before. `gen-graph.py` of the docs repository reads both forms of the
+cell: a `METHOD /path` entry folds onto the backend endpoint with that method and path suffix only, a bare path onto
+every method as before; the Harbor graph is unchanged. The TypeScript exporter `gen-graph-fe.ts` keeps literal calls
+only (README sentence); the generated-client calls reach the graph through the map.
+
+### 13.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/gen-graph.py` | `API calls` cell entries of the form `METHOD /path` fold onto the endpoint with that method (bare paths as before) |
+
+### 13.2 Frontend kit: files to re-copy whole (into the frontend repository's `scripts/docs/` and `.github/prompts/`)
+
+| File | Why |
+|---|---|
+| `scripts/docs/gen-codebase-map.py` | `generated_client` parser (function name -> `METHOD /path` from the generated files, wrapper aliases, fetch-client url helpers), calls resolved through the hook's imports; the rest unchanged |
+| `scripts/docs/README.md` | `generated_client` key row; the paragraph on generated clients (how the column is filled) replaces "the column stays empty"; the exporter keeps literal calls only |
+| `.github/prompts/adapt-docs-scripts.prompt.md` | step 2 fills `generated_client` from one generated file and one hook; step 4 makes a non-Orval client shape a config case; step 5 expects `METHOD /path` entries |
+
+### 13.3 Frontend repository: single key (a filled `docs-gen.json` is not re-copied)
+
+Add to `scripts/docs/docs-gen.json` the block below, with the generated client folders of the repository (the same
+paths as in `exclude_paths`); the four patterns are optional and default to Orval's shapes, listed in the kit's
+`docs-gen.json` and the README for a client that looks different:
+
+```json
+"generated_client": { "dirs": ["src/services/openapi"] }
+```
+
+Then `python3 scripts/docs/gen-all.py --root .` and check that every page whose hooks import from the generated folder
+has `METHOD /path` entries in the `API calls` column; after `collect-evidence.py` and `gen-graph.py` in the docs
+repository those pages gain `calls` edges to the backend endpoints.
+
+### 13.4 Playbook (read only)
+
+Section 6, the `docs-gen.json` row of the frontend table: `generated_client.dirs` among the keys to fill. Section 14,
+the `gen-codebase-map.py` catalogue row: API calls are literal paths and `METHOD /path` for generated-client calls. No
+backend kit file changes.

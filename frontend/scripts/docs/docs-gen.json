@@ -12,5 +12,13 @@
   "types": ["src/types/**/*.ts", "src/pages/**/*.types.ts", "src/pages/**/types.ts"],
   "exclude_paths": ["src/services/openapi", "src/api/generated"],
   "test_pattern": "\\.(test|spec|stories)\\.",
-  "api_call_pattern": "(?:fetch|axios\\.\\w+|api\\.\\w+)\\(\\s*(?:`([^`]*)`|['\"]([^'\"]*)['\"])"
+  "api_call_pattern": "(?:fetch|axios\\.\\w+|api\\.\\w+)\\(\\s*(?:`([^`]*)`|['\"]([^'\"]*)['\"])",
+  "generated_client": {
+    "_comment": "Generated API client (Orval output). dirs = [] keeps the API-calls resolution off; the patterns are Orval's shapes and rarely need a change (README).",
+    "dirs": [],
+    "function_pattern": "(?m)^export\\s+(?:const|let|async\\s+function|function)\\s+(\\w+)",
+    "call_pattern": "`((?:\\$\\{[^}]*\\}|https?://[^/`]+)?/[^`\\s][^`]*)`|[\\'\"]((?:https?://[^/\\'\"]+)?/[^\\'\"\\s][^\\'\"]*)[\\'\"]",
+    "method_pattern": "\\bmethod:\\s*[\\'\"](\\w+)[\\'\"]|\\w\\.(get|post|put|patch|delete|head|options)\\s*(?:<[^()]*>)?\\s*\\(",
+    "alias_pattern": "^(?:use|get)([A-Z]\\w*?)(?:Suspense|Infinite)*(?:QueryKey|QueryOptions|MutationOptions|MutationKey|MutationFetcher|Url|Key)?$"
+  }
 }

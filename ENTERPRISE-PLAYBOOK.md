@@ -375,7 +375,7 @@ Frontend repository:
 | From `code-repo-kit/fe/` | To `<frontend>/` | Then |
 |---|---|---|
 | `scripts/docs/*.py`, `scripts/docs/README.md` | `scripts/docs/` | nothing to edit |
-| `scripts/docs/docs-gen.json` | `scripts/docs/docs-gen.json` | fill: `pages_dir`, `not_pages`, `page_entry`, `hook_dirs`, `components_dir`, `shared_dir`, `app_dirs`, `route_files` (your `src/routing`), `route_constants`, `types`, `exclude_paths` (the generated client), `test_pattern`, `api_call_pattern` |
+| `scripts/docs/docs-gen.json` | `scripts/docs/docs-gen.json` | fill: `pages_dir`, `not_pages`, `page_entry`, `hook_dirs`, `components_dir`, `shared_dir`, `app_dirs`, `route_files` (your `src/routing`), `route_constants`, `types`, `exclude_paths` (the generated client), `test_pattern`, `api_call_pattern`, `generated_client.dirs` (the same generated client folders: hooks calling Orval functions then get their `METHOD /path` in the `API calls` column) |
 | `AGENTS.md`, `.github/copilot-instructions.md`, `.github/instructions/pages|services.instructions.md`, `.github/agents/*`, `.github/prompts/*` | same paths | reword as for the backend |
 | not copied | | `.github/hooks/`, `.github/workflows/`; `scripts/docs/gen-graph-fe.ts`, `tsconfig*.json`, `out/` (precise graph through the TypeScript compiler, later) |
 
@@ -726,7 +726,7 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 
 | Generator | Backend output | Frontend output |
 |---|---|---|
-| `gen-codebase-map.py` | modules and layers with class counts, sub-packages such as `dao/model` as layers of their own (layout from `docs-gen.json`) | page folders with purpose, hooks, components, API calls, BroadcastChannels (layout from `docs-gen.json`) |
+| `gen-codebase-map.py` | modules and layers with class counts, sub-packages such as `dao/model` as layers of their own (layout from `docs-gen.json`) | page folders with purpose, hooks, components, API calls (literal paths, and `METHOD /path` for calls to a generated client named in `generated_client`), BroadcastChannels (layout from `docs-gen.json`) |
 | `gen-components.py` | one row per class: layer or sub-layer, annotations, injected dependencies, tables, `file:line` | the shared component library: props, used-by pages |
 | `gen-routes.py` | - | URL -> page component, nested routes joined, route constants resolved, enclosing layout |
 | `gen-api-index.py` | every OpenAPI operation with its handler (matched by operationId or by verb + path), plus hand-written routes outside the contract | - |

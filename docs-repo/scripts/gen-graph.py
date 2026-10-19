@@ -409,7 +409,11 @@ def main():
         add_node(f'feature:{f}', 'feature', f, context_of_page(f), 'fe', strip(r.get('Entry')), strip(r.get('Purpose')))
         fe_exports[f] = [f] + [x.strip() for x in re.split(r',\s*', (r.get('Public exports') or '') + ',' + (r.get('Components') or '')) if x.strip()]
         for url in (x.strip() for x in r.get('API calls', '').split('<br>') if x.strip()):
-            hits = [n for n in list(nodes.values()) if n['kind'] == 'endpoint' and url_matches(url, re.sub(r'^\w+\s+', '', n['label']))]
+            # a cell entry is a bare path (literal call: any method) or `METHOD /path` (generated-client call: that method only)
+            um = re.match(r'^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+(\S.*)$', url, re.I)
+            method, path = (um.group(1).upper(), um.group(2)) if um else ('', url)
+            hits = [n for n in list(nodes.values()) if n['kind'] == 'endpoint' and (not method or like(n['label'], f'{method} *'))
+                    and url_matches(path, re.sub(r'^\w+\s+', '', n['label']))]
             if not hits:
                 add_node(f'url:{url}', 'url', url, f, 'fe', '', 'no BE endpoint matched (external service or stale map?)')
                 add_edge(f'feature:{f}', f'url:{url}', 'calls')

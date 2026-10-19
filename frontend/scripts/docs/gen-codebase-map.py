@@ -9,14 +9,24 @@ Channels: a file containing `new BroadcastChannel(` is a channel module; its cha
 string constant in that file (else the literal passed to the constructor, else the file name) and gets the suffix
 `.{*}` when the constructor argument is not a literal (one channel per session etc.). A file that imports from a
 channel module is a channel hook module. A page `pub`lishes when it imports a symbol matching /publish/i from a channel
-or channel hook module, `sub`scribes for /subscri/i; the row whose folder holds the channel module `defines` it."""
+or channel hook module, `sub`scribes for /subscri/i; the row whose folder holds the channel module `defines` it.
+
+API calls: literal paths matched by `api_call_pattern` in the page's files (as today), plus, when `generated_client.dirs`
+names the folders of a generated client (Orval: axios, custom mutator, fetch, react-query / swr wrappers), the calls
+to its exported functions resolved to `METHOD /path`. The generated files are read by this script only (they may stay
+in `exclude_paths`; the page scan still skips them): every `export const|function <name>` body yields the first literal
+path (template or quoted string starting with `/`, host and `?query` dropped) and the method (`method: 'GET'` or an
+`axios.get(`-style verb); a request function whose path sits in a `get<Name>Url` helper takes the helper's path, and
+wrapper names (`use<Name>`, `get<Name>QueryKey`, `get<Name>QueryOptions`, `get<Name>MutationOptions`, `get<Name>Url`,
+`get<Name>Key`, Suspense/Infinite variants) map back to the operation `<name>`. A hook file contributes a call when it
+imports the name from a generated folder (relative, `@/` or alias import) and uses it; unknown names are ignored."""
 import argparse
 import os
 import re
 import sys
 
 sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
-from _common import (read_text, write_text, source_files_cfg, resolve_out, rel_path, header, escape_cell,
+from _common import (read_text, write_text, source_files, source_files_cfg, resolve_out, rel_path, header, escape_cell, posix,
                      unique, sort_key, under, load_config, utf8_stdout)
 
 DEFAULTS = {
@@ -25,6 +35,14 @@ DEFAULTS = {
     'app_dirs': ['src/routing', 'src/components/layout', 'src/App.tsx', 'src/main.tsx'],
     'exclude_paths': [], 'test_pattern': r'\.(test|spec|stories)\.',
     'api_call_pattern': r'(?:fetch|axios\.\w+|api\.\w+)\(\s*(?:`([^`]*)`|[\'"]([^\'"]*)[\'"])',
+    # generated client (Orval output): `dirs` = [] keeps the feature off; the patterns are Orval's shapes (see README)
+    'generated_client': {
+        'dirs': [],
+        'function_pattern': r'(?m)^export\s+(?:const|let|async\s+function|function)\s+(\w+)',
+        'call_pattern': r'`((?:\$\{[^}]*\}|https?://[^/`]+)?/[^`\s][^`]*)`|[\'"]((?:https?://[^/\'"]+)?/[^\'"\s][^\'"]*)[\'"]',
+        'method_pattern': r'\bmethod:\s*[\'"](\w+)[\'"]|\w\.(get|post|put|patch|delete|head|options)\s*(?:<[^()]*>)?\s*\(',
+        'alias_pattern': r'^(?:use|get)([A-Z]\w*?)(?:Suspense|Infinite)*(?:QueryKey|QueryOptions|MutationOptions|MutationKey|MutationFetcher|Url|Key)?$',
+    },
 }
 
 
@@ -113,12 +131,91 @@ def main():
                     uses.append(f'sub {cname}')
         return unique(uses)
 
+    # ---- generated client (Orval etc.): exported function name -> (METHOD, path) ----
+    gc = cfg['generated_client']
+    gen_dirs = [os.path.join(root, d) for d in gc.get('dirs') or []]
+    gen_rel = [re.sub(r'^src/', '', posix(d).strip('/')) for d in gc.get('dirs') or []]  # alias imports ('@api/x') match by suffix
+    alias_rx = re.compile(gc['alias_pattern'])
+
+    def alias(name):
+        # wrapper name -> operation name: useListPets / getListPetsQueryKey / getListPetsUrl -> listPets
+        am = alias_rx.match(name)
+        return am.group(1)[:1].lower() + am.group(1)[1:] if am else ''
+
+    def norm_path(p):
+        # `${BASE}` -> <BASE> as for literal calls, host / leading `${baseURL}` / `?query` dropped, params -> {*}
+        p = re.sub(r'\$\{BASE\}', '<BASE>', p, flags=re.I)
+        p = re.sub(r'^https?://[^/]+|^\$\{[^}]*\}(?=/)|\?.*$', '', p)
+        return re.sub(r'\$\{[^}]+\}', '{*}', p)
+
+    gen_ops = {}
+    if gen_dirs:
+        fn_rx, call_rx, meth_rx = re.compile(gc['function_pattern']), re.compile(gc['call_pattern']), re.compile(gc['method_pattern'])
+        test_rx = re.compile(cfg['test_pattern'], re.I) if cfg['test_pattern'] else None
+        found = {}  # name -> [method, path, body]
+        for d in gen_dirs:
+            if not os.path.isdir(d):
+                continue
+            for f in source_files(d, ['*.ts', '*.tsx'], ('node_modules', '.git')):
+                if test_rx and test_rx.search(os.path.basename(f)):
+                    continue
+                t = re.sub(r'(?s)/\*.*?\*/', lambda m: re.sub(r'[^\r\n]', ' ', m.group(0)), read_text(f))  # block comments only: `//` is part of urls
+                starts = list(fn_rx.finditer(t))
+                for i, m in enumerate(starts):
+                    body = t[m.end():starts[i + 1].start() if i + 1 < len(starts) else len(t)]
+                    pm, mm = call_rx.search(body), meth_rx.search(body)
+                    found.setdefault(m.group(1), [next((g for g in mm.groups() if g), '').upper() if mm else '',
+                                                  next((g for g in pm.groups() if g), '') if pm else '', body])
+        # fetch client: the request function has the method, its `get<Name>Url` helper has the path
+        for v in found.values():
+            if v[0] and not v[1]:
+                v[1] = next((found[h][1] for h in re.findall(r'\b(\w+)\s*\(', v[2]) if h in found and found[h][1]), '')
+        # url / query-key helpers have the path only: the method comes from the operation they belong to
+        for name, v in found.items():
+            if v[1] and not v[0]:
+                v[0] = found.get(alias(name), ['', '', ''])[0]
+        gen_ops = {n: (v[0], norm_path(v[1])) for n, v in found.items() if v[0] and v[1]}
+
+    def from_generated(from_file, spec):
+        key = resolve_import(from_file, spec)
+        if key:
+            return under(os.path.join(root, key), gen_dirs)
+        s = re.sub(r'^[@~]?/?(?:src/)?', '', spec)
+        return any(s == d or s.startswith(d + '/') for d in gen_rel)
+
+    def generated_calls(f, text):
+        # names imported from a generated folder (and used outside the import) -> METHOD /path through gen_ops
+        out = []
+        rel = rel_path(root, f)
+        for m in re.finditer(r'(?m)^import\s+(?:\{([^}]*)\}|\*\s+as\s+(\w+))\s+from\s+[\'"]([^\'"]+)[\'"]', text):
+            if not from_generated(rel, m.group(3)):
+                continue
+            rest = text[:m.start()] + text[m.end():]
+            names = []
+            if m.group(2):
+                names = re.findall(r'\b' + re.escape(m.group(2)) + r'\.(\w+)', rest)
+            else:
+                for s in (x.strip() for x in m.group(1).split(',')):
+                    if not s or s.startswith('type '):
+                        continue
+                    orig, _, local = (x.strip() for x in s.partition(' as '))
+                    if re.search(r'\b' + re.escape(local or orig) + r'\b', rest):
+                        names.append(orig)
+            for n in names:
+                op = gen_ops.get(n) or gen_ops.get(alias(n))
+                if op:
+                    out.append(f'{op[0]} {op[1]}')
+        return out
+
     def api_calls(files):
         apis = set()
         for f in files:
-            for m in api_rx.finditer(read_text(f)):
+            t = read_text(f)
+            for m in api_rx.finditer(t):
                 u = next((g for g in m.groups() if g is not None), '')
                 apis.add(re.sub(r'\$\{[^}]+\}', '{*}', re.sub(r'\$\{BASE\}', '<BASE>', u, flags=re.I)))
+            if gen_ops:
+                apis.update(generated_calls(f, t))
         return sorted(apis, key=sort_key)
 
     def entry_of(d_full, page):

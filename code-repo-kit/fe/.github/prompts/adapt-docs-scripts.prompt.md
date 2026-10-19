@@ -35,17 +35,26 @@ person reviews your output for safety first and then runs the generators.
 2. **Layout evidence.** For every key in the README table write the value for this repository and one path that
    proves it (the pages folder, a hook folder, a component folder with its `index.ts`, the routing file and the
    route object or `<Route>` it contains, the route-constants export, a types file, the generated client folder, a
-   test file name). Unknown or absent things get the default and the reason.
+   test file name). Unknown or absent things get the default and the reason. For `generated_client` open exactly one
+   generated file (its first exported function is enough) and one hook that imports from the generated folder: the
+   evidence is the `export const <name> =` line with the `url:` / `axios.<verb>(` / `method:` line below it, and the
+   hook's `import { ... } from '<generated folder>'` line; `dirs` lists the generated folders (repo-relative, the same
+   paths as in `exclude_paths`), the four patterns keep their defaults when those lines look like Orval's output
+   (`method: 'GET'`, `` `/path` ``, `use<Name>` / `get<Name>QueryKey` wrappers). A repository without a generated
+   client keeps `dirs: []`.
 3. **Proposed `docs-gen.json`**, complete, as a code block, with a `_comment` naming the repository and the date.
 4. **Gaps the config cannot express.** When a convention of this repository is outside the config (a router that
-   is neither route objects nor `<Route>`, hooks that call a generated client instead of literal paths, pages whose
-   purpose is not a JSDoc above `export function <Page>`, a BroadcastChannel opened in more than one module),
-   propose the smallest change to the one generator concerned as a unified diff with the regex before and after and
-   one example line of this repository that must match. Never widen a pattern to match everything; never add a
-   dependency.
+   is neither route objects nor `<Route>`, pages whose purpose is not a JSDoc above `export function <Page>`, a
+   BroadcastChannel opened in more than one module), propose the smallest change to the one generator concerned as
+   a unified diff with the regex before and after and one example line of this repository that must match. A
+   generated client whose functions do not look like Orval's (no `method:` / `axios.<verb>(` line, no literal path
+   in the exported function, other wrapper names) is a config case, not a generator diff: propose the smallest change
+   to the `generated_client` pattern concerned in `docs-gen.json`, with the generated line that must match. Never
+   widen a pattern to match everything; never add a dependency.
 5. **Expected outcome.** For each table of `docs/_generated/` say in one line what a correct run must show for this
-   repository (one row per page with a purpose and a non-empty hooks column, every route absolute with its page
-   component and layout, the shared components with their users, the types per file, the `@docs` tags).
+   repository (one row per page with a purpose and a non-empty hooks column, an `API calls` column with `METHOD /path`
+   entries for every page whose hooks call the generated client, every route absolute with its page component and
+   layout, the shared components with their users, the types per file, the `@docs` tags).
 6. **Commands the person will run**, in order, after the review: `python3 scripts/docs/gen-all.py --root .`, then
    `python3 scripts/docs/gen-all.py --root . --check`, then `python3 scripts/docs/tag-candidates.py --root . --contexts
    <docs repo>/contexts.yml`, optionally `npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json`,
