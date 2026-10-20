@@ -235,8 +235,9 @@ Example task: "add a transport-mode toggle to the stress table".
 5. `coverage-matrix.py` shows BR -> story -> scenario coverage; `/coverage-report` answers status questions.
 6. Stubs `jira-push.py` and `push-to-tests-repo.py` describe the hand-over to Jira and the tests repository.
 
-The analyst never searches the repository. If the pack is not enough it escalates in a fixed order (task-context
-skill, "When the pack is not enough") and ends with an open question in the spec instead of a guess.
+The analyst never searches the repository or the code. If the pack is not enough it escalates in a fixed order
+(task-context skill, "When the pack is not enough"): wider pack, graph, then at most five code ranges located through
+the generated maps, each recorded as `code-read` evidence and an open question in the spec instead of a guess.
 
 ---
 

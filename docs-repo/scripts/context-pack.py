@@ -732,7 +732,7 @@ def main():
     out.append('## Sources and limits\n')
     out.append('- files: ' + ', '.join(f'`{s}`' for s in dict.fromkeys(sources)) + '\n')
     out.append(f"- truncated sections: {', '.join(truncated) if truncated else 'none'} ({f'budget {budget} lines' if budget else 'no budget: every section complete'})\n")
-    out.append('- rule: open nothing else unless a question above is unanswered; then open only the `file:line` named above in `../backend` or `../frontend`. Record new facts as Open questions / Change log, never as silent assumptions.\n')
+    out.append('- rule: open nothing else unless a question above is unanswered; then open only the `file:line` named above in `../backend` or `../frontend` (the analyst may also locate up to five ranges through the generated maps, analyst agent step 9). Record new facts as Open questions / Change log, never as silent assumptions.\n')
     result = ''.join(out)
 
     slug = re.sub(r'[^a-z0-9]+', '-', '+'.join(tasks).lower()).strip('-')[:60]

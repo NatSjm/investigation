@@ -85,7 +85,7 @@ Read this section first; it is what you will be asked about.
 | Agents never edit `generated/**` or any `index.md` | `scripts/hooks/guard-generated.py` as a `preToolUse` hook; CI `gen-graph.py --check`, `build-index.py --check` |
 | Agents never write `verified.by: human:*` | `AGENTS.md` hard rule; `okf-validate.py` rejects a `verified` whose actor is not `human:`; review of every PR |
 | Every agent-written document is `status: draft` with `generated: { by: copilot/<agent>, at }` | templates, `validate-frontmatter.py`, index badges |
-| The analyst never opens application source; other agents open at most the files their procedure names | agent files (`.github/agents/*.agent.md`), context pack footer rule |
+| The analyst reads at most five code ranges per task, located through the generated maps, never by a code search; other agents open at most the files their procedure names | agent files (`.github/agents/*.agent.md`), context pack footer rule |
 | An agent cannot finish with an invalid bundle | `agentStop` hook runs the validators (`.github/hooks/docs-quality.json`) |
 | One run, one human review, one commit | process; branch protection on the docs repo |
 | Synthetic data only in docs, fixtures, packs, work items | `AGENTS.md` hard rule; reviewers; Confluence attachments are not imported |
@@ -108,7 +108,7 @@ keep the `preToolUse` guard on, and never auto-merge an agent's PR. Interactive 
 rules; the hooks apply to both.
 
 **Is it safe to let Copilot read the code at all?** The documentation agents read maps and contracts first and open a
-named source range only when a procedure says so; the analyst never does. That is less exposure than a developer's
+named source range only when a procedure says so; the analyst at most five ranges per task. That is less exposure than a developer's
 normal Copilot session. The real controls are the same as for any Copilot use: content exclusion, repository
 permissions, and review of what gets committed.
 
@@ -660,8 +660,8 @@ the signal to bring that context through Runs 1 to 4 next, not to let the analys
 What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: build the pack, read it top to bottom (spec, calculations, flows,
 graph, contracts, tables, related work), check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
 per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when blocking, into the
-spec's Open questions. Never read source; only when the pack leaves a question and names a `file:line`, open that
-range and record the fact as an open question (decision and setup: 17.2 and section 19). On a finished feature the
+spec's Open questions. Read source only when the pack leaves a question open: at most five ranges, located through
+the maps, each recorded as `code-read` evidence and an open question (decision and setup: 17.2 and section 19). On a finished feature the
 input is a change request and the output is delta stories only (17.1).
 
 The everyday sequence:
@@ -758,7 +758,7 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 
 | Agent | Input | May read | Writes | Start with it in |
 |---|---|---|---|---|
-| `analyst` | spec ID, calculation, graph node, free text, analytics question | the pack; a named `file:line` only when blocked | `work-items/<ID>.yml`, open questions in the spec, `generated/analytics/*` | week 1 |
+| `analyst` | spec ID, calculation, graph node, free text, analytics question | the pack; up to five code ranges located through the maps when it leaves a question open | `work-items/<ID>.yml`, open questions in the spec, `generated/analytics/*` | week 1 |
 | `spec-writer` | context + ID | pack, `generated/graph/<ctx>.md`, contracts, the entry-point class | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | week 1 |
 | `calc-auditor` | calculation name, spec ID or formula page | the calculator and its unit test, nothing else | `domain/calculations/<name>.md` with audit table | week 1 |
 | `confluence-migrator` | one page path | the page, the pack, `generated/` | merged concept, glossary rows, page moved to `_done/` | week 2 |
@@ -835,9 +835,16 @@ describe only the delta; without a change request the agent says "implemented, n
 the analyst tasks like "ADM-001: warn when a parameter an open session has snapshotted is edited", not bare IDs,
 unless the feature is new. Example of a delta story: `work-items/ADM-001.yml`, story S4.
 
-**17.2 Code access for the analyst: allowed locally, absent on the web.** Decision: the analyst may open exactly the
-`file:line` a pack names in `../backend` or `../frontend`, when a question blocks the task, and must record what it
-learned as an open question in the spec. The code repositories are sibling checkouts (section 19). Where they are
+**17.2 Code access for the analyst: allowed locally, absent on the web.** Decision (revised 2026-10-20): when the
+pack, a rebuilt pack and the graph leave a question open that the answer or the analysis needs, the analyst may read at
+most five ranges of 40-120 lines per task in `../backend` or `../frontend`. It locates them through the generated
+maps - a `file:line` the pack names, `graph-query.py --find`, `components.md`, `codebase-map.md`, the `@docs` tags -
+never by searching code or walking folders. A finding is cited as `code-read <file:line>` in the analysis document and
+appended to the spec's Open questions; a story resting on it is `needs-spec-review`, and its acceptance criteria still
+cite a (draft) rule. The earlier rule - only a `file:line` the pack itself names, only when the task is blocked - left
+the analyst with nothing to do but stop while the specs of a context are thin drafts, which is the normal state in the
+pilot. When a context's specs are verified this access goes mostly unused; an analyst that still reads code often for
+a mature context points at a spec that misses something. The code repositories are sibling checkouts (section 19). Where they are
 not available, for example Copilot chat on github.com or a machine with the docs repo only, the agent records the
 question and stops; nothing else in the procedure depends on code access, so the web experience is not broken.
 Headless runs that should have this access pass `--add-dir ../backend --add-dir ../frontend`; runs that should not,

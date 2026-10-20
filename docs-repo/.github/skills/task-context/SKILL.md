@@ -77,7 +77,10 @@ into one pack and how `--task` is resolved.
 6. Still missing -> it is a documentation gap, not a context problem: write it as an open question in the spec,
    hand off to `spec-writer` / `doc-sync`, label your output `needs-spec-review`. Never fill the gap from memory.
 
-The analyst may do step 5 only when the question blocks the task and the pack names the range (analyst agent, step 7).
+The analyst may do step 5 when steps 1-4 leave a question open that its answer or analysis needs, and may locate the
+range itself through the maps (`graph-query.py --find`, `generated/be/components.md`, `generated/fe/codebase-map.md`,
+`docs-tags.md`) - at most five ranges per task, each finding cited as `code-read <file:line>` and written as an Open
+question (analyst agent, step 9).
 
 ## Why a script and not "just search"
 Deterministic, budgeted, reviewable (the pack can be attached to the PR), cheap (one read instead of 10-20 tool

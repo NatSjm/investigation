@@ -742,3 +742,39 @@ If `rag.md` is already in `raw-html/`, move it to `confluence-import/<SPACE>/rag
 ### 22.3 Playbook (read only)
 
 The "A knowledge base another team already generated" paragraph before section 0 names the file and the folder.
+
+## 23. The analyst may read code located through the maps (investigation commits after `eeb6aa4`, 2026-10-20)
+
+One topic: the analyst could open code only at a `file:line` the pack itself named, and only when the task was
+blocked. While the specs of a context are thin drafts, which is the normal state in the pilot, the pack often names no
+range for the fact an analysis needs, so the analyst could only stop and hand off. Now, when the pack, a rebuilt pack
+and the graph leave a question open that the answer or the analysis needs, the analyst reads at most **five ranges per
+task**, 40-120 lines each, in `../backend` or `../frontend`. It locates them through the generated maps (a `file:line`
+the pack names, `graph-query.py --find`, `generated/be/components.md`, `generated/fe/codebase-map.md` and
+`components.md`, the `@docs` tags), never by searching code or walking folders. A finding is evidence, never a rule:
+cited as `code-read <file:line>` with the commit from `generated/manifest.yml` in the analysis document, appended to
+the spec's Open questions, and a story resting on it is `needs-spec-review` with its acceptance criteria still citing a
+(draft) rule. Five ranges used and still open is a documentation gap: open question, handoff, stop. The other agents'
+code access is unchanged.
+
+### 23.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/analyst.agent.md` | description and role sentence; step 2 (rebuild the pack before any code), step 4 (a question may be answered from code as unverified), step 9 rewritten as above - if you adapted the file's domain sentence, re-apply it |
+| `.github/prompts/analyse-request.prompt.md` | steps 2 and 3 name step 9 and the five-range limit for the whole request |
+| `work-items/_analysis-template.md` | Parts evidence may be `code-read <file:line>`; Sources lists the code ranges read, how each was located, the commit and the question it answered |
+| `.github/skills/task-context/SKILL.md` | the analyst line under "When the pack is not enough" (it also named the wrong step) |
+| `scripts/context-pack.py` | the pack footer rule mentions the analyst's five ranges; the rest unchanged |
+
+### 23.2 Docs repository: single rows
+
+`.github/copilot-instructions.md`, the analyst row of the routing table: "context pack; up to five code ranges located
+through the maps when it leaves a question open". `CONCEPT.md`, the context pack paragraph: the same exception in one
+clause. Analysis documents already written are not touched.
+
+### 23.3 Playbook and guides (read only)
+
+Playbook section 0 (the safety table row and the paragraph on letting Copilot read the code), section 12 (the summary
+of the analyst agent), 17.2 (the decision, revised with its reason) and section 15 (the catalogue row); `GUIDE.md`,
+`HANDBOOK.md` and `ANALYST-DOCS-SETUP.md` say the same. No kit file changes.
