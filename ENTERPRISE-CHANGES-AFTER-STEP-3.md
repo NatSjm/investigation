@@ -487,3 +487,21 @@ that is not an image, a page already in `_done/`, a page removed from the export
 
 Playbook section 9 (the import paragraph), section 13 (Confluence changes), section 14 (the catalogue row) and section
 18 (the inventory row); runbook step 3 and the layout table row; handbook tree and flow C. No kit file changes.
+
+## 15. Legacy pages in the source priority (investigation commits after `736c7e8`, 2026-10-20)
+
+One topic: row 7 of the source-priority reference named the whole `confluence-import/` folder, written before the
+folder gained `raw-html/` (the HTML export as received) and `<SPACE>/_attachments/` (images). An agent following the
+row could open the raw HTML instead of the Markdown page. The row now names
+`confluence-import/<SPACE>/<section>/<page>.md`, says the pack's "Legacy pages" section lists them and `_done/` holds
+the migrated ones, and excludes `raw-html/` and `_attachments/` explicitly. Cost and "gives you" unchanged.
+
+### 15.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/skills/write-feature-spec/references/source-priority.md` | row 7 as above; rows 8 and below are the ones `source-priority-from-code` rewrites for your layout, so re-copy before running that prompt, or edit row 7 by hand if you already did |
+
+### 15.2 Kits, playbook
+
+Nothing changes.
