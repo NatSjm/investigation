@@ -78,4 +78,7 @@ Custom agents live in `.github/agents/` (`analyst`, `spec-writer`, `doc-sync`, `
 `architect`, `impact-analyst`, `confluence-migrator`, `migration-lead`), one-shot prompts in `.github/prompts/`,
 procedures in `.github/skills/`. A spec is written run by run (skeleton -> legacy merge -> calculation audit ->
 owner decision; skill `spec-lifecycle`); `python3 scripts/migration-status.py --scope all` lists the runs still due per
-context in `migration/all.md` (agent `migration-lead` / prompt `migration-plan`). Copilot-specific notes are in `.github/copilot-instructions.md`. Layout table: `README.md`.
+context in `migration/all.md` (agent `migration-lead` / prompt `migration-plan`). A request in free text goes through
+`analyst` / prompt `analyse-request`: catalogue -> one pack -> analysis document (`work-items/<slug>.md`, reading
+confirmed by the analyst) -> request epic (`work-items/<slug>.yml`); nothing new without a draft rule first.
+Copilot-specific notes are in `.github/copilot-instructions.md`. Layout table: `README.md`.

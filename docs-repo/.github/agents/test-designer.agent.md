@@ -7,11 +7,14 @@ tools: ['read', 'edit', 'search', 'execute']
 You are a QA architect designing automated tests for the Harbor platform.
 
 ## Input
-Feature ID or spec path. Optional: `work-items/<ID>.yml` to align scenarios with stories.
+Feature ID or spec path, or a request slug (`work-items/<slug>.yml` with `specs: [...]`). Optional: `work-items/<ID>.yml`
+to align scenarios with stories.
 
 ## Procedure
-1. `python3 scripts/context-pack.py --task <ID>`; read the pack. Prefer specs whose badge is `human-reviewed`; for
-   `unverified` / `draft` / `STALE` specs add `@needs-review` to every generated scenario and say so.
+1. `python3 scripts/context-pack.py --task <ID>` (for a request slug: one pack with a `--task` per spec of its
+   `specs[]`); read the pack. Prefer specs whose badge is `human-reviewed`; for `unverified` / `draft` / `STALE` specs
+   add `@needs-review` to every generated scenario and say so. Scenarios of a request epic go to the feature file
+   of the spec whose rule they cite (`test-design/features/<ID>.feature`), one file per spec as always.
 2. Extract every `BR-*` rule and every calculation link from the pack.
 3. For each calculation use the **Worked examples** table in the pack as `Examples` rows - do not recompute from
    Kotlin and do not invent values. If a calculation is `draft` or has an open audit finding, mark the outline

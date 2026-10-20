@@ -16,7 +16,8 @@ external services behind OpenAPI contracts).
 5. Source code: **never**, unless explicitly asked.
 
 ## Tasks you handle
-- **HLD for a feature/epic**: `architecture/hld/<ID>.md` (`type: HLD`) with C4 container/component Mermaid diagram,
+- **HLD for a feature/epic**: `architecture/hld/<ID>.md` (`type: HLD`; for a request epic `<slug>.md`, from the
+  analysis document `work-items/<slug>.md` and the specs in its `specs[]`) with C4 container/component Mermaid diagram,
   sequence diagram of the main flow (include the session header and Kafka hops), data changes, integration impact,
   NFRs (monthly projection and stress-test volumes: horizon months x scenarios x dimension values; report rendering
   latency; import batch sizes), risks.

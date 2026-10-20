@@ -619,3 +619,36 @@ Nothing beyond the copy; existing `work-items/<ID>.yml` files validate as before
 ### 18.3 Playbook (read only)
 
 Nothing changes.
+
+## 19. The analyst's procedure for a free-text request (investigation commits after `7169ac1`, 2026-10-20)
+
+Step 4 of the analyst request flow. The analyst agent now works resolve -> gather -> analyse -> produce: subjects from
+`generated/catalogue.md` (new work placed in its context, contexts with code but no spec included), one merged pack
+with a `--task` per subject, a trust check, **question mode** (answer with citations, facts / unverified / unknown,
+one line on how the question was read, evidence requests into Open questions), **analyse** (the analysis document
+from the template; the Reading line and the Parts table are shown and the agent stops until the analyst confirms;
+then `status: confirmed`), **nothing new without a rule** (draft rule or spec via `spec-writer`, proposed contract,
+draft calculation, ADR / HLD via `architect` - before any story), **produce** (feature epic by ID or request epic
+with `specs[]` and `depends_on` across contexts, validated), analytics mode and the `file:line` rule unchanged.
+New prompt `analyse-request` (modes `question` | `analysis` | `work-items`); handoffs to `test-designer`,
+`spec-writer` and `architect` take a request slug; `test-designer` builds one pack per spec of a request's `specs[]`
+and writes scenarios into each spec's feature file; `hld-from-spec` and the architect accept a request slug (HLD
+from the analysis document).
+
+### 19.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/analyst.agent.md` | the procedure above (replace your copy, re-apply your product name and `../<be>` / `../<fe>` paths) |
+| `.github/prompts/analyse-request.prompt.md` | new |
+| `.github/agents/test-designer.agent.md`, `.github/prompts/tests-from-spec.prompt.md` | request slug input, one feature file per spec |
+| `.github/agents/architect.agent.md`, `.github/prompts/hld-from-spec.prompt.md` | HLD for a request epic |
+
+### 19.2 What to do
+
+`.github/copilot-instructions.md`: the `/analyse-request` row of the job table. `README.md` quick start: the
+`/analyse-request` bullet. `AGENTS.md`: the sentence in "Agents, prompts, skills". Your own wording, same content.
+
+### 19.3 Playbook (read only)
+
+Step 13 (test with three free-text change requests), step 14 (the agent file block replaced by the new procedure).

@@ -39,7 +39,9 @@ flowchart LR
 - `scripts/context-pack.py --task <ID>` — assemble a **task-scoped context** for an analyst: the spec, its
   calculations, glossary terms, graph neighbourhood and contract anchors for one feature ID (e.g. `P1-001`).
 - `@doc-sync` / `/spec-from-code featureId=P1-001` — create or refresh a spec from `generated/`.
-- `@analyst` / `/jira-from-spec` — stories & subtasks → `work-items/`.
+- `@analyst` / `/jira-from-spec` — stories & subtasks → `work-items/`; `/analyse-request "<free text>"` — a question
+  or a change request that names no ID and spans contexts → `generated/catalogue.md`, one merged pack, the analysis
+  document `work-items/<slug>.md` (reading confirmed by the analyst), then the request epic `work-items/<slug>.yml`.
 - `@test-designer` / `/tests-from-spec` — Gherkin + fixtures → `test-design/`.
 - `@architect` / `/hld-from-spec` — HLD.
 - `@impact-analyst` / `/impact-from-graph` — blast radius from `generated/graph/` (no source reading);

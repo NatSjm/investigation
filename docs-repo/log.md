@@ -16,6 +16,10 @@
   story may cite rules of several specs) and the analysis document `work-items/<slug>.md` written first from
   `work-items/_analysis-template.md`; `validate-work-items.py` checks both shapes, `coverage-matrix.py` counts the
   stories for every spec they cite. Rule kept: nothing new without a (draft) rule.
+* **Analyst procedure for free-text requests.** `analyst` works resolve (catalogue) -> gather (one pack) -> analyse
+  (analysis document, reading confirmed by the analyst) -> produce (feature or request epic); question mode with
+  citations; nothing new without a draft rule, contract proposal or calculation concept first. New prompt
+  `analyse-request`; `test-designer`, `architect`, `tests-from-spec` and `hld-from-spec` accept a request slug.
 
 ## 2026-10-19
 * **Confluence HTML export importer; four legacy pages imported.** `scripts/confluence-import.py` (standard library)
