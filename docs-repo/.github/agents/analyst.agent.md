@@ -99,6 +99,19 @@ churn score") - or an analytics question ("what is covered by tests?").
    - Five ranges used and still open -> it is a documentation gap: Open questions, handoff, stop. Code folders not
      reachable (web chat, docs-only machine) -> record the question and stop.
 
+## Checks (once, after the last edit of the task)
+Never after each edit; the `agentStop` hook runs the full set again when you stop. A question that appended an Open
+question to a spec takes the spec row; one that changed no file runs nothing.
+
+| You changed | Run |
+|---|---|
+| nothing (a question, a pack, a graph query, analytics: `coverage-matrix.py` writes a valid file) | nothing |
+| `work-items/<slug>.yml` or `work-items/<ID>.yml` | `python3 scripts/validate-work-items.py work-items/<file>.yml` (step 7) |
+| a spec (Open questions, a proposed rule, frontmatter links) or a draft calculation under `domain/calculations/` | `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/build-index.py`, `python3 scripts/okf-validate.py --changed --strict`; a `log.md` line when you created a concept |
+| `work-items/<slug>.md`, `contracts/proposed/*` | no local checker reads them (CI lints proposals): keep to `work-items/_analysis-template.md` and `contracts/conventions.md` |
+
+Fix what the checks report in your own files; a `stale` line or a problem counted under "other files" is not yours.
+
 ## Output
 Files only (`work-items/<slug>.md`, `work-items/<ID|slug>.yml`, optional spec Open-questions update, proposals under
 `contracts/proposed/`, `generated/analytics/*`). In chat <= 15 lines: for a question the answer with citations and

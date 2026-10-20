@@ -107,7 +107,7 @@ Everything is a plain Python 3.11 script under `scripts/` with long flags, no pa
 | `gen-catalogue.py` | `generated/catalogue.md`: one line per context, flow, spec with aliases, calculation with parameters, endpoint, topic, table, external service and glossary alias | the analyst resolving a free-text request |
 | `context-pack.py` | `.context/<task>.md`: the task-scoped pack for one or several subjects - spec body, calculations with worked examples, flows, graph neighbourhood with `file:line`, contract operations, table pages, datasets, work items, tests, legacy pages that mention the subject | every agent, before anything else |
 | `build-index.py` | every `index.md` with one line and the trust badge per concept | agents orienting, CI |
-| `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py` | errors on a malformed bundle, spec or work-item file | the stop hook, CI, agents before finishing |
+| `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py` | errors on a malformed bundle, spec or work-item file | the stop hook, CI, agents once after the last edit of a task, for what they changed (`--changed`) |
 | `coverage-matrix.py` | `generated/analytics/coverage-matrix.md`: which rules have stories and scenarios, badges, audits | the analyst's analytics mode, management |
 | `migration-status.py` | `migration/<scope>.md`: the lifecycle runs still due per context with the command for each | the migration lead |
 | `map-paths.py`, `check-freshness.py` | changed code paths to affected specs (`docs-map.yml`); the CI gate in the code repos when mapped code changed but no spec was re-verified | doc-sync, the code repos' CI |

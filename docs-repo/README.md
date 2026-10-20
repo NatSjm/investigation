@@ -71,6 +71,7 @@ The backend is layered (package-by-layer, ADR-0004): a bounded context is a set 
 ## Local checks
 ```bash
 python3 scripts/okf-validate.py --strict          # OKF §11 conformance + warnings (no pyyaml needed)
+python3 scripts/okf-validate.py --changed --strict # only the concept files changed since HEAD can fail
 python3 scripts/build-index.py                   # regenerate index.md files (--check in CI)
 python3 scripts/validate-frontmatter.py          # repo-specific keys (IDs, BR numbering, links)
 git -C ../harbor-backend diff --name-only main | sed 's#^#be/#' | python3 scripts/map-paths.py

@@ -79,7 +79,8 @@ Source code: never.
 6. **Frontmatter**: `generated: { by: copilot/architect, at: <now> }`, `sources[]` listing every file you read with
    its `generated/manifest.yml` entry when it has one; keep `status` as it is unless rows changed, then `status: draft`
    until a human re-verifies. Do not touch `verified`.
-7. Finish with `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`; add one `log.md` line.
+7. Finish with `python3 scripts/okf-validate.py --changed --strict` and `python3 scripts/build-index.py`;
+   add one `log.md` line.
 
 ## Output
 **A.** The edited page(s). **B. In chat, under 15 lines:** rows added, removed or changed per table; contracts

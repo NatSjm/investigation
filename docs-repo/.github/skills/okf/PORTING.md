@@ -17,3 +17,6 @@ Source: https://github.com/scaccogatto/okf-skills (MIT) · Spec: GoogleCloudPlat
 
 Known gaps of the standard-library port vs `okf_validate.py`: no `--migrate` (v0.1→v0.2), no `usage_window`
 checks, no JSON output. Use the Python checker in CI for full §11 + warnings coverage.
+Additions of the port: `--changed [BASE]` and `--path <folder or file>` choose which files can fail while the
+whole bundle is still read (links resolve from the root `index.md` that carries `okf_version`); a past
+`stale_after` is listed as `stale` and never fails a run (the reference checker does not report it).

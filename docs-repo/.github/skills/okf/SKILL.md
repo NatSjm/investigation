@@ -34,20 +34,25 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
    `domain/calculations/_template.md`, `architecture/adr/template.md`).
 2. Fill `type`, `title`, `description` (one sentence — it becomes the index line), `tags`, `generated`,
    `sources` you actually read; cross-link related concepts.
-3. Run `scripts/build-index.py` (rewrites all `index.md`), then validate (below).
+3. After the last concept of the task, not per file: `scripts/build-index.py` (rewrites all `index.md`), then
+   validate (below).
 
 ### maintain
 1. Find affected concepts (`search` by `resource`, code path via `docs-map.yml`, or topic).
 2. Update body + `generated: { by: copilot/<agent>, at }`; keep existing `verified` only if the change is
    editorial — otherwise remove it (a human must re-verify). Deprecate, never silently delete.
-3. `build-index.py`; `log.md` entry only for lifecycle events; validate.
+3. After the last edit of the task: `build-index.py`; `log.md` entry only for lifecycle events; validate (below).
 
 ### consume
 1. Read root `index.md`, then the directory `index.md`, then only the concepts you need. Never list directories.
 2. Weigh: `draft`/`deprecated`, past `stale_after`, or no `verified` ⇒ say so in your output.
 3. Numbers covered by an `Attested Computation` come from its worked examples / executor — never re-derive.
 
-## Validate before finishing
-- Dev machine (no pyyaml): `scripts/okf-validate.py --strict`
+## Validate once, at the end of the task
+Only when the task changed concepts, once after the last edit, never after each edit; a task that only read runs
+nothing (`AGENTS.md`, Checks). The `agentStop` hook runs the full set again.
+- Dev machine (no pyyaml): `scripts/okf-validate.py --changed --strict` - only the concept files you changed can fail;
+  problems in other files are one count line, not yours to fix.
 - CI / full checker: `python3 .github/skills/okf-validate/scripts/okf_validate.py . --strict` (see `okf-validate` skill).
-Fix every ERROR; under `--strict` fix warnings too.
+Fix every ERROR in your files; under `--strict` fix their warnings too. A `stale` line never fails a run: a person
+re-verifies, a generator refreshes; never move `stale_after` or write `verified` to clear it.

@@ -29,4 +29,4 @@ external services behind OpenAPI contracts).
 ## Style
 Mermaid only (`C4Context`, `C4Container`, `sequenceDiagram`, `erDiagram`, `flowchart`); one diagram <= 25 nodes.
 Terms from `domain/glossary.md`. Provenance: `generated: { by: copilot/architect, at }`, `sources[]`.
-Finish with `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`.
+Finish with `python3 scripts/okf-validate.py --changed --strict` and `python3 scripts/build-index.py`.

@@ -18,7 +18,8 @@ description: How to write or update a functional feature spec in this repo (stru
    `generated: { by: copilot/<agent>, at: <ISO> }`, `sources[]` cited via `[^id]`. `last_verified` only after
    checking against `generated/`; never add `verified.by: human:*` yourself.
 7. Add `docs-map.yml` entries for every `code_refs` directory.
-8. Run `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log.
+8. Run `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/okf-validate.py --changed --strict`,
+   `python3 scripts/build-index.py`; log.
 
 Quality bar: a QA engineer must be able to write tests from the spec alone; an analyst must be able to slice
 stories from it alone; a developer must find every code location through `code_refs` / the graph.

@@ -12,4 +12,6 @@ Strictness: ${input:strict:--strict}
    `.github/skills/okf-validate/scripts/`). Also run `python3 scripts/validate-frontmatter.py` and `python3 scripts/validate-work-items.py`.
 2. For every ERROR, fix the file (add frontmatter with `type`, rename stray `README.md` to `index.md`).
 3. For warnings, fix the cheap ones (missing `description`, actor casing, broken internal link).
-4. Re-run until clean; `python3 scripts/build-index.py`. Report: counts before/after, files changed (<= 10 lines).
+4. Re-run once after your fixes; `python3 scripts/build-index.py`. `stale` lines are not failures: list them in the
+   report for their owners, never move `stale_after` or write `verified`. Report: counts before/after, files changed
+   (<= 10 lines).

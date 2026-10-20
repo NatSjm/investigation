@@ -778,3 +778,55 @@ clause. Analysis documents already written are not touched.
 Playbook section 0 (the safety table row and the paragraph on letting Copilot read the code), section 12 (the summary
 of the analyst agent), 17.2 (the decision, revised with its reason) and section 15 (the catalogue row); `GUIDE.md`,
 `HANDBOOK.md` and `ANALYST-DOCS-SETUP.md` say the same. No kit file changes.
+
+## 24. Checks once, at the end of a task, for what it changed (investigation commits after `35b86cb`, 2026-10-21)
+
+Agents ran `okf-validate.py --strict` after nearly every step. Their own files rarely asked for it, but `AGENTS.md`
+("Before finishing any edit"), the `okf` skill (three times) and the `okf-validate` skill's description ("before
+committing any doc change") did, and every step of a task counted as "finishing". The runs checked almost nothing:
+the validator skips `work-items/` (the analyst's main output) and reads only `.md`, and the `agentStop` hook runs the
+same checks anyway. Now the checks run once, after the last edit of a task, only for what it changed, and a task that
+changed no file runs none. The validator changes in three ways:
+
+- `--path` resolves links from the bundle root (the folder whose `index.md` carries `okf_version`). Before, `--path
+  features --strict` reported 55 broken links on a clean bundle and failed.
+- `--changed [BASE]` checks only the concept files changed since BASE (default `HEAD`, untracked files included). A
+  link broken by a renamed or deleted file counts against the change; the problems of the other files are one count
+  line. It needs `git`; without it every file is checked, with a note.
+- A past `stale_after` is listed as `stale` and never fails a run. Before, `--strict` (and with it the hook and CI)
+  would have started failing on 2026-11-03 without any edit (first date: `generated/analytics/coverage-matrix.md`;
+  about 25 concepts between 2027-01-06 and 2027-01-18), and the only "fix" within an agent's reach was to move the
+  date. The reference checker never reported staleness; the index badges and the coverage matrix still do.
+
+### 24.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/okf-validate.py` | `--changed [BASE]`, `--path` checked against the whole bundle, the `stale` level outside the gate, the summary line `N of M concept file(s) checked (...)` with an "other files" line |
+| `.github/skills/okf-validate/SKILL.md` | description (once at the end of a task that changed concepts, never after each edit), the command row, the paragraph on `--changed` / `--path`, the `stale` level, the exit code |
+| `.github/skills/okf/SKILL.md` | produce and maintain step 3 (after the last edit, not per file); "Validate once, at the end of the task" |
+| `.github/agents/analyst.agent.md` | new section "Checks (once, after the last edit of the task)": what you changed -> what you run, nothing for a question, a pack or analytics (if you adapted the file's domain sentence, re-apply it) |
+| `.github/prompts/okf-validate.prompt.md` | step 4: re-run once after the fixes; `stale` lines are reported to their owners, never "fixed" |
+| `.github/skills/okf/PORTING.md`, `scripts/README.md` | the port's additions; the `okf-validate.py` row |
+
+### 24.2 Docs repository: single rows
+
+| File | Rows | Change |
+|---|---|---|
+| `AGENTS.md` | Commands table, Validate row; the sentence "Before finishing any edit: ..." under the table | row: `okf-validate.py --changed --strict` (no flag = whole bundle, `--path <folder or file>`), `[<file>]` on the two other validators; the sentence becomes the section `## Checks: once, at the end of a task, for what it changed` (copy it from the Harbor file) |
+| `.github/copilot-instructions.md` | Guard rails paragraph | the hook runs the validators when an agent stops, so run the checks yourself once, after the last edit of a task that changed files; `stale` lines never fail it |
+| `.github/agents/architect.agent.md`, `calc-auditor`, `confluence-migrator`, `doc-sync`, `spec-writer`, `test-designer`; `.github/skills/spec-lifecycle/SKILL.md`, `write-feature-spec/SKILL.md`; `.github/prompts/integrations-from-contracts.prompt.md`, `okf-produce.prompt.md` | the final validation step | `okf-validate.py --strict` -> `okf-validate.py --changed --strict` (`okf-produce`: "once after the last edit") |
+| `README.md` | Local checks block | a second line `python3 scripts/okf-validate.py --changed --strict` |
+| `CONCEPT.md` | the validators row of the tooling table | "agents once after the last edit of a task, for what they changed (`--changed`)" |
+
+### 24.3 What to do
+
+Nothing else. The hook (`.github/hooks/docs-quality.json`) and CI (`.github/workflows/docs-quality.yml`) keep running
+the whole bundle with `--strict`; with stale dates out of the gate they fail only on real problems.
+
+### 24.4 Playbook and guides (read only)
+
+Playbook section 3 (item 5, Commands table and Checks), section 10 (the paragraph after the four runs), section 14
+(the `okf-validate.py` row) and section 18 (the context-map prompt finishes with `--changed --strict`); `HANDBOOK.md`
+section 4 (the scripts row); `ANALYST-DOCS-SETUP.md` step 4 (the `AGENTS.md` template: Validate row and the Checks
+section). The Claude wrappers in `.claude/commands/` changed too; they belong to this investigation repository only.

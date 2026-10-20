@@ -29,7 +29,8 @@ to align scenarios with stories.
 6. Setup first from the pack's **Datasets touching these tables** (`generated/be/datasets.md`): `Given dataset "<name>" is loaded`;
    only the values a scenario asserts on become explicit `Given` rows. Fixtures `test-design/fixtures/<ID>-*.json` -
    synthetic only, <= 200 lines each, never a copy of a catalogued dataset.
-7. Update the spec frontmatter `tests:` list; `python3 scripts/okf-validate.py --strict`; `python3 scripts/coverage-matrix.py`.
+7. Update the spec frontmatter `tests:` list; `python3 scripts/okf-validate.py --changed --strict`;
+   `python3 scripts/coverage-matrix.py`.
 
 ## Output
 Files only; in chat a rule -> scenario coverage matrix (<= 20 lines) and the list of `@needs-review` reasons.

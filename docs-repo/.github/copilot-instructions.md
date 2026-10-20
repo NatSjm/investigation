@@ -34,8 +34,10 @@ back to `spec-writer` / `doc-sync`.
 JetBrains / CLI: run `scripts/graph-query.py` and paste the output.
 
 ## Guard rails (hooks in `.github/hooks/`)
-`docs-quality.json` rebuilds indexes and runs `okf-validate.py --strict` when an agent stops, and blocks edits
-under `generated/**`. If a hook fails, fix the reported file; do not disable the hook.
+`docs-quality.json` rebuilds indexes and runs `okf-validate.py --strict` and the other validators when an agent stops,
+and blocks edits under `generated/**`; so run the checks yourself only once, after the last edit of a task that changed
+files (`AGENTS.md`, Checks). If a hook fails, fix the reported file; do not disable the hook. `stale` lines
+never fail it.
 
 ## Output discipline
 Files first, chat second (<= 15 lines). Quote `file:line` and spec IDs, never paste source code or long

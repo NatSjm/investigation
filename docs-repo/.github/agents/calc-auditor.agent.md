@@ -33,7 +33,8 @@ A calculation name (`stress_test_monthly`), a spec ID (audit all calculations it
 6. If any finding is not `MATCH`: set the concept `status: draft`, add open questions naming the owner who must
    decide, and set `generated: { by: copilot/calc-auditor, at }`. Worked examples are replaced **only** by values
    copied from the test, with the test method name in the row.
-7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`, `log.md` entry ("audited <name>: n findings").
+7. `python3 scripts/okf-validate.py --changed --strict`, `python3 scripts/build-index.py`, `log.md` entry
+   ("audited <name>: n findings").
 
 ## Output
 The updated concept(s). Chat <= 12 lines: findings count by severity, the two files you opened with line ranges,
