@@ -4,7 +4,7 @@ title: "Graph: stress (be+fe)"
 description: "/session/:sessionId/stress-test` - third meeting step: one monthly table per scenario, transport price chart per scenario and the dimension toggle (city / transport mode)."
 generated:
   by: process:gen-graph
-  at: 2026-10-18
+  at: 2026-10-20
 status: stable
 ---
 # Graph: stress (be+fe)

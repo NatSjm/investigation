@@ -4,7 +4,7 @@ title: "Graph: presentation (fe)"
 description: "/present/:sessionId` - what the client sees on the second screen."
 generated:
   by: process:gen-graph
-  at: 2026-10-18
+  at: 2026-10-20
 status: stable
 ---
 # Graph: presentation (fe)

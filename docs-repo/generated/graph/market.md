@@ -4,7 +4,7 @@ title: "Graph: market (be+fe)"
 description: "/session/:sessionId/scenarios` - second meeting step: list of scenarios of the session, baseline curve info and the editor to add / change / remove scenarios."
 generated:
   by: process:gen-graph
-  at: 2026-10-18
+  at: 2026-10-20
 status: stable
 ---
 # Graph: market (be+fe)

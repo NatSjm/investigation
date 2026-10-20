@@ -4,7 +4,7 @@ title: "Graph: fe-app (fe)"
 description: "app shell: routing, layouts, providers, channel modules"
 generated:
   by: process:gen-graph
-  at: 2026-10-18
+  at: 2026-10-20
 status: stable
 ---
 # Graph: fe-app (fe)

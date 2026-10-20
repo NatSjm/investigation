@@ -4,7 +4,7 @@ title: "Graph: fe-shared (fe)"
 description: "pieces shared by several pages"
 generated:
   by: process:gen-graph
-  at: 2026-10-18
+  at: 2026-10-20
 status: stable
 ---
 # Graph: fe-shared (fe)
