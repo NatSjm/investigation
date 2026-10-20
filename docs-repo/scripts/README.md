@@ -15,7 +15,7 @@ environment variables. Flags are long options (`--check`, `--task P1-001`); `pyt
 | `build-index.py` | regenerate every `index.md` (reserved OKF file) from concept frontmatter with trust badges; `--check` for CI | - |
 | `okf-validate.py` | OKF v0.2 §11 conformance + provenance/trust warnings for the whole bundle (`--strict`, `--max-warnings N`) | - |
 | `validate-frontmatter.py` | repo-specific keys on `Feature Spec` / `Attested Computation` concepts (ID format, BR numbering, calculation and flow links both ways, `parameter_set` keys in `## Parameters` tables vs `generated/be/parameters.md` in both directions) | - |
-| `validate-work-items.py` | `work-items/*.yml` against `_schema.yml` rules (BR citations exist in the spec, estimates, subtasks <= 8 h) | - |
+| `validate-work-items.py` | `work-items/*.yml` against `_schema.yml` rules (feature epics `<ID>.yml` and request epics `<slug>.yml` + `<slug>.md` analysis with `specs: [...]`; BR citations exist in the spec their ID names, estimates, subtasks <= 8 h) | - |
 | `migration-status.py` | migration plan: per context the lifecycle runs still due (skeleton, legacy merge, calculation audit, owner decision) with their commands, pending legacy pages, unaudited calculations -> `migration/<scope>.md` (`--scope all|<ctx>`, `--print`) | - |
 | `map-paths.py` | changed code paths -> affected specs (uses `docs-map.yml`) | - |
 | `check-freshness.py` | CI gate in the code repos: mapped code changed but `last_verified` not bumped | - |

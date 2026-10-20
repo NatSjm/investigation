@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Validates work-items/<ID>.yml against the rules documented in work-items/_schema.yml, without a YAML library:
-feature matches file name and spec exists; every story has summary / estimate (Fibonacci) / acceptance criteria;
-every cited BR exists in the spec; subtasks <= 8 h; jira_key present; no `depends_on` to unknown story ids.
+"""Validates work-items/*.yml against the rules documented in work-items/_schema.yml, without a YAML library.
+Feature epic (work-items/<ID>.yml): feature matches file name and spec exists. Request epic (work-items/<slug>.yml):
+request matches file name (lowercase kebab-case), every specs[] entry exists, analysis: names an existing file.
+Both: every story has summary / estimate (Fibonacci) / acceptance criteria; every cited BR exists in the spec its ID
+names (which must be the feature, or one of specs[]); subtasks <= 8 h; jira_key present; no `depends_on` to unknown story ids.
 Examples:
   python3 scripts/validate-work-items.py                       # all files
   python3 scripts/validate-work-items.py work-items/P1-001.yml"""
@@ -24,6 +26,11 @@ def main():
         wi = os.path.join(repo, 'work-items')
         paths = [rel(repo, os.path.join(wi, f)) for f in sorted(os.listdir(wi), key=str.lower)
                  if f.lower().endswith('.yml') and not f.startswith('_')]
+    spec_files = walk_files(os.path.join(repo, 'features'), '*.md')
+
+    def spec_file(sid):
+        return next((f for f in spec_files if os.path.basename(f).lower() == f'{sid}.md'.lower()), None)
+
     errors = []
     count = 0
     for p in paths:
@@ -34,16 +41,42 @@ def main():
         count += 1
         y = read_text(full)
         name = os.path.splitext(os.path.basename(full))[0]
-        fm = re.search(r'(?m)^feature:\s*(\S+)', y, re.I)
-        feature = fm.group(1) if fm else ''
-        if feature.lower() != name.lower():
-            errors.append(f"{p} : feature '{feature}' must equal file name '{name}'")
-        spec = next((f for f in walk_files(os.path.join(repo, 'features'), '*.md') if os.path.basename(f).lower() == f'{feature}.md'.lower()), None)
-        if spec:
-            spec_text = read_text(spec)
+        spec_texts = {}   # spec ID (lower) -> text; the specs a rule may be cited from
+        rm = re.search(r'(?m)^request:\s*(\S+)', y, re.I)
+        if rm:
+            # request epic: several specs, an analysis document beside the file
+            request = rm.group(1).strip('"\'')
+            if request != name:
+                errors.append(f"{p} : request '{request}' must equal file name '{name}'")
+            if not re.match(r'^[a-z0-9]+(-[a-z0-9]+)*$', request):
+                errors.append(f"{p} : request '{request}' must be lowercase kebab-case (never a spec ID)")
+            sm_ = re.search(r'(?m)^specs:\s*\[([^\]]*)\]', y, re.I)
+            ids = [x.strip().strip('"\'') for x in sm_.group(1).split(',') if x.strip()] if sm_ else []
+            if not ids:
+                errors.append(f'{p} : request epic needs specs: [<ID>, ...] (every spec a story cites)')
+            for sid in ids:
+                sf = spec_file(sid)
+                if sf:
+                    spec_texts[sid.lower()] = read_text(sf)
+                else:
+                    errors.append(f'{p} : spec features/**/{sid}.md not found (specs[] entry)')
+            am = re.search(r'(?m)^analysis:\s*(\S+)', y, re.I)
+            if not am:
+                errors.append(f'{p} : request epic needs analysis: work-items/{name}.md (template work-items/_analysis-template.md)')
+            elif not os.path.isfile(os.path.join(repo, am.group(1).strip('"\''))):
+                errors.append(f"{p} : analysis file {am.group(1)} not found")
+            mode = 'request'
         else:
-            errors.append(f'{p} : spec features/**/{feature}.md not found')
-            spec_text = ''
+            fm = re.search(r'(?m)^feature:\s*(\S+)', y, re.I)
+            feature = fm.group(1) if fm else ''
+            if feature.lower() != name.lower():
+                errors.append(f"{p} : feature '{feature}' must equal file name '{name}'")
+            spec = spec_file(feature)
+            if spec:
+                spec_texts[feature.lower()] = read_text(spec)
+            else:
+                errors.append(f'{p} : spec features/**/{feature}.md not found')
+            mode = 'feature'
         if not re.search(r'(?m)^epic:', y, re.I):
             errors.append(f'{p} : missing epic')
         if not re.search(r'(?m)^\s+jira_key:', y, re.I):
@@ -71,7 +104,11 @@ def main():
             if not rules:
                 errors.append(f'{p} : story {sid} has no acceptance criterion citing a BR')
             for r in rules:
-                if spec_text and not re.search(re.escape(r), spec_text, re.I):
+                owner = re.match(r'BR-([A-Z0-9]+-\d{3})-\d+', r).group(1).lower()
+                text = spec_texts.get(owner)
+                if mode == 'request' and text is None:
+                    errors.append(f'{p} : story {sid} cites {r} but {owner.upper()} is not in specs[]')
+                elif spec_texts and (text is None or not re.search(re.escape(r), text, re.I)):
                     errors.append(f'{p} : story {sid} cites {r} which is not in the spec')
             for m in re.finditer(r'estimate_hours:\s*(\d+)', block):
                 if int(m.group(1)) > 8:

@@ -1,5 +1,12 @@
-# Schema for work-items/<FEATURE-ID>.yml (documented example; validated by scripts/validate-work-items.py)
-feature: CTX-000                # required, must exist in features/ (e.g. P1-001)
+# Schema for work-items/*.yml (documented examples; validated by scripts/validate-work-items.py).
+# Two shapes share the epic / stories / subtasks structure:
+#   1. feature epic   - work-items/<FEATURE-ID>.yml, one spec (the usual case: /jira-from-spec)
+#   2. request epic   - work-items/<slug>.yml + work-items/<slug>.md (the analysis), several specs: a request from an
+#                       analyst that spans contexts, mixes existing and new behaviour, or follows a flow
+#                       (template for the analysis: work-items/_analysis-template.md)
+
+# ---------- 1. feature epic ----------
+feature: CTX-000                # required, must exist in features/ (e.g. P1-001) and equal the file name
 project: HRB                    # Jira project key
 epic:
   jira_key: null                # filled by jira-push
@@ -32,3 +39,28 @@ stories:
         estimate_hours: 3
 questions:
   - "Open question the analyst could not resolve from the spec"
+
+# ---------- 2. request epic (several specs) ----------
+# request: quarterly-view-across-products          # lowercase kebab-case, equals the file name (never a spec ID)
+# title: "Quarterly view on Product 1, Product 2 and the stress test"
+# analysis: work-items/quarterly-view-across-products.md   # required: the analysis document written first
+# specs: [P1-001, P2-001, STR-001]   # every spec a story cites; each must exist under features/ (a new spec is
+#                                    # created as a draft by spec-writer before its rules are cited)
+# flows: [/flows/session-inputs-recalculation.md]   # optional: the flows the request follows or changes
+# contexts: [product1, product2, stress]            # optional, informative (the catalogue names them)
+# project: HRB
+# epic:
+#   jira_key: null
+#   summary: "<= 80 chars"
+#   description: |
+#     The request in one paragraph, link to the analysis document and to every spec.
+#   labels: [product1, product2, stress, docs-generated]
+# stories:
+#   - id: S1                       # the same story shape as above; a story may cite rules of several specs
+#     ...
+#     acceptance_criteria:
+#       - rule: BR-P1-001-7        # must belong to a spec of specs[]
+#       - rule: BR-STR-001-5
+#     depends_on: [S0]             # across contexts: the story that creates the contract / table / topic first
+# questions:
+#   - "..."

@@ -585,3 +585,37 @@ free-text sentence (same content as the analyst step). Rerun `python3 scripts/ge
 ### 17.3 Playbook (read only)
 
 Commands table (context pack row), step 14 procedure step 1, scripts table (`context-pack.py` row).
+
+## 18. Request epics and the analysis document (investigation commits after `3a65431`, 2026-10-20)
+
+Step 3 of the analyst request flow. Work items were one file per spec (`work-items/<ID>.yml`, `feature:` equal to
+the file name, every rule cited from that one spec), so a request spanning contexts had no home. A second shape,
+the **request epic**: `work-items/<slug>.yml` (`request: <slug>` lowercase kebab-case, `analysis:`, `specs: [...]`
+= every spec a story cites, optional `flows:` and `contexts:`), same epic / stories / subtasks structure, a story
+may cite rules of several specs, and beside it the **analysis document** `work-items/<slug>.md` written first from
+`work-items/_analysis-template.md` (Request verbatim, Reading the analyst confirms, Parts with state unchanged /
+changed / new and evidence, Trust, reused / changed / built, Contracts, Data, Flows, Calculations, Gaps, Stories
+outline, Sources). Principle kept: nothing new without a rule - a new behaviour gets a draft rule or draft spec
+from `spec-writer` first, a new operation a proposed contract, a new calculation a draft concept; then the stories.
+`validate-work-items.py` checks both shapes (request name and slug form, every `specs[]` entry exists, the analysis
+file exists, each cited rule belongs to a listed spec and exists there; feature epics unchanged); `coverage-matrix.py`
+counts a request epic's stories for every spec they cite (a story counts for a spec when it cites one of its rules).
+
+### 18.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/validate-work-items.py`, `scripts/coverage-matrix.py` | as above |
+| `work-items/_schema.yml`, `work-items/_analysis-template.md` (new), `work-items/README.md` | both shapes documented; the template |
+| `.github/instructions/work-items.instructions.md` | request epics, nothing new without a rule |
+| `.github/skills/jira-work-items/SKILL.md`, `.github/skills/jira-work-items/references/slicing-heuristics.md` | "Request epics" section; cross-context and existing + new slicing |
+| `scripts/README.md` | `validate-work-items.py` row |
+
+### 18.2 What to do
+
+Nothing beyond the copy; existing `work-items/<ID>.yml` files validate as before. Rerun `python3 scripts/coverage-matrix.py`
+(byte-identical while there is no request epic).
+
+### 18.3 Playbook (read only)
+
+Nothing changes.

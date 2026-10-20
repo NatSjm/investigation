@@ -39,6 +39,17 @@ def main():
     js = []
     specs = sorted((f for f in walk_files(os.path.join(repo, 'features'), '*.md') if SPEC_NAME.match(os.path.basename(f))),
                    key=lambda f: sort_key(os.path.basename(f)))
+    # request epics (work-items/<slug>.yml with `request:` and `specs: [...]`) count for every spec they cite
+    requests = []
+    wi_dir = os.path.join(repo, 'work-items')
+    if os.path.isdir(wi_dir):
+        for f in sorted(os.listdir(wi_dir), key=str.lower):
+            if not f.lower().endswith('.yml') or f.startswith('_'):
+                continue
+            t = read_text_or_empty(os.path.join(wi_dir, f))
+            if re.search(r'(?m)^request:', t, re.I):
+                m = re.search(r'(?m)^specs:\s*\[([^\]]*)\]', t, re.I)
+                requests.append(([x.strip().strip('"\'').lower() for x in m.group(1).split(',') if x.strip()] if m else [], t))
     for f in specs:
         sid = os.path.splitext(os.path.basename(f))[0]
         if a.scope and not sid.startswith(a.scope):
@@ -49,10 +60,12 @@ def main():
         if not brs:
             brs = unique(re.findall(r'\bBR-' + re.escape(sid) + r'-\d+\b', t))
         wi = read_text_or_empty(os.path.join(repo, f'work-items/{sid}.yml'))
+        wi += ''.join('\n' + t for ids, t in requests if sid.lower() in ids)
         ft = read_text_or_empty(os.path.join(repo, f'test-design/features/{sid}.feature'))
         with_story = [b for b in brs if re.search(r'rule:\s*' + re.escape(b) + r'\b', wi, re.I)]
         with_scenario = [b for b in brs if re.search('@' + re.escape(b) + r'\b', ft, re.I)]
-        stories = len(re.findall(r'(?m)^\s+-\s+id:\s*S\d+', wi))
+        # stories that cite a rule of this spec (a request epic's other stories belong to other specs)
+        stories = sum(1 for b in re.split(r'(?m)^\s{2}-\s+id:', wi)[1:] if re.search(r'rule:\s*BR-' + re.escape(sid) + r'-\d+\b', b, re.I))
         scenarios = len(re.findall(r'(?m)^\s*Scenario', ft))
         open_q = len(re.findall(r'(?m)^\s*-\s*\[ \]', t))
         missing_story = [b for b in brs if b not in with_story]
