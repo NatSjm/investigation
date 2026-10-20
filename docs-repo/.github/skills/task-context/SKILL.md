@@ -18,6 +18,15 @@ python3 scripts/context-pack.py --task P1-001 --budget 250 --print    # smaller,
 ```
 Output: `.context/<slug>.md` (git-ignored). Attach it with `#file` (VS Code) or paste it (JetBrains / CLI).
 
+**Free text first goes through the catalogue, not through the script's matcher.** `generated/catalogue.md`
+(`python3 scripts/gen-catalogue.py`) lists on one page, one line each: every context (also the ones with code but no
+spec yet), flow, spec with its aliases, calculation with its parameters, API endpoint, Kafka topic, table with its
+owner, external service and glossary term with what people also call it. Read it, decide which lines the request is
+about - several contexts and several kinds are normal - and build one pack per subject. A part of the request that
+matches no line is new work: say which context it belongs to and which line is the nearest existing thing (same
+tables, same endpoint family, same calculation inputs). The script's own free-text resolution (title / description /
+tags / aliases keyword hits) is a fallback for one-subject requests and must not be trusted for cross-context ones.
+
 ## Anatomy (in priority order; lower sections are truncated first when over budget)
 1. **Header** - subject, resolution (spec / calculation / node / candidates), trust badge
    (`status`, `human-reviewed | machine-confirmed | unverified`, `STALE`), `last_verified`, `stale_after`.
@@ -40,7 +49,8 @@ See `references/pack-anatomy.md` for the exact section markers the agents rely o
 ## Consume
 - Read the pack once, top to bottom. Quote `BR-*`, node ids and `file:line` from it.
 - Treat the trust badge as part of the answer: `draft` / `unverified` / `STALE` -> say it, label outputs `needs-spec-review`.
-- `candidates:` in the header means the free text matched several specs - choose or ask; do not merge them.
+- `candidates:` in the header means the script's keyword matcher was used on free text and found several specs:
+  go back to `generated/catalogue.md`, choose the subjects there and rebuild per subject; do not merge candidates blindly.
 - A truncated section (`... (truncated: see <path>)`) tells you exactly which file to open if you need more.
 - If the pack has no graph section, the graph is missing or stale: run `python3 scripts/gen-graph.py` or say so.
 

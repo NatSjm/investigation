@@ -65,7 +65,7 @@ jobs:
       - name: Validate the bundle with the new snapshot
         if: steps.affected.outputs.changed == 'true'
         working-directory: docs
-        run: python3 scripts/okf-validate.py --strict && python3 scripts/gen-graph.py --check && python3 scripts/build-index.py --check
+        run: python3 scripts/okf-validate.py --strict && python3 scripts/gen-graph.py --check && python3 scripts/gen-catalogue.py --check && python3 scripts/build-index.py --check
 
       - name: Open ONE pull request
         if: steps.affected.outputs.changed == 'true'

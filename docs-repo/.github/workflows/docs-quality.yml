@@ -32,6 +32,8 @@ jobs:
         run: python3 scripts/build-index.py --check
       - name: Architectural graph is up to date (generated/graph)
         run: if [ -f generated/be/codebase-map.md ]; then python3 scripts/gen-graph.py --check; fi
+      - name: Catalogue is up to date (generated/catalogue.md)
+        run: python3 scripts/gen-catalogue.py --check
       - name: Coverage matrix is up to date (generated/analytics)
         run: |
           python3 scripts/coverage-matrix.py --out /tmp/coverage-matrix.md

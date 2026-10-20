@@ -19,5 +19,6 @@ jobs:
       - name: Warm up validators and indexes
         run: |
           python3 scripts/build-index.py --check
+          python3 scripts/gen-catalogue.py --check
           python3 scripts/okf-validate.py
           if [ -f generated/graph/graph.json ]; then python3 scripts/graph-query.py --find product1 > /dev/null; fi

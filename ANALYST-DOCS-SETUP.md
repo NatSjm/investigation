@@ -102,7 +102,7 @@ Everything named "Harbor", `harbor`, `HARBOR`, `P1`, `CLI`, ... is sample vocabu
 
 | File(s) | Edit after copying |
 |---|---|
-| `scripts/context-pack.py`, `graph-query.py`, `gen-graph.py`, `build-index.py`, `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py`, `map-paths.py`, `coverage-matrix.py`, `migration-status.py`, `hooks/guard-generated.py` | `build-index.py` line ~78: bundle title. `context-pack.py` lines ~163-177: if you keep hand-maintained contracts in `contracts/`, add them to the "Contracts" section (it only reads `generated/openapi/backend.yaml` today). `validate-frontmatter.py` checks the generic ID pattern `^[A-Z][A-Z0-9]*-\d{3}$` and the required keys (line 17); change only if your IDs look different. |
+| `scripts/context-pack.py`, `gen-catalogue.py`, `graph-query.py`, `gen-graph.py`, `build-index.py`, `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py`, `map-paths.py`, `coverage-matrix.py`, `migration-status.py`, `hooks/guard-generated.py` | `build-index.py` line ~78: bundle title. `context-pack.py` lines ~163-177: if you keep hand-maintained contracts in `contracts/`, add them to the "Contracts" section (it only reads `generated/openapi/backend.yaml` today). `validate-frontmatter.py` checks the generic ID pattern `^[A-Z][A-Z0-9]*-\d{3}$` and the required keys (line 17); change only if your IDs look different. |
 | `scripts/collect-evidence.py` | Lines 99-101: replace `openapi/openapi_harbor.yaml` and `openapi/harbor-events.yaml` with your file names. Remove the `asyncapi` line if your events contract is not AsyncAPI. Line 76: temp folder prefix. |
 | `.github/agents/analyst.agent.md` | Replace with the version in Step 14 (adds a question-answering mode). |
 | `.github/agents/spec-writer.agent.md`, `confluence-migrator.agent.md`, `calc-auditor.agent.md`, `doc-sync.agent.md`, `migration-lead.agent.md` | Replace `harbor` paths with `<project>`. In `calc-auditor` replace `V9__parameters.sql` / `parameter_set` / `.../calc/<Class>Test.kt` with where your parameters and calculator tests really live. In `doc-sync` step 5 replace `harbor-core/src/main/kotlin/com/acme/harbor/utils/**` with your calculation package. |
@@ -166,6 +166,7 @@ the `file:line` it names.
 | Purpose | Command |
 |---|---|
 | Context pack | `python3 scripts/context-pack.py --task <ID|name|text> [--budget 500]` |
+| Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
 | Validate | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
 | Indexes | `python3 scripts/build-index.py` |
 | Graph | `python3 scripts/graph-query.py --node spec:<ID> --depth 2` / `--files <paths>` / `--find <text>` |
@@ -267,9 +268,12 @@ git diff --stat
 
 `--dry-run` lists `+` added / `~` changed / `-` removed files and writes nothing - read the `-` lines carefully the first
 time (they are files that will be deleted from `generated/`). The real run writes `generated/manifest.yml` with the
-source commits and hashes, then `gen-graph.py` and `build-index.py`. Commit as one PR ("evidence snapshot <be sha>/<fe sha>").
+source commits and hashes, then `gen-graph.py`, `gen-catalogue.py` and `build-index.py`. Commit as one PR ("evidence snapshot <be sha>/<fe sha>").
 
 Read `generated/graph/REPO_MAP.md`: every community is a future spec; the "code only" list is your backlog.
+`generated/catalogue.md` is the same knowledge on one page, one line per context, spec, calculation, flow, endpoint,
+topic, table, external service and glossary alias - the page the analyst agent reads first when a request arrives in
+free text and names no ID (step 14).
 
 ---
 
@@ -378,8 +382,11 @@ bundle is prepared so that you do not have to.
 A spec ID (`<CTX>-001`), a calculation name, a graph node, a free-text question or task, or an analytics question.
 
 ## Procedure
-1. Build the pack: `python3 scripts/context-pack.py --task "<input>"`; read `.context/<task>.md` top to bottom. If it lists
-   `candidates:`, pick one and rebuild, or ask the user.
+1. Resolve the subjects, then build the pack. A spec ID, calculation name or graph node goes straight to
+   `python3 scripts/context-pack.py --task "<input>"`. Free text: read `generated/catalogue.md` first, decide which
+   lines it is about (several contexts, a flow plus specs, an existing calculation plus a new one are all normal), one
+   pack per subject; a part matching no line is new work, placed in the context it belongs to next to the nearest
+   existing line. Read each `.context/<task>.md` top to bottom.
 2. Trust check: `draft`, `unverified` or `STALE` concepts are unreliable - say so. Legacy pages are evidence, not rules.
 3. Question mode: answer from the pack. Every statement cites `BR-<ID>-<n>`, a calculation or a contract operation.
    Separate **facts** (stable specs), **unverified** (draft / legacy) and **unknown**. For an unknown that matters,
@@ -447,6 +454,7 @@ None of the copied scripts makes a network call or needs credentials. All are pl
 | `gen-graph.py` | `generated/be|fe`, `contexts.yml`, `docs-map.yml` | `generated/graph/**` | Safe; overwrites its own output |
 | `build-index.py` | frontmatter of all concepts | **every `index.md`** outside excluded folders; root `index.md` keeps the `manual:start/end` block | Do not keep hand-written content in `index.md` files (put it in `README.md` or a concept) |
 | `context-pack.py` | specs, calculations, graph, contracts, `confluence-import/` | `.context/<task>.md` (git-ignored) | Safe. Packs may quote legacy pages - keep `.context/` ignored |
+| `gen-catalogue.py` | `contexts.yml`, specs, calculations, flows, graph, contracts, `generated/be/events.md`, glossary, work items, test design | `generated/catalogue.md` | Safe; overwrites its own output; `--check` in CI |
 | `graph-query.py`, `map-paths.py` | `graph.json`, `docs-map.yml` | nothing (stdout) | Safe, read-only |
 | `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py` | the bundle | nothing | Safe, read-only; exit code 1 on errors |
 | `coverage-matrix.py` | specs, work items, test design | `generated/analytics/coverage-matrix.md|json` | Safe |

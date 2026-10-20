@@ -505,3 +505,45 @@ the migrated ones, and excludes `raw-html/` and `_attachments/` explicitly. Cost
 ### 15.2 Kits, playbook
 
 Nothing changes.
+
+## 16. Catalogue for free-text requests (investigation commits after `e84398f`, 2026-10-20)
+
+A request from an analyst arrives in free text and names no context or ID ("when imports change, do the stress
+numbers refresh?", "a dashboard with the cover ratio trend and a new churn score"); it often spans several contexts
+and mixes existing and new work. `context-pack.py` resolved free text by counting keyword hits in spec titles,
+descriptions, tags and aliases and picked one winner, which was wrong for most such requests (flows were never
+searched, no synonyms, one subject only). The new `scripts/gen-catalogue.py` writes `generated/catalogue.md`: one
+page, one line each, for every context of `contexts.yml` (also those with code but no spec yet), flow, spec with its
+aliases, calculation with its parameters and the specs using it, API endpoint (also those the code exposes but the
+contract does not describe), Kafka topic with producer and consumer classes, table with its owning context, external
+service, and glossary term with its aliases. The agent reads it, picks the subjects itself (several, of several kinds)
+and builds one pack per subject; what matches no line is new work placed in the context it belongs to. The analyst
+agent's step 1, the task-context skill, AGENTS.md, the Copilot instructions and the README say so; the collector's
+`--graph` also rebuilds the catalogue; CI checks it with `--check`. This is step 1 of a larger change (multi-subject
+packs, placement of new work, cross-context epics, the analyst's resolve -> gather -> analyse -> produce procedure
+follow in their own sections).
+
+### 16.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/gen-catalogue.py` | new |
+| `scripts/collect-evidence.py` | `--graph` also runs `gen-catalogue.py` |
+| `scripts/README.md` | `gen-catalogue.py` row, collector row, local loop |
+| `.github/skills/task-context/SKILL.md` | free text goes through the catalogue first; `candidates:` rule |
+| `.github/agents/analyst.agent.md` | step 1: resolve the subjects through the catalogue, one pack per subject |
+| `.github/workflows/docs-quality.yml`, `.github/workflows/copilot-setup-steps.yml`, `ci-examples/collect-evidence.yml` | `python3 scripts/gen-catalogue.py --check` |
+
+### 16.2 What to do
+
+1. Run `python3 scripts/gen-catalogue.py` once and commit `generated/catalogue.md` (it is a generated concept; `build-index.py`
+   lists it in `generated/index.md`). Rerun it after every evidence snapshot (`collect-evidence.py --graph` does) and
+   after adding a spec, calculation, flow or glossary term; CI fails when it is stale.
+2. `AGENTS.md`: the paragraph after "Work task-scoped" (free text -> catalogue first), read-order step 1, the
+   "Catalogue" row of the commands table. `.github/copilot-instructions.md`: the sentence after the context-pack line.
+   `README.md` "Layout": the catalogue sentence. Your own wording, same content, if you rewrote these files in step 4.
+
+### 16.3 Playbook (read only)
+
+Step 3 copy list (`gen-catalogue.py`), commands table (Catalogue row), step 8 (the collector also writes the
+catalogue; what the page is), step 14 procedure step 1, scripts table (`gen-catalogue.py` row).

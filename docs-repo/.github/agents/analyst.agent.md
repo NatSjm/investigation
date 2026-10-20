@@ -20,7 +20,12 @@ A feature ID (`P1-001`), a calculation name (`stress_test_monthly`), a graph nod
 a free-text task ("add transport-mode toggle to the stress table"), or an analytics question ("what is covered by tests?").
 
 ## Procedure
-1. **Build the context pack** - `python3 scripts/context-pack.py --task "<input>"` - and read `.context/<task>.md` top to
+1. **Resolve the subjects, then build the context pack.** For a spec ID, calculation name or graph node go straight to
+   `python3 scripts/context-pack.py --task "<input>"`. For free text read `generated/catalogue.md` first (one line per
+   context, flow, spec, calculation, endpoint, topic, table, external service and glossary alias), decide which lines
+   the request is about - several contexts, a flow plus a few specs, an existing calculation plus a new one are all
+   normal - and build one pack per subject; a part that matches no line is new work, placed in the context it belongs
+   to next to the nearest existing line. Then read each `.context/<task>.md` top to
    bottom. It contains the spec with its trust badge, calculations with worked examples, the depth-2 graph
    neighbourhood, contracts, tables, existing work items/tests and legacy pages. If the pack says
    `candidates:` (free text matched several specs), pick one and rebuild, or ask the user.

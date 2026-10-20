@@ -22,9 +22,14 @@ It writes `.context/<task>.md` (git-ignored, ~300-500 lines): the spec with its 
 the subject. **Read the pack, not the repository.** Open anything else only to answer a question the pack leaves
 open, and then only the `file:line` it names. Skill: `.github/skills/task-context/SKILL.md`.
 
+A request in free text ("when imports change, do the stress numbers refresh?", "dashboard with the cover ratio trend
+and a new churn score") names no ID and often spans several contexts: read `generated/catalogue.md` first (one line
+per context, flow, spec, calculation, endpoint, topic, table, external service and glossary alias), pick the subjects
+yourself, build a pack per subject, and treat what matches no line as new work placed in the context it belongs to.
+
 ## Read order when there is no pack (cheapest first)
 
-1. `index.md` -> the area's `index.md` (one line + trust badge per concept)
+1. `generated/catalogue.md` (everything on one page, one line each) or `index.md` -> the area's `index.md` (one line + trust badge per concept)
 2. `features/<context>/<ID>.md` - functional spec; business rules are `BR-<ID>-<n>`
 3. `domain/calculations/<name>.md` - formulas and worked examples (never re-derive from Kotlin)
 4. `contexts.yml` (context -> BE class-name prefixes, FE feature, spec prefix), then `generated/graph/REPO_MAP.md` ->
@@ -56,6 +61,7 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
 | Purpose | Command |
 |---|---|
 | Task context pack | `python3 scripts/context-pack.py --task <ID|name|text> [--budget 500]` |
+| Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
 | Validate bundle | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
 | Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |
 | Graph | `python3 scripts/gen-graph.py [--check]`; `python3 scripts/graph-query.py --node spec:P1-001 --depth 2` / `--files <paths>` / `--find <text>` |

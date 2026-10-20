@@ -1,5 +1,12 @@
 # Update Log
 
+## 2026-10-20
+* **Catalogue for free-text requests.** `scripts/gen-catalogue.py` writes [generated/catalogue.md](/generated/catalogue.md):
+  one line per context (also code-only ones), flow, spec with aliases, calculation with parameters, API endpoint
+  (also code-only ones), Kafka topic, table with owner, external service and glossary alias. An agent given a request
+  that names no ID reads it first, picks the subjects itself and builds one pack per subject (analyst agent step 1,
+  skill `task-context`); `collect-evidence.py --graph` rebuilds it, CI checks it with `--check`.
+
 ## 2026-10-19
 * **Confluence HTML export importer; four legacy pages imported.** `scripts/confluence-import.py` (standard library)
   turns a Confluence HTML space export kept under `confluence-import/raw-html/<section>/` into

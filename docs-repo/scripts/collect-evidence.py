@@ -20,13 +20,13 @@ file hashes. Replaces per-repository "publisher" CI jobs (one owner of publicati
    without touching a file (idempotent: a second run against unchanged inputs produces no diff).
 6. Replaces each artifact set completely (files the sources no longer produce are deleted), never touching
    hand-written concepts, index.md files or the graph, and writes generated/manifest.yml.
-7. With --graph also runs gen-graph.py and build-index.py so the snapshot is ready to commit.
+7. With --graph also runs gen-graph.py, gen-catalogue.py and build-index.py so the snapshot is ready to commit.
 
 Standard-library Python. In CI the source repositories are checked out into separate directories and passed as
 --backend / --frontend; locally the sibling checkouts are used by default.
 Examples:
   python3 scripts/collect-evidence.py                                   # sibling checkouts, maps as they are on disk
-  python3 scripts/collect-evidence.py --generate --graph                # regenerate maps in both repos, collect, rebuild graph + indexes
+  python3 scripts/collect-evidence.py --generate --graph                # regenerate maps in both repos, collect, rebuild graph + catalogue + indexes
   python3 scripts/collect-evidence.py --backend /ci/harbor-backend --frontend /ci/harbor-frontend --graph
   python3 scripts/collect-evidence.py --dry-run                         # report what would change, write nothing"""
 import argparse
@@ -317,6 +317,8 @@ def main():
     if a.graph:
         if subprocess.run([sys.executable, os.path.join(here, 'gen-graph.py')]).returncode:
             raise SystemExit('gen-graph failed')
+        if subprocess.run([sys.executable, os.path.join(here, 'gen-catalogue.py')]).returncode:
+            raise SystemExit('gen-catalogue failed')
         if subprocess.run([sys.executable, os.path.join(here, 'build-index.py')]).returncode:
             raise SystemExit('build-index failed')
     else:
