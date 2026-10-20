@@ -24,6 +24,10 @@ by folder:
 
 - One file per spec and kind: `contracts/proposed/<SPEC-ID>.openapi.yaml` or `<SPEC-ID>.asyncapi.yaml`; several specs
   may share one file only when they share one service boundary (name it after the service, list the specs in `x-specs`).
+  A request epic (`work-items/<slug>.yml`) that changes operations of several specs keeps its proposal in one file
+  named after the request, `contracts/proposed/<slug>.openapi.yaml`, with `x-request: <slug>` and the specs in `x-specs`;
+  an operation that exists already is listed with only what changes (new parameter, new response field) and
+  `x-extends: generated/openapi/backend.yaml#/paths/...`.
 - Start from `contracts/proposed/_template.openapi.yaml`. The `info` block carries the provenance the OKF frontmatter
   carries elsewhere: `x-spec` (or `x-specs`), `x-status: proposed`, `x-generated-by: copilot/<agent> | human:<id>`,
   `x-generated-at`.

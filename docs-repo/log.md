@@ -20,6 +20,12 @@
   (analysis document, reading confirmed by the analyst) -> produce (feature or request epic); question mode with
   citations; nothing new without a draft rule, contract proposal or calculation concept first. New prompt
   `analyse-request`; `test-designer`, `architect`, `tests-from-spec` and `hld-from-spec` accept a request slug.
+* **Proposed rules; first request epics.** `features/conventions.md`: a rule for behaviour asked for but not built
+  continues the numbering with the marker **proposed** (request `<slug>`). Acceptance run of the request flow:
+  [quarterly-view-across-products](/work-items/quarterly-view-across-products.md) (analysis confirmed, epic of four
+  stories, proposed rules BR-P1-001-12, BR-P2-001-10, BR-STR-001-9, BR-PRS-001-11, draft calculation
+  [quarterly_rollup](/domain/calculations/quarterly_rollup.md), proposal `contracts/proposed/quarterly-view-across-products.openapi.yaml`);
+  [premium-estimate-on-cover-chart](/work-items/premium-estimate-on-cover-chart.md) (analysis, stopped: COV-001 first).
 
 ## 2026-10-19
 * **Confluence HTML export importer; four legacy pages imported.** `scripts/confluence-import.py` (standard library)

@@ -87,10 +87,10 @@
   {
     "id": "P1-001",
     "context": "product1",
-    "rules": 11,
-    "rulesWithStory": 8,
+    "rules": 12,
+    "rulesWithStory": 9,
     "rulesWithScenario": 0,
-    "stories": 4,
+    "stories": 6,
     "scenarios": 0,
     "openQuestions": 2,
     "badge": "draft · unverified",
@@ -111,7 +111,8 @@
       "BR-P1-001-8",
       "BR-P1-001-9",
       "BR-P1-001-10",
-      "BR-P1-001-11"
+      "BR-P1-001-11",
+      "BR-P1-001-12"
     ]
   },
   {
@@ -155,10 +156,10 @@
   {
     "id": "P2-001",
     "context": "product2",
-    "rules": 9,
-    "rulesWithStory": 0,
+    "rules": 10,
+    "rulesWithStory": 1,
     "rulesWithScenario": 0,
-    "stories": 0,
+    "stories": 2,
     "scenarios": 0,
     "openQuestions": 2,
     "badge": "draft · unverified",
@@ -183,7 +184,8 @@
       "BR-P2-001-6",
       "BR-P2-001-7",
       "BR-P2-001-8",
-      "BR-P2-001-9"
+      "BR-P2-001-9",
+      "BR-P2-001-10"
     ]
   },
   {
@@ -237,10 +239,10 @@
   {
     "id": "PRS-001",
     "context": "presentation",
-    "rules": 10,
-    "rulesWithStory": 0,
+    "rules": 11,
+    "rulesWithStory": 1,
     "rulesWithScenario": 0,
-    "stories": 0,
+    "stories": 1,
     "scenarios": 0,
     "openQuestions": 3,
     "badge": "draft · unverified",
@@ -267,7 +269,8 @@
       "BR-PRS-001-7",
       "BR-PRS-001-8",
       "BR-PRS-001-9",
-      "BR-PRS-001-10"
+      "BR-PRS-001-10",
+      "BR-PRS-001-11"
     ]
   },
   {
@@ -331,10 +334,10 @@
   {
     "id": "STR-001",
     "context": "stress",
-    "rules": 8,
-    "rulesWithStory": 0,
+    "rules": 9,
+    "rulesWithStory": 1,
     "rulesWithScenario": 6,
-    "stories": 0,
+    "stories": 1,
     "scenarios": 9,
     "openQuestions": 2,
     "badge": "draft · unverified",
@@ -351,7 +354,8 @@
     ],
     "rulesWithoutScenario": [
       "BR-STR-001-4",
-      "BR-STR-001-7"
+      "BR-STR-001-7",
+      "BR-STR-001-9"
     ]
   }
 ]

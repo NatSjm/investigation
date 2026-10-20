@@ -652,3 +652,47 @@ from the analysis document).
 ### 19.3 Playbook (read only)
 
 Step 13 (test with three free-text change requests), step 14 (the agent file block replaced by the new procedure).
+
+## 20. Acceptance run of the analyst request flow; proposed rules (investigation commits after `fc55b39`, 2026-10-20)
+
+Step 5. Six requests in free text, expected breakdowns written beforehand, worked through the new procedure with
+Claude in the analyst role (never Copilot): R1 quarterly view across Product 1, Product 2 and the stress test; R2
+analytics dashboard from two existing calculations and a new churn score; R3 Excel download of the stress test
+from the client window (new operation in an existing context vs a new renderer); R4 nightly import of cover
+policies from the provider (new integration, context without a spec); R5 a question (import during an open
+meeting: is the stress test rerun, what does the report contain); R6 premium estimate column on the cover chart
+(cover context, no spec). Result: all six readings named the expected subjects from the catalogue; the merged
+packs (2-5 subjects, 640-1600 lines) carried the evidence for every Parts row; R5 was answered from the flow with
+citations; R6 and R4 stopped at the gate (a context without a spec cannot hold a rule - COV-001 first); R1 went
+through to the epic. Two gaps in the conventions surfaced and are closed:
+
+- **Proposed rules.** A `new` or `changed` part needs a rule a story can cite before the code exists. Convention
+  (`features/conventions.md`, Business rules): the rule continues the spec's numbering with the marker **proposed**
+  (request `<slug>`) after the ID; stories cite it (`needs-spec-review`); `doc-sync` removes the marker when the
+  code implements it or marks it withdrawn. The analysis document lists the proposed rules it introduced.
+- **Proposal file of a request.** `contracts/conventions.md`: a request epic keeps its contract proposal in
+  `contracts/proposed/<slug>.openapi.yaml` with `x-request`, `x-specs`, and `x-extends` for a changed operation.
+
+Harbor examples produced by the run (keep them as worked examples, or delete them in your copy): the analysis
+`work-items/quarterly-view-across-products.md` (status confirmed) with the epic `work-items/quarterly-view-across-products.yml`
+(four stories, `depends_on` across contexts, four open questions), the proposed rules BR-P1-001-12, BR-P2-001-10,
+BR-STR-001-9, BR-PRS-001-11 with the proposed-contract notes under the API tables and change-log rows, the draft
+calculation `domain/calculations/quarterly_rollup.md` (formula intended, worked examples TODO from the future test),
+the proposal `contracts/proposed/quarterly-view-across-products.openapi.yaml`; and the analysis
+`work-items/premium-estimate-on-cover-chart.md` (status draft, stopped: COV-001 needed first, questions to the owner).
+
+### 20.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `features/conventions.md` | the "Proposed rules" bullet under Business rules (or add the bullet to your own conventions) |
+| `contracts/conventions.md` | the request-proposal paragraph |
+| `work-items/quarterly-view-across-products.md`, `.yml`, `work-items/premium-estimate-on-cover-chart.md` | optional: worked examples of a request epic and of an analysis that stops at the gate (Harbor content) |
+
+### 20.2 What to do
+
+Nothing else; the specs, the draft calculation and the proposal are Harbor content.
+
+### 20.3 Playbook (read only)
+
+Nothing changes (step 13 already asks for the three free-text requests).

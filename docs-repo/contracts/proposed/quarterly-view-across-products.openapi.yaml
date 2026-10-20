@@ -1,0 +1,81 @@
+# PROPOSED contract change of the request epic work-items/quarterly-view-across-products.yml (contracts/conventions.md).
+# Five existing operations gain the optional query parameter `period`; nothing else changes. Each path lists only the
+# change and names the implemented operation it extends (x-extends). Not evidence: the implemented contract arrives
+# under generated/openapi/ through the backend repository and the collector.
+openapi: 3.0.3
+info:
+  title: "Quarterly view on the product overviews and the stress test (proposed)"
+  version: 0.1.0-proposed
+  description: "Designed with the request analysis work-items/quarterly-view-across-products.md; operations are cited by operationId in work-items/quarterly-view-across-products.yml."
+  x-request: quarterly-view-across-products
+  x-specs: [P1-001, P2-001, STR-001, PRS-001]
+  x-status: proposed
+  x-generated-by: copilot/analyst
+  x-generated-at: 2026-10-20T13:25:00Z
+paths:
+  /session/product1/overview:
+    get:
+      operationId: getProduct1Overview
+      summary: "Product 1 overview - four tables + cover chart series, optional city filter, by month or by quarter"
+      tags: [product1]
+      x-extends: generated/openapi/backend.yaml#/paths/~1session~1product1~1overview
+      parameters:
+        - { $ref: "#/components/parameters/Period" }
+      responses:
+        "200":
+          description: "As implemented; with period = QUARTER every table carries one row per calendar quarter (quarterly_rollup), tables.totals unchanged (BR-P1-001-12)"
+  /session/product1/projection:
+    get:
+      operationId: getProduct1Projection
+      summary: "The four projection tables, by month or by quarter"
+      tags: [product1]
+      x-extends: generated/openapi/backend.yaml#/paths/~1session~1product1~1projection
+      parameters:
+        - { $ref: "#/components/parameters/Period" }
+      responses:
+        "200":
+          description: "As implemented; quarterly rows with period = QUARTER (BR-P1-001-12)"
+  /session/product2/overview:
+    get:
+      operationId: getProduct2Overview
+      summary: "Product 2 overview - four tables + cover chart series, optional transport mode filter, by month or by quarter"
+      tags: [product2]
+      x-extends: generated/openapi/backend.yaml#/paths/~1session~1product2~1overview
+      parameters:
+        - { $ref: "#/components/parameters/Period" }
+      responses:
+        "200":
+          description: "As implemented; quarterly rows with period = QUARTER (BR-P2-001-10)"
+  /session/product2/projection:
+    get:
+      operationId: getProduct2Projection
+      summary: "The four projection tables, by month or by quarter"
+      tags: [product2]
+      x-extends: generated/openapi/backend.yaml#/paths/~1session~1product2~1projection
+      parameters:
+        - { $ref: "#/components/parameters/Period" }
+      responses:
+        "200":
+          description: "As implemented; quarterly rows with period = QUARTER (BR-P2-001-10)"
+  /session/stress-test:
+    get:
+      operationId: getStressTest
+      summary: "Stored stress test result (dimension = CITY | TRANSPORT_MODE), by month or by quarter"
+      tags: [stress]
+      x-extends: generated/openapi/backend.yaml#/paths/~1session~1stress-test
+      parameters:
+        - { $ref: "#/components/parameters/Period" }
+      responses:
+        "200":
+          description: "As implemented; with period = QUARTER each scenario table carries one row per calendar quarter and dimension value, exposure and transport cost delta summed, cumulative exposure from the quarter's last month (BR-STR-001-9)"
+components:
+  parameters:
+    Period:
+      name: period
+      in: query
+      required: false
+      description: "Row period of the returned tables; MONTH (default) keeps the persisted monthly rows, QUARTER rolls them up with quarterly_rollup on read"
+      schema:
+        type: string
+        enum: [MONTH, QUARTER]
+        default: MONTH

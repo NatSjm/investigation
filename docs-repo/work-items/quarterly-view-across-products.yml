@@ -1,0 +1,155 @@
+request: quarterly-view-across-products
+title: "Quarterly view on the Product 1 and Product 2 overviews, carried into the stress test table"
+analysis: work-items/quarterly-view-across-products.md
+specs: [P1-001, P2-001, STR-001, PRS-001]
+flows: [/flows/client-presentation.md]
+contexts: [product1, product2, stress, presentation]
+project: HRB
+epic:
+  jira_key: null
+  summary: "Quarterly view on both product overviews, carried into the stress test"
+  description: |
+    The representative switches the Product 1 / Product 2 overview tables and the stress test tables from one
+    row per month to one row per calendar quarter; the client window follows. Quarterly rows are rolled up on
+    read from the persisted monthly lines (quarterly_rollup), nothing stored changes.
+    Analysis: work-items/quarterly-view-across-products.md. Specs: features/product1/P1-001.md,
+    features/product2/P2-001.md, features/stress/STR-001.md, features/presentation/PRS-001.md.
+    Open before the report follows: analysis questions 1-4.
+  labels: [product1, product2, stress, presentation, docs-generated, needs-spec-review, needs-contract]
+stories:
+  - id: S1
+    jira_key: null
+    summary: "Roll monthly projection and stress lines up to calendar quarters"
+    component: be
+    description: |
+      quarterly_rollup beside utils/ProjectionAggregator: group the monthly lines of one table by calendar
+      quarter and key, sum the additive figures, take cumulative figures from the quarter's last month, cover
+      ratio of a quarter as a ratio of sums; partial first / last quarters kept (analysis question 1). Pure
+      function with a unit test whose cases become the worked examples of domain/calculations/quarterly_rollup.md.
+    acceptance_criteria:
+      - rule: BR-P1-001-12
+        gherkin: |
+          Given dataset "sessions-open" is loaded
+          And the Product 1 projection of session "S-1" has monthly rows for 2027-01, 2027-02 and 2027-03 with value 100.00, 110.00 and 120.00 for P1-STD
+          When the lines are rolled up with period QUARTER
+          Then the row "2027-Q1" for P1-STD has value 330.00 and cumulativeValue equal to the 2027-03 cumulative value
+      - rule: BR-P2-001-10
+        gherkin: |
+          Given the Product 2 projection of a session has monthly rows for one calendar quarter per transport mode
+          When the lines are rolled up with period QUARTER
+          Then each transport mode has one row for that quarter whose quantity is the sum of its three months
+    estimate: 5
+    labels: [calc, needs-spec-review]
+    depends_on: []
+    subtasks:
+      - summary: "[BE] utils/ProjectionAggregator: rollUp(lines, period) for the four projection tables and the stress rows (quarterly_rollup)"
+        estimate_hours: 6
+      - summary: "[BE] QuarterlyRollupTest: full quarter, partial first quarter, cover ratio of a quarter, stress cumulative exposure = last month"
+        estimate_hours: 4
+      - summary: "[DOC] domain/calculations/quarterly_rollup.md: worked examples from the test, calc-auditor run"
+        estimate_hours: 2
+  - id: S2
+    jira_key: null
+    summary: "Show the product overviews by month or by quarter"
+    component: vertical
+    description: |
+      getProduct1Overview, getProduct1Projection, getProduct2Overview, getProduct2Projection accept
+      period = MONTH | QUARTER (contract proposal contracts/proposed/quarterly-view-across-products.openapi.yaml,
+      cited as proposed); the Product 1 and Product 2 pages gain a period toggle next to the city / transport
+      mode filter, keep it in the session window state and publish it in the view message; ProjectionTables
+      renders quarterly rows; tables.totals unchanged.
+    acceptance_criteria:
+      - rule: BR-P1-001-12
+        gherkin: |
+          Given dataset "sessions-open" is loaded
+          When the representative requests the Product 1 overview with period QUARTER
+          Then every table contains one row per calendar quarter of the 24-month horizon
+          And tables.totals equal the totals of the monthly request
+      - rule: BR-P1-001-12
+        gherkin: |
+          Given dataset "sessions-open" is loaded
+          When the representative requests the Product 1 overview without a period
+          Then the tables contain one row per month as before
+      - rule: BR-P2-001-10
+        gherkin: |
+          Given an open product2 session with a 24-month horizon
+          When the representative requests the Product 2 projection with period QUARTER
+          Then every table contains one row per calendar quarter and the request with transportMode RAIL contains quarterly rows of RAIL only
+    estimate: 8
+    labels: [needs-spec-review, needs-contract]
+    depends_on: [S1]
+    subtasks:
+      - summary: "[BE] getProduct1Overview / getProduct1Projection (api/Product1Controller, manager/Product1Manager): period parameter, roll-up on read; contract change in openapi_harbor.yaml + regenerate"
+        estimate_hours: 5
+      - summary: "[BE] getProduct2Overview / getProduct2Projection (api/Product2Controller, manager/Product2Manager): same"
+        estimate_hours: 4
+      - summary: "[FE] Product1OverviewPage + Product2OverviewPage: PeriodToggle, useProduct1Overview / useProduct2Overview pass period, regenerated client types"
+        estimate_hours: 6
+      - summary: "[FE] shared/components/ProjectionTables: quarter rows (label YYYY-Qn), totals unchanged"
+        estimate_hours: 3
+      - summary: "[TEST] API scenarios S2 for both products (month default, quarter, filter + quarter)"
+        estimate_hours: 4
+  - id: S3
+    jira_key: null
+    summary: "Show the stress test tables by month or by quarter"
+    component: vertical
+    description: |
+      getStressTest accepts period = MONTH | QUARTER (proposed contract); runStressTest and stress_test_result
+      stay monthly; the stress page gains the same period toggle, preset from the product page's choice, and
+      publishes it in the view message.
+    acceptance_criteria:
+      - rule: BR-STR-001-9
+        gherkin: |
+          Given an open product1 session with a stored stress run of 24 monthly rows per scenario and city
+          When the representative requests the stress test with dimension CITY and period QUARTER
+          Then each scenario table contains one row per calendar quarter and city with exposure and transportCostDelta summed over the quarter's months
+          And cumulativeExposure of a quarter equals the cumulativeExposure of its last month
+      - rule: BR-STR-001-9
+        gherkin: |
+          Given an open product1 session with a stored stress run
+          When the representative runs the stress test again
+          Then stress_test_result still holds one row per month, scenario and city
+    estimate: 5
+    labels: [needs-spec-review, needs-contract]
+    depends_on: [S1]
+    subtasks:
+      - summary: "[BE] getStressTest (api/StressTestController, manager/StressManager): period parameter, roll-up of the stored rows on read; contract change + regenerate"
+        estimate_hours: 4
+      - summary: "[FE] StressTestPage: PeriodToggle preset from the session window state, useStressTest passes period"
+        estimate_hours: 4
+      - summary: "[TEST] API scenarios S3 (quarter rows, run stays monthly)"
+        estimate_hours: 3
+  - id: S4
+    jira_key: null
+    summary: "Mirror the chosen period in the client window"
+    component: fe
+    description: |
+      The view message of the product and stress pages carries period; ProductMirror and StressMirror request
+      their data with it (same session-scoped endpoints, PRS-001); unknown period values fall back to MONTH
+      (BR-PRS-001-7).
+    acceptance_criteria:
+      - rule: BR-PRS-001-11
+        gherkin: |
+          Given a CLIENT session window on the Product 1 overview with period QUARTER and a presentation window open
+          When the representative switches the period to MONTH
+          Then the presentation window re-renders the Product 1 mirror with monthly rows
+      - rule: BR-PRS-001-11
+        gherkin: |
+          Given a presentation window opened after the representative chose period QUARTER on the stress test page
+          When the presentation window subscribes and the publishers replay their last messages
+          Then the stress mirror shows quarterly rows
+    estimate: 3
+    labels: [needs-spec-review]
+    depends_on: [S2, S3]
+    subtasks:
+      - summary: "[FE] components/broadcast/sessionChannel.ts: period in the view message type; publishers on both product pages and the stress page"
+        estimate_hours: 3
+      - summary: "[FE] PresentationPage mirrors (ProductMirror, StressMirror): read period from the view state, pass it to the hooks, fall back to MONTH"
+        estimate_hours: 4
+      - summary: "[TEST] UI scenarios S4 (switch while mirrored, late-opened window catches up)"
+        estimate_hours: 3
+questions:
+  - "Partial first and last quarters (the month grid starts the month after today): shown as partial quarters, or dropped? (analysis question 1)"
+  - "Does the meeting report follow the period chosen in the meeting? No story until decided (analysis question 2)"
+  - "Is the movement modal usable while the quarterly view is on? Its response carries monthly tables (BR-P1-002-3) that the screen re-rolls (analysis question 3)"
+  - "Cover ratio per quarter as a ratio of sums, not a mean of monthly ratios? (analysis question 4)"

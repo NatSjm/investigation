@@ -80,6 +80,12 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
   tags (`@BR-<ID>-<n>`) cite the rule, so a rule must not contain two independent assertions.
 - Claims are backed by `sources[]` entries and footnotes whose label equals a `sources[].id` (manager file,
   controller, legacy page).
+- **Proposed rules.** Behaviour an analyst asked for that the code does not have yet is written as a rule in the
+  same section, continuing the numbering, with the marker **proposed** (request `<slug>`) right after the ID:
+  `- **BR-P1-001-12** **proposed** (request quarterly-view-across-products) — … MUST …`. It is cited by stories
+  (label `needs-spec-review`) and by Gherkin like any rule; it is never presented as current behaviour. `doc-sync`
+  removes the marker when the code implements it (change-log row) or marks it withdrawn when the request is
+  dropped. The analysis document `work-items/<slug>.md` lists every proposed rule it introduced.
 
 ## Size caps
 
