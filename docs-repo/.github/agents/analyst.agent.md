@@ -24,8 +24,9 @@ a free-text task ("add transport-mode toggle to the stress table"), or an analyt
    `python3 scripts/context-pack.py --task "<input>"`. For free text read `generated/catalogue.md` first (one line per
    context, flow, spec, calculation, endpoint, topic, table, external service and glossary alias), decide which lines
    the request is about - several contexts, a flow plus a few specs, an existing calculation plus a new one are all
-   normal - and build one pack per subject; a part that matches no line is new work, placed in the context it belongs
-   to next to the nearest existing line. Then read each `.context/<task>.md` top to
+   normal - and build one pack with a `--task` per subject (`--task P1-002 --task STR-001 --task flows/<name>.md`);
+   a part that matches no line is new work: add `--task context:<name>` for the context it belongs to, whose overview
+   section shows the endpoints, tables, calculations and classes it would sit next to. Then read `.context/<task>.md` top to
    bottom. It contains the spec with its trust badge, calculations with worked examples, the depth-2 graph
    neighbourhood, contracts, tables, existing work items/tests and legacy pages. If the pack says
    `candidates:` (free text matched several specs), pick one and rebuild, or ask the user.

@@ -6,13 +6,22 @@ neighbourhood, contract operations, tables, related work items / tests and legac
 The pack is the only thing an agent should read for a task; everything else is reachable through the
 file:line references it contains. Section order / truncation ranks: .github/skills/task-context/references/pack-anatomy.md
 
-Task: spec ID (P1-001), calculation name (stress_test_monthly), graph node id (topic:..., context:product2,
-feature:stress, table:...), or free text (matched against title/description/tags/aliases of specs and calculations).
-Budget: maximum lines in the pack (default 500). Lower-ranked sections are truncated first.
+Subject (--task, repeatable; several subjects give ONE pack with the shared sections merged and deduplicated):
+  spec ID (P1-001), calculation name (stress_test_monthly), flow (flows/<name>.md, flow:<name> or FLOW-<name>: the
+  flow body, then for every spec it names the Summary and the rules the flow cites, graph impact of its code_refs),
+  context (context:<name> from contexts.yml: its specs, endpoints, tables, calculations, topics, classes by layer, FE
+  pages, flows, proposed contracts and the architecture lines about it - the overview for placing new work), graph
+  node id (topic:..., table:..., feature:...), or free text (matched against title / description / tags / aliases of
+  specs, calculations and flows with glossary aliases applied; a fallback - for a request in free text read
+  generated/catalogue.md first and name the subjects yourself).
+Budget: maximum lines in the pack (default 500, plus 300 per extra subject). Lower-ranked sections are truncated first.
 Examples:
   python3 scripts/context-pack.py --task P1-001
+  python3 scripts/context-pack.py --task P1-002 --task STR-001 --task flows/session-inputs-recalculation.md
+  python3 scripts/context-pack.py --task context:cover --print
   python3 scripts/context-pack.py --task "transport mode toggle on the stress table" --budget 300 --print"""
 import argparse
+import json
 import os
 import re
 import subprocess
@@ -20,6 +29,17 @@ import sys
 
 from _common import (repo_root, read_text_or_empty, write_text, rel, get_fm, get_val, get_list, badge, now_utc,
                      walk_files, like, sort_key, split_lines, utf8_stdout)
+
+# words of a free-text request that never identify a subject (the >= 4 characters filter drops the shorter ones)
+STOPWORDS = set('''about able after again also another anything around because been before being between both
+cannot could does done during each either else every from have having into just least like made make makes making
+more most much must need needed needs never only other over same several shall should show shown shows since some
+something such than that their them then there these they things this those through under until upon user users
+very want wanted wants what when where whether which while will with within without would your'''.split())
+
+PER_SUBJECT = ('Subject', 'Spec', 'Calculation', 'Flow', 'Context overview', 'Specs in the flow')
+ORDER = ('Subject', 'Spec', 'Calculation', 'Flow', 'Context overview', 'Specs in the flow', 'Calculations', 'Flows',
+         'Graph neighbourhood', 'Contracts', 'Data', 'Related work items and tests', 'Legacy pages')
 
 
 def get_section(text, heading):
@@ -39,33 +59,92 @@ def select_lines(path, pattern, strip_right=True):
     return out
 
 
-def main():
-    utf8_stdout()
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('task_positional', nargs='?', default='')
-    ap.add_argument('--task', default='')
-    ap.add_argument('--budget', type=int, default=500)
-    ap.add_argument('--out-dir', default='.context')
-    ap.add_argument('--depth', type=int, default=2)
-    ap.add_argument('--print', dest='print_', action='store_true')
-    a = ap.parse_args()
-    task = a.task or a.task_positional
-    if not task:
-        ap.error('--task is required')
-    repo = repo_root(__file__)
-    here = os.path.dirname(os.path.abspath(__file__))
-    now = now_utc()
-    budget = a.budget
+def load_contexts(repo):
+    """contexts.yml: name -> spec prefix, FE pages, BE prefixes, the comment lines right above the entry."""
+    contexts = {}
+    note = []
+    for line in split_lines(read_text_or_empty(os.path.join(repo, 'contexts.yml'))):
+        m = re.match(r'^\s{2}([\w-]+):\s*\{(.*)\}', line)
+        cm = re.match(r'^\s{2}#\s*(.*)$', line)
+        if cm:
+            note.append(cm.group(1).strip())
+            continue
+        if not m:
+            note = []
+            continue
+        c, body = m.group(1), m.group(2)
+        sp = re.search(r'spec:\s*([\w-]+)', body)
+        fe = re.search(r'fe:\s*\[([^\]]*)\]', body)
+        be = re.search(r'be:\s*\[([^\]]*)\]', body)
+        contexts[c] = {'spec': sp.group(1) if sp else '', 'note': ' '.join(note),
+                       'fe': [x.strip().strip('"\'') for x in (fe.group(1).split(',') if fe else []) if x.strip()],
+                       'be': [x.strip().strip('"\'') for x in (be.group(1).split(',') if be else []) if x.strip()]}
+        note = []
+    return contexts
+
+
+def glossary_terms(repo):
+    """domain/glossary.md rows: (term, [aliases], used-in cell)."""
+    terms = []
+    header_seen = False
+    for line in split_lines(read_text_or_empty(os.path.join(repo, 'domain', 'glossary.md'))):
+        if re.match(r'^\|\s*Term\s*\|', line, re.I):
+            header_seen = True
+            continue
+        if not header_seen or not line.startswith('|') or re.match(r'^\|\s*-', line):
+            continue
+        cells = [c.strip() for c in line.strip().strip('|').split('|')]
+        if len(cells) >= 3 and cells[0]:
+            aliases = [a.strip().strip('`') for a in cells[2].split(',') if a.strip()]
+            terms.append((cells[0], aliases, cells[3] if len(cells) > 3 else ''))
+    return terms
+
+
+def openapi_summaries(repo):
+    """operationId -> summary from generated/openapi/backend.yaml (line scan, no YAML library)."""
+    out = {}
+    op = None
+    for line in split_lines(read_text_or_empty(os.path.join(repo, 'generated/openapi/backend.yaml'))):
+        m = re.match(r'^\s+operationId:\s*(\S+)', line)
+        if m:
+            op = m.group(1).strip('"\'')
+            out.setdefault(op, '')
+            continue
+        m = re.match(r'^\s+summary:\s*(.+)$', line)
+        if m and op and not out.get(op):
+            out[op] = m.group(1).strip().strip('"\'')
+        if re.match(r'^  /', line) or re.match(r'^\S', line):
+            op = None
+    return out
+
+
+def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
+    """One subject -> its sections (title, content, rank, see-also, parts for merging), sources and header bits."""
+    sections = []
+    sources = []
+
+    def add_section(title, content, rank, see_also='', parts=None):
+        if not content:
+            content = '_(none)_'
+        sections.append({'Title': title, 'Content': content.rstrip(), 'Rank': rank, 'See': see_also,
+                         'Parts': parts if parts else []})
 
     # ---------- 1. resolve the subject ----------
     specs = [f for f in walk_files(os.path.join(repo, 'features'), '*.md') if not re.match(r'^(_?template|index|conventions)\.md$', os.path.basename(f), re.I)]
     calc_dir = os.path.join(repo, 'domain/calculations')
     calcs = [os.path.join(calc_dir, x) for x in sorted(os.listdir(calc_dir), key=str.lower)
              if x.lower().endswith('.md') and not re.match(r'^(_?template|index)\.md$', x, re.I)] if os.path.isdir(calc_dir) else []
+    flow_dir = os.path.join(repo, 'flows')
+    flows = [os.path.join(flow_dir, x) for x in sorted(os.listdir(flow_dir), key=str.lower)
+             if x.lower().endswith('.md') and not re.match(r'^(_?template|index)\.md$', x, re.I)] if os.path.isdir(flow_dir) else []
     kind = ''
     file = None
     node = ''
     candidates = []
+    glossary_notes = []
+    ctx_name = ''
+    fm_ = re.match(r'^(?:flows/(.+?)\.md|flow:(.+)|FLOW-(.+))$', task, re.I)
+    cm_ = re.match(r'^context:([\w-]+)$', task, re.I)
     if re.match(r'^[A-Z][A-Z0-9]*-\d{3}[a-z]?$', task):
         kind = 'spec'
         file = next((f for f in specs if os.path.splitext(os.path.basename(f))[0] == task), None)
@@ -76,36 +155,50 @@ def main():
         kind = 'calculation'
         file = os.path.join(repo, f'domain/calculations/{task}.md')
         node = f'spec:{task}'
+    elif fm_ and os.path.isfile(os.path.join(repo, 'flows', (fm_.group(1) or fm_.group(2) or fm_.group(3)) + '.md')):
+        kind = 'flow'
+        file = os.path.join(repo, 'flows', (fm_.group(1) or fm_.group(2) or fm_.group(3)) + '.md')
+    elif cm_ and cm_.group(1) in contexts:
+        kind = 'context'
+        ctx_name = cm_.group(1)
+        node = f'context:{ctx_name}'
     elif re.match(r'^(context|feature|endpoint|route|class|hook|component|topic|table|spec):', task, re.I):
         kind = 'node'
         node = task
     else:
-        # free text: score concepts by token hits in title / description / tags / aliases / id
-        tokens = [t for t in re.split(r'[^a-z0-9_\-]+', task.lower()) if len(t) >= 4]
+        # free text: score concepts by token hits (title / aliases / id count double, description / tags / contexts
+        # once); a glossary alias in the text (customer -> Client, lane -> Corridor) adds the term's words and gives
+        # the concepts the glossary lists the term under a bonus - only for an alias, a term typed as such is a token already
+        low = task.lower()
+        tokens = [t for t in re.split(r'[^a-z0-9_\-]+', low) if len(t) >= 4 and t not in STOPWORDS]
+        bonus = {}
+        for term, aliases, used in glossary:
+            hit = next((a for a in [term] + aliases if len(a) >= 4 and re.search(r'(?<![a-z0-9])' + re.escape(a.lower()) + r'(?![a-z0-9])', low)), None)
+            if not hit or hit.lower() == term.lower():
+                continue
+            glossary_notes.append(f'{hit} -> {term}')
+            tokens += [t for t in re.split(r'[^a-z0-9_\-]+', term.lower()) if len(t) >= 4 and t not in tokens]
+            for u in re.findall(r'([A-Z][A-Z0-9]*-\d{3})|`([a-z][a-z0-9_]+)`', used):
+                bonus[(u[0] or u[1]).lower()] = bonus.get((u[0] or u[1]).lower(), 0) + 1
+        tokens = list(dict.fromkeys(tokens))
         scored = []
-        for f in specs + calcs:
+        for f in specs + calcs + flows:
             fm = get_fm(read_text_or_empty(f))
-            hay = ' '.join([get_val(fm, 'title'), get_val(fm, 'description'), get_val(fm, 'tags'), get_val(fm, 'aliases'),
-                            os.path.splitext(os.path.basename(f))[0]]).lower()
-            scored.append((f, sum(1 for t in tokens if t in hay)))
-        best = sorted((x for x in scored if x[1] > 0), key=lambda x: -x[1])
+            name = os.path.splitext(os.path.basename(f))[0]
+            strong = ' '.join([get_val(fm, 'title'), get_val(fm, 'aliases'), name]).lower()
+            weak = ' '.join([get_val(fm, 'description'), get_val(fm, 'tags'), get_val(fm, 'contexts')]).lower()
+            scored.append((f, sum(2 if t in strong else 1 if t in weak else 0 for t in tokens) + bonus.get(name.lower(), 0)))
+        best = sorted((x for x in scored if x[1] > 0), key=lambda x: (-x[1], sort_key(rel(repo, x[0]))))
         if not best:
-            print(f"nothing matches '{task}' - give a spec ID, calculation name or graph node id", file=sys.stderr)
+            print(f"nothing matches '{task}' - read generated/catalogue.md and give a spec ID, calculation name, flow, context:<name> or graph node id", file=sys.stderr)
             sys.exit(1)
         file = best[0][0]
-        kind = 'calculation' if re.search(r'calculations$', os.path.dirname(file), re.I) else 'spec'
-        node = f'spec:{os.path.splitext(os.path.basename(file))[0]}'
-        candidates = [f'{rel(repo, f)} (score {s})' for f, s in best[1:3]]
+        folder = os.path.dirname(file)
+        kind = 'calculation' if re.search(r'calculations$', folder, re.I) else 'flow' if re.search(r'(^|[\\/])flows$', folder, re.I) else 'spec'
+        node = '' if kind == 'flow' else f'spec:{os.path.splitext(os.path.basename(file))[0]}'
+        candidates = [f'{rel(repo, f)} (score {s})' for f, s in best[1:4]]
 
     # ---------- 2. assemble sections (rank = truncation priority, 1 never) ----------
-    sections = []
-
-    def add_section(title, content, rank, see_also=''):
-        if not content:
-            content = '_(none)_'
-        sections.append({'Title': title, 'Content': content.rstrip(), 'Rank': rank, 'See': see_also})
-
-    sources = []
     fm = ''
     text = ''
     if file:
@@ -115,17 +208,27 @@ def main():
 
     # Subject
     subj = [f'- task: `{task}`', f"- resolved: **{kind}** {'`' + rel(repo, file) + '`' if file else '`' + node + '`'}"]
+    if kind == 'context':
+        cv = contexts[ctx_name]
+        subj[-1] = f"- resolved: **context** `{ctx_name}` (`contexts.yml`): spec prefix {cv['spec'] or '-'}; BE class-name prefixes {', '.join(cv['be']) or '-'}; FE pages {', '.join(cv['fe']) or '-'}"
+        if cv['note']:
+            subj.append(f"- note: {cv['note']}")
     if file:
         subj.append(f"- title: {get_val(fm, 'title')}")
         subj.append(f"- badge: **{badge(fm, now)}** · status: {get_val(fm, 'status')} · last_verified: {get_val(fm, 'last_verified')} · stale_after: {get_val(fm, 'stale_after')} · generated: {get_val(fm, 'generated')}")
         own = get_val(fm, 'owners')
         if own:
             subj.append(f'- owners: {own}')
+    if kind == 'flow':
+        subj.append(f"- contexts: {', '.join(get_list(fm, 'contexts'))} · specs: {', '.join(get_list(fm, 'specs'))}"
+                    + (f" · channels: {', '.join(get_list(fm, 'channels'))}" if get_list(fm, 'channels') else ''))
+    if glossary_notes:
+        subj.append(f"- glossary: {'; '.join(glossary_notes)}")
     if candidates:
-        subj.append(f"- candidates: {'; '.join(candidates)}  <- free text matched several concepts; confirm the subject")
+        subj.append(f"- candidates: {'; '.join(candidates)}  <- free text matched several concepts; confirm the subject (generated/catalogue.md lists them all)")
     add_section('Subject', '\n'.join(subj), 1)
 
-    # Spec / calculation body
+    # Spec / calculation / flow body
     if file:
         body = body_of(text)
         lines = split_lines(body)
@@ -143,8 +246,62 @@ def main():
                 if m:
                     keep.append(m.group(1) + '\n' + m.group(2).rstrip())
             add_section('Calculation', '\n\n'.join(keep) + f'\n\n(sanctioned code shape: `# Computation` block in `{rel(repo, file)}`)', 1, rel(repo, file))
+        elif kind == 'flow':
+            if len(lines) > 200 or len(lines) > budget * 0.6:
+                keep = []
+                for h in ('Purpose', 'Questions this document answers', 'Trigger', 'Participants', 'Steps', 'Data and state changes',
+                          'Failure behaviour', 'Invariants and assumptions', 'Open questions'):
+                    m = re.search(r'(?ms)^(##\s+' + re.escape(h) + r'[^\r\n]*)\r?\n(.*?)(?=^##\s|\Z)', body)
+                    if m:
+                        keep.append(m.group(1) + '\n' + m.group(2).rstrip())
+                add_section('Flow', '\n\n'.join(keep) + f'\n\n... (reduced to key sections: see `{rel(repo, file)}`)', 1, rel(repo, file))
+            else:
+                add_section('Flow', body, 1, rel(repo, file))
         else:
             add_section('Spec', body, 1, rel(repo, file))
+
+    # Flow: the specs it composes - Summary and the rules the flow cites ("P1-001 BR-8", "BR-STR-001-3")
+    if kind == 'flow':
+        cited = {}
+        for m in re.finditer(r'\b([A-Z][A-Z0-9]*-\d{3})\s+(BR-\d+(?:\s*,\s*BR-\d+)*(?:\s*(?:,\s*)?and\s+BR-\d+)?)', text):
+            for n in re.findall(r'BR-(\d+)', m.group(2)):
+                cited.setdefault(m.group(1), set()).add(int(n))
+        for m in re.finditer(r'\bBR-([A-Z][A-Z0-9]*-\d{3})-(\d+)\b', text):
+            cited.setdefault(m.group(1), set()).add(int(m.group(2)))
+        parts = []
+        for sid in get_list(fm, 'specs'):
+            sf = next((f for f in specs if os.path.splitext(os.path.basename(f))[0] == sid), None)
+            if not sf:
+                parts.append({'Key': sid, 'Text': f'### {sid}\n_(no spec file)_'})
+                continue
+            st = read_text_or_empty(sf)
+            sfm = get_fm(st)
+            sources.append(rel(repo, sf))
+            block = [f"### {sid} — {get_val(sfm, 'title')} (`{rel(repo, sf)}`) - badge: {badge(sfm, now)}"]
+            summary = get_section(st, 'Summary')
+            if summary:
+                block.append('**Summary**\n' + summary)
+            rules = get_section(st, 'Business rules')
+            wanted = cited.get(sid, set())
+            picked = []
+            if rules and wanted:
+                cur = None
+                for line in split_lines(rules):
+                    bm = re.match(r'^\s*[-*]\s+\*\*BR-' + re.escape(sid) + r'-(\d+)\*\*', line)
+                    if bm:
+                        cur = int(bm.group(1)) in wanted
+                    elif re.match(r'^\s*[-*]\s', line) or re.match(r'^#', line):
+                        cur = False
+                    if cur:
+                        picked.append(line.rstrip())
+            if picked:
+                block.append(f"**Rules the flow cites** (BR-{sid}-{', '.join(str(n) for n in sorted(wanted))})\n" + '\n'.join(picked))
+            elif wanted:
+                block.append(f"**Rules the flow cites**: BR-{sid}-{', '.join(str(n) for n in sorted(wanted))} - _not found under `## Business rules` of the spec (renumbered?)_")
+            else:
+                block.append('_(the flow cites no rule of this spec; its pack has them all)_')
+            parts.append({'Key': sid, 'Text': '\n\n'.join(block)})
+        add_section('Specs in the flow', '\n\n'.join(p['Text'] for p in parts), 2, 'features/', parts)
 
     # Calculations linked from the spec
     if kind == 'spec' and file:
@@ -152,20 +309,19 @@ def main():
         for c in (re.sub(r'^/', '', x) for x in get_list(fm, 'calculations')):
             cp = os.path.join(repo, c)
             if not os.path.isfile(cp):
-                parts.append(f'### {c}\n_(missing file)_')
+                parts.append({'Key': c, 'Text': f'### {c}\n_(missing file)_'})
                 continue
             ct = read_text_or_empty(cp)
             cfm = get_fm(ct)
             sources.append(c)
             pieces = [f'**{h}**\n{s}' for h in ('Purpose', 'Formula', 'Conventions', 'Worked examples', 'Audit') if (s := get_section(ct, h))]
-            parts.append(f"### {get_val(cfm, 'title')} (`{c}`) - badge: {badge(cfm, now)}\n" + '\n\n'.join(pieces))
-        add_section('Calculations', '\n\n'.join(parts), 2, 'domain/calculations/')
+            parts.append({'Key': c, 'Text': f"### {get_val(cfm, 'title')} (`{c}`) - badge: {badge(cfm, now)}\n" + '\n\n'.join(pieces)})
+        add_section('Calculations', '\n\n'.join(p['Text'] for p in parts), 2, 'domain/calculations/', parts)
 
     # Flows this spec takes part in: listed in the spec (`flows:`) or naming the spec in their own `specs:` (both directions)
     if kind == 'spec' and file:
         spec_id = os.path.splitext(os.path.basename(file))[0]
         flow_refs = [re.sub(r'^/', '', x) for x in get_list(fm, 'flows')]
-        flow_dir = os.path.join(repo, 'flows')
         if os.path.isdir(flow_dir):
             for ff in sorted(os.listdir(flow_dir), key=str.lower):
                 if not ff.lower().endswith('.md') or re.match(r'^(_template|index)\.md$', ff, re.I):
@@ -178,49 +334,183 @@ def main():
             for f in flow_refs:
                 fp = os.path.join(repo, f)
                 if not os.path.isfile(fp):
-                    parts.append(f'### {f}\n_(missing file)_')
+                    parts.append({'Key': f, 'Text': f'### {f}\n_(missing file)_'})
                     continue
                 ft = read_text_or_empty(fp)
                 ffm = get_fm(ft)
                 sources.append(f)
                 pieces = [f'**{h}**\n{s}' for h in ('Purpose', 'Trigger', 'Participants', 'Steps', 'Invariants and assumptions') if (s := get_section(ft, h))]
-                parts.append(f"### {get_val(ffm, 'title')} (`{f}`) - badge: {badge(ffm, now)} - specs: {', '.join(get_list(ffm, 'specs'))}\n" + '\n\n'.join(pieces))
-            add_section('Flows', '\n\n'.join(parts), 3, 'flows/')
+                parts.append({'Key': f, 'Text': f"### {get_val(ffm, 'title')} (`{f}`) - badge: {badge(ffm, now)} - specs: {', '.join(get_list(ffm, 'specs'))}\n" + '\n\n'.join(pieces)})
+            add_section('Flows', '\n\n'.join(p['Text'] for p in parts), 3, 'flows/', parts)
+
+    # Context overview: what the context already has, for placing new work in it
+    graph_json = os.path.join(repo, 'generated/graph/graph.json')
+    if kind == 'context':
+        cv = contexts[ctx_name]
+        parts = []
+        ctx_specs = [f for f in specs if get_val(get_fm(read_text_or_empty(f)), 'context') == ctx_name]
+        if ctx_specs:
+            rows = []
+            for f in sorted(ctx_specs, key=lambda p: sort_key(os.path.basename(p))):
+                sfm = get_fm(read_text_or_empty(f))
+                rows.append(f"- {os.path.splitext(os.path.basename(f))[0]} — {get_val(sfm, 'title')} (`{rel(repo, f)}`, {badge(sfm, now)}; aliases: {get_val(sfm, 'aliases')})")
+            parts.append('**Specs** (build a pack per ID for rules and contracts)\n' + '\n'.join(rows))
+        else:
+            parts.append(f"**Specs**: _none yet (code only)_ - the first spec of a context is its main screen, `{cv['spec'] or '<PREFIX>'}-001` "
+                         f"(`features/conventions.md`, prompt `spec-skeleton-from-graph`); until then the graph below and `generated/graph/{ctx_name}.md` are the description")
+        ctx_flows = [f for f in flows if ctx_name in get_list(get_fm(read_text_or_empty(f)), 'contexts')]
+        if ctx_flows:
+            parts.append('**Flows this context takes part in**\n' + '\n'.join(
+                f"- `{rel(repo, f)}` {get_val(get_fm(read_text_or_empty(f)), 'title')}" for f in ctx_flows))
+        if os.path.isfile(graph_json):
+            g = json.loads(read_text_or_empty(graph_json))
+            by_id = {n['id']: n for n in g['nodes']}
+            edges = g['edges']
+            summaries = openapi_summaries(repo)
+            ctx_classes = {e['to'] for e in edges if e['from'] == node and e['rel'] == 'contains'}
+            ctx_classes |= {n['id'] for n in g['nodes'] if n.get('kind') == 'class' and n.get('community') == ctx_name}
+            eps = sorted((by_id[e['to']] for e in edges if e['from'] == node and e['rel'] == 'exposes' and e['to'] in by_id), key=lambda n: sort_key(n['label']))
+            if eps:
+                rows = []
+                for n in eps:
+                    op = re.search(r'operationId (\S+?);?(\s|$)', n.get('note', ''))
+                    opid = op.group(1) if op else ''
+                    rows.append(f"- `{n['label']}` {opid}{' - ' + summaries[opid] if opid and summaries.get(opid) else ''} (`{n.get('location', '')}`)")
+                parts.append('**Endpoints** (a new operation of this context goes next to these; `generated/openapi/backend.yaml`)\n' + '\n'.join(rows))
+            else:
+                parts.append('**Endpoints**: _none in the graph_')
+            tabs = sorted((by_id[e['to']] for e in edges if e['from'] == node and e['rel'] == 'owns' and e['to'] in by_id), key=lambda n: sort_key(n['label']))
+            if tabs:
+                parts.append('**Tables owned** (`generated/be/db/schema/tables/<table>.md`)\n' + '\n'.join(
+                    f"- `{n['label']}` - {n.get('note', '')}" for n in tabs))
+            calc_rows = []
+            for e in edges:
+                if e['rel'] == 'implemented-by' and e['to'] in ctx_classes and by_id.get(e['from'], {}).get('kind') == 'calculation':
+                    cname = e['from'].split(':', 1)[1]
+                    cp = os.path.join(repo, f'domain/calculations/{cname}.md')
+                    cfm = get_fm(read_text_or_empty(cp))
+                    calc_rows.append(f"- `{cname}` — {get_val(cfm, 'title')} ({badge(cfm, now) if cfm else 'no concept'}; implemented by `{e['to']}`)")
+            if calc_rows:
+                parts.append('**Calculations implemented here** (`domain/calculations/`; a new metric starts from their inputs and outputs)\n' + '\n'.join(sorted(set(calc_rows), key=sort_key)))
+            topic_rows = []
+            for e in edges:
+                if e['rel'] == 'produces' and e['from'] in ctx_classes and e['to'].startswith('topic:'):
+                    topic_rows.append(f"- produces `{e['to'].split(':', 1)[1]}` (`{e['from']}`)")
+                if e['rel'] == 'consumed-by' and e['to'] in ctx_classes and e['from'].startswith('topic:'):
+                    topic_rows.append(f"- consumes `{e['from'].split(':', 1)[1]}` (`{e['to']}`)")
+            if topic_rows:
+                parts.append('**Kafka topics** (`generated/be/events.md`)\n' + '\n'.join(sorted(set(topic_rows), key=sort_key)))
+            by_layer = {}
+            for cid in ctx_classes:
+                n = by_id.get(cid)
+                if not n:
+                    continue
+                layer = (n.get('note', '') or '').split(';')[0].strip() or 'other'
+                by_layer.setdefault(layer, []).append(n['label'])
+            if by_layer:
+                parts.append('**Classes by layer** (the layer a new class joins; `file:line` in the graph section and `generated/be/components.md`)\n' + '\n'.join(
+                    f"- {layer}: {', '.join(sorted(names, key=sort_key))}" for layer, names in sorted(by_layer.items(), key=lambda kv: sort_key(kv[0]))))
+            feats = sorted((n for n in g['nodes'] if n.get('kind') == 'feature' and n.get('community') == ctx_name), key=lambda n: sort_key(n['label']))
+            if feats:
+                rows = []
+                for n in feats:
+                    routes = sorted((e['from'].split(':', 1)[1] for e in edges if e['to'] == n['id'] and e['rel'] == 'renders' and e['from'].startswith('route:')), key=sort_key)
+                    hooks = sum(1 for e in edges if e['from'] == n['id'] and e['rel'] == 'contains' and e['to'].startswith('hook:'))
+                    comps = sum(1 for e in edges if e['from'] == n['id'] and e['rel'] == 'contains' and e['to'].startswith('component:'))
+                    rows.append(f"- `{n['label']}` routes {', '.join('`' + r + '`' for r in routes) or '-'}; {hooks} hook(s), {comps} component(s) (`{n.get('location', '')}`)")
+                parts.append('**FE pages** (`generated/fe/`)\n' + '\n'.join(rows))
+            elif cv['fe']:
+                parts.append(f"**FE pages**: {', '.join(cv['fe'])} (not in the graph - FE maps stale?)")
+            else:
+                parts.append('**FE pages**: _none (no page of its own)_')
+            class_names = {by_id[c]['label'] for c in ctx_classes if c in by_id}
+            integ = os.path.join(repo, 'architecture/integrations.md')
+            if os.path.isfile(integ):
+                rows = [l.rstrip() for l in split_lines(read_text_or_empty(integ))
+                        if l.startswith('|') and not re.match(r'^\|\s*-', l)
+                        and (re.search(r'(?<![\w-])' + re.escape(ctx_name) + r'(?![\w-])', l, re.I) or any(('`' + c) in l or ('/' + c) in l for c in class_names))]
+                if rows:
+                    sources.append('architecture/integrations.md')
+                    parts.append('**Integrations** (`architecture/integrations.md`)\n' + '\n'.join(rows[:10]))
+            sources.append('generated/graph/graph.json')
+        else:
+            parts.append('_(generated/graph/graph.json missing - run scripts/gen-graph.py; endpoints, tables, classes and pages come from the graph)_')
+        ov = os.path.join(repo, 'architecture/overview.md')
+        if os.path.isfile(ov):
+            rows = [l.rstrip() for l in split_lines(read_text_or_empty(ov)) if re.search(r'(?<![\w-])' + re.escape(ctx_name) + r'(?![\w-])', l, re.I) and not re.match(r'^\s*(```|#)', l)]
+            if rows:
+                sources.append('architecture/overview.md')
+                parts.append('**Architecture overview lines** (`architecture/overview.md`)\n' + '\n'.join(f'> {r.strip()}' for r in rows[:12]))
+        prop_dir = os.path.join(repo, 'contracts/proposed')
+        if os.path.isdir(prop_dir):
+            rows = []
+            for f in sorted(os.listdir(prop_dir), key=str.lower):
+                if not re.search(r'\.(ya?ml|json)$', f, re.I) or f.lower().startswith('_template'):
+                    continue
+                pt = read_text_or_empty(os.path.join(prop_dir, f))
+                if re.search(r'tags:\s*\[[^\]]*(?<![\w-])' + re.escape(ctx_name) + r'(?![\w-])', pt, re.I) or (cv['spec'] and re.search(r'x-specs?:.*\b' + re.escape(cv['spec']) + r'-\d{3}', pt)):
+                    t = re.search(r'(?m)^\s+title:\s*(.+)$', pt)
+                    rows.append(f"- `contracts/proposed/{f}` {t.group(1).strip().strip(chr(34)) if t else ''}")
+            if rows:
+                parts.append('**Proposed contracts** (designed, not implemented; `contracts/conventions.md`)\n' + '\n'.join(rows))
+        add_section('Context overview', '\n\n'.join(parts), 1, f'generated/graph/{ctx_name}.md')
 
     # Graph neighbourhood
-    graph_json = os.path.join(repo, 'generated/graph/graph.json')
     if os.path.isfile(graph_json):
         q = os.path.join(here, 'graph-query.py')
 
         def query(n):
-            r = subprocess.run([sys.executable, q, '--graph', graph_json, '--node', n, '--depth', str(a.depth), '--max-lines', '80'],
+            r = subprocess.run([sys.executable, q, '--graph', graph_json, '--node', n, '--depth', str(depth), '--max-lines', '80'],
                                capture_output=True, text=True, encoding='utf-8', errors='replace')
             return r.stdout + r.stderr
-        start_node = node
-        gout = query(start_node)
-        if re.search('no node matches', gout, re.I) and file:
-            # a spec without @docs tags: fall back to its context community
-            ctx = get_val(fm, 'context')
-            if ctx:
-                # BE contexts have a `context:` node (located at the manager); FE-only contexts (e.g. presentation) only a `feature:` node
-                ctx_node = f'context:{ctx}'
+
+        if kind == 'flow':
+            refs = get_list(fm, 'code_refs')
+            if refs:
+                r = subprocess.run([sys.executable, q, '--graph', graph_json, '--files'] + refs + ['--depth', '1', '--max-lines', '80'],
+                                   capture_output=True, text=True, encoding='utf-8', errors='replace')
+                gout = re.sub(r'(?m)^#', '###', r.stdout + r.stderr)
+                sources.append('generated/graph/graph.json')
+                add_section('Graph neighbourhood', f'`scripts/graph-query.py --files <code_refs of the flow> --depth 1` ({len(refs)} file(s)):\n\n' + gout.rstrip()
+                            + '\n\nMore: `generated/graph/REPO_MAP.md`, `generated/graph/<community>.md`', 2, 'generated/graph/REPO_MAP.md',
+                            [{'Key': 'files:' + rel(repo, file), 'Text': ''}])
+            else:
+                add_section('Graph neighbourhood', '_(the flow lists no code_refs)_', 2)
+        else:
+            start_node = node
+            gout = query(start_node)
+            if re.search('no node matches', gout, re.I) and file:
+                # a spec without @docs tags: fall back to its context community
+                ctx = get_val(fm, 'context')
+                if ctx:
+                    # BE contexts have a `context:` node (located at the manager); FE-only contexts (e.g. presentation) only a `feature:` node
+                    ctx_node = f'context:{ctx}'
+                    gtext = read_text_or_empty(graph_json)
+                    if not re.search(r'"id"\s*:\s*"' + re.escape(ctx_node) + '"', gtext, re.I):
+                        # FE-only: the first page (feature node) whose community is the context
+                        fm2 = re.search(r'"id"\s*:\s*"(feature:[^"]+)",\s*"kind"\s*:\s*"feature",\s*"label"\s*:\s*"[^"]*",\s*"community"\s*:\s*"' + re.escape(ctx) + '"', gtext, re.I)
+                        ctx_node = fm2.group(1) if fm2 else f'feature:{ctx}'
+                    gout = f'(`{node}` not in graph - no `@docs` tag in code; neighbourhood of `{ctx_node}` instead)\n' + query(ctx_node)
+                    start_node = ctx_node
+            elif re.search('no node matches', gout, re.I) and kind == 'context':
+                # FE-only context: no `context:` node, use its first page
                 gtext = read_text_or_empty(graph_json)
-                if not re.search(r'"id"\s*:\s*"' + re.escape(ctx_node) + '"', gtext, re.I):
-                    # FE-only: the first page (feature node) whose community is the context
-                    fm_ = re.search(r'"id"\s*:\s*"(feature:[^"]+)",\s*"kind"\s*:\s*"feature",\s*"label"\s*:\s*"[^"]*",\s*"community"\s*:\s*"' + re.escape(ctx) + '"', gtext, re.I)
-                    ctx_node = fm_.group(1) if fm_ else f'feature:{ctx}'
-                gout = f'(`{node}` not in graph - no `@docs` tag in code; neighbourhood of `{ctx_node}` instead)\n' + query(ctx_node)
-        sources.append('generated/graph/graph.json')
-        gout = re.sub(r'(?m)^#', '###', gout)   # demote the query's headings under this section
-        add_section('Graph neighbourhood', f'`scripts/graph-query.py --node {start_node} --depth {a.depth}`:\n\n' + gout.rstrip()
-                    + '\n\nMore: `generated/graph/REPO_MAP.md`, `generated/graph/<community>.md`', 2, 'generated/graph/REPO_MAP.md')
+                fm2 = re.search(r'"id"\s*:\s*"(feature:[^"]+)",\s*"kind"\s*:\s*"feature",\s*"label"\s*:\s*"[^"]*",\s*"community"\s*:\s*"' + re.escape(ctx_name) + '"', gtext, re.I)
+                if fm2:
+                    gout = f'(`{node}` not in graph - FE-only context; neighbourhood of `{fm2.group(1)}` instead)\n' + query(fm2.group(1))
+                    start_node = fm2.group(1)
+            sources.append('generated/graph/graph.json')
+            gout = re.sub(r'(?m)^#', '###', gout)   # demote the query's headings under this section
+            add_section('Graph neighbourhood', f'`scripts/graph-query.py --node {node} --depth {depth}`:\n\n' + gout.rstrip()
+                        + '\n\nMore: `generated/graph/REPO_MAP.md`, `generated/graph/<community>.md`', 2, 'generated/graph/REPO_MAP.md',
+                        [{'Key': 'node:' + start_node, 'Text': ''}])
     else:
         add_section('Graph neighbourhood', '_(generated/graph/graph.json missing - run scripts/gen-graph.py)_', 2)
 
     # Contracts
     if file:
         api_refs = get_list(fm, 'api')
-        event_refs = get_list(fm, 'events')
+        event_refs = get_list(fm, 'events') if kind != 'flow' else get_list(fm, 'channels')
         oa = os.path.join(repo, 'generated/openapi/backend.yaml')
         parts = []
         if api_refs and os.path.isfile(oa):
@@ -232,20 +522,22 @@ def main():
                 if m:
                     block = [l.rstrip() for l in split_lines(m.group(1))
                              if re.search(r'^\s{4}(get|post|put|patch|delete):|operationId|summary:|\$ref: .#/components/(schemas|parameters)|in: (query|path)|- name:', l, re.I)]
-                    parts.append(f'### `{ref}`\n```yaml\n' + '\n'.join(block) + '\n```')
+                    parts.append({'Key': ref, 'Text': f'### `{ref}`\n```yaml\n' + '\n'.join(block) + '\n```'})
                 else:
-                    parts.append(f'### `{ref}` - _not found in the contract (verify the path)_')
+                    parts.append({'Key': ref, 'Text': f'### `{ref}` - _not found in the contract (verify the path)_'})
         if event_refs:
             # the AsyncAPI document is optional: a backend with Avro / JSON schemas only has events.md (topic, producer,
             # consumer, payload type and the path of its schema file) as the Kafka source
             where = ('channels in `generated/asyncapi/backend.yaml`; producers/consumers in `generated/be/events.md`'
                      if os.path.isfile(os.path.join(repo, 'generated/asyncapi/backend.yaml'))
                      else 'producers, consumers, payload types and schema file paths in `generated/be/events.md` (no AsyncAPI document)')
-            parts.append('**Kafka**: ' + ', '.join(f'`{e}`' for e in event_refs) + ' - ' + where)
-        add_section('Contracts', '\n\n'.join(parts), 4, 'generated/openapi/backend.yaml')
+            parts.append({'Key': 'kafka', 'Events': list(event_refs), 'Where': where,
+                          'Text': '**Kafka**: ' + ', '.join(f'`{e}`' for e in event_refs) + ' - ' + where})
+        if kind != 'flow' or parts:
+            add_section('Contracts', '\n\n'.join(p['Text'] for p in parts), 4, 'generated/openapi/backend.yaml', parts)
 
     # Data
-    if file:
+    if file and kind != 'flow':
         tables = get_list(fm, 'tables')
         schema = os.path.join(repo, 'generated/be/db-schema.md')
         db_pages = os.path.join(repo, 'generated/be/db/schema/tables')
@@ -264,16 +556,16 @@ def main():
                     lines = split_lines(body)
                     if len(lines) > 60:
                         body = '\n'.join(lines[:60]) + f'\n_... {len(lines) - 60} more line(s) in generated/be/db/schema/tables/{t}.md_'
-                    parts.append(f'### `{t}`\n' + body)
+                    parts.append({'Key': t, 'Text': f'### `{t}`\n' + body})
                 else:
                     m = re.search(r'(?ms)^## `' + re.escape(t) + r'`\s*\r?\n(.*?)(?=^## |\Z)', st)
-                    parts.append(f'### `{t}`\n' + m.group(1).strip() if m else f'### `{t}` - _no table page and not in db-schema.md_')
+                    parts.append({'Key': t, 'Text': f'### `{t}`\n' + m.group(1).strip() if m else f'### `{t}` - _no table page and not in db-schema.md_'})
         elif tables and os.path.isfile(schema):
             st = read_text_or_empty(schema)
             sources.append('generated/be/db-schema.md')
             for t in tables:
                 m = re.search(r'(?ms)^## `' + re.escape(t) + r'`\s*\r?\n(.*?)(?=^## |\Z)', st)
-                parts.append(f'### `{t}`\n' + m.group(1).strip() if m else f'### `{t}` - _not in db-schema.md_')
+                parts.append({'Key': t, 'Text': f'### `{t}`\n' + m.group(1).strip() if m else f'### `{t}` - _not in db-schema.md_'})
         # named datasets (seeds, test fixtures) that touch these tables - cite them by name instead of describing rows
         ds_file = os.path.join(repo, 'generated/be/datasets.md')
         if tables and os.path.isfile(ds_file):
@@ -289,8 +581,9 @@ def main():
             ds_rows = ds_rows[:8]
             if ds_rows:
                 sources.append('generated/be/datasets.md')
-                parts.append('### Datasets touching these tables\n(cite by name: `Given dataset "<name>" is loaded`; full list and sample rows in `generated/be/datasets.md`)\n' + '\n'.join(ds_rows))
-        add_section('Data', '\n\n'.join(parts), 4, 'generated/be/db-schema.md')
+                parts.append({'Key': 'datasets', 'Rows': ds_rows,
+                              'Text': '### Datasets touching these tables\n(cite by name: `Given dataset "<name>" is loaded`; full list and sample rows in `generated/be/datasets.md`)\n' + '\n'.join(ds_rows)})
+        add_section('Data', '\n\n'.join(p['Text'] for p in parts), 4, 'generated/be/db-schema.md', parts)
 
     # Related work items and tests
     if file and kind == 'spec':
@@ -299,12 +592,12 @@ def main():
         wi = os.path.join(repo, f'work-items/{sid}.yml')
         if os.path.isfile(wi):
             sources.append(f'work-items/{sid}.yml')
-            parts.append(f'**work-items/{sid}.yml**\n' + '\n'.join(select_lines(wi, r'^\s*(- id:|\s+summary:|^questions:|^\s+- ")')))
+            parts.append({'Key': wi, 'Text': f'**work-items/{sid}.yml**\n' + '\n'.join(select_lines(wi, r'^\s*(- id:|\s+summary:|^questions:|^\s+- ")'))})
         ft = os.path.join(repo, f'test-design/features/{sid}.feature')
         if os.path.isfile(ft):
             sources.append(f'test-design/features/{sid}.feature')
-            parts.append(f'**test-design/features/{sid}.feature**\n' + '\n'.join(select_lines(ft, r'^\s*(@|Scenario)', strip_right=False)))
-        add_section('Related work items and tests', '\n\n'.join(parts), 3)
+            parts.append({'Key': ft, 'Text': f'**test-design/features/{sid}.feature**\n' + '\n'.join(select_lines(ft, r'^\s*(@|Scenario)', strip_right=False))})
+        add_section('Related work items and tests', '\n\n'.join(p['Text'] for p in parts), 3, '', parts)
 
     # Legacy pages
     legacy_dir = os.path.join(repo, 'confluence-import')
@@ -324,12 +617,16 @@ def main():
             hits = [n for n in needle if n and n.lower() in low]
             if len(hits) >= min(2, len(needle)):
                 head = [l for l in split_lines(pt) if l.strip()][:5]
-                parts.append(f"### `{rel(repo, p)}` (matches: {', '.join(hits)}) - legacy, UNVERIFIED\n" + '\n'.join(f'> {l}' for l in head))
-        add_section('Legacy pages', '\n\n'.join(parts), 5, 'confluence-import/')
+                parts.append({'Key': rel(repo, p), 'Text': f"### `{rel(repo, p)}` (matches: {', '.join(hits)}) - legacy, UNVERIFIED\n" + '\n'.join(f'> {l}' for l in head)})
+        add_section('Legacy pages', '\n\n'.join(p['Text'] for p in parts), 5, 'confluence-import/', parts)
 
-    # ---------- 3. budget ----------
-    header = f"# Context pack: {task} - {rel(repo, file) if file else node} - {badge(fm, now) if fm else 'n/a'} - built {now.strftime('%Y-%m-%dT%H:%M:%SZ')}\n"
-    fixed = 12  # header + footer allowance
+    label = rel(repo, file) if file else node
+    return {'task': task, 'kind': kind, 'file': file, 'label': label, 'badge': badge(fm, now) if fm else 'n/a',
+            'sections': sections, 'sources': sources}
+
+
+def truncate(sections, budget, fixed=12):
+    """Lower-ranked sections lose lines first; returns the titles truncated."""
     truncated = []
     budget_left = budget - fixed
     for s in sorted(sections, key=lambda s: s['Rank']):
@@ -341,9 +638,90 @@ def main():
         s['Content'] = '\n'.join(split_lines(s['Content'])[:allow]) + f"\n... (truncated: see `{s['See'] if s['See'] else 'the files listed under Sources'}`)"
         truncated.append(s['Title'])
         budget_left = 0
-    order = ('Subject', 'Spec', 'Calculation', 'Calculations', 'Flows', 'Graph neighbourhood', 'Contracts', 'Data', 'Related work items and tests', 'Legacy pages')
+    return truncated
+
+
+def merge(subjects):
+    """Several subjects -> one section list: per-subject sections become `### <task>` blocks, shared sections keep
+    each part once (a calculation or flow that is itself a subject is not repeated as a linked one)."""
+    own_files = {rel_file for s in subjects for rel_file in [s['label']] if s['file']}
+    merged = []
+    for title in ORDER:
+        secs = [(s, next((x for x in s['sections'] if x['Title'] == title), None)) for s in subjects]
+        secs = [(s, x) for s, x in secs if x]
+        if not secs:
+            continue
+        rank, see = secs[0][1]['Rank'], secs[0][1]['See']
+        texts = []
+        seen = set(own_files) if title in ('Calculations', 'Flows') else set()
+        kafka, datasets = [], []
+        for s, x in secs:
+            if title in PER_SUBJECT:
+                body = x['Content']
+                if title in ('Spec', 'Flow', 'Calculation'):
+                    body = re.sub(r'(?m)^(#{2,})\s', lambda m: '#' * (len(m.group(1)) + 2) + ' ', body)
+                elif title in ('Context overview', 'Specs in the flow'):
+                    body = re.sub(r'(?m)^(#{2,})\s', lambda m: '#' * (len(m.group(1)) + 1) + ' ', body)
+                texts.append(f"### {s['task']} ({s['kind']}: `{s['label']}`)\n{body}")
+                continue
+            parts = x['Parts'] or ([{'Key': s['task'], 'Text': x['Content']}] if x['Content'] != '_(none)_' else [])
+            for p in parts:
+                if p['Key'] == 'kafka':
+                    kafka.append(p)
+                    continue
+                if p['Key'] == 'datasets':
+                    datasets.append(p)
+                    continue
+                if p['Key'] in seen:
+                    continue
+                seen.add(p['Key'])
+                texts.append(p['Text'] if p['Text'] else x['Content'])
+        if datasets:
+            rows = list(dict.fromkeys(r for p in datasets for r in p['Rows']))
+            texts.append('### Datasets touching these tables\n(cite by name: `Given dataset "<name>" is loaded`; full list and sample rows in `generated/be/datasets.md`)\n' + '\n'.join(rows))
+        if kafka:
+            events = list(dict.fromkeys(e for p in kafka for e in p['Events']))
+            texts.append('**Kafka**: ' + ', '.join(f'`{e}`' for e in events) + ' - ' + kafka[0]['Where'])
+        merged.append({'Title': title, 'Content': '\n\n'.join(texts) if texts else '_(none)_', 'Rank': rank, 'See': see, 'Parts': []})
+    return merged
+
+
+def main():
+    utf8_stdout()
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument('task_positional', nargs='*', default=[])
+    ap.add_argument('--task', action='append', default=[])
+    ap.add_argument('--budget', type=int, default=0)
+    ap.add_argument('--out-dir', default='.context')
+    ap.add_argument('--depth', type=int, default=2)
+    ap.add_argument('--print', dest='print_', action='store_true')
+    a = ap.parse_args()
+    tasks = list(dict.fromkeys([t for t in a.task + a.task_positional if t.strip()]))
+    if not tasks:
+        ap.error('--task is required')
+    repo = repo_root(__file__)
+    here = os.path.dirname(os.path.abspath(__file__))
+    now = now_utc()
+    budget = a.budget or (500 + 300 * (len(tasks) - 1))
+    contexts = load_contexts(repo)
+    glossary = glossary_terms(repo)
+    share = budget if len(tasks) == 1 else max(300, budget // len(tasks))
+    subjects = [build_subject(t, repo, here, now, share, a.depth, contexts, glossary) for t in tasks]
+
+    # ---------- 3. budget ----------
+    if len(subjects) == 1:
+        s = subjects[0]
+        sections, sources = s['sections'], s['sources']
+        header = f"# Context pack: {s['task']} - {s['label']} - {s['badge']} - built {now.strftime('%Y-%m-%dT%H:%M:%SZ')}\n"
+    else:
+        sections = merge(subjects)
+        sections[0]['Content'] = (f"- subjects: {len(subjects)} - one pack; shared sections merged and deduplicated, "
+                                  f"per-subject blocks headed `### <task>`\n\n" + sections[0]['Content'])
+        sources = [x for s in subjects for x in s['sources']]
+        header = f"# Context pack: {' + '.join(s['task'] for s in subjects)} - {len(subjects)} subjects - built {now.strftime('%Y-%m-%dT%H:%M:%SZ')}\n"
+    truncated = truncate(sections, budget)
     out = [header + '\n']
-    for t in order:
+    for t in ORDER:
         s = next((x for x in sections if x['Title'] == t), None)
         if s:
             out.append(f'## {t}\n' + s['Content'] + '\n\n')
@@ -353,13 +731,13 @@ def main():
     out.append('- rule: open nothing else unless a question above is unanswered; then open only the `file:line` named above in `../backend` or `../frontend`. Record new facts as Open questions / Change log, never as silent assumptions.\n')
     result = ''.join(out)
 
-    slug = re.sub(r'[^a-z0-9]+', '-', task.lower()).strip('-')[:60]
+    slug = re.sub(r'[^a-z0-9]+', '-', '+'.join(tasks).lower()).strip('-')[:60]
     out_path = os.path.join(repo, a.out_dir, f'{slug}.md')
     write_text(out_path, result)
     line_count = len(split_lines(result))
     if a.print_:
         sys.stdout.write(result + '\n')
-    print(f"context pack: {rel(repo, out_path)} ({line_count} lines, budget {budget}{', truncated: ' + ', '.join(truncated) if truncated else ''})")
+    print(f"context pack: {rel(repo, out_path)} ({line_count} lines, budget {budget}{f', {len(subjects)} subjects' if len(subjects) > 1 else ''}{', truncated: ' + ', '.join(truncated) if truncated else ''})")
 
 
 if __name__ == '__main__':

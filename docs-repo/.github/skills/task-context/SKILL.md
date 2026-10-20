@@ -13,7 +13,10 @@ deterministically by a script, so every agent starts from the same ~300-500 line
 python3 scripts/context-pack.py --task P1-001                       # spec ID
 python3 scripts/context-pack.py --task stress_test_monthly          # calculation
 python3 scripts/context-pack.py --task "topic:harbor.meetings.session-closed"   # graph node
-python3 scripts/context-pack.py --task "transport mode toggle on the stress table" # free text -> candidates
+python3 scripts/context-pack.py --task flows/session-inputs-recalculation.md    # flow: body + the rules it cites in each spec
+python3 scripts/context-pack.py --task context:cover                 # context: everything it has, for placing new work
+python3 scripts/context-pack.py --task P1-002 --task STR-001 --task flows/session-inputs-recalculation.md  # one pack, several subjects
+python3 scripts/context-pack.py --task "transport mode toggle on the stress table" # free text -> candidates (fallback)
 python3 scripts/context-pack.py --task P1-001 --budget 250 --print    # smaller, to stdout
 ```
 Output: `.context/<slug>.md` (git-ignored). Attach it with `#file` (VS Code) or paste it (JetBrains / CLI).
@@ -22,15 +25,21 @@ Output: `.context/<slug>.md` (git-ignored). Attach it with `#file` (VS Code) or 
 (`python3 scripts/gen-catalogue.py`) lists on one page, one line each: every context (also the ones with code but no
 spec yet), flow, spec with its aliases, calculation with its parameters, API endpoint, Kafka topic, table with its
 owner, external service and glossary term with what people also call it. Read it, decide which lines the request is
-about - several contexts and several kinds are normal - and build one pack per subject. A part of the request that
-matches no line is new work: say which context it belongs to and which line is the nearest existing thing (same
-tables, same endpoint family, same calculation inputs). The script's own free-text resolution (title / description /
-tags / aliases keyword hits) is a fallback for one-subject requests and must not be trusted for cross-context ones.
+about - several contexts and several kinds are normal - and build **one pack with a `--task` per subject** (spec ID,
+calculation name, `flows/<name>.md`, `context:<name>`, graph node): the shared sections are merged and deduplicated,
+the budget grows with the number of subjects. A part of the request that matches no line is new work: add
+`--task context:<name>` for the context it belongs to - its overview section lists the specs, endpoints, tables,
+calculations, topics, classes by layer and pages that are already there, so the new piece can be placed next to the
+nearest existing one. The script's own free-text resolution (title / description / tags / aliases keyword hits with
+glossary aliases) is a fallback for one-subject requests and must not be trusted for cross-context ones.
 
 ## Anatomy (in priority order; lower sections are truncated first when over budget)
 1. **Header** - subject, resolution (spec / calculation / node / candidates), trust badge
    (`status`, `human-reviewed | machine-confirmed | unverified`, `STALE`), `last_verified`, `stale_after`.
 2. **Spec** - whole body when <= 200 lines, otherwise Summary, Business rules, API / Events, Data, Open questions.
+   For a calculation subject **Calculation** (formula, worked examples), for a flow subject **Flow** (its body) and
+   **Specs in the flow** (Summary + the rules the flow cites, per spec), for a context subject **Context overview**
+   (specs, endpoints, tables, calculations, topics, classes by layer, pages, integrations, proposed contracts).
 3. **Calculations** linked from the spec - Purpose, Formula, Conventions, Worked examples (never the Kotlin block).
 4. **Flows** the spec takes part in (`flows:` in the spec or `specs:` in the flow) - Purpose, Trigger, Participants, Steps,
    Invariants and assumptions; the cross-context behaviour the single spec does not show.
@@ -44,7 +53,8 @@ tags / aliases keyword hits) is a fallback for one-subject requests and must not
 10. **Footer** - sources used, sections truncated, and the rule: *open nothing else unless a question below is
    unanswered; then only the `file:line` named above*.
 
-See `references/pack-anatomy.md` for the exact section markers the agents rely on.
+See `references/pack-anatomy.md` for the exact section markers the agents rely on, how several subjects are merged
+into one pack and how `--task` is resolved.
 
 ## Consume
 - Read the pack once, top to bottom. Quote `BR-*`, node ids and `file:line` from it.
@@ -59,7 +69,8 @@ See `references/pack-anatomy.md` for the exact section markers the agents rely o
 2. Follow the pointer of the truncated or thin section: open that one file under `generated/` (schema, contract, map).
 3. Go deeper in the graph: `python3 scripts/graph-query.py --node <id> --depth 3`, or start from the table / topic / class
    node in question - no files opened.
-4. Build a second pack for the neighbour the first one points at (linked calculation, spec of another context, topic).
+4. Rebuild with the neighbour the pack points at as another subject (`--task <ID> --task <linked calculation | spec
+   of another context | flows/<name>.md | context:<name>>`): one pack, the shared sections merged, nothing read twice.
 5. Open exactly the `file:line` the pack names, 40-120 lines, chosen by `write-feature-spec/references/source-priority.md`
    (unit test for edge cases, manager for intent, validator for error codes). Never a whole layer, never a code search.
 6. Still missing -> it is a documentation gap, not a context problem: write it as an open question in the spec,

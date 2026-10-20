@@ -5,7 +5,8 @@ the coding agent and other tools). This file adds only what is Copilot-specific.
 
 ## Start every task with a context pack
 `python3 scripts/context-pack.py --task <spec ID | calculation | node | text>` then attach `.context/<task>.md` with `#file`.
-Free text (no ID, often several contexts): read `generated/catalogue.md` first, pick the subjects, one pack per subject.
+Free text (no ID, often several contexts): read `generated/catalogue.md` first, pick the subjects, one pack with a `--task` per subject
+(spec ID, calculation, `flows/<name>.md`, `context:<name>` for the context a new piece belongs to).
 Do not use `@workspace` over this repository or over `../backend` / `../frontend`; the pack and the graph already
 contain the relevant `file:line` references.
 

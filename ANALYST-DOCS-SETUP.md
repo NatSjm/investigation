@@ -165,7 +165,7 @@ the `file:line` it names.
 ## Commands (Python 3.11+)
 | Purpose | Command |
 |---|---|
-| Context pack | `python3 scripts/context-pack.py --task <ID|name|text> [--budget 500]` |
+| Context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget 500]` (several `--task` = one merged pack) |
 | Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
 | Validate | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
 | Indexes | `python3 scripts/build-index.py` |
@@ -384,9 +384,10 @@ A spec ID (`<CTX>-001`), a calculation name, a graph node, a free-text question 
 ## Procedure
 1. Resolve the subjects, then build the pack. A spec ID, calculation name or graph node goes straight to
    `python3 scripts/context-pack.py --task "<input>"`. Free text: read `generated/catalogue.md` first, decide which
-   lines it is about (several contexts, a flow plus specs, an existing calculation plus a new one are all normal), one
-   pack per subject; a part matching no line is new work, placed in the context it belongs to next to the nearest
-   existing line. Read each `.context/<task>.md` top to bottom.
+   lines it is about (several contexts, a flow plus specs, an existing calculation plus a new one are all normal) and
+   build one pack with a `--task` per subject (`--task P1-002 --task STR-001 --task flows/<name>.md`); a part matching
+   no line is new work: add `--task context:<name>` for its context, whose overview section shows the endpoints,
+   tables, calculations and classes it would sit next to. Read `.context/<task>.md` top to bottom.
 2. Trust check: `draft`, `unverified` or `STALE` concepts are unreliable - say so. Legacy pages are evidence, not rules.
 3. Question mode: answer from the pack. Every statement cites `BR-<ID>-<n>`, a calculation or a contract operation.
    Separate **facts** (stable specs), **unverified** (draft / legacy) and **unknown**. For an unknown that matters,
@@ -453,7 +454,7 @@ None of the copied scripts makes a network call or needs credentials. All are pl
 | `collect-evidence.py` | `<be>`, `<fe>` checkouts (runs `git rev-parse/status`; with `--generate` runs their `gen-all.py`) | **deletes and rewrites** all files in `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi`; writes `generated/manifest.yml` | The only destructive script. By design it removes files the sources no longer produce. Never keep hand-made files in those four folders; start from a clean git tree; run `--dry-run` first; a failed validation publishes nothing |
 | `gen-graph.py` | `generated/be|fe`, `contexts.yml`, `docs-map.yml` | `generated/graph/**` | Safe; overwrites its own output |
 | `build-index.py` | frontmatter of all concepts | **every `index.md`** outside excluded folders; root `index.md` keeps the `manual:start/end` block | Do not keep hand-written content in `index.md` files (put it in `README.md` or a concept) |
-| `context-pack.py` | specs, calculations, graph, contracts, `confluence-import/` | `.context/<task>.md` (git-ignored) | Safe. Packs may quote legacy pages - keep `.context/` ignored |
+| `context-pack.py` | specs, calculations, flows, `contexts.yml`, graph, contracts, `architecture/`, `contracts/proposed/`, `confluence-import/` | `.context/<task>.md` (git-ignored) | Safe. Packs may quote legacy pages - keep `.context/` ignored |
 | `gen-catalogue.py` | `contexts.yml`, specs, calculations, flows, graph, contracts, `generated/be/events.md`, glossary, work items, test design | `generated/catalogue.md` | Safe; overwrites its own output; `--check` in CI |
 | `graph-query.py`, `map-paths.py` | `graph.json`, `docs-map.yml` | nothing (stdout) | Safe, read-only |
 | `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py` | the bundle | nothing | Safe, read-only; exit code 1 on errors |

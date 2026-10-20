@@ -6,6 +6,12 @@
   (also code-only ones), Kafka topic, table with owner, external service and glossary alias. An agent given a request
   that names no ID reads it first, picks the subjects itself and builds one pack per subject (analyst agent step 1,
   skill `task-context`); `collect-evidence.py --graph` rebuilds it, CI checks it with `--check`.
+* **One context pack for several subjects; flows and contexts as subjects.** `scripts/context-pack.py --task` may
+  be repeated (one pack, shared sections merged and deduplicated, budget +300 per extra subject); a flow
+  (`flows/<name>.md`: body, the rules it cites per spec, graph impact of its code_refs) and a context
+  (`context:<name>`: specs, endpoints, tables, calculations, topics, classes by layer, pages, integrations, proposed
+  contracts - the overview for placing new work) are subjects; the free-text fallback applies glossary aliases and
+  scores flows. Section markers: `.github/skills/task-context/references/pack-anatomy.md`.
 
 ## 2026-10-19
 * **Confluence HTML export importer; four legacy pages imported.** `scripts/confluence-import.py` (standard library)

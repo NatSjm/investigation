@@ -25,7 +25,8 @@ open, and then only the `file:line` it names. Skill: `.github/skills/task-contex
 A request in free text ("when imports change, do the stress numbers refresh?", "dashboard with the cover ratio trend
 and a new churn score") names no ID and often spans several contexts: read `generated/catalogue.md` first (one line
 per context, flow, spec, calculation, endpoint, topic, table, external service and glossary alias), pick the subjects
-yourself, build a pack per subject, and treat what matches no line as new work placed in the context it belongs to.
+yourself and build one pack with a `--task` per subject (spec ID, calculation, `flows/<name>.md`, `context:<name>`);
+what matches no line is new work: add the context it belongs to as a subject, its overview shows what is already there.
 
 ## Read order when there is no pack (cheapest first)
 
@@ -60,7 +61,7 @@ yourself, build a pack per subject, and treat what matches no line as new work p
 
 | Purpose | Command |
 |---|---|
-| Task context pack | `python3 scripts/context-pack.py --task <ID|name|text> [--budget 500]` |
+| Task context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget 500]` (several `--task` = one merged pack) |
 | Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
 | Validate bundle | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
 | Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |

@@ -547,3 +547,41 @@ follow in their own sections).
 
 Step 3 copy list (`gen-catalogue.py`), commands table (Catalogue row), step 8 (the collector also writes the
 catalogue; what the page is), step 14 procedure step 1, scripts table (`gen-catalogue.py` row).
+
+## 17. One pack for several subjects; flows and contexts as subjects (investigation commits after `8cca612`, 2026-10-20)
+
+Step 2 of the analyst request flow. `context-pack.py` took one subject; a request about several contexts needed
+several packs that repeated the same flow, graph and contract sections, and neither a flow nor a context could be a
+subject. Now `--task` may be repeated: one pack, the known H2 headings kept, per-subject blocks headed
+`### <task> (<kind>: <path>)` inside `Subject` / `Spec` / `Calculation` / `Flow` / `Context overview` / `Specs in the
+flow`, shared sections (`Calculations`, `Flows`, `Graph neighbourhood`, `Contracts`, `Data`, `Related`, `Legacy pages`)
+list each item once, a calculation or flow that is itself a subject is not repeated as a linked one, the default
+budget is 500 + 300 per extra subject. New subject kinds: a flow (`flows/<name>.md`, `flow:<name>`, `FLOW-<name>`:
+`## Flow` body, `## Specs in the flow` = Summary plus the rules the flow text cites per spec, graph impact of its
+`code_refs`, Kafka line from `channels[]`) and a context (`context:<name>` from `contexts.yml`: `## Context overview`
+= specs or "none yet" with the ID the first one gets, flows, endpoints with operationId and summary, tables owned,
+calculations implemented by its classes, topics, classes by layer, FE pages with routes, its integrations rows,
+overview lines, proposed contracts - the overview for placing new work; FE-only contexts use their first page for the
+graph). Free-text fallback: function words dropped, title / aliases / id hits count double, glossary aliases map to
+the term (reported as `glossary:`), flows are scored too, three candidates. Single-subject packs for IDs,
+calculations and graph nodes are byte-identical to before (checked on 23 packs); `context:<name>` gains the overview.
+
+### 17.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/context-pack.py` | as above |
+| `scripts/gen-catalogue.py` | the how-to paragraph of the catalogue says one pack with a `--task` per subject; rerun it |
+| `.github/skills/task-context/SKILL.md`, `.github/skills/task-context/references/pack-anatomy.md` | build examples, anatomy rows for `Flow`, `Context overview`, `Specs in the flow`, the merged-pack and resolution sections, escalation step 4 |
+| `.github/agents/analyst.agent.md` | step 1: one pack, `--task` per subject, `context:<name>` for new work |
+| `.github/prompts/context-pack.prompt.md` | several subjects separated by ` + ` |
+| `scripts/README.md` | `context-pack.py` row |
+
+### 17.2 What to do
+
+`AGENTS.md`: the free-text paragraph and the "Task context pack" command row; `.github/copilot-instructions.md`: the
+free-text sentence (same content as the analyst step). Rerun `python3 scripts/gen-catalogue.py`.
+
+### 17.3 Playbook (read only)
+
+Commands table (context pack row), step 14 procedure step 1, scripts table (`context-pack.py` row).
