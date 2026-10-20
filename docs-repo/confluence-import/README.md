@@ -12,6 +12,13 @@ Raw legacy pages, one Markdown file per Confluence page with a header block (`so
   lists) is converted to GitHub Markdown; what the converter does not know is kept as raw HTML with a comment.
 - **REST export** (`scripts/confluence-export.py`, a stub): `<SPACE>/<page-title>.md` directly under the space folder,
   as the hand-placed example pages `HARBOR/meeting-flow.md` and `HARBOR/stress-test-calculation.md`.
+- **A Markdown file from elsewhere** (a knowledge base another team generated, such as a tester's RAG knowledge base
+  `rag.md`, or an onboarding page an agent wrote from the code): hand-placed as `<SPACE>/<name>.md` with the header
+  block above (`source` = where it came from, `author`, `last_modified` = the day it was generated, `status: imported`)
+  and a row in the "Current pages" table below. **Never under `raw-html/`**: that folder holds only the HTML export,
+  the importer reads only `.html` files there and agents never open it, so a Markdown file put there is invisible.
+  Without an `imported_from` header the importer never rewrites or removes it; `confluence-migrator` takes it section
+  by section (`ENTERPRISE-PLAYBOOK.md`, "A knowledge base another team already generated").
 
 ```
 confluence-import/

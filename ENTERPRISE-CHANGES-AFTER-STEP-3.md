@@ -719,3 +719,26 @@ sections go first, the footer names them). Footer and summary line say "no budge
 ### 21.3 Playbook (read only)
 
 Commands table (context pack row), step 14 procedure step 2.
+
+## 22. Where a generated Markdown knowledge base goes (investigation commits after `358a519`, 2026-10-20)
+
+A knowledge base another team generated (a tester's RAG knowledge base, `rag.md`) is hand-placed as
+`confluence-import/<SPACE>/<name>.md` with the quarantine header block and a row in the README's "Current pages"
+table, never under `confluence-import/raw-html/`: that folder holds only the HTML export, the importer reads only
+`.html` files there and agents never open it, so a Markdown file there is invisible. Without an `imported_from`
+header the importer never touches it. Nothing else changes.
+
+### 22.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `confluence-import/README.md` | the "A Markdown file from elsewhere" bullet under "Two ways in" (or add the bullet by hand: your README has your own inventory) |
+
+### 22.2 What to do
+
+If `rag.md` is already in `raw-html/`, move it to `confluence-import/<SPACE>/rag.md`, add the header block
+(`source`, `title`, `author`, `last_modified`, `status: imported`) and a "Current pages" row.
+
+### 22.3 Playbook (read only)
+
+The "A knowledge base another team already generated" paragraph before section 0 names the file and the folder.

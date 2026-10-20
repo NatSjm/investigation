@@ -51,8 +51,11 @@ Deferred until the trigger named:
 
 **A knowledge base another team already generated** (a tester's "RAG knowledge base" for the frontend and backend,
 an onboarding page written by an agent from the code) is an imported legacy page, not a source of truth: it is a
-snapshot of one day without `file:line`, and nothing regenerates it. Put it under `confluence-import/<SPACE>/` with
-the header block of that folder's README (`source`, `last_modified`, `author`) and let `confluence-migrator` take it
+snapshot of one day without `file:line`, and nothing regenerates it. Put it under `confluence-import/<SPACE>/` as
+`<name>.md` (for example `confluence-import/<SPACE>/rag.md`) with the header block of that folder's README (`source`,
+`last_modified`, `author`, `status: imported`) and a row in its "Current pages" table - **never under
+`confluence-import/raw-html/`**, which holds only the Confluence HTML export: the importer reads only `.html` files
+there and agents never open that folder, so a Markdown file placed there is never seen. Then let `confluence-migrator` take it
 section by section (`/agent confluence-migrator`, then "Migrate section <n> of confluence-import/<SPACE>/<file>.md").
 Migrate only what the generators cannot produce: the step-by-step user flows (one `flows/` document), business rules
 stated in prose ("starting a meeting reuses the matching active session"), the purposes of broadcast message types
