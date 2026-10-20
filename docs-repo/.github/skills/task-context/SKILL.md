@@ -6,7 +6,8 @@ description: Build and consume a task-scoped context pack (scripts/context-pack.
 # Task-scoped context packs
 
 The bundle is bigger than any task. The pack is the **budgeted slice** of it for one task, assembled
-deterministically by a script, so every agent starts from the same ~300-500 lines and can tell what it did not get.
+deterministically by a script, so every agent starts from the same pack - sized by its subjects, each item bounded
+on its own, nothing truncated unless `--budget N` is given - and can tell what it did not get.
 
 ## Build
 ```bash
@@ -27,7 +28,7 @@ spec yet), flow, spec with its aliases, calculation with its parameters, API end
 owner, external service and glossary term with what people also call it. Read it, decide which lines the request is
 about - several contexts and several kinds are normal - and build **one pack with a `--task` per subject** (spec ID,
 calculation name, `flows/<name>.md`, `context:<name>`, graph node): the shared sections are merged and deduplicated,
-the budget grows with the number of subjects. A part of the request that matches no line is new work: add
+nothing is truncated unless you pass `--budget`. A part of the request that matches no line is new work: add
 `--task context:<name>` for the context it belongs to - its overview section lists the specs, endpoints, tables,
 calculations, topics, classes by layer and pages that are already there, so the new piece can be placed next to the
 nearest existing one. The script's own free-text resolution (title / description / tags / aliases keyword hits with
@@ -65,7 +66,7 @@ into one pack and how `--task` is resolved.
 - If the pack has no graph section, the graph is missing or stale: run `python3 scripts/gen-graph.py` or say so.
 
 ## When the pack is not enough (escalate in this order, stop at the first step that answers)
-1. Rebuild wider: `python3 scripts/context-pack.py --task <x> --budget 1000` - truncated sections come back.
+1. Rebuild without the `--budget` you set (there is none by default) - truncated sections come back.
 2. Follow the pointer of the truncated or thin section: open that one file under `generated/` (schema, contract, map).
 3. Go deeper in the graph: `python3 scripts/graph-query.py --node <id> --depth 3`, or start from the table / topic / class
    node in question - no files opened.

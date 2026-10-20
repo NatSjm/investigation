@@ -14,7 +14,9 @@ Subject (--task, repeatable; several subjects give ONE pack with the shared sect
   node id (topic:..., table:..., feature:...), or free text (matched against title / description / tags / aliases of
   specs, calculations and flows with glossary aliases applied; a fallback - for a request in free text read
   generated/catalogue.md first and name the subjects yourself).
-Budget: maximum lines in the pack (default 500, plus 300 per extra subject). Lower-ranked sections are truncated first.
+Budget: by default none - the pack holds everything its subjects need (each item is bounded on its own: a table page
+60 lines, a legacy page 5, a graph neighbourhood 80 per subject). --budget N caps the pack for a tool with a context
+limit; lower-ranked sections are truncated first and the footer names them.
 Examples:
   python3 scripts/context-pack.py --task P1-001
   python3 scripts/context-pack.py --task P1-002 --task STR-001 --task flows/session-inputs-recalculation.md
@@ -232,7 +234,7 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
     if file:
         body = body_of(text)
         lines = split_lines(body)
-        if kind == 'spec' and (len(lines) > 200 or len(lines) > budget * 0.6):
+        if kind == 'spec' and (len(lines) > 200 or (budget and len(lines) > budget * 0.6)):
             keep = []
             for h in ('Summary', 'Actors', 'Business rules', 'API', 'Data', 'Calculations', 'Edge cases', 'Open questions'):
                 m = re.search(r'(?ms)^(##\s+' + re.escape(h) + r'[^\r\n]*)\r?\n(.*?)(?=^##\s|\Z)', body)
@@ -247,7 +249,7 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
                     keep.append(m.group(1) + '\n' + m.group(2).rstrip())
             add_section('Calculation', '\n\n'.join(keep) + f'\n\n(sanctioned code shape: `# Computation` block in `{rel(repo, file)}`)', 1, rel(repo, file))
         elif kind == 'flow':
-            if len(lines) > 200 or len(lines) > budget * 0.6:
+            if len(lines) > 200 or (budget and len(lines) > budget * 0.6):
                 keep = []
                 for h in ('Purpose', 'Questions this document answers', 'Trigger', 'Participants', 'Steps', 'Data and state changes',
                           'Failure behaviour', 'Invariants and assumptions', 'Open questions'):
@@ -626,8 +628,10 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
 
 
 def truncate(sections, budget, fixed=12):
-    """Lower-ranked sections lose lines first; returns the titles truncated."""
+    """Lower-ranked sections lose lines first; returns the titles truncated. No budget (0) = nothing truncated."""
     truncated = []
+    if budget <= 0:
+        return truncated
     budget_left = budget - fixed
     for s in sorted(sections, key=lambda s: s['Rank']):
         n = len(split_lines(s['Content'])) + 2
@@ -702,10 +706,10 @@ def main():
     repo = repo_root(__file__)
     here = os.path.dirname(os.path.abspath(__file__))
     now = now_utc()
-    budget = a.budget or (500 + 300 * (len(tasks) - 1))
+    budget = a.budget   # 0 = no cap
     contexts = load_contexts(repo)
     glossary = glossary_terms(repo)
-    share = budget if len(tasks) == 1 else max(300, budget // len(tasks))
+    share = 0 if not budget else budget if len(tasks) == 1 else max(300, budget // len(tasks))
     subjects = [build_subject(t, repo, here, now, share, a.depth, contexts, glossary) for t in tasks]
 
     # ---------- 3. budget ----------
@@ -727,7 +731,7 @@ def main():
             out.append(f'## {t}\n' + s['Content'] + '\n\n')
     out.append('## Sources and limits\n')
     out.append('- files: ' + ', '.join(f'`{s}`' for s in dict.fromkeys(sources)) + '\n')
-    out.append(f"- truncated sections: {', '.join(truncated) if truncated else 'none'} (budget {budget} lines)\n")
+    out.append(f"- truncated sections: {', '.join(truncated) if truncated else 'none'} ({f'budget {budget} lines' if budget else 'no budget: every section complete'})\n")
     out.append('- rule: open nothing else unless a question above is unanswered; then open only the `file:line` named above in `../backend` or `../frontend`. Record new facts as Open questions / Change log, never as silent assumptions.\n')
     result = ''.join(out)
 
@@ -737,7 +741,7 @@ def main():
     line_count = len(split_lines(result))
     if a.print_:
         sys.stdout.write(result + '\n')
-    print(f"context pack: {rel(repo, out_path)} ({line_count} lines, budget {budget}{f', {len(subjects)} subjects' if len(subjects) > 1 else ''}{', truncated: ' + ', '.join(truncated) if truncated else ''})")
+    print(f"context pack: {rel(repo, out_path)} ({line_count} lines, {f'budget {budget}' if budget else 'no budget'}{f', {len(subjects)} subjects' if len(subjects) > 1 else ''}{', truncated: ' + ', '.join(truncated) if truncated else ''})")
 
 
 if __name__ == '__main__':

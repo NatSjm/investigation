@@ -165,7 +165,7 @@ the `file:line` it names.
 ## Commands (Python 3.11+)
 | Purpose | Command |
 |---|---|
-| Context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget 500]` (several `--task` = one merged pack) |
+| Context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget N]` (several `--task` = one merged pack; no cap unless `--budget`) |
 | Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
 | Validate | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
 | Indexes | `python3 scripts/build-index.py` |
@@ -396,7 +396,7 @@ names no ID and may span several contexts and mix existing and new behaviour), o
 2. Gather one pack: `python3 scripts/context-pack.py --task <subject> --task <subject> ...` (spec ID, calculation,
    `flows/<name>.md`, `context:<name>` for every context that receives new work - its overview section shows the
    endpoints, tables, calculations and classes a new piece sits next to). Read `.context/<task>.md` top to bottom;
-   when something is missing rebuild wider (`--budget 1000`) or add a `--task`, never open files instead.
+   when something is missing add a `--task` (or drop a `--budget` you set), never open files instead.
 3. Trust check: `draft`, `unverified` or `STALE` concepts are unreliable - say so; label what derives from them
    `needs-spec-review`. Legacy pages are evidence, not rules.
 4. Question mode: answer from the pack. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step or a contract

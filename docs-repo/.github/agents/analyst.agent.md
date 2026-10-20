@@ -36,7 +36,7 @@ churn score") - or an analytics question ("what is covered by tests?").
    subject (spec ID, calculation, `flows/<name>.md`, `context:<name>` for every context that receives new work; the
    overview section of a context pack lists the endpoints, tables, calculations, classes and pages a new piece sits
    next to). Read `.context/<task>.md` top to bottom. When a section is truncated or a neighbour is missing, rebuild
-   with `--budget 1000` or add the neighbour as another `--task` - never open files instead (`task-context` skill).
+   without the `--budget` you set, or add the neighbour as another `--task` - never open files instead (`task-context` skill).
 3. **Trust check.** `draft`, `unverified` or `STALE` specs, calculations and flows are unreliable: say so in the
    output and label everything derived from them `needs-spec-review`. Legacy pages listed in the pack are evidence,
    not rules.

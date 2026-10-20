@@ -16,7 +16,8 @@ For any task about a feature, calculation, change or ticket:
 python3 scripts/context-pack.py --task P1-001          # spec ID, calculation name, graph node or free text
 ```
 
-It writes `.context/<task>.md` (git-ignored, ~300-500 lines): the spec with its trust badge, linked calculations
+It writes `.context/<task>.md` (git-ignored; sized by its subjects, roughly 1000 lines for one spec with its
+calculations and neighbourhood, more with several subjects, `--budget N` to cap it): the spec with its trust badge, linked calculations
 (formula + worked examples), the flows it takes part in, the depth-2 graph neighbourhood (endpoints, classes, tables, topics, FE routes with
 `file:line`), the OpenAPI operations and tables involved, existing work items / tests, and legacy pages that mention
 the subject. **Read the pack, not the repository.** Open anything else only to answer a question the pack leaves
@@ -61,7 +62,7 @@ what matches no line is new work: add the context it belongs to as a subject, it
 
 | Purpose | Command |
 |---|---|
-| Task context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget 500]` (several `--task` = one merged pack) |
+| Task context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget N]` (several `--task` = one merged pack; no cap unless `--budget`) |
 | Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
 | Validate bundle | `python3 scripts/okf-validate.py --strict`; `python3 scripts/validate-frontmatter.py`; `python3 scripts/validate-work-items.py` |
 | Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |

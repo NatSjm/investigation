@@ -11,7 +11,8 @@
   (`flows/<name>.md`: body, the rules it cites per spec, graph impact of its code_refs) and a context
   (`context:<name>`: specs, endpoints, tables, calculations, topics, classes by layer, pages, integrations, proposed
   contracts - the overview for placing new work) are subjects; the free-text fallback applies glossary aliases and
-  scores flows. Section markers: `.github/skills/task-context/references/pack-anatomy.md`.
+  scores flows. Section markers: `.github/skills/task-context/references/pack-anatomy.md`. No budget by default
+  (every item bounded on its own); `--budget N` caps a pack.
 * **Request epics.** A request spanning several specs gets `work-items/<slug>.yml` (`request:`, `specs: [...]`, a
   story may cite rules of several specs) and the analysis document `work-items/<slug>.md` written first from
   `work-items/_analysis-template.md`; `validate-work-items.py` checks both shapes, `coverage-matrix.py` counts the

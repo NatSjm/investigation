@@ -30,8 +30,10 @@ demoted under it. Shared sections (`Calculations`, `Flows`, `Graph neighbourhood
 `Legacy pages`) list each calculation, flow, contract operation, table, work item or page once, whichever subject
 brought it; a calculation or flow that is itself a subject is not repeated as a linked one; the Kafka line and the
 dataset list are unions. Header: `# Context pack: <task 1> + <task 2> - <n> subjects - built <ISO>`; the first line of
-`## Subject` says how many. The default budget is 500 lines plus 300 per extra subject; the lower-ranked sections
-still go first when it is exceeded, so raise `--budget` rather than splitting a task into several packs.
+`## Subject` says how many. There is no budget unless `--budget N` is given: the pack holds everything its subjects
+need, each item bounded on its own (a spec reduced to key sections above 200 lines, a table page 60 lines, a legacy
+page 5, a graph neighbourhood 80 per subject). With `--budget`, the lower-ranked sections go first and the footer
+names them; add a subject rather than splitting a task into several packs.
 
 ## Subject resolution
 

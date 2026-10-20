@@ -696,3 +696,26 @@ Nothing else; the specs, the draft calculation and the proposal are Harbor conte
 ### 20.3 Playbook (read only)
 
 Nothing changes (step 13 already asks for the three free-text requests).
+
+## 21. Context pack: no budget by default (investigation commits after `24c9880`, 2026-10-20)
+
+The default budget (500 lines, +300 per extra subject) was an estimate and already cut a single spec's pack (P1-001:
+511 lines truncated, 971 complete). Every item in a pack is bounded on its own (a spec reduced to key sections above
+200 lines, a table page 60 lines, a legacy page 5, a graph neighbourhood 80 per subject), so the pack now holds
+everything its subjects need by default; `--budget N` remains as a cap for a tool with a context limit (lower-ranked
+sections go first, the footer names them). Footer and summary line say "no budget: every section complete".
+
+### 21.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/context-pack.py`, `scripts/README.md` | as above |
+| `.github/skills/task-context/SKILL.md`, `.github/skills/task-context/references/pack-anatomy.md`, `.github/agents/analyst.agent.md` | "rebuild wider" became "drop the budget you set / add a subject"; size wording |
+
+### 21.2 What to do
+
+`AGENTS.md`: the pack-size words in "Work task-scoped" and the `[--budget N]` command row.
+
+### 21.3 Playbook (read only)
+
+Commands table (context pack row), step 14 procedure step 2.
