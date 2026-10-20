@@ -57,6 +57,8 @@ flowchart LR
 Everything an agent needs is in `.github/` (instructions, agents, prompts, skills) — no MCP, no external frameworks.
 
 ## Layout
+The whole concept for a team adopting the repository - contents, sources, tooling, agents, lifecycle, how the analyst
+works, roles, daily flows, guard rails - is [CONCEPT.md](CONCEPT.md).
 See `.github/copilot-instructions.md` (table), `index.md` (generated) and per-folder `index.md`; `generated/catalogue.md`
 (`scripts/gen-catalogue.py`) puts everything on one page, one line each, for resolving a free-text request to subjects.
 Contracts designed before code live under `contracts/proposed/` (proposals, `contracts/conventions.md`); what the code implements is under `generated/openapi|asyncapi` and arrives only through the collector.
