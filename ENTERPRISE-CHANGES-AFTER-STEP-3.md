@@ -779,68 +779,34 @@ Playbook section 0 (the safety table row and the paragraph on letting Copilot re
 of the analyst agent), 17.2 (the decision, revised with its reason) and section 15 (the catalogue row); `GUIDE.md`,
 `HANDBOOK.md` and `ANALYST-DOCS-SETUP.md` say the same. No kit file changes.
 
-## 24. Checks once, at the end of a task, for what it changed (investigation commits after `35b86cb`, 2026-10-21)
+## 24. Checks once at the end of a task; page components in the map (investigation commits after `35b86cb`, 2026-10-21)
 
-> Section 26 withdraws the `--changed` option described below. Apply this section with the files as they are now in
-> the investigation repository, read every `--changed --strict` in 24.2 as `--strict`, and skip the `README.md` row.
+Two changes of the same day, listed together so that one pass applies both.
 
-Agents ran `okf-validate.py --strict` after nearly every step. Their own files rarely asked for it, but `AGENTS.md`
-("Before finishing any edit"), the `okf` skill (three times) and the `okf-validate` skill's description ("before
-committing any doc change") did, and every step of a task counted as "finishing". The runs checked almost nothing:
-the validator skips `work-items/` (the analyst's main output) and reads only `.md`, and the `agentStop` hook runs the
-same checks anyway. Now the checks run once, after the last edit of a task, only for what it changed, and a task that
-changed no file runs none. The validator changes in three ways:
+**Checks once, at the end of a task.** Agents ran `okf-validate.py --strict` after nearly every step. Their own files
+rarely asked for it, but `AGENTS.md` ("Before finishing any edit"), the `okf` skill (three times) and the
+`okf-validate` skill's description ("before committing any doc change") did, and every step of a task counted as
+"finishing". The runs checked almost nothing: the validator skips `work-items/` (the analyst's main output) and reads
+only `.md`, and the `agentStop` hook runs the same checks anyway. Now the checks run once, after the last edit of a
+task, for the kind of file it changed (a work-item file: `validate-work-items.py`; a spec or a calculation:
+`validate-frontmatter.py`, `build-index.py`, `okf-validate.py --strict`), never after each edit, and a task that
+changed no file runs none. The validator still reads the whole bundle and runs no git command (a `--changed` option
+that asked git for the changed files was tried and withdrawn the same day; nothing below names it). It changes in two
+ways:
 
-- `--path` resolves links from the bundle root (the folder whose `index.md` carries `okf_version`). Before, `--path
+- `--path <folder or file>` resolves links from the bundle root (the folder whose `index.md` carries `okf_version`)
+  and lets only that folder or file fail; the problems of the other files are one count line. Before, `--path
   features --strict` reported 55 broken links on a clean bundle and failed.
-- `--changed [BASE]` checks only the concept files changed since BASE (default `HEAD`, untracked files included). A
-  link broken by a renamed or deleted file counts against the change; the problems of the other files are one count
-  line. It needs `git`; without it every file is checked, with a note.
 - A past `stale_after` is listed as `stale` and never fails a run. Before, `--strict` (and with it the hook and CI)
   would have started failing on 2026-11-03 without any edit (first date: `generated/analytics/coverage-matrix.md`;
   about 25 concepts between 2027-01-06 and 2027-01-18), and the only "fix" within an agent's reach was to move the
   date. The reference checker never reported staleness; the index badges and the coverage matrix still do.
 
-### 24.1 Docs repository: files to re-copy whole
-
-| File | Why |
-|---|---|
-| `scripts/okf-validate.py` | `--changed [BASE]`, `--path` checked against the whole bundle, the `stale` level outside the gate, the summary line `N of M concept file(s) checked (...)` with an "other files" line |
-| `.github/skills/okf-validate/SKILL.md` | description (once at the end of a task that changed concepts, never after each edit), the command row, the paragraph on `--changed` / `--path`, the `stale` level, the exit code |
-| `.github/skills/okf/SKILL.md` | produce and maintain step 3 (after the last edit, not per file); "Validate once, at the end of the task" |
-| `.github/agents/analyst.agent.md` | new section "Checks (once, after the last edit of the task)": what you changed -> what you run, nothing for a question, a pack or analytics (if you adapted the file's domain sentence, re-apply it) |
-| `.github/prompts/okf-validate.prompt.md` | step 4: re-run once after the fixes; `stale` lines are reported to their owners, never "fixed" |
-| `.github/skills/okf/PORTING.md`, `scripts/README.md` | the port's additions; the `okf-validate.py` row |
-
-### 24.2 Docs repository: single rows
-
-| File | Rows | Change |
-|---|---|---|
-| `AGENTS.md` | Commands table, Validate row; the sentence "Before finishing any edit: ..." under the table | row: `okf-validate.py --changed --strict` (no flag = whole bundle, `--path <folder or file>`), `[<file>]` on the two other validators; the sentence becomes the section `## Checks: once, at the end of a task, for what it changed` (copy it from the Harbor file) |
-| `.github/copilot-instructions.md` | Guard rails paragraph | the hook runs the validators when an agent stops, so run the checks yourself once, after the last edit of a task that changed files; `stale` lines never fail it |
-| `.github/agents/architect.agent.md`, `calc-auditor`, `confluence-migrator`, `doc-sync`, `spec-writer`, `test-designer`; `.github/skills/spec-lifecycle/SKILL.md`, `write-feature-spec/SKILL.md`; `.github/prompts/integrations-from-contracts.prompt.md`, `okf-produce.prompt.md` | the final validation step | `okf-validate.py --strict` -> `okf-validate.py --changed --strict` (`okf-produce`: "once after the last edit") |
-| `README.md` | Local checks block | a second line `python3 scripts/okf-validate.py --changed --strict` |
-| `CONCEPT.md` | the validators row of the tooling table | "agents once after the last edit of a task, for what they changed (`--changed`)" |
-
-### 24.3 What to do
-
-Nothing else. The hook (`.github/hooks/docs-quality.json`) and CI (`.github/workflows/docs-quality.yml`) keep running
-the whole bundle with `--strict`; with stale dates out of the gate they fail only on real problems.
-
-### 24.4 Playbook and guides (read only)
-
-Playbook section 3 (item 5, Commands table and Checks), section 10 (the paragraph after the four runs), section 14
-(the `okf-validate.py` row) and section 18 (the context-map prompt finishes with `--changed --strict`); `HANDBOOK.md`
-section 4 (the scripts row); `ANALYST-DOCS-SETUP.md` step 4 (the `AGENTS.md` template: Validate row and the Checks
-section). The Claude wrappers in `.claude/commands/` changed too; they belong to this investigation repository only.
-
-## 25. Page components in the map; the exporter reads the tsconfig (investigation commits after `9b7cb13`, 2026-10-21)
-
-The shaping step's agent could not see the components defined inside page folders. `components.md` listed only the
-shared library (`src/components/**`); `codebase-map.md` names a page's components without `file:line`; and the
-TypeScript exporter lost almost every `renders` / `uses` edge, because it built its program with fixed compiler
-options and ignored the repository's `tsconfig.json`, so every `@/...` import stayed unresolved (Harbor: 3 `renders`,
-0 `uses`). Now:
+**Page components in the map; the exporter reads the tsconfig.** The shaping step's agent could not see the components
+defined inside page folders. `components.md` listed only the shared library (`src/components/**`); `codebase-map.md`
+names a page's components without `file:line`; and the TypeScript exporter lost almost every `renders` / `uses` edge,
+because it built its program with fixed compiler options and ignored the repository's `tsconfig.json`, so every
+`@/...` import stayed unresolved (Harbor: 3 `renders`, 0 `uses`). Now:
 
 - `gen-components.py` writes a second table, **Page components**: one row per exported component under
   `<pages_dir>/<Page>/<components_dir>/` (shared folders included) with its page, purpose, props, where it is rendered
@@ -854,7 +820,30 @@ options and ignored the repository's `tsconfig.json`, so every `@/...` import st
 - The playbook's shaping prompt reads the pages' `codebase-map.md` rows and the Page components table, may open each
   page's entry file (the architect opens no code unless asked) and lists what only a developer can answer.
 
-### 25.1 Frontend kit: files to re-copy whole (into the frontend repository's `scripts/docs/`)
+### 24.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/okf-validate.py` | `--path` checked against the whole bundle, the `stale` level outside the gate, the summary line `N of M concept file(s) checked (...)` with an "other files" line under `--path`; no git, no `subprocess` |
+| `.github/skills/okf-validate/SKILL.md` | description (once at the end of a task that changed concepts, never after each edit), the command row, the paragraph on `--path` and the whole bundle, the `stale` level, the exit code |
+| `.github/skills/okf/SKILL.md` | produce and maintain step 3 (after the last edit, not per file); "Validate once, at the end of the task" |
+| `.github/agents/analyst.agent.md` | new section "Checks (once, after the last edit of the task)": what you changed -> what you run, nothing for a question, a pack or analytics (if you adapted the file's domain sentence, re-apply it) |
+| `.github/prompts/okf-validate.prompt.md` | step 4: re-run once after the fixes; `stale` lines are reported to their owners, never "fixed" |
+| `.github/skills/okf/PORTING.md`, `scripts/README.md` | the port's additions; the `okf-validate.py` row |
+
+### 24.2 Docs repository: single rows
+
+| File | Rows | Change |
+|---|---|---|
+| `AGENTS.md` | Commands table, Validate row; the sentence "Before finishing any edit: ..." under the table | row: `okf-validate.py --strict` (the whole bundle; `--path <folder or file>` lets only that part fail), `[<file>]` on the two other validators; the sentence becomes the section `## Checks: once, at the end of a task, for what it changed` (copy it from the Harbor file) |
+| `.github/copilot-instructions.md` | Guard rails paragraph | the hook runs the validators when an agent stops, so run the checks yourself once, after the last edit of a task that changed files; `stale` lines never fail it |
+| `.github/prompts/okf-produce.prompt.md` | the final step | "Then, once after the last edit, run `build-index.py` and `okf-validate.py --strict`" |
+| `.github/skills/spec-lifecycle/SKILL.md` | the "Finish with" bullet | add "The `agentStop` hook repeats the checks." |
+| `CONCEPT.md` | the validators row of the tooling table | "agents once after the last edit of a task, for what they changed" |
+
+The final validation step of the other agents, skills and prompts stays `okf-validate.py --strict`.
+
+### 24.3 Frontend kit: files to re-copy whole (into the frontend repository's `scripts/docs/`)
 
 | File | Why |
 |---|---|
@@ -863,66 +852,31 @@ options and ignored the repository's `tsconfig.json`, so every `@/...` import st
 | `scripts/docs/README.md` | the `components_dir` and `shared_dir` rows; the exporter paragraph (tsconfig; an older export: run it again) |
 | `scripts/docs/gen-all.py`, `scripts/docs/gen-codebase-map.py` | one sentence each: the index line of `components.md`, the pointer under the codebase map's intro |
 
-### 25.2 Frontend repository: single rows
+### 24.4 Frontend repository: single rows
 
 | File | Rows | Change |
 |---|---|---|
 | `AGENTS.md` | "Read in this order", item 1 | `components.md` (shared UI library, then page components: where each is rendered and which hooks it calls) |
 | `.github/agents/code-reader.agent.md` | Procedure, step 1 | new row: "where is page component X rendered / which hooks does it call" -> `components.md`, Page components |
 
-### 25.3 What to do
+### 24.5 What to do
 
-1. Frontend repository: `python3 scripts/docs/gen-all.py --root .` and check the Page components table: it lists the
+1. Docs repository: nothing beyond the copies and rows above. The hook (`.github/hooks/docs-quality.json`) and CI
+   (`.github/workflows/docs-quality.yml`) keep running the whole bundle with `--strict`; with stale dates out of the
+   gate they fail only on real problems.
+2. Frontend repository: `python3 scripts/docs/gen-all.py --root .` and check the Page components table: it lists the
    components under `src/pages/<Page>/components/` (an empty table means `components_dir` is wrong), and for each
    dialog the Rendered by column points at the file that opens it. If the repository runs the exporter, also
    `npx tsc -p scripts/docs/tsconfig.gen.json` and `node scripts/docs/out/gen-graph-fe.js src
    docs/_generated/graph-export-fe.json`: the console line must name your tsconfig (`tsconfig.app.json` in a Vite
    repository). Commit `docs/_generated/`.
-2. Docs repository: `python3 scripts/collect-evidence.py --graph` (or your collector job). Nothing to re-copy there.
-3. Re-run the shaping prompt (playbook section 10) for a context whose spec list is still provisional.
+3. Docs repository: `python3 scripts/collect-evidence.py --graph` (or your collector job).
+4. Re-run the shaping prompt (playbook section 10) for a context whose spec list is still provisional.
 
-### 25.4 Playbook (read only)
+### 24.6 Playbook and guides (read only)
 
-Section 10, "With an agent, the shaping step" (the prompt as above); section 14, the `gen-components.py` row.
-
-## 26. The validator runs no git command (investigation commits after `0ce3b54`, 2026-10-21)
-
-Section 24 gave `okf-validate.py` a `--changed [BASE]` option that asked git which files differ from a base, so that
-only those could fail. Withdrawn: the validator starts no other program, and the whole bundle is quick to check. It
-reads the whole bundle again, with the two fixes of section 24 kept: `--path <folder or file>` resolves links from
-the bundle root, and a past `stale_after` is listed as `stale` without failing a run. The rule stays: the checks run
-once, after the last edit of a task, for the kind of file it changed, never after each edit, and a task that changed
-no file runs none. `okf-validate.py --strict` over the whole bundle is what the hook and CI run too; they keep the
-bundle at zero warnings, so what a run reports normally comes from the agent's own edit.
-
-### 26.1 Docs repository: files to re-copy whole
-
-| File | Why |
-|---|---|
-| `scripts/okf-validate.py` | no `--changed`, no `subprocess`; `--path` against the whole bundle and the `stale` level as in section 24 |
-| `.github/skills/okf-validate/SKILL.md` | description, command row and the paragraph under the table without `--changed` |
-| `.github/skills/okf/SKILL.md` | "Validate once, at the end of the task": the dev-machine line |
-| `.github/skills/okf/PORTING.md`, `scripts/README.md` | the port's additions; the `okf-validate.py` row |
-
-### 26.2 Docs repository: single rows
-
-| File | Rows | Change |
-|---|---|---|
-| `AGENTS.md` | Commands table, Validate row; section Checks, the "Changed a concept" bullet | `okf-validate.py --strict` (the whole bundle; `--path <folder or file>` lets only that part fail); the bullet as in the Harbor file |
-| `.github/agents/analyst.agent.md` | Checks table, the spec row; the sentence under the table | `okf-validate.py --strict`; a `stale` line is freshness, an older problem in a file the task did not touch is reported, not fixed |
-| `.github/agents/architect.agent.md`, `calc-auditor`, `confluence-migrator`, `doc-sync`, `spec-writer`, `test-designer`; `.github/skills/spec-lifecycle/SKILL.md`, `write-feature-spec/SKILL.md`; `.github/prompts/integrations-from-contracts.prompt.md`, `okf-produce.prompt.md` | the final validation step | `okf-validate.py --changed --strict` -> `okf-validate.py --strict` |
-| `README.md` | Local checks block | the line `python3 scripts/okf-validate.py --changed --strict` goes |
-| `CONCEPT.md` | the validators row of the tooling table | drop "(`--changed`)" |
-
-### 26.3 What to do
-
-Section 24 never applied: apply it with the files as they are now and read every `--changed --strict` in its 24.2 as
-`--strict` (skip its `README.md` row); this section is then done. Section 24 applied: re-copy the files of 26.1 and
-edit the rows of 26.2. The hook and CI are unchanged.
-
-### 26.4 Playbook and guides (read only)
-
-Playbook section 3 (item 5), section 10 (the paragraph after the four runs), section 14 (the `okf-validate.py` row)
-and section 18 (the context-map prompt finishes with `--strict`); `HANDBOOK.md` section 4 (the scripts row);
-`ANALYST-DOCS-SETUP.md` step 4 (the Validate row and the Checks section). The Claude wrappers in `.claude/commands/`
-name `--strict` again.
+Playbook section 3 (item 5, Commands table and Checks), section 10 (the paragraph after the four runs; "With an
+agent, the shaping step", the prompt as above), section 14 (the `okf-validate.py` and `gen-components.py` rows) and
+section 18 (the context-map prompt finishes with `--strict`); `HANDBOOK.md` section 4 (the scripts row);
+`ANALYST-DOCS-SETUP.md` step 4 (the `AGENTS.md` template: Validate row and the Checks section). The Claude wrappers in
+`.claude/commands/` changed too; they belong to this investigation repository only.
