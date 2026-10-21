@@ -26,7 +26,7 @@ code-repo-kit/
     scripts/docs/docs-gen.json             the repository layout the generators read (BE: modules, base package, layers and sub-packages, contract paths, annotations; FE: pages dir, hooks, components, routing, excluded generated client)
     scripts/docs/gen-*.py                  codebase-map (pages), components, routes, types-index, docs-tags
     scripts/docs/tag-candidates.py         inventory for docs-tagger: page component / types / hooks -> current tag, proposed tag, status
-    scripts/docs/gen-graph-fe.ts            precise graph export via the TypeScript compiler API (existing devDependency)
+    scripts/docs/gen-graph-fe.ts            precise graph export via the TypeScript compiler API (existing devDependency, TypeScript 7.0 or later)
   shared/
     check-file-size.py                     line-cap gate with baseline (token hygiene)
     copilot-content-exclusion.yml           what Copilot must never see (GitHub repo setting, every surface)

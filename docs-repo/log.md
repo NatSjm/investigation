@@ -12,6 +12,13 @@
   (`gen-graph-fe.ts`) builds its TypeScript program from the repository's `tsconfig.json`, so `@/` imports resolve: the
   graph has 53 `renders` (was 3) and 62 `uses` (was 0) edges from the export, 852 edges in all (was 740), e.g. which
   modals each overview page renders and which hooks it uses.
+* **Frontend exporter on TypeScript 7 (export regenerated, graph unchanged).** `gen-graph-fe.ts` now runs on
+  TypeScript 7, the native compiler: the `typescript` package no longer exports `ts.createProgram`, so the script talks
+  to the bundled compiler process through `typescript/unstable/sync` and reads nodes through `typescript/unstable/ast`.
+  The process picks each file's project the way the language server does (the nearest `tsconfig.json` that includes
+  it, references followed), so `@/` aliases resolve as before; the console line names the config(s) used. Harbor: the
+  same 129 nodes and 267 edges (53 `renders`, 62 `uses`), written in sorted file order; `tsconfig.gen.json` compiles
+  with `moduleResolution: bundler`, the frontend's `tsconfig.json` lost `baseUrl` (removed in TypeScript 7).
 
 ## 2026-10-20
 * **Catalogue for free-text requests.** `scripts/gen-catalogue.py` writes [generated/catalogue.md](/generated/catalogue.md):

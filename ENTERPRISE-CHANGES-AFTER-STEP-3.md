@@ -880,3 +880,47 @@ agent, the shaping step", the prompt as above), section 14 (the `okf-validate.py
 section 18 (the context-map prompt finishes with `--strict`); `HANDBOOK.md` section 4 (the scripts row);
 `ANALYST-DOCS-SETUP.md` step 4 (the `AGENTS.md` template: Validate row and the Checks section). The Claude wrappers in
 `.claude/commands/` changed too; they belong to this investigation repository only.
+
+## 25. The frontend exporter runs on TypeScript 7 (investigation commits after `25c6633`, 2026-10-21)
+
+The frontend repository is on TypeScript 7.0.2, the native compiler. `gen-graph-fe.ts` was written against the
+TypeScript 5/6 compiler API (`ts.createProgram`, `getTypeChecker`, `ts.findConfigFile`): under 7 the bare `typescript`
+import resolves to a stub that exports only `version`, and `tsconfig.gen.json`'s `moduleResolution: node` is an error
+(removed option). The script now uses the API that 7 ships: `typescript/unstable/sync` (a client of the bundled
+compiler process) for the program, the checker and symbols, and `typescript/unstable/ast` for the node classes and
+`is*` guards. It opens every listed source file in that process, which picks the file's project the way the language
+server does: the nearest `tsconfig.json` that includes it (a Vite-style root config that only lists `references`
+hands over to the referenced one; a file no tsconfig includes lands in the inferred project, relative imports only),
+so the hand-written config selection of section 24 is gone; the console line names each config used and how many
+files it covered. Symbols come back with their declaration's file path, which the script compares with the listed
+files as before. The listed files are sorted, so the export is written in the same order on every file system.
+Tested on Harbor (identical node and edge sets: 129 nodes, 267 edges, 53 `renders`, 62 `uses`; the graph is
+unchanged at 852 edges) and on two scratch repositories: a Vite-style root `tsconfig.json` with only `references`
+(hands over to `tsconfig.app.json`, `@/` imports and an `export *` barrel resolve) and one without any tsconfig
+(inferred project, relative imports resolve). Both API modules are marked unstable by the TypeScript team: a later
+7.x may rename something, and then this script is the only file to touch.
+
+### 25.1 Frontend repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/docs/gen-graph-fe.ts` | TypeScript 7 API (`typescript/unstable/sync`, `typescript/unstable/ast`), project per file from the compiler process, sorted file list, header comment |
+| `scripts/docs/tsconfig.gen.json` | `target` ES2022, `module` ESNext, `moduleResolution` bundler (`node` was removed in 7) |
+| `scripts/docs/README.md` | the exporter's Needs cell (7.0 or later), the paragraph on what the exporter sees (compiler process, nearest tsconfig, inferred project, `tsconfig.gen.json`, no `baseUrl`), the IDE note's module name |
+
+### 25.2 Frontend repository: what to check before the first run
+
+- `tsconfig.json`: no `baseUrl` (TypeScript 7 rejects it, TS5102) and relative `paths` entries (`"@/*": ["./src/*"]`,
+  TS5090). Harbor needed both edits; a repository that already builds with 7 has them.
+- `package.json`: `typescript` at `^7.0.2`, `@types/node` as before. `openapi-typescript` 7.x declares a peer dependency
+  on `typescript@^5`: `npm install` prints a warning, nothing fails.
+- Run `npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json`
+  from the repository root; the console line should name the repository's tsconfig and the number of files it covered.
+  A file reported as "no project" or "not in <config>" is one the tsconfig does not include: widen `include` or accept
+  the inferred project's relative-only resolution for it.
+
+### 25.3 Docs repository
+
+Nothing to copy: `gen-graph.py` reads the same JSON shape. After the next `collect-evidence.py --graph` run
+`generated/fe/graph-export-fe.json` differs only in order (and the manifest in its hash); the graph files stay as they
+are. `code-repo-kit/README.md` (investigation only) names the TypeScript 7 requirement in the kit's file list.

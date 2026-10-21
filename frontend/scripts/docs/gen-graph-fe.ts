@@ -4,21 +4,30 @@
 // (method from the member name, literal contract path), plus fetch/axios with template literals and
 // `const BASE = '...'` constants.
 //
+// Needs TypeScript 7 (the native compiler): the package no longer exports the old `ts.createProgram` API, only
+// `typescript/unstable/sync` (a client of the bundled native compiler process) and `typescript/unstable/ast`
+// (node classes and `is*` guards). The script opens every source file in that process, which picks the project the
+// way the language server does: the nearest tsconfig.json that includes the file (a Vite-style root config that only
+// lists `references` hands over to the referenced one), so `@/` paths and other options come from the repository's own
+// configuration; a file outside every tsconfig lands in the inferred project (relative imports only). The console line
+// names the config(s) used. The API is marked unstable by the TypeScript team - a later 7.x may rename things.
+//
 // Layout: read from scripts/docs/docs-gen.json (same file as the Python generators): `pages_dir` (one `feature:` node
 // per page folder, folders in `not_pages` become their own node, e.g. `shared`), `exclude_paths` (generated clients
 // are never parsed), everything else is `fe-app`.
 //
 // Output: docs/_generated/graph-export-fe.json, consumed by docs repo scripts/gen-graph.py (edges source=export).
 //
-// Compiler options: the repository's own tsconfig.json (baseUrl, paths such as `@/*`, moduleResolution), see
-// compilerOptions() below; the console line names the config that was used.
-//
 // Run:   npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js [srcDir] [outFile]
-// or     npx ts-node scripts/docs/gen-graph-fe.ts            (if ts-node is already present)
 import * as fs from 'fs';
 import * as path from 'path';
-import * as ts from 'typescript';
 import { fileURLToPath } from 'url';
+import { API, SymbolFlags, type Checker, type Project } from 'typescript/unstable/sync';
+import {
+  isCallExpression, isFunctionDeclaration, isIdentifier, isImportDeclaration, isJsxOpeningLikeElement,
+  isNoSubstitutionTemplateLiteral, isObjectLiteralExpression, isPropertyAssignment, isStringLiteral,
+  isTemplateExpression, isVariableStatement, type Expression, type Identifier, type Node, type SourceFile,
+} from 'typescript/unstable/ast';
 
 const srcDir = path.resolve(process.argv[2] ?? 'src');
 const outFile = path.resolve(process.argv[3] ?? 'docs/_generated/graph-export-fe.json');
@@ -34,13 +43,16 @@ for (const cfg of [path.join(repoRoot, 'scripts', 'docs', 'docs-gen.json'), path
 const pagesPrefix = layout.pages_dir.replace(/\\/g, '/').replace(/\/+$/, '') + '/';
 const excluded = layout.exclude_paths.map(p => path.resolve(repoRoot, p).toLowerCase());
 
-interface Node { id: string; kind: string; label: string; community: string; repo: string; location: string; note: string }
+interface Node_ { id: string; kind: string; label: string; community: string; repo: string; location: string; note: string }
 interface Edge { from: string; to: string; rel: string }
-const nodes = new Map<string, Node>();
+const nodes = new Map<string, Node_>();
 const edges = new Set<string>();
-const addNode = (n: Node) => { if (!nodes.has(n.id)) nodes.set(n.id, n); };
+const addNode = (n: Node_) => { if (!nodes.has(n.id)) nodes.set(n.id, n); };
 const addEdge = (from: string, to: string, rel: string) => edges.add(JSON.stringify({ from, to, rel }));
 const rel = (f: string) => path.relative(repoRoot, f).replace(/\\/g, '/');
+// one spelling for file comparisons: the native compiler reports forward-slash paths, declarations come back as
+// canonical (lower-case on Windows) paths
+const key = (f: string) => path.resolve(f).replace(/\\/g, '/').toLowerCase();
 // page folder of a file: first segment under pages_dir (shared pieces keep their folder name), else fe-app
 const featureOf = (f: string) => {
   const r = rel(f);
@@ -66,32 +78,37 @@ function listFiles(dir: string): string[] {
   return out;
 }
 
-// With fixed options the checker cannot resolve `@/...` imports, so every `renders` / `uses` edge through one was lost.
-// A Vite-style root tsconfig.json that only lists `references` hands over to the referenced config whose files include
-// srcDir; without any tsconfig the fixed options remain (relative imports only).
-function compilerOptions(): { options: ts.CompilerOptions; from: string } {
-  const fallback: ts.CompilerOptions = { allowJs: false, jsx: ts.JsxEmit.Preserve, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020, noResolve: false };
-  const rootConfig = ts.findConfigFile(repoRoot, ts.sys.fileExists, 'tsconfig.json');
-  if (!rootConfig) return { options: fallback, from: 'built-in defaults (no tsconfig.json)' };
-  const parse = (file: string) => ts.parseJsonConfigFileContent(ts.readConfigFile(file, ts.sys.readFile).config ?? {}, ts.sys, path.dirname(file));
-  const coversSrc = (p: ts.ParsedCommandLine) => p.fileNames.some(f => path.resolve(f).toLowerCase().startsWith(srcDir.toLowerCase() + path.sep));
-  const top = parse(rootConfig);
-  const candidates = [{ file: rootConfig as string, parsed: top }, ...(top.projectReferences ?? [])
-    .map(r => ts.resolveProjectReferencePath(r) as string).filter(f => ts.sys.fileExists(f)).map(f => ({ file: f, parsed: parse(f) }))];
-  const chosen = candidates.find(c => coversSrc(c.parsed)) ?? candidates[0];
-  return { options: { ...chosen.parsed.options, noEmit: true }, from: rel(chosen.file) };
+const files = listFiles(srcDir).sort();  // deterministic output whatever order the file system lists folders in
+const fileKeys = new Set(files.map(key));
+
+// The native compiler process: every listed file is opened, its default project (nearest tsconfig that includes it)
+// gives the program and the checker. Files are grouped by project so the console line can name each config once.
+const api = new API({ cwd: repoRoot });
+const snapshot = api.updateSnapshot({ openFiles: files.map(f => f.replace(/\\/g, '/')) });
+const byProject = new Map<Project, string[]>();
+const projectName = (p: Project) => p.configFileName && fs.existsSync(p.configFileName) ? rel(p.configFileName) : 'inferred project (no tsconfig.json includes the file)';
+for (const f of files) {
+  const project = snapshot.getDefaultProjectForFile(f.replace(/\\/g, '/'));
+  if (!project) { console.error(`graph-export-fe: no project for ${rel(f)}, skipped`); continue; }
+  byProject.set(project, [...(byProject.get(project) ?? []), f]);
 }
 
-const files = listFiles(srcDir);
-const configured = compilerOptions();
-const program = ts.createProgram(files, configured.options);
-const checker = program.getTypeChecker();
+for (const [project, projectFiles] of byProject) {
+  const checker: Checker = project.checker;
+  for (const file of projectFiles) {
+    const sf: SourceFile | undefined = project.program.getSourceFile(file.replace(/\\/g, '/'));
+    if (!sf) { console.error(`graph-export-fe: ${rel(file)} is not in ${projectName(project)}, skipped`); continue; }
+    exportFile(sf, checker);
+  }
+}
+api.close();
 
-for (const sf of program.getSourceFiles()) {
-  if (sf.isDeclarationFile || !files.includes(path.resolve(sf.fileName))) continue;
+function exportFile(sf: SourceFile, checker: Checker) {
   const feature = featureOf(sf.fileName);
   addNode({ id: `feature:${feature}`, kind: 'feature', label: feature, community: feature, repo: 'fe', location: feature === 'fe-app' ? '' : entryOf(feature), note: '' });
   const consts = new Map<string, string>();  // string constants in this file, for template-literal URLs
+  // identifiers whose declaration file decides whether an edge is ours; resolved in one round trip per file
+  const lookups: { ident: Identifier; edge: [string, string, string] }[] = [];
 
   // Exported declarations become nodes: components (PascalCase function returning JSX), hooks (use*), others skipped.
   const declNode = (name: string, line: number): string | undefined => {
@@ -102,24 +119,24 @@ for (const sf of program.getSourceFiles()) {
     addEdge(`feature:${feature}`, id, 'contains');
     return id;
   };
-  const line = (n: ts.Node) => sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
+  const line = (n: Node) => sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1;
 
-  const visit = (n: ts.Node, owner?: string) => {
-    if (ts.isVariableStatement(n)) {
+  const visit = (n: Node, owner?: string): void => {
+    if (isVariableStatement(n)) {
       for (const d of n.declarationList.declarations) {
-        if (ts.isIdentifier(d.name) && d.initializer) {
-          if (ts.isStringLiteral(d.initializer) || ts.isNoSubstitutionTemplateLiteral(d.initializer)) consts.set(d.name.text, d.initializer.text);
+        if (isIdentifier(d.name) && d.initializer) {
+          if (isStringLiteral(d.initializer) || isNoSubstitutionTemplateLiteral(d.initializer)) consts.set(d.name.text, d.initializer.text);
           const id = declNode(d.name.text, line(d));
-          if (id) { ts.forEachChild(d.initializer, c => visit(c, id)); continue; }
+          if (id) { d.initializer.forEachChild(c => { visit(c, id); }); continue; }
         }
       }
     }
-    if (ts.isFunctionDeclaration(n) && n.name) {
+    if (isFunctionDeclaration(n) && n.name) {
       const id = declNode(n.name.text, line(n));
-      if (id) { n.body && ts.forEachChild(n.body, c => visit(c, id)); return; }
+      if (id) { n.body?.forEachChild(c => { visit(c, id); }); return; }
     }
     // fetch(...) / axios.get(...) / apiClient.post(...) -> first argument is the URL
-    if (ts.isCallExpression(n) && owner) {
+    if (isCallExpression(n) && owner) {
       const callee = n.expression.getText(sf);
       if (/^(fetch|axios(\.\w+)?|api(Client)?(\.\w+)?|http(\.\w+)?)$/.test(callee) && n.arguments[0]) {
         const url = urlOf(n.arguments[0]);
@@ -131,44 +148,35 @@ for (const sf of program.getSourceFiles()) {
         }
       }
       // calls to our own hooks/components -> uses edges (resolved through the checker, so re-exports work)
-      if (ts.isIdentifier(n.expression) && /^use[A-Z]/.test(n.expression.text)) {
-        const sym = checker.getSymbolAtLocation(n.expression);
-        const real = sym && (sym.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(sym) : sym);
-        const target = real?.declarations?.[0]?.getSourceFile();
-        if (target && files.includes(path.resolve(target.fileName))) addEdge(owner, `hook:${n.expression.text}`, 'uses');
-      }
+      if (isIdentifier(n.expression) && /^use[A-Z]/.test(n.expression.text)) lookups.push({ ident: n.expression, edge: [owner, `hook:${n.expression.text}`, 'uses'] });
     }
-    if (ts.isJsxOpeningLikeElement(n) && owner && ts.isIdentifier(n.tagName) && /^[A-Z]/.test(n.tagName.text)) {
-      const sym = checker.getSymbolAtLocation(n.tagName);
-      const decl = sym && ((sym.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(sym) : sym).declarations?.[0]);
-      if (decl && files.includes(path.resolve(decl.getSourceFile().fileName))) addEdge(owner, `component:${n.tagName.text}`, 'renders');
-    }
-    ts.forEachChild(n, c => visit(c, owner));
+    if (isJsxOpeningLikeElement(n) && owner && isIdentifier(n.tagName) && /^[A-Z]/.test(n.tagName.text)) lookups.push({ ident: n.tagName, edge: [owner, `component:${n.tagName.text}`, 'renders'] });
+    n.forEachChild(c => { visit(c, owner); });
   };
 
-  const urlOf = (a: ts.Expression): string | undefined => {
-    if (ts.isStringLiteral(a) || ts.isNoSubstitutionTemplateLiteral(a)) return a.text;
-    if (ts.isTemplateExpression(a)) {
+  const urlOf = (a: Expression): string | undefined => {
+    if (isStringLiteral(a) || isNoSubstitutionTemplateLiteral(a)) return a.text;
+    if (isTemplateExpression(a)) {
       let s = a.head.text;
       for (const span of a.templateSpans) {
         const e = span.expression;
-        s += ts.isIdentifier(e) && consts.has(e.text) ? consts.get(e.text) : '{*}';
+        s += isIdentifier(e) && consts.has(e.text) ? consts.get(e.text) : '{*}';
         s += span.literal.text;
       }
       return s;
     }
-    if (ts.isIdentifier(a) && consts.has(a.text)) return consts.get(a.text);
+    if (isIdentifier(a) && consts.has(a.text)) return consts.get(a.text);
     return undefined;
   };
-  const methodFromInit = (a?: ts.Expression): string | undefined => {
-    if (!a || !ts.isObjectLiteralExpression(a)) return undefined;
-    for (const p of a.properties) if (ts.isPropertyAssignment(p) && p.name.getText(sf) === 'method' && ts.isStringLiteral(p.initializer)) return p.initializer.text.toUpperCase();
+  const methodFromInit = (a?: Expression): string | undefined => {
+    if (!a || !isObjectLiteralExpression(a)) return undefined;
+    for (const p of a.properties) if (isPropertyAssignment(p) && p.name.getText(sf) === 'method' && isStringLiteral(p.initializer)) return p.initializer.text.toUpperCase();
     return undefined;
   };
 
   // cross-page imports (relative or '@/' alias) -> depends-on between pages / shared / fe-app
   for (const st of sf.statements) {
-    if (ts.isImportDeclaration(st) && ts.isStringLiteral(st.moduleSpecifier)) {
+    if (isImportDeclaration(st) && isStringLiteral(st.moduleSpecifier)) {
       const spec = st.moduleSpecifier.text;
       const target = spec.startsWith('.') ? path.resolve(path.dirname(sf.fileName), spec) : spec.startsWith('@/') ? path.join(srcDir, spec.slice(2)) : '';
       if (!target) continue;
@@ -176,10 +184,20 @@ for (const sf of program.getSourceFiles()) {
       if (tf !== feature) addEdge(`feature:${feature}`, `feature:${tf}`, 'depends-on');
     }
   }
-  ts.forEachChild(sf, c => visit(c));
+  sf.forEachChild(c => { visit(c); });
+
+  // an edge counts only when the symbol's declaration is one of the listed files (not node_modules, not a generated client)
+  const symbols = checker.getSymbolAtLocation(lookups.map(l => l.ident));
+  lookups.forEach((l, i) => {
+    const sym = symbols[i];
+    const real = sym && (sym.flags & SymbolFlags.Alias ? checker.getAliasedSymbol(sym) : sym);
+    const declFile = real?.declarations[0]?.path;
+    if (declFile && fileKeys.has(key(declFile))) addEdge(...l.edge);
+  });
 }
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
 const json = { generated: { by: 'process:graph-export-fe' }, nodes: [...nodes.values()], edges: [...edges].map(e => JSON.parse(e) as Edge) };
 fs.writeFileSync(outFile, JSON.stringify(json, null, 2) + '\n', 'utf8');
-console.log(`graph-export-fe: ${nodes.size} nodes, ${edges.size} edges (compiler options: ${configured.from}) -> ${outFile}`);
+const used = [...byProject].map(([p, fs_]) => `${projectName(p)}: ${fs_.length} files`).join(', ');
+console.log(`graph-export-fe: ${nodes.size} nodes, ${edges.size} edges (compiler options: ${used}) -> ${outFile}`);

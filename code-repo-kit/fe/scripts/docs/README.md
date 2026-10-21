@@ -4,7 +4,7 @@
 |---|---|---|
 | `gen-*.py`, `gen-all.py [--check]` | Python 3.11+ (standard library) | `docs/_generated/*.md` regex maps (`codebase-map`, `components`, `routes`, `types-index`, `docs-tags`, `index`); `--check` writes a throwaway copy into a system temp folder it creates and removes in a `finally` block (also after a failed generator or stale output), nothing under the repository; no bytecode cache (`sys.dont_write_bytecode`, children started with `-B`) |
 | `tag-candidates.py --contexts <docs repo>/contexts.yml` | same | inventory for the docs-tagger agent (stdout or `--out`) |
-| `gen-graph-fe.ts` | the repo's existing `typescript` + `@types/node` devDependencies (no new library) | `docs/_generated/graph-export-fe.json` precise graph (TS compiler API) |
+| `gen-graph-fe.ts` | the repo's existing `typescript` (7.0 or later: the native compiler's `typescript/unstable/sync` and `typescript/unstable/ast` modules) + `@types/node` devDependencies (no new library) | `docs/_generated/graph-export-fe.json` precise graph (TS compiler API) |
 
 ## Layout: `docs-gen.json`
 The generators do not hard-code the folder layout; they read `scripts/docs/docs-gen.json` next to them (or `--config <file>`).
@@ -56,14 +56,22 @@ node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json
 What the exporter sees: one `feature:` node per page folder (and per `not_pages` folder), exported hooks (`use*`) and
 components (PascalCase), `calls` edges from `api.GET('/session/product1/overview', ...)`-style calls (literal contract
 path + method), `uses` / `renders` edges resolved through the type checker and `depends-on` edges between pages.
-The type checker works from the repository's `tsconfig.json` (a root config that only lists `references` hands over
-to the referenced config that includes `src`), so `@/` aliases and barrel re-exports resolve; the console line names
-the config it used. An export made before that had almost no `renders` / `uses` edges: run it again.
+The exporter needs TypeScript 7 (the native compiler): the `typescript` package no longer exports the old
+`ts.createProgram` API, so the script talks to the bundled compiler process through `typescript/unstable/sync` and
+reads nodes through `typescript/unstable/ast` (both marked unstable by the TypeScript team; a later 7.x may rename
+things, and then this script is the only file to touch). It opens every source file in that process, which picks the
+project the way the language server does: the nearest `tsconfig.json` that includes the file (a Vite-style root config
+that only lists `references` hands over to the referenced one), so `@/` aliases and barrel re-exports resolve; a file
+no tsconfig includes lands in the inferred project (relative imports only). The console line names the config(s) used
+and how many files each covered. `tsconfig.gen.json` compiles the script with `moduleResolution: bundler` (TypeScript 7
+removed `node`/`node10`; the repository's own `tsconfig.json` must not carry `baseUrl` either, `paths` entries are
+relative to it). An export made with the previous version (fixed compiler options, before 2026-10-21) had almost no
+`renders` / `uses` edges: run it again.
 The exporter keeps literal calls only: it does not read `generated_client` and emits no `calls` edge for a call to a
 generated function; those come from the `API calls` column of `codebase-map.md` through the docs repository's graph.
 
 IDE note: in the investigation workspace (`code-repo-kit/fe/...`) there is no `node_modules`, so the editor shows
-`Cannot find module 'typescript'` / implicit-any errors for `gen-graph-fe.ts`. They disappear in the real frontend repo
+`Cannot find module 'typescript/unstable/sync'` / implicit-any errors for `gen-graph-fe.ts`. They disappear in the real frontend repo
 (or after `npm i` in a folder whose `node_modules` contains `typescript` and `@types/node`). The file compiles
 cleanly under `strict: true`.
 

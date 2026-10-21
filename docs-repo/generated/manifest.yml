@@ -1,9 +1,9 @@
 # Evidence snapshot manifest - written by scripts/collect-evidence.py; do not edit.
 # Records which source commits the collector-owned files under generated/ describe (be, fe, openapi, asyncapi, be/db).
-collector: { version: '1.0', at: 2026-10-21T04:58:06Z }
+collector: { version: '1.0', at: 2026-10-21T21:21:54Z }
 sources:
-  backend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 9b7cb13b9222914649d901ad996f05cd5b874e06, dirty: true }
-  frontend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 9b7cb13b9222914649d901ad996f05cd5b874e06, dirty: true }
+  backend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 25c6633789b9f27bcf46e8c87a54ec0ed7a73801, dirty: true }
+  frontend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 25c6633789b9f27bcf46e8c87a54ec0ed7a73801, dirty: true }
 artifacts:
   - { path: generated/asyncapi/backend.yaml, source: backend, sha256: 16d8e0f62c348da93659c275c45251848beb635d0cd2544fda1f61c3c55292fd }
   - { path: generated/be/api-index.md, source: backend, sha256: 324711777035b956c49fedd6b72416f96d97bfb4f2e5fdf2858a92ca8a256ad7 }
@@ -44,7 +44,7 @@ artifacts:
   - { path: generated/fe/components.md, source: frontend, sha256: fe51dcb5acc6bbf1562612d85c71ed5019064171b40e40be1ee96d4d766c30f7 }
   - { path: generated/fe/docs-gen.json, source: frontend, sha256: d6c31e29b3dfb7e6bb5e75bea5ddf7b14b058bdd1e6be4c53984e0ead93d827d }
   - { path: generated/fe/docs-tags.md, source: frontend, sha256: 56837da9efa37c60544fd0955161335962f67a66df5067ca9ac48c80a9ba84d4 }
-  - { path: generated/fe/graph-export-fe.json, source: frontend, sha256: 762bbc3bec259b130818d45b8ea752b937f054217a45424657c0d9e564b2ecfe }
+  - { path: generated/fe/graph-export-fe.json, source: frontend, sha256: cb3dfdc5848cbe716da81dcbbfdf2a79a233ea7736b885c8bb15760ca517b1cc }
   - { path: generated/fe/routes.md, source: frontend, sha256: f86809fa6fac295cdbf77b450fe86b6872610f718a7e90a7916fa638ea5f29e4 }
   - { path: generated/fe/types-index.md, source: frontend, sha256: 4aedf7c878f1e57be0f90b8cad183fee2c715abb7f256bb22c7886b1141d36c2 }
   - { path: generated/openapi/backend.yaml, source: backend, sha256: 181c725e8658b73e5d8a13757337becf9accdcd85da24dd7bb51da0934aa5216 }
