@@ -4,7 +4,7 @@ title: "Routes (FE)"
 description: "Generated map: Routes (FE), derived from react-router route objects / <Route> elements; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-16
+  at: 2026-10-21
 status: stable
 ---
 # Routes (FE)

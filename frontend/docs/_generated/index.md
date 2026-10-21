@@ -3,7 +3,7 @@
 Read these before opening source. Each file is a few hundred tokens.
 
 - [codebase-map.md](codebase-map.md): pages, purpose, components and hooks, API calls, browser channels
-- [components.md](components.md): shared component library: props, purpose, used by which pages
+- [components.md](components.md): shared component library (props, purpose, used by which pages), then page components (where each is rendered, which hooks it calls)
 - [routes.md](routes.md): URL -> page component (nested routes joined, route constants resolved)
 - [types-index.md](types-index.md): exported types/interfaces (DTO mirrors)
 - [docs-tags.md](docs-tags.md): spec ID (`@docs`) to code location

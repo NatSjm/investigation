@@ -4,7 +4,7 @@ title: "Graph: fe-app (fe)"
 description: "app shell: routing, layouts, providers, channel modules"
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: fe-app (fe)
@@ -13,9 +13,9 @@ status: stable
 11 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## hooks
+- `hook:useSessionStore` - `src/services/api/sessionStore.ts:20`
 - `hook:usePresentationPublisher` - `src/components/hook/usePresentationPublisher.ts:15`
 - `hook:usePresentationSubscriber` - `src/components/hook/usePresentationSubscriber.ts:9`
-- `hook:useSessionStore` - `src/services/api/sessionStore.ts:20`
 
 ## features
 - `feature:fe-app` - `src/App.tsx` - app shell: routing, layouts, providers, channel modules
@@ -29,8 +29,8 @@ status: stable
 - `channel:harbor.session.{*}` - `src/components/broadcast/sessionChannel.ts` - BroadcastChannel
 
 ## components
-- `component:AdminRoutesGuard` - `src/routing/AdminRoutesGuard.tsx:16`
 - `component:Routing` - `src/routing/Routing.tsx:21`
+- `component:AdminRoutesGuard` - `src/routing/AdminRoutesGuard.tsx:16`
 - `component:App` - `src/App.tsx:5`
 
 ## Edges
@@ -88,13 +88,42 @@ status: stable
 - `feature:Product2OverviewPage` -produces-> `channel:harbor.session.{*}` (-> product2)
 - `feature:SessionSummaryPage` -produces-> `channel:harbor.session.{*}` (-> meetings)
 - `feature:StressTestPage` -produces-> `channel:harbor.session.{*}` (-> stress)
+- `component:App` -renders-> `component:Routing` (exact)
 - `component:Routing` -renders-> `component:AdminRoutesGuard` (exact)
+- `component:Routing` -renders-> `component:PresentationLayout` (-> shared-ui) (exact)
+- `component:Routing` -renders-> `component:RootLayout` (-> shared-ui) (exact)
 - `feature:fe-app` -renders-> `component:PresentationLayout` (-> shared-ui)
 - `feature:fe-app` -renders-> `component:RootLayout` (-> shared-ui)
 - `feature:fe-app` -renders-> `component:SessionLayout` (-> shared-ui)
 - `route:/` -renders-> `feature:fe-app`
 - `route:/meetings` -renders-> `feature:fe-app`
 - `route:/session/:sessionId` -renders-> `feature:fe-app`
+- `component:ClientOverviewPage` -uses-> `hook:useSessionStore` (-> clients) (exact)
+- `component:PresentationLayout` -uses-> `hook:useSessionStore` (-> shared-ui) (exact)
+- `component:PresentationPage` -uses-> `hook:usePresentationSubscriber` (-> presentation) (exact)
+- `component:Product1OverviewPage` -uses-> `hook:usePresentationPublisher` (-> product1) (exact)
+- `component:Product2OverviewPage` -uses-> `hook:usePresentationPublisher` (-> product2) (exact)
+- `component:RootLayout` -uses-> `hook:useSessionStore` (-> shared-ui) (exact)
+- `component:SessionLayout` -uses-> `hook:usePresentationPublisher` (-> shared-ui) (exact)
+- `component:SessionLayout` -uses-> `hook:useSessionStore` (-> shared-ui) (exact)
+- `component:StressTestPage` -uses-> `hook:usePresentationPublisher` (-> stress) (exact)
+- `component:StressTestPage` -uses-> `hook:useSessionStore` (-> stress) (exact)
+- `hook:useBaselinePrices` -uses-> `hook:useSessionStore` (-> fe-shared) (exact)
+- `hook:useCloseSession` -uses-> `hook:usePresentationPublisher` (-> meetings) (exact)
+- `hook:useCoverQuote` -uses-> `hook:useSessionStore` (-> fe-shared) (exact)
+- `hook:useCoverSummary` -uses-> `hook:useSessionStore` (-> fe-shared) (exact)
+- `hook:usePeerSimulation1` -uses-> `hook:useSessionStore` (-> product1) (exact)
+- `hook:usePeerSimulation2` -uses-> `hook:useSessionStore` (-> product2) (exact)
+- `hook:useProduct1Movements` -uses-> `hook:useSessionStore` (-> product1) (exact)
+- `hook:useProduct1Overview` -uses-> `hook:useSessionStore` (-> product1) (exact)
+- `hook:useProduct1Projection` -uses-> `hook:useSessionStore` (-> product1) (exact)
+- `hook:useProduct2Movements` -uses-> `hook:useSessionStore` (-> product2) (exact)
+- `hook:useProduct2Overview` -uses-> `hook:useSessionStore` (-> product2) (exact)
+- `hook:useProduct2Projection` -uses-> `hook:useSessionStore` (-> product2) (exact)
+- `hook:useRunStressTest` -uses-> `hook:useSessionStore` (-> stress) (exact)
+- `hook:useScenarioMutations` -uses-> `hook:useSessionStore` (-> market) (exact)
+- `hook:useScenarios` -uses-> `hook:useSessionStore` (-> market) (exact)
+- `hook:useStressTest` -uses-> `hook:useSessionStore` (-> stress) (exact)
 
 ## Specs touching this community
 - `spec:ADM-001` - `features/admin/ADM-001.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/manager/AdminManager.kt:25; fe src/pages/ImportsPage/hook/useImportBatches.ts:10; fe src/pages/ImportsPage/hook/useImportBatches.ts:22; fe src/pages/ImportsPage/ImportsPage.tsx:22; fe src/pages/ParametersPage/hook/useParameters.ts:20; fe src/pages/ParametersPage/hook/useParameters.ts:9; fe src/pages/ParametersPage/ParametersPage.tsx:9; fe src/routing/AdminRoutesGuard.tsx:16; fe src/types/admin.ts:11

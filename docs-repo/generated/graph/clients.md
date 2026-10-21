@@ -4,7 +4,7 @@ title: "Graph: clients (be+fe)"
 description: "/clients/:clientId` - client info panel plus one card per product group."
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: clients (be+fe)
@@ -13,11 +13,11 @@ status: stable
 30 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## hooks
-- `hook:useClient` - `src/pages/ClientSearchPage/hook/useClientSearch.ts:24`
 - `hook:useClientSearch` - `src/pages/ClientSearchPage/hook/useClientSearch.ts:10`
 - `hook:useClientOverview` - `src/pages/ClientOverviewPage/hook/useClientOverview.ts:10`
-- `hook:useClientRole` - `src/pages/ClientOverviewPage/hook/useClientRole.ts:10`
 - `hook:useCreateSession` - `src/pages/ClientOverviewPage/hook/useCreateSession.ts:11`
+- `hook:useClient` - `src/pages/ClientSearchPage/hook/useClientSearch.ts:24`
+- `hook:useClientRole` - `src/pages/ClientOverviewPage/hook/useClientRole.ts:10`
 
 ## contexts
 - `context:clients` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ClientManager.kt` - entry point ClientManager (manager)
@@ -27,10 +27,10 @@ status: stable
 - `feature:ClientSearchPage` - `src/pages/ClientSearchPage/ClientSearchPage.tsx` - /clients` - search box backed by the client registry; results link to the overview page.
 
 ## endpoints
-- `endpoint:GET /api/v1/clients` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:22` - operationId searchClients; handler ClientController.searchClients; params 
 - `endpoint:GET /api/v1/clients/{clientId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:25` - operationId getClient; handler ClientController.getClient; params clientId
-- `endpoint:GET /api/v1/clients/{clientId}/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:28` - operationId getClientOverview; handler ClientController.getClientOverview; params clientId
+- `endpoint:GET /api/v1/clients` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:22` - operationId searchClients; handler ClientController.searchClients; params 
 - `endpoint:GET /api/v1/clients/{clientId}/role` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:31` - operationId getClientRole; handler ClientController.getClientRole; params clientId
+- `endpoint:GET /api/v1/clients/{clientId}/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ClientController.kt:28` - operationId getClientOverview; handler ClientController.getClientOverview; params clientId
 
 ## routes
 - `route:/clients` - `src/routing/Routing.tsx:27` - renders ClientSearchPage
@@ -49,10 +49,10 @@ status: stable
 - `class:ClientRegistryClient` - `harbor-core/src/main/kotlin/com/acme/harbor/client/rest/ClientRegistryClient.kt:16` - client/rest; Component
 
 ## components
-- `component:ClientSearchPage` - `src/pages/ClientSearchPage/ClientSearchPage.tsx:17`
-- `component:ClientInfoPanel` - `src/pages/ClientOverviewPage/components/ClientInfoPanel/ClientInfoPanel.tsx:13`
 - `component:ClientOverviewPage` - `src/pages/ClientOverviewPage/ClientOverviewPage.tsx:18`
+- `component:ClientSearchPage` - `src/pages/ClientSearchPage/ClientSearchPage.tsx:17`
 - `component:ProductGroupCard` - `src/pages/ClientOverviewPage/components/ProductGroupCard/ProductGroupCard.tsx:23`
+- `component:ClientInfoPanel` - `src/pages/ClientOverviewPage/components/ClientInfoPanel/ClientInfoPanel.tsx:13`
 
 ## tables
 - `table:client_profile` - `harbor-core/src/main/resources/db/migration/V1__clients.sql` - A client of the platform: master data merged from the client registry, one row per external reference. (6 columns)
@@ -151,10 +151,19 @@ status: stable
 - `context:clients` -owns-> `table:client_role`
 - `class:ClientProfileRepository` -persists-to-> `table:client_profile`
 - `class:ClientRoleRepository` -persists-to-> `table:client_role`
+- `component:ClientOverviewPage` -renders-> `component:ClientInfoPanel` (exact)
+- `component:ClientOverviewPage` -renders-> `component:ProductGroupCard` (exact)
+- `component:ClientSearchPage` -renders-> `component:DataTable` (-> shared-ui) (exact)
+- `component:ProductGroupCard` -renders-> `component:LineChart` (-> shared-ui) (exact)
 - `feature:ClientOverviewPage` -renders-> `component:LineChart` (-> shared-ui)
 - `feature:ClientSearchPage` -renders-> `component:DataTable` (-> shared-ui)
 - `route:/clients` -renders-> `feature:ClientSearchPage`
 - `route:/clients/:clientId` -renders-> `feature:ClientOverviewPage`
+- `component:ClientOverviewPage` -uses-> `hook:useClientOverview` (exact)
+- `component:ClientOverviewPage` -uses-> `hook:useCreateSession` (exact)
+- `component:ClientOverviewPage` -uses-> `hook:useSessions` (-> fe-shared) (exact)
+- `component:ClientOverviewPage` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `component:ClientSearchPage` -uses-> `hook:useClientSearch` (exact)
 
 ## Specs touching this community
 - `spec:CLI-001` - `features/clients/CLI-001.md` - status stable; be harbor-core/src/main/kotlin/com/acme/harbor/manager/ClientManager.kt:26; fe src/pages/ClientOverviewPage/ClientOverviewPage.tsx:18; fe src/pages/ClientOverviewPage/hook/useClientOverview.ts:10; fe src/pages/ClientOverviewPage/hook/useClientRole.ts:10; fe src/pages/ClientSearchPage/ClientSearchPage.tsx:17; fe src/pages/ClientSearchPage/hook/useClientSearch.ts:10; fe src/pages/ClientSearchPage/hook/useClientSearch.ts:24; fe src/types/clients.ts:17

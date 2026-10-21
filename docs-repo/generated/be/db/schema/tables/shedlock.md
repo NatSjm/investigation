@@ -4,7 +4,7 @@ title: "shedlock"
 description: "ShedLock table: distributed locks of the scheduled jobs (one row per job name). Technical."
 generated:
   by: process:db-docs
-  at: 2026-10-18
+  at: 2026-10-21
 status: stable
 ---
 # shedlock

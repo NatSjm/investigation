@@ -15,7 +15,8 @@ the single `BroadcastChannel` module `src/components/broadcast/sessionChannel.ts
 
 ## Read in this order (cheapest first) - never walk `src/`
 1. `docs/_generated/index.md`, then the map that answers the question: `codebase-map.md` (pages, hooks, components, API calls),
-   `routes.md` (URL -> page), `components.md` (shared UI), `types-index.md` (exported types), `docs-tags.md` (spec ID -> code).
+   `routes.md` (URL -> page), `components.md` (shared UI library, then page components: where each is rendered and
+   which hooks it calls), `types-index.md` (exported types), `docs-tags.md` (spec ID -> code).
 2. The page component `src/pages/<Page>/<Page>.tsx` (its JSDoc names the route and the spec) and `src/types/<context>.ts`.
 3. One hook under `src/pages/<Page>/hook/` or one component. Max 3 source files per question.
 4. For "which backend endpoint / which screens are affected" use the docs repo `generated/graph/<context>.md`.

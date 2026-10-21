@@ -4,7 +4,7 @@ title: "session_client_config"
 description: "Per-session choices of the client: projection horizon, price basis and cover preference."
 generated:
   by: process:db-docs
-  at: 2026-10-18
+  at: 2026-10-21
 status: stable
 ---
 # session_client_config

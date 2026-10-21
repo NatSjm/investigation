@@ -1,10 +1,10 @@
 ---
 type: Document
 title: "Graph: product1 (be+fe)"
-description: "/session/:sessionId/product1` - first meeting step for Product 1: city filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals."
+description: "entry point Product1Manager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: product1 (be+fe)
@@ -13,9 +13,9 @@ status: stable
 32 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## hooks
+- `hook:useProduct1Overview` - `src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:11`
 - `hook:usePeerSimulation1` - `src/pages/Product1OverviewPage/hook/usePeerSimulation1.ts:11`
 - `hook:useProduct1Movements` - `src/pages/Product1OverviewPage/hook/useProduct1Movements.ts:11`
-- `hook:useProduct1Overview` - `src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:11`
 - `hook:useProduct1Projection` - `src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:26`
 
 ## contexts
@@ -25,10 +25,10 @@ status: stable
 - `feature:Product1OverviewPage` - `src/pages/Product1OverviewPage/Product1OverviewPage.tsx` - /session/:sessionId/product1` - first meeting step for Product 1: city filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals.
 
 ## endpoints
-- `endpoint:GET /api/v1/session/product1/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:24` - operationId getProduct1Overview; handler Product1Controller.getProduct1Overview; params 
 - `endpoint:GET /api/v1/session/product1/projection` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:41` - operationId getProduct1Projection; handler Product1Controller.getProduct1Projection; params 
 - `endpoint:POST /api/v1/session/product1/peer-simulation` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:35` - operationId postProduct1PeerSimulation; handler Product1Controller.postProduct1PeerSimulation; params 
 - `endpoint:PUT /api/v1/session/product1/movements` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:29` - operationId putProduct1Movements; handler Product1Controller.putProduct1Movements; params 
+- `endpoint:GET /api/v1/session/product1/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:24` - operationId getProduct1Overview; handler Product1Controller.getProduct1Overview; params 
 
 ## routes
 - `route:/session/:sessionId/product1` - `src/routing/SessionRoutes.tsx:19` - renders Product1OverviewPage
@@ -39,18 +39,18 @@ status: stable
 - `class:PeerSimulationService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/PeerSimulationService.kt:26` - service; Service
 - `class:ProjectionAggregator` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt:36` - utils; object
 - `class:ProjectionRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ProjectionRepository.kt:23` - dao/repository; Repository
-- `class:Product1Controller` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:21` - api; RestController
 - `class:Product1Manager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/Product1Manager.kt:26` - manager; Service
-- `class:SessionMovementInputRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/SessionMovementInputRepository.kt:10` - dao/repository; Repository
+- `class:Product1Controller` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product1Controller.kt:21` - api; RestController
 - `class:PeerBenchmark` - `harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt:19` - utils; object
+- `class:SessionMovementInputRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/SessionMovementInputRepository.kt:10` - dao/repository; Repository
 - `class:Product1ProjectionRefreshListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/Product1ProjectionRefreshListener.kt:17` - event; Component, KafkaListener
 - `class:SessionPeerSimulationRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/SessionPeerSimulationRepository.kt:9` - dao/repository; Repository
 - `class:MovementInputValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/MovementInputValidator.kt:18` - validator; Component
 - `class:ProjectionRowMapper` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/mapper/ProjectionRowMapper.kt:9` - dao/mapper; class
 
 ## components
-- `component:CitySelector` - `src/pages/Product1OverviewPage/components/CitySelector/CitySelector.tsx:8`
 - `component:Product1OverviewPage` - `src/pages/Product1OverviewPage/Product1OverviewPage.tsx:25`
+- `component:CitySelector` - `src/pages/Product1OverviewPage/components/CitySelector/CitySelector.tsx:8`
 
 ## tables
 - `table:projection_by_dimension` - `harbor-core/src/main/resources/db/migration/V5__projection.sql` - Monthly projection per dimension value: city for Product 1, transport mode for Product 2 (dimension_kind says which). (9 columns)
@@ -204,7 +204,22 @@ status: stable
 - `class:SessionMovementInputRepository` -persists-to-> `table:session_movement_input`
 - `class:SessionPeerSimulationRepository` -persists-to-> `table:session_peer_simulation`
 - `feature:Product1OverviewPage` -produces-> `channel:harbor.session.{*}` (-> fe-app)
+- `component:Product1OverviewPage` -renders-> `component:CitySelector` (exact)
+- `component:Product1OverviewPage` -renders-> `component:CoverQuotePanel` (-> fe-shared) (exact)
+- `component:Product1OverviewPage` -renders-> `component:CoverRatioChart` (-> fe-shared) (exact)
+- `component:Product1OverviewPage` -renders-> `component:MovementInputModal` (-> fe-shared) (exact)
+- `component:Product1OverviewPage` -renders-> `component:PeerSimulationModal` (-> fe-shared) (exact)
+- `component:Product1OverviewPage` -renders-> `component:ProjectionTables` (-> fe-shared) (exact)
 - `route:/session/:sessionId/product1` -renders-> `feature:Product1OverviewPage`
+- `component:Product1Mirror` -uses-> `hook:useProduct1Overview` (-> presentation) (exact)
+- `component:Product1OverviewPage` -uses-> `hook:usePeerSimulation1` (exact)
+- `component:Product1OverviewPage` -uses-> `hook:usePresentationPublisher` (-> fe-app) (exact)
+- `component:Product1OverviewPage` -uses-> `hook:useProduct1Movements` (exact)
+- `component:Product1OverviewPage` -uses-> `hook:useProduct1Overview` (exact)
+- `hook:usePeerSimulation1` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useProduct1Movements` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useProduct1Overview` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useProduct1Projection` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
 
 ## Specs touching this community
 - `spec:horizon_totals` - `domain/calculations/horizon_totals.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt:166; be harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt:36

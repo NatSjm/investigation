@@ -4,14 +4,14 @@ title: "Codebase map (FE)"
 description: "Generated map: Codebase map (FE), derived from src/pages/<Page>/ + src/routing, src/components/layout; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-16
+  at: 2026-10-21
 status: stable
 ---
 # Codebase map (FE)
 
 > Generated from `src/pages/<Page>/ + src/routing, src/components/layout` by `scripts/docs` (regex scan, no build required). Do not edit by hand.
 One row per page folder: read the page component (entry) and its hooks first; open components only for UI-level questions. `shared` hold pieces shared by several pages; `fe-app` is the app shell.
-Channels = browser `BroadcastChannel`s (`defines` / `pub` / `sub`), the FE counterpart of Kafka topics; the shared component library is in `components.md`.
+Channels = browser `BroadcastChannel`s (`defines` / `pub` / `sub`), the FE counterpart of Kafka topics; the shared component library and where each page component is rendered are in `components.md`.
 
 | Page | Purpose | Entry | Files | Components | Hooks | API calls | Channels |
 |---|---|---|---|---|---|---|---|

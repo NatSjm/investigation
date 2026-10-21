@@ -13,39 +13,12 @@
       "note": ""
     },
     {
-      "id": "component:App",
-      "kind": "component",
-      "label": "App",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "src/App.tsx:5",
-      "note": ""
-    },
-    {
-      "id": "component:DataTable",
-      "kind": "component",
-      "label": "DataTable",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "src/components/DataTable/DataTable.tsx:24",
-      "note": ""
-    },
-    {
-      "id": "hook:usePresentationPublisher",
+      "id": "hook:useSessionStore",
       "kind": "hook",
-      "label": "usePresentationPublisher",
+      "label": "useSessionStore",
       "community": "fe-app",
       "repo": "fe",
-      "location": "src/components/hook/usePresentationPublisher.ts:15",
-      "note": ""
-    },
-    {
-      "id": "hook:usePresentationSubscriber",
-      "kind": "hook",
-      "label": "usePresentationSubscriber",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "src/components/hook/usePresentationSubscriber.ts:9",
+      "location": "src/services/api/sessionStore.ts:20",
       "note": ""
     },
     {
@@ -58,6 +31,78 @@
       "note": ""
     },
     {
+      "id": "feature:shared",
+      "kind": "feature",
+      "label": "shared",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared",
+      "note": ""
+    },
+    {
+      "id": "hook:useSessions",
+      "kind": "hook",
+      "label": "useSessions",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useSessions.ts:9",
+      "note": ""
+    },
+    {
+      "id": "url:GET /sessions",
+      "kind": "url",
+      "label": "GET /sessions",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useSessions.ts:12",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useSession",
+      "kind": "hook",
+      "label": "useSession",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useSessions.ts:20",
+      "note": ""
+    },
+    {
+      "id": "url:GET /sessions/{sessionId}",
+      "kind": "url",
+      "label": "GET /sessions/{sessionId}",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useSessions.ts:23",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:PresentationLayout",
+      "kind": "component",
+      "label": "PresentationLayout",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "src/components/layout/PresentationLayout.tsx:13",
+      "note": ""
+    },
+    {
+      "id": "component:AdminRoutesGuard",
+      "kind": "component",
+      "label": "AdminRoutesGuard",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "src/routing/AdminRoutesGuard.tsx:16",
+      "note": ""
+    },
+    {
+      "id": "hook:usePresentationPublisher",
+      "kind": "hook",
+      "label": "usePresentationPublisher",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "src/components/hook/usePresentationPublisher.ts:15",
+      "note": ""
+    },
+    {
       "id": "component:SessionLayout",
       "kind": "component",
       "label": "SessionLayout",
@@ -67,12 +112,165 @@
       "note": ""
     },
     {
-      "id": "component:PresentationLayout",
+      "id": "hook:useCoverSummary",
+      "kind": "hook",
+      "label": "useCoverSummary",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useCoverSummary.ts:10",
+      "note": ""
+    },
+    {
+      "id": "url:GET /session/cover/summary",
+      "kind": "url",
+      "label": "GET /session/cover/summary",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useCoverSummary.ts:14",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useCoverPolicies",
+      "kind": "hook",
+      "label": "useCoverPolicies",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useCoverSummary.ts:23",
+      "note": ""
+    },
+    {
+      "id": "url:GET /clients/{clientId}/cover-policies",
+      "kind": "url",
+      "label": "GET /clients/{clientId}/cover-policies",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useCoverSummary.ts:26",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useCoverQuote",
+      "kind": "hook",
+      "label": "useCoverQuote",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useCoverQuote.ts:11",
+      "note": ""
+    },
+    {
+      "id": "url:POST /session/cover/quotes",
+      "kind": "url",
+      "label": "POST /session/cover/quotes",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useCoverQuote.ts:15",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:CoverQuotePanel",
       "kind": "component",
-      "label": "PresentationLayout",
+      "label": "CoverQuotePanel",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/components/CoverQuotePanel/CoverQuotePanel.tsx:19",
+      "note": ""
+    },
+    {
+      "id": "feature:Product1OverviewPage",
+      "kind": "feature",
+      "label": "Product1OverviewPage",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/Product1OverviewPage.tsx",
+      "note": ""
+    },
+    {
+      "id": "hook:useProduct1Overview",
+      "kind": "hook",
+      "label": "useProduct1Overview",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:11",
+      "note": ""
+    },
+    {
+      "id": "url:GET /session/product1/overview",
+      "kind": "url",
+      "label": "GET /session/product1/overview",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:16",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useProduct1Projection",
+      "kind": "hook",
+      "label": "useProduct1Projection",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:26",
+      "note": ""
+    },
+    {
+      "id": "url:GET /session/product1/projection",
+      "kind": "url",
+      "label": "GET /session/product1/projection",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:30",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useProduct1Movements",
+      "kind": "hook",
+      "label": "useProduct1Movements",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/hook/useProduct1Movements.ts:11",
+      "note": ""
+    },
+    {
+      "id": "url:PUT /session/product1/movements",
+      "kind": "url",
+      "label": "PUT /session/product1/movements",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/hook/useProduct1Movements.ts:16",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:usePeerSimulation1",
+      "kind": "hook",
+      "label": "usePeerSimulation1",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/hook/usePeerSimulation1.ts:11",
+      "note": ""
+    },
+    {
+      "id": "url:POST /session/product1/peer-simulation",
+      "kind": "url",
+      "label": "POST /session/product1/peer-simulation",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/hook/usePeerSimulation1.ts:15",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:DataTable",
+      "kind": "component",
+      "label": "DataTable",
       "community": "fe-app",
       "repo": "fe",
-      "location": "src/components/layout/PresentationLayout.tsx:13",
+      "location": "src/components/DataTable/DataTable.tsx:24",
+      "note": ""
+    },
+    {
+      "id": "component:ProjectionTables",
+      "kind": "component",
+      "label": "ProjectionTables",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/components/ProjectionTables/ProjectionTables.tsx:70",
       "note": ""
     },
     {
@@ -85,6 +283,15 @@
       "note": ""
     },
     {
+      "id": "component:CoverRatioChart",
+      "kind": "component",
+      "label": "CoverRatioChart",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/components/CoverRatioChart/CoverRatioChart.tsx:18",
+      "note": ""
+    },
+    {
       "id": "component:Modal",
       "kind": "component",
       "label": "Modal",
@@ -94,121 +301,463 @@
       "note": ""
     },
     {
-      "id": "component:StackedBars",
+      "id": "component:MovementInputModal",
       "kind": "component",
-      "label": "StackedBars",
-      "community": "fe-app",
+      "label": "MovementInputModal",
+      "community": "shared",
       "repo": "fe",
-      "location": "src/components/StackedBars/StackedBars.tsx:22",
+      "location": "src/pages/shared/components/MovementInputModal/MovementInputModal.tsx:30",
       "note": ""
     },
     {
-      "id": "feature:ClientMeetingsPage",
+      "id": "component:PeerSimulationModal",
+      "kind": "component",
+      "label": "PeerSimulationModal",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/components/PeerSimulationModal/PeerSimulationModal.tsx:22",
+      "note": ""
+    },
+    {
+      "id": "component:CitySelector",
+      "kind": "component",
+      "label": "CitySelector",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/components/CitySelector/CitySelector.tsx:8",
+      "note": ""
+    },
+    {
+      "id": "component:Product1OverviewPage",
+      "kind": "component",
+      "label": "Product1OverviewPage",
+      "community": "Product1OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product1OverviewPage/Product1OverviewPage.tsx:25",
+      "note": ""
+    },
+    {
+      "id": "feature:Product2OverviewPage",
       "kind": "feature",
-      "label": "ClientMeetingsPage",
-      "community": "ClientMeetingsPage",
+      "label": "Product2OverviewPage",
+      "community": "Product2OverviewPage",
       "repo": "fe",
-      "location": "src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx",
+      "location": "src/pages/Product2OverviewPage/Product2OverviewPage.tsx",
       "note": ""
     },
     {
-      "id": "component:ClientMeetingsPage",
+      "id": "hook:useProduct2Overview",
+      "kind": "hook",
+      "label": "useProduct2Overview",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:12",
+      "note": ""
+    },
+    {
+      "id": "url:GET /session/product2/overview",
+      "kind": "url",
+      "label": "GET /session/product2/overview",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:18",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useProduct2Projection",
+      "kind": "hook",
+      "label": "useProduct2Projection",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:30",
+      "note": ""
+    },
+    {
+      "id": "url:GET /session/product2/projection",
+      "kind": "url",
+      "label": "GET /session/product2/projection",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:34",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useProduct2Movements",
+      "kind": "hook",
+      "label": "useProduct2Movements",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/hook/useProduct2Movements.ts:11",
+      "note": ""
+    },
+    {
+      "id": "url:PUT /session/product2/movements",
+      "kind": "url",
+      "label": "PUT /session/product2/movements",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/hook/useProduct2Movements.ts:16",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:usePeerSimulation2",
+      "kind": "hook",
+      "label": "usePeerSimulation2",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/hook/usePeerSimulation2.ts:10",
+      "note": ""
+    },
+    {
+      "id": "url:POST /session/product2/peer-simulation",
+      "kind": "url",
+      "label": "POST /session/product2/peer-simulation",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/hook/usePeerSimulation2.ts:14",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:TransportModeSelector",
       "kind": "component",
-      "label": "ClientMeetingsPage",
-      "community": "ClientMeetingsPage",
+      "label": "TransportModeSelector",
+      "community": "Product2OverviewPage",
       "repo": "fe",
-      "location": "src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx:7",
+      "location": "src/pages/Product2OverviewPage/components/TransportModeSelector/TransportModeSelector.tsx:10",
       "note": ""
     },
     {
-      "id": "feature:ClientOverviewPage",
+      "id": "component:Product2OverviewPage",
+      "kind": "component",
+      "label": "Product2OverviewPage",
+      "community": "Product2OverviewPage",
+      "repo": "fe",
+      "location": "src/pages/Product2OverviewPage/Product2OverviewPage.tsx:25",
+      "note": ""
+    },
+    {
+      "id": "feature:ScenariosPage",
       "kind": "feature",
-      "label": "ClientOverviewPage",
-      "community": "ClientOverviewPage",
+      "label": "ScenariosPage",
+      "community": "ScenariosPage",
       "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/ClientOverviewPage.tsx",
+      "location": "src/pages/ScenariosPage/ScenariosPage.tsx",
       "note": ""
     },
     {
-      "id": "component:ClientOverviewPage",
-      "kind": "component",
-      "label": "ClientOverviewPage",
-      "community": "ClientOverviewPage",
-      "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/ClientOverviewPage.tsx:18",
-      "note": ""
-    },
-    {
-      "id": "component:ClientInfoPanel",
-      "kind": "component",
-      "label": "ClientInfoPanel",
-      "community": "ClientOverviewPage",
-      "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/components/ClientInfoPanel/ClientInfoPanel.tsx:13",
-      "note": ""
-    },
-    {
-      "id": "component:ProductGroupCard",
-      "kind": "component",
-      "label": "ProductGroupCard",
-      "community": "ClientOverviewPage",
-      "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/components/ProductGroupCard/ProductGroupCard.tsx:23",
-      "note": ""
-    },
-    {
-      "id": "hook:useClientOverview",
+      "id": "hook:useScenarios",
       "kind": "hook",
-      "label": "useClientOverview",
-      "community": "ClientOverviewPage",
+      "label": "useScenarios",
+      "community": "ScenariosPage",
       "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/hook/useClientOverview.ts:10",
+      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:10",
       "note": ""
     },
     {
-      "id": "url:GET /clients/{clientId}/overview",
+      "id": "url:GET /session/scenarios",
       "kind": "url",
-      "label": "GET /clients/{clientId}/overview",
-      "community": "ClientOverviewPage",
+      "label": "GET /session/scenarios",
+      "community": "ScenariosPage",
       "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/hook/useClientOverview.ts:13",
+      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:14",
       "note": "resolved by TS compiler"
     },
     {
-      "id": "hook:useClientRole",
+      "id": "hook:useScenarioMutations",
       "kind": "hook",
-      "label": "useClientRole",
-      "community": "ClientOverviewPage",
+      "label": "useScenarioMutations",
+      "community": "ScenariosPage",
       "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/hook/useClientRole.ts:10",
+      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:24",
       "note": ""
     },
     {
-      "id": "url:GET /clients/{clientId}/role",
+      "id": "url:POST /session/scenarios",
       "kind": "url",
-      "label": "GET /clients/{clientId}/role",
-      "community": "ClientOverviewPage",
+      "label": "POST /session/scenarios",
+      "community": "ScenariosPage",
       "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/hook/useClientRole.ts:14",
+      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:33",
       "note": "resolved by TS compiler"
     },
     {
-      "id": "hook:useCreateSession",
-      "kind": "hook",
-      "label": "useCreateSession",
-      "community": "ClientOverviewPage",
+      "id": "url:PUT /session/scenarios/{scenarioId}",
+      "kind": "url",
+      "label": "PUT /session/scenarios/{scenarioId}",
+      "community": "ScenariosPage",
       "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/hook/useCreateSession.ts:11",
+      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:39",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "url:DELETE /session/scenarios/{scenarioId}",
+      "kind": "url",
+      "label": "DELETE /session/scenarios/{scenarioId}",
+      "community": "ScenariosPage",
+      "repo": "fe",
+      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:45",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useBaselinePrices",
+      "kind": "hook",
+      "label": "useBaselinePrices",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useBaselinePrices.ts:11",
       "note": ""
     },
     {
-      "id": "url:POST /clients/{clientId}/sessions",
+      "id": "url:GET /session/market/baseline",
       "kind": "url",
-      "label": "POST /clients/{clientId}/sessions",
-      "community": "ClientOverviewPage",
+      "label": "GET /session/market/baseline",
+      "community": "shared",
       "repo": "fe",
-      "location": "src/pages/ClientOverviewPage/hook/useCreateSession.ts:15",
+      "location": "src/pages/shared/hook/useBaselinePrices.ts:15",
       "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:ShockRow",
+      "kind": "component",
+      "label": "ShockRow",
+      "community": "ScenariosPage",
+      "repo": "fe",
+      "location": "src/pages/ScenariosPage/components/ShockRow/ShockRow.tsx:12",
+      "note": ""
+    },
+    {
+      "id": "component:ScenarioEditor",
+      "kind": "component",
+      "label": "ScenarioEditor",
+      "community": "ScenariosPage",
+      "repo": "fe",
+      "location": "src/pages/ScenariosPage/components/ScenarioEditor/ScenarioEditor.tsx:22",
+      "note": ""
+    },
+    {
+      "id": "component:ScenariosPage",
+      "kind": "component",
+      "label": "ScenariosPage",
+      "community": "ScenariosPage",
+      "repo": "fe",
+      "location": "src/pages/ScenariosPage/ScenariosPage.tsx:17",
+      "note": ""
+    },
+    {
+      "id": "feature:StressTestPage",
+      "kind": "feature",
+      "label": "StressTestPage",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/StressTestPage.tsx",
+      "note": ""
+    },
+    {
+      "id": "hook:useStressTest",
+      "kind": "hook",
+      "label": "useStressTest",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/hook/useStressTest.ts:11",
+      "note": ""
+    },
+    {
+      "id": "url:GET /session/stress-test",
+      "kind": "url",
+      "label": "GET /session/stress-test",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/hook/useStressTest.ts:15",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useRunStressTest",
+      "kind": "hook",
+      "label": "useRunStressTest",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/hook/useRunStressTest.ts:11",
+      "note": ""
+    },
+    {
+      "id": "url:POST /session/stress-test",
+      "kind": "url",
+      "label": "POST /session/stress-test",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/hook/useRunStressTest.ts:15",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:StressTable",
+      "kind": "component",
+      "label": "StressTable",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/components/StressTable/StressTable.tsx:17",
+      "note": ""
+    },
+    {
+      "id": "component:TransportPriceChart",
+      "kind": "component",
+      "label": "TransportPriceChart",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/components/TransportPriceChart/TransportPriceChart.tsx:18",
+      "note": ""
+    },
+    {
+      "id": "component:DimensionToggle",
+      "kind": "component",
+      "label": "DimensionToggle",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/components/DimensionToggle/DimensionToggle.tsx:12",
+      "note": ""
+    },
+    {
+      "id": "component:StressTestPage",
+      "kind": "component",
+      "label": "StressTestPage",
+      "community": "StressTestPage",
+      "repo": "fe",
+      "location": "src/pages/StressTestPage/StressTestPage.tsx:21",
+      "note": ""
+    },
+    {
+      "id": "hook:useDownloadReportPdf",
+      "kind": "hook",
+      "label": "useDownloadReportPdf",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useDownloadReportPdf.ts:10",
+      "note": ""
+    },
+    {
+      "id": "url:GET /api/v1/sessions/{*}/report.pdf",
+      "kind": "url",
+      "label": "GET /api/v1/sessions/{*}/report.pdf",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useDownloadReportPdf.ts:13",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:DownloadPdfButton",
+      "kind": "component",
+      "label": "DownloadPdfButton",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/components/DownloadPdfButton/DownloadPdfButton.tsx:12",
+      "note": ""
+    },
+    {
+      "id": "hook:useReport",
+      "kind": "hook",
+      "label": "useReport",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useReport.ts:12",
+      "note": ""
+    },
+    {
+      "id": "url:GET /sessions/{sessionId}/report",
+      "kind": "url",
+      "label": "GET /sessions/{sessionId}/report",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useReport.ts:15",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useRegenerateReport",
+      "kind": "hook",
+      "label": "useRegenerateReport",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useReport.ts:28",
+      "note": ""
+    },
+    {
+      "id": "url:POST /sessions/{sessionId}/report",
+      "kind": "url",
+      "label": "POST /sessions/{sessionId}/report",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/hook/useReport.ts:31",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:ReportPreview",
+      "kind": "component",
+      "label": "ReportPreview",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/components/ReportPreview/ReportPreview.tsx:19",
+      "note": ""
+    },
+    {
+      "id": "feature:SessionSummaryPage",
+      "kind": "feature",
+      "label": "SessionSummaryPage",
+      "community": "SessionSummaryPage",
+      "repo": "fe",
+      "location": "src/pages/SessionSummaryPage/SessionSummaryPage.tsx",
+      "note": ""
+    },
+    {
+      "id": "hook:useCloseSession",
+      "kind": "hook",
+      "label": "useCloseSession",
+      "community": "SessionSummaryPage",
+      "repo": "fe",
+      "location": "src/pages/SessionSummaryPage/hook/useCloseSession.ts:12",
+      "note": ""
+    },
+    {
+      "id": "url:POST /sessions/{sessionId}/close",
+      "kind": "url",
+      "label": "POST /sessions/{sessionId}/close",
+      "community": "SessionSummaryPage",
+      "repo": "fe",
+      "location": "src/pages/SessionSummaryPage/hook/useCloseSession.ts:16",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useRoleOverride",
+      "kind": "hook",
+      "label": "useRoleOverride",
+      "community": "SessionSummaryPage",
+      "repo": "fe",
+      "location": "src/pages/SessionSummaryPage/hook/useRoleOverride.ts:10",
+      "note": ""
+    },
+    {
+      "id": "url:PUT /sessions/{sessionId}/role",
+      "kind": "url",
+      "label": "PUT /sessions/{sessionId}/role",
+      "community": "SessionSummaryPage",
+      "repo": "fe",
+      "location": "src/pages/SessionSummaryPage/hook/useRoleOverride.ts:14",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:RoleOverrideDialog",
+      "kind": "component",
+      "label": "RoleOverrideDialog",
+      "community": "SessionSummaryPage",
+      "repo": "fe",
+      "location": "src/pages/SessionSummaryPage/components/RoleOverrideDialog/RoleOverrideDialog.tsx:20",
+      "note": ""
+    },
+    {
+      "id": "component:SessionSummaryPage",
+      "kind": "component",
+      "label": "SessionSummaryPage",
+      "community": "SessionSummaryPage",
+      "repo": "fe",
+      "location": "src/pages/SessionSummaryPage/SessionSummaryPage.tsx:16",
+      "note": ""
     },
     {
       "id": "feature:ClientSearchPage",
@@ -217,15 +766,6 @@
       "community": "ClientSearchPage",
       "repo": "fe",
       "location": "src/pages/ClientSearchPage/ClientSearchPage.tsx",
-      "note": ""
-    },
-    {
-      "id": "component:ClientSearchPage",
-      "kind": "component",
-      "label": "ClientSearchPage",
-      "community": "ClientSearchPage",
-      "repo": "fe",
-      "location": "src/pages/ClientSearchPage/ClientSearchPage.tsx:17",
       "note": ""
     },
     {
@@ -263,6 +803,195 @@
       "repo": "fe",
       "location": "src/pages/ClientSearchPage/hook/useClientSearch.ts:27",
       "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:ClientSearchPage",
+      "kind": "component",
+      "label": "ClientSearchPage",
+      "community": "ClientSearchPage",
+      "repo": "fe",
+      "location": "src/pages/ClientSearchPage/ClientSearchPage.tsx:17",
+      "note": ""
+    },
+    {
+      "id": "feature:ClientOverviewPage",
+      "kind": "feature",
+      "label": "ClientOverviewPage",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/ClientOverviewPage.tsx",
+      "note": ""
+    },
+    {
+      "id": "hook:useCreateSession",
+      "kind": "hook",
+      "label": "useCreateSession",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/hook/useCreateSession.ts:11",
+      "note": ""
+    },
+    {
+      "id": "url:POST /clients/{clientId}/sessions",
+      "kind": "url",
+      "label": "POST /clients/{clientId}/sessions",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/hook/useCreateSession.ts:15",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useClientOverview",
+      "kind": "hook",
+      "label": "useClientOverview",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/hook/useClientOverview.ts:10",
+      "note": ""
+    },
+    {
+      "id": "url:GET /clients/{clientId}/overview",
+      "kind": "url",
+      "label": "GET /clients/{clientId}/overview",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/hook/useClientOverview.ts:13",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:ProductGroupCard",
+      "kind": "component",
+      "label": "ProductGroupCard",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/components/ProductGroupCard/ProductGroupCard.tsx:23",
+      "note": ""
+    },
+    {
+      "id": "component:ClientInfoPanel",
+      "kind": "component",
+      "label": "ClientInfoPanel",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/components/ClientInfoPanel/ClientInfoPanel.tsx:13",
+      "note": ""
+    },
+    {
+      "id": "component:ClientOverviewPage",
+      "kind": "component",
+      "label": "ClientOverviewPage",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/ClientOverviewPage.tsx:18",
+      "note": ""
+    },
+    {
+      "id": "component:MeetingsListPage",
+      "kind": "component",
+      "label": "MeetingsListPage",
+      "community": "shared",
+      "repo": "fe",
+      "location": "src/pages/shared/components/MeetingsListPage/MeetingsListPage.tsx:44",
+      "note": ""
+    },
+    {
+      "id": "feature:ClientMeetingsPage",
+      "kind": "feature",
+      "label": "ClientMeetingsPage",
+      "community": "ClientMeetingsPage",
+      "repo": "fe",
+      "location": "src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx",
+      "note": ""
+    },
+    {
+      "id": "component:ClientMeetingsPage",
+      "kind": "component",
+      "label": "ClientMeetingsPage",
+      "community": "ClientMeetingsPage",
+      "repo": "fe",
+      "location": "src/pages/ClientMeetingsPage/ClientMeetingsPage.tsx:7",
+      "note": ""
+    },
+    {
+      "id": "feature:PreparationSessionsPage",
+      "kind": "feature",
+      "label": "PreparationSessionsPage",
+      "community": "PreparationSessionsPage",
+      "repo": "fe",
+      "location": "src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx",
+      "note": ""
+    },
+    {
+      "id": "component:PreparationSessionsPage",
+      "kind": "component",
+      "label": "PreparationSessionsPage",
+      "community": "PreparationSessionsPage",
+      "repo": "fe",
+      "location": "src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx:7",
+      "note": ""
+    },
+    {
+      "id": "feature:ParametersPage",
+      "kind": "feature",
+      "label": "ParametersPage",
+      "community": "ParametersPage",
+      "repo": "fe",
+      "location": "src/pages/ParametersPage/ParametersPage.tsx",
+      "note": ""
+    },
+    {
+      "id": "hook:useParameters",
+      "kind": "hook",
+      "label": "useParameters",
+      "community": "ParametersPage",
+      "repo": "fe",
+      "location": "src/pages/ParametersPage/hook/useParameters.ts:9",
+      "note": ""
+    },
+    {
+      "id": "url:GET /admin/parameters",
+      "kind": "url",
+      "label": "GET /admin/parameters",
+      "community": "ParametersPage",
+      "repo": "fe",
+      "location": "src/pages/ParametersPage/hook/useParameters.ts:12",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "hook:useUpsertParameter",
+      "kind": "hook",
+      "label": "useUpsertParameter",
+      "community": "ParametersPage",
+      "repo": "fe",
+      "location": "src/pages/ParametersPage/hook/useParameters.ts:20",
+      "note": ""
+    },
+    {
+      "id": "url:PUT /admin/parameters/{key}",
+      "kind": "url",
+      "label": "PUT /admin/parameters/{key}",
+      "community": "ParametersPage",
+      "repo": "fe",
+      "location": "src/pages/ParametersPage/hook/useParameters.ts:23",
+      "note": "resolved by TS compiler"
+    },
+    {
+      "id": "component:ParameterRow",
+      "kind": "component",
+      "label": "ParameterRow",
+      "community": "ParametersPage",
+      "repo": "fe",
+      "location": "src/pages/ParametersPage/components/ParameterRow/ParameterRow.tsx:14",
+      "note": ""
+    },
+    {
+      "id": "component:ParametersPage",
+      "kind": "component",
+      "label": "ParametersPage",
+      "community": "ParametersPage",
+      "repo": "fe",
+      "location": "src/pages/ParametersPage/ParametersPage.tsx:9",
+      "note": ""
     },
     {
       "id": "feature:ImportsPage",
@@ -319,84 +1048,12 @@
       "note": ""
     },
     {
-      "id": "feature:ParametersPage",
-      "kind": "feature",
-      "label": "ParametersPage",
-      "community": "ParametersPage",
-      "repo": "fe",
-      "location": "src/pages/ParametersPage/ParametersPage.tsx",
-      "note": ""
-    },
-    {
-      "id": "component:ParameterRow",
-      "kind": "component",
-      "label": "ParameterRow",
-      "community": "ParametersPage",
-      "repo": "fe",
-      "location": "src/pages/ParametersPage/components/ParameterRow/ParameterRow.tsx:14",
-      "note": ""
-    },
-    {
-      "id": "hook:useParameters",
+      "id": "hook:usePresentationSubscriber",
       "kind": "hook",
-      "label": "useParameters",
-      "community": "ParametersPage",
+      "label": "usePresentationSubscriber",
+      "community": "fe-app",
       "repo": "fe",
-      "location": "src/pages/ParametersPage/hook/useParameters.ts:9",
-      "note": ""
-    },
-    {
-      "id": "url:GET /admin/parameters",
-      "kind": "url",
-      "label": "GET /admin/parameters",
-      "community": "ParametersPage",
-      "repo": "fe",
-      "location": "src/pages/ParametersPage/hook/useParameters.ts:12",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useUpsertParameter",
-      "kind": "hook",
-      "label": "useUpsertParameter",
-      "community": "ParametersPage",
-      "repo": "fe",
-      "location": "src/pages/ParametersPage/hook/useParameters.ts:20",
-      "note": ""
-    },
-    {
-      "id": "url:PUT /admin/parameters/{key}",
-      "kind": "url",
-      "label": "PUT /admin/parameters/{key}",
-      "community": "ParametersPage",
-      "repo": "fe",
-      "location": "src/pages/ParametersPage/hook/useParameters.ts:23",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "component:ParametersPage",
-      "kind": "component",
-      "label": "ParametersPage",
-      "community": "ParametersPage",
-      "repo": "fe",
-      "location": "src/pages/ParametersPage/ParametersPage.tsx:9",
-      "note": ""
-    },
-    {
-      "id": "feature:PreparationSessionsPage",
-      "kind": "feature",
-      "label": "PreparationSessionsPage",
-      "community": "PreparationSessionsPage",
-      "repo": "fe",
-      "location": "src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx",
-      "note": ""
-    },
-    {
-      "id": "component:PreparationSessionsPage",
-      "kind": "component",
-      "label": "PreparationSessionsPage",
-      "community": "PreparationSessionsPage",
-      "repo": "fe",
-      "location": "src/pages/PreparationSessionsPage/PreparationSessionsPage.tsx:7",
+      "location": "src/components/hook/usePresentationSubscriber.ts:9",
       "note": ""
     },
     {
@@ -463,690 +1120,6 @@
       "note": ""
     },
     {
-      "id": "feature:Product1OverviewPage",
-      "kind": "feature",
-      "label": "Product1OverviewPage",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/Product1OverviewPage.tsx",
-      "note": ""
-    },
-    {
-      "id": "component:CitySelector",
-      "kind": "component",
-      "label": "CitySelector",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/components/CitySelector/CitySelector.tsx:8",
-      "note": ""
-    },
-    {
-      "id": "hook:usePeerSimulation1",
-      "kind": "hook",
-      "label": "usePeerSimulation1",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/hook/usePeerSimulation1.ts:11",
-      "note": ""
-    },
-    {
-      "id": "url:POST /session/product1/peer-simulation",
-      "kind": "url",
-      "label": "POST /session/product1/peer-simulation",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/hook/usePeerSimulation1.ts:15",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useProduct1Movements",
-      "kind": "hook",
-      "label": "useProduct1Movements",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/hook/useProduct1Movements.ts:11",
-      "note": ""
-    },
-    {
-      "id": "url:PUT /session/product1/movements",
-      "kind": "url",
-      "label": "PUT /session/product1/movements",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/hook/useProduct1Movements.ts:16",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useProduct1Overview",
-      "kind": "hook",
-      "label": "useProduct1Overview",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:11",
-      "note": ""
-    },
-    {
-      "id": "url:GET /session/product1/overview",
-      "kind": "url",
-      "label": "GET /session/product1/overview",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:16",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useProduct1Projection",
-      "kind": "hook",
-      "label": "useProduct1Projection",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:26",
-      "note": ""
-    },
-    {
-      "id": "url:GET /session/product1/projection",
-      "kind": "url",
-      "label": "GET /session/product1/projection",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/hook/useProduct1Overview.ts:30",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "component:Product1OverviewPage",
-      "kind": "component",
-      "label": "Product1OverviewPage",
-      "community": "Product1OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product1OverviewPage/Product1OverviewPage.tsx:25",
-      "note": ""
-    },
-    {
-      "id": "feature:Product2OverviewPage",
-      "kind": "feature",
-      "label": "Product2OverviewPage",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/Product2OverviewPage.tsx",
-      "note": ""
-    },
-    {
-      "id": "component:TransportModeSelector",
-      "kind": "component",
-      "label": "TransportModeSelector",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/components/TransportModeSelector/TransportModeSelector.tsx:10",
-      "note": ""
-    },
-    {
-      "id": "hook:usePeerSimulation2",
-      "kind": "hook",
-      "label": "usePeerSimulation2",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/hook/usePeerSimulation2.ts:10",
-      "note": ""
-    },
-    {
-      "id": "url:POST /session/product2/peer-simulation",
-      "kind": "url",
-      "label": "POST /session/product2/peer-simulation",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/hook/usePeerSimulation2.ts:14",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useProduct2Movements",
-      "kind": "hook",
-      "label": "useProduct2Movements",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/hook/useProduct2Movements.ts:11",
-      "note": ""
-    },
-    {
-      "id": "url:PUT /session/product2/movements",
-      "kind": "url",
-      "label": "PUT /session/product2/movements",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/hook/useProduct2Movements.ts:16",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useProduct2Overview",
-      "kind": "hook",
-      "label": "useProduct2Overview",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:12",
-      "note": ""
-    },
-    {
-      "id": "url:GET /session/product2/overview",
-      "kind": "url",
-      "label": "GET /session/product2/overview",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:18",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useProduct2Projection",
-      "kind": "hook",
-      "label": "useProduct2Projection",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:30",
-      "note": ""
-    },
-    {
-      "id": "url:GET /session/product2/projection",
-      "kind": "url",
-      "label": "GET /session/product2/projection",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:34",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "component:Product2OverviewPage",
-      "kind": "component",
-      "label": "Product2OverviewPage",
-      "community": "Product2OverviewPage",
-      "repo": "fe",
-      "location": "src/pages/Product2OverviewPage/Product2OverviewPage.tsx:25",
-      "note": ""
-    },
-    {
-      "id": "feature:ScenariosPage",
-      "kind": "feature",
-      "label": "ScenariosPage",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/ScenariosPage.tsx",
-      "note": ""
-    },
-    {
-      "id": "component:ScenarioEditor",
-      "kind": "component",
-      "label": "ScenarioEditor",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/components/ScenarioEditor/ScenarioEditor.tsx:22",
-      "note": ""
-    },
-    {
-      "id": "component:ShockRow",
-      "kind": "component",
-      "label": "ShockRow",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/components/ShockRow/ShockRow.tsx:12",
-      "note": ""
-    },
-    {
-      "id": "hook:useScenarios",
-      "kind": "hook",
-      "label": "useScenarios",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:10",
-      "note": ""
-    },
-    {
-      "id": "url:GET /session/scenarios",
-      "kind": "url",
-      "label": "GET /session/scenarios",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:14",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useScenarioMutations",
-      "kind": "hook",
-      "label": "useScenarioMutations",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:24",
-      "note": ""
-    },
-    {
-      "id": "url:POST /session/scenarios",
-      "kind": "url",
-      "label": "POST /session/scenarios",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:33",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "url:PUT /session/scenarios/{scenarioId}",
-      "kind": "url",
-      "label": "PUT /session/scenarios/{scenarioId}",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:39",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "url:DELETE /session/scenarios/{scenarioId}",
-      "kind": "url",
-      "label": "DELETE /session/scenarios/{scenarioId}",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/hook/useScenarios.ts:45",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "component:ScenariosPage",
-      "kind": "component",
-      "label": "ScenariosPage",
-      "community": "ScenariosPage",
-      "repo": "fe",
-      "location": "src/pages/ScenariosPage/ScenariosPage.tsx:17",
-      "note": ""
-    },
-    {
-      "id": "feature:SessionSummaryPage",
-      "kind": "feature",
-      "label": "SessionSummaryPage",
-      "community": "SessionSummaryPage",
-      "repo": "fe",
-      "location": "src/pages/SessionSummaryPage/SessionSummaryPage.tsx",
-      "note": ""
-    },
-    {
-      "id": "component:RoleOverrideDialog",
-      "kind": "component",
-      "label": "RoleOverrideDialog",
-      "community": "SessionSummaryPage",
-      "repo": "fe",
-      "location": "src/pages/SessionSummaryPage/components/RoleOverrideDialog/RoleOverrideDialog.tsx:20",
-      "note": ""
-    },
-    {
-      "id": "hook:useCloseSession",
-      "kind": "hook",
-      "label": "useCloseSession",
-      "community": "SessionSummaryPage",
-      "repo": "fe",
-      "location": "src/pages/SessionSummaryPage/hook/useCloseSession.ts:12",
-      "note": ""
-    },
-    {
-      "id": "url:POST /sessions/{sessionId}/close",
-      "kind": "url",
-      "label": "POST /sessions/{sessionId}/close",
-      "community": "SessionSummaryPage",
-      "repo": "fe",
-      "location": "src/pages/SessionSummaryPage/hook/useCloseSession.ts:16",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useRoleOverride",
-      "kind": "hook",
-      "label": "useRoleOverride",
-      "community": "SessionSummaryPage",
-      "repo": "fe",
-      "location": "src/pages/SessionSummaryPage/hook/useRoleOverride.ts:10",
-      "note": ""
-    },
-    {
-      "id": "url:PUT /sessions/{sessionId}/role",
-      "kind": "url",
-      "label": "PUT /sessions/{sessionId}/role",
-      "community": "SessionSummaryPage",
-      "repo": "fe",
-      "location": "src/pages/SessionSummaryPage/hook/useRoleOverride.ts:14",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "component:SessionSummaryPage",
-      "kind": "component",
-      "label": "SessionSummaryPage",
-      "community": "SessionSummaryPage",
-      "repo": "fe",
-      "location": "src/pages/SessionSummaryPage/SessionSummaryPage.tsx:16",
-      "note": ""
-    },
-    {
-      "id": "feature:shared",
-      "kind": "feature",
-      "label": "shared",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared",
-      "note": ""
-    },
-    {
-      "id": "component:CoverQuotePanel",
-      "kind": "component",
-      "label": "CoverQuotePanel",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/components/CoverQuotePanel/CoverQuotePanel.tsx:19",
-      "note": ""
-    },
-    {
-      "id": "component:CoverRatioChart",
-      "kind": "component",
-      "label": "CoverRatioChart",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/components/CoverRatioChart/CoverRatioChart.tsx:18",
-      "note": ""
-    },
-    {
-      "id": "component:DownloadPdfButton",
-      "kind": "component",
-      "label": "DownloadPdfButton",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/components/DownloadPdfButton/DownloadPdfButton.tsx:12",
-      "note": ""
-    },
-    {
-      "id": "component:MeetingsListPage",
-      "kind": "component",
-      "label": "MeetingsListPage",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/components/MeetingsListPage/MeetingsListPage.tsx:44",
-      "note": ""
-    },
-    {
-      "id": "component:MovementInputModal",
-      "kind": "component",
-      "label": "MovementInputModal",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/components/MovementInputModal/MovementInputModal.tsx:30",
-      "note": ""
-    },
-    {
-      "id": "component:PeerSimulationModal",
-      "kind": "component",
-      "label": "PeerSimulationModal",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/components/PeerSimulationModal/PeerSimulationModal.tsx:22",
-      "note": ""
-    },
-    {
-      "id": "component:ProjectionTables",
-      "kind": "component",
-      "label": "ProjectionTables",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/components/ProjectionTables/ProjectionTables.tsx:70",
-      "note": ""
-    },
-    {
-      "id": "component:ReportPreview",
-      "kind": "component",
-      "label": "ReportPreview",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/components/ReportPreview/ReportPreview.tsx:19",
-      "note": ""
-    },
-    {
-      "id": "hook:useBaselinePrices",
-      "kind": "hook",
-      "label": "useBaselinePrices",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useBaselinePrices.ts:11",
-      "note": ""
-    },
-    {
-      "id": "url:GET /session/market/baseline",
-      "kind": "url",
-      "label": "GET /session/market/baseline",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useBaselinePrices.ts:15",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useCoverQuote",
-      "kind": "hook",
-      "label": "useCoverQuote",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useCoverQuote.ts:11",
-      "note": ""
-    },
-    {
-      "id": "url:POST /session/cover/quotes",
-      "kind": "url",
-      "label": "POST /session/cover/quotes",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useCoverQuote.ts:15",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useCoverSummary",
-      "kind": "hook",
-      "label": "useCoverSummary",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useCoverSummary.ts:10",
-      "note": ""
-    },
-    {
-      "id": "url:GET /session/cover/summary",
-      "kind": "url",
-      "label": "GET /session/cover/summary",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useCoverSummary.ts:14",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useCoverPolicies",
-      "kind": "hook",
-      "label": "useCoverPolicies",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useCoverSummary.ts:23",
-      "note": ""
-    },
-    {
-      "id": "url:GET /clients/{clientId}/cover-policies",
-      "kind": "url",
-      "label": "GET /clients/{clientId}/cover-policies",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useCoverSummary.ts:26",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useDownloadReportPdf",
-      "kind": "hook",
-      "label": "useDownloadReportPdf",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useDownloadReportPdf.ts:10",
-      "note": ""
-    },
-    {
-      "id": "url:GET /api/v1/sessions/{*}/report.pdf",
-      "kind": "url",
-      "label": "GET /api/v1/sessions/{*}/report.pdf",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useDownloadReportPdf.ts:13",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useReport",
-      "kind": "hook",
-      "label": "useReport",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useReport.ts:12",
-      "note": ""
-    },
-    {
-      "id": "url:GET /sessions/{sessionId}/report",
-      "kind": "url",
-      "label": "GET /sessions/{sessionId}/report",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useReport.ts:15",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useRegenerateReport",
-      "kind": "hook",
-      "label": "useRegenerateReport",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useReport.ts:28",
-      "note": ""
-    },
-    {
-      "id": "url:POST /sessions/{sessionId}/report",
-      "kind": "url",
-      "label": "POST /sessions/{sessionId}/report",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useReport.ts:31",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useSessions",
-      "kind": "hook",
-      "label": "useSessions",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useSessions.ts:9",
-      "note": ""
-    },
-    {
-      "id": "url:GET /sessions",
-      "kind": "url",
-      "label": "GET /sessions",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useSessions.ts:12",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useSession",
-      "kind": "hook",
-      "label": "useSession",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useSessions.ts:20",
-      "note": ""
-    },
-    {
-      "id": "url:GET /sessions/{sessionId}",
-      "kind": "url",
-      "label": "GET /sessions/{sessionId}",
-      "community": "shared",
-      "repo": "fe",
-      "location": "src/pages/shared/hook/useSessions.ts:23",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "feature:StressTestPage",
-      "kind": "feature",
-      "label": "StressTestPage",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/StressTestPage.tsx",
-      "note": ""
-    },
-    {
-      "id": "component:DimensionToggle",
-      "kind": "component",
-      "label": "DimensionToggle",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/components/DimensionToggle/DimensionToggle.tsx:12",
-      "note": ""
-    },
-    {
-      "id": "component:StressTable",
-      "kind": "component",
-      "label": "StressTable",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/components/StressTable/StressTable.tsx:17",
-      "note": ""
-    },
-    {
-      "id": "component:TransportPriceChart",
-      "kind": "component",
-      "label": "TransportPriceChart",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/components/TransportPriceChart/TransportPriceChart.tsx:18",
-      "note": ""
-    },
-    {
-      "id": "hook:useRunStressTest",
-      "kind": "hook",
-      "label": "useRunStressTest",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/hook/useRunStressTest.ts:11",
-      "note": ""
-    },
-    {
-      "id": "url:POST /session/stress-test",
-      "kind": "url",
-      "label": "POST /session/stress-test",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/hook/useRunStressTest.ts:15",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "hook:useStressTest",
-      "kind": "hook",
-      "label": "useStressTest",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/hook/useStressTest.ts:11",
-      "note": ""
-    },
-    {
-      "id": "url:GET /session/stress-test",
-      "kind": "url",
-      "label": "GET /session/stress-test",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/hook/useStressTest.ts:15",
-      "note": "resolved by TS compiler"
-    },
-    {
-      "id": "component:StressTestPage",
-      "kind": "component",
-      "label": "StressTestPage",
-      "community": "StressTestPage",
-      "repo": "fe",
-      "location": "src/pages/StressTestPage/StressTestPage.tsx:21",
-      "note": ""
-    },
-    {
-      "id": "component:AdminRoutesGuard",
-      "kind": "component",
-      "label": "AdminRoutesGuard",
-      "community": "fe-app",
-      "repo": "fe",
-      "location": "src/routing/AdminRoutesGuard.tsx:16",
-      "note": ""
-    },
-    {
       "id": "component:Routing",
       "kind": "component",
       "label": "Routing",
@@ -1156,24 +1129,106 @@
       "note": ""
     },
     {
-      "id": "hook:useSessionStore",
-      "kind": "hook",
-      "label": "useSessionStore",
+      "id": "component:App",
+      "kind": "component",
+      "label": "App",
       "community": "fe-app",
       "repo": "fe",
-      "location": "src/services/api/sessionStore.ts:20",
+      "location": "src/App.tsx:5",
       "note": ""
+    },
+    {
+      "id": "component:StackedBars",
+      "kind": "component",
+      "label": "StackedBars",
+      "community": "fe-app",
+      "repo": "fe",
+      "location": "src/components/StackedBars/StackedBars.tsx:22",
+      "note": ""
+    },
+    {
+      "id": "hook:useClientRole",
+      "kind": "hook",
+      "label": "useClientRole",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/hook/useClientRole.ts:10",
+      "note": ""
+    },
+    {
+      "id": "url:GET /clients/{clientId}/role",
+      "kind": "url",
+      "label": "GET /clients/{clientId}/role",
+      "community": "ClientOverviewPage",
+      "repo": "fe",
+      "location": "src/pages/ClientOverviewPage/hook/useClientRole.ts:14",
+      "note": "resolved by TS compiler"
     }
   ],
   "edges": [
     {
       "from": "feature:fe-app",
-      "to": "component:App",
+      "to": "hook:useSessionStore",
       "rel": "contains"
     },
     {
       "from": "feature:fe-app",
-      "to": "component:DataTable",
+      "to": "component:RootLayout",
+      "rel": "contains"
+    },
+    {
+      "from": "component:RootLayout",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "feature:shared",
+      "to": "feature:fe-app",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useSessions",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useSessions",
+      "to": "url:GET /sessions",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useSession",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useSession",
+      "to": "url:GET /sessions/{sessionId}",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:fe-app",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:fe-app",
+      "to": "component:PresentationLayout",
+      "rel": "contains"
+    },
+    {
+      "from": "component:PresentationLayout",
+      "to": "hook:useSession",
+      "rel": "uses"
+    },
+    {
+      "from": "component:PresentationLayout",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "feature:fe-app",
+      "to": "component:AdminRoutesGuard",
       "rel": "contains"
     },
     {
@@ -1183,28 +1238,158 @@
     },
     {
       "from": "feature:fe-app",
-      "to": "hook:usePresentationSubscriber",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:fe-app",
-      "to": "component:RootLayout",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:fe-app",
-      "to": "feature:shared",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:fe-app",
       "to": "component:SessionLayout",
       "rel": "contains"
     },
     {
-      "from": "feature:fe-app",
-      "to": "component:PresentationLayout",
+      "from": "component:SessionLayout",
+      "to": "hook:useSession",
+      "rel": "uses"
+    },
+    {
+      "from": "component:SessionLayout",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "component:SessionLayout",
+      "to": "hook:usePresentationPublisher",
+      "rel": "uses"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useCoverSummary",
       "rel": "contains"
+    },
+    {
+      "from": "hook:useCoverSummary",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useCoverSummary",
+      "to": "url:GET /session/cover/summary",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useCoverPolicies",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useCoverPolicies",
+      "to": "url:GET /clients/{clientId}/cover-policies",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useCoverQuote",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useCoverQuote",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useCoverQuote",
+      "to": "url:POST /session/cover/quotes",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:shared",
+      "to": "component:CoverQuotePanel",
+      "rel": "contains"
+    },
+    {
+      "from": "component:CoverQuotePanel",
+      "to": "hook:useCoverSummary",
+      "rel": "uses"
+    },
+    {
+      "from": "component:CoverQuotePanel",
+      "to": "hook:useCoverQuote",
+      "rel": "uses"
+    },
+    {
+      "from": "feature:Product1OverviewPage",
+      "to": "feature:fe-app",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:Product1OverviewPage",
+      "to": "hook:useProduct1Overview",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useProduct1Overview",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useProduct1Overview",
+      "to": "url:GET /session/product1/overview",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:Product1OverviewPage",
+      "to": "hook:useProduct1Projection",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useProduct1Projection",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useProduct1Projection",
+      "to": "url:GET /session/product1/projection",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:Product1OverviewPage",
+      "to": "hook:useProduct1Movements",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useProduct1Movements",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useProduct1Movements",
+      "to": "url:PUT /session/product1/movements",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:Product1OverviewPage",
+      "to": "hook:usePeerSimulation1",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:usePeerSimulation1",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:usePeerSimulation1",
+      "to": "url:POST /session/product1/peer-simulation",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:fe-app",
+      "to": "component:DataTable",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:shared",
+      "to": "component:ProjectionTables",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ProjectionTables",
+      "to": "component:DataTable",
+      "rel": "renders"
     },
     {
       "from": "feature:fe-app",
@@ -1212,89 +1397,619 @@
       "rel": "contains"
     },
     {
+      "from": "feature:shared",
+      "to": "component:CoverRatioChart",
+      "rel": "contains"
+    },
+    {
+      "from": "component:CoverRatioChart",
+      "to": "component:LineChart",
+      "rel": "renders"
+    },
+    {
       "from": "feature:fe-app",
       "to": "component:Modal",
       "rel": "contains"
     },
     {
+      "from": "feature:shared",
+      "to": "component:MovementInputModal",
+      "rel": "contains"
+    },
+    {
+      "from": "component:MovementInputModal",
+      "to": "component:Modal",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:shared",
+      "to": "component:PeerSimulationModal",
+      "rel": "contains"
+    },
+    {
+      "from": "component:PeerSimulationModal",
+      "to": "component:Modal",
+      "rel": "renders"
+    },
+    {
+      "from": "component:PeerSimulationModal",
+      "to": "component:LineChart",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:Product1OverviewPage",
+      "to": "component:CitySelector",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:Product1OverviewPage",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:Product1OverviewPage",
+      "to": "component:Product1OverviewPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "hook:useProduct1Overview",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "hook:useProduct1Movements",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "hook:usePeerSimulation1",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "hook:usePresentationPublisher",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "component:CitySelector",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "component:ProjectionTables",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "component:CoverRatioChart",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "component:CoverQuotePanel",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "component:MovementInputModal",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product1OverviewPage",
+      "to": "component:PeerSimulationModal",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:Product2OverviewPage",
+      "to": "feature:fe-app",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:Product2OverviewPage",
+      "to": "hook:useProduct2Overview",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useProduct2Overview",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useProduct2Overview",
+      "to": "url:GET /session/product2/overview",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:Product2OverviewPage",
+      "to": "hook:useProduct2Projection",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useProduct2Projection",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useProduct2Projection",
+      "to": "url:GET /session/product2/projection",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:Product2OverviewPage",
+      "to": "hook:useProduct2Movements",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useProduct2Movements",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useProduct2Movements",
+      "to": "url:PUT /session/product2/movements",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:Product2OverviewPage",
+      "to": "hook:usePeerSimulation2",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:usePeerSimulation2",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:usePeerSimulation2",
+      "to": "url:POST /session/product2/peer-simulation",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:Product2OverviewPage",
+      "to": "component:TransportModeSelector",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:Product2OverviewPage",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:Product2OverviewPage",
+      "to": "component:Product2OverviewPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "hook:useProduct2Overview",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "hook:useProduct2Movements",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "hook:usePeerSimulation2",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "hook:usePresentationPublisher",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "component:TransportModeSelector",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "component:ProjectionTables",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "component:CoverRatioChart",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "component:CoverQuotePanel",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "component:MovementInputModal",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product2OverviewPage",
+      "to": "component:PeerSimulationModal",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:ScenariosPage",
+      "to": "feature:fe-app",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:ScenariosPage",
+      "to": "hook:useScenarios",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useScenarios",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useScenarios",
+      "to": "url:GET /session/scenarios",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:ScenariosPage",
+      "to": "hook:useScenarioMutations",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useScenarioMutations",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useScenarioMutations",
+      "to": "url:POST /session/scenarios",
+      "rel": "calls"
+    },
+    {
+      "from": "hook:useScenarioMutations",
+      "to": "url:PUT /session/scenarios/{scenarioId}",
+      "rel": "calls"
+    },
+    {
+      "from": "hook:useScenarioMutations",
+      "to": "url:DELETE /session/scenarios/{scenarioId}",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useBaselinePrices",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useBaselinePrices",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useBaselinePrices",
+      "to": "url:GET /session/market/baseline",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:ScenariosPage",
+      "to": "component:ShockRow",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:ScenariosPage",
+      "to": "component:ScenarioEditor",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ScenarioEditor",
+      "to": "component:ShockRow",
+      "rel": "renders"
+    },
+    {
+      "from": "component:ScenarioEditor",
+      "to": "component:LineChart",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:ScenariosPage",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:ScenariosPage",
+      "to": "component:ScenariosPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ScenariosPage",
+      "to": "hook:useScenarios",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ScenariosPage",
+      "to": "hook:useBaselinePrices",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ScenariosPage",
+      "to": "hook:useScenarioMutations",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ScenariosPage",
+      "to": "component:ScenarioEditor",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:StressTestPage",
+      "to": "feature:fe-app",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:StressTestPage",
+      "to": "hook:useStressTest",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useStressTest",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useStressTest",
+      "to": "url:GET /session/stress-test",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:StressTestPage",
+      "to": "hook:useRunStressTest",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useRunStressTest",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useRunStressTest",
+      "to": "url:POST /session/stress-test",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:StressTestPage",
+      "to": "component:StressTable",
+      "rel": "contains"
+    },
+    {
+      "from": "component:StressTable",
+      "to": "component:DataTable",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:StressTestPage",
+      "to": "component:TransportPriceChart",
+      "rel": "contains"
+    },
+    {
+      "from": "component:TransportPriceChart",
+      "to": "component:LineChart",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:StressTestPage",
+      "to": "component:DimensionToggle",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:StressTestPage",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:StressTestPage",
+      "to": "component:StressTestPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:StressTestPage",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "component:StressTestPage",
+      "to": "hook:useStressTest",
+      "rel": "uses"
+    },
+    {
+      "from": "component:StressTestPage",
+      "to": "hook:useRunStressTest",
+      "rel": "uses"
+    },
+    {
+      "from": "component:StressTestPage",
+      "to": "hook:useBaselinePrices",
+      "rel": "uses"
+    },
+    {
+      "from": "component:StressTestPage",
+      "to": "hook:usePresentationPublisher",
+      "rel": "uses"
+    },
+    {
+      "from": "component:StressTestPage",
+      "to": "component:DimensionToggle",
+      "rel": "renders"
+    },
+    {
+      "from": "component:StressTestPage",
+      "to": "component:TransportPriceChart",
+      "rel": "renders"
+    },
+    {
+      "from": "component:StressTestPage",
+      "to": "component:StressTable",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useDownloadReportPdf",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useDownloadReportPdf",
+      "to": "url:GET /api/v1/sessions/{*}/report.pdf",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:shared",
+      "to": "component:DownloadPdfButton",
+      "rel": "contains"
+    },
+    {
+      "from": "component:DownloadPdfButton",
+      "to": "hook:useDownloadReportPdf",
+      "rel": "uses"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useReport",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useReport",
+      "to": "url:GET /sessions/{sessionId}/report",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:shared",
+      "to": "hook:useRegenerateReport",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useRegenerateReport",
+      "to": "url:POST /sessions/{sessionId}/report",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:shared",
+      "to": "component:ReportPreview",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ReportPreview",
+      "to": "hook:useRegenerateReport",
+      "rel": "uses"
+    },
+    {
+      "from": "feature:SessionSummaryPage",
+      "to": "feature:fe-app",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:SessionSummaryPage",
+      "to": "hook:useCloseSession",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useCloseSession",
+      "to": "hook:usePresentationPublisher",
+      "rel": "uses"
+    },
+    {
+      "from": "hook:useCloseSession",
+      "to": "url:POST /sessions/{sessionId}/close",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:SessionSummaryPage",
+      "to": "hook:useRoleOverride",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useRoleOverride",
+      "to": "url:PUT /sessions/{sessionId}/role",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:SessionSummaryPage",
+      "to": "component:RoleOverrideDialog",
+      "rel": "contains"
+    },
+    {
+      "from": "component:RoleOverrideDialog",
+      "to": "hook:useRoleOverride",
+      "rel": "uses"
+    },
+    {
+      "from": "component:RoleOverrideDialog",
+      "to": "component:Modal",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:SessionSummaryPage",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:SessionSummaryPage",
+      "to": "component:SessionSummaryPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:SessionSummaryPage",
+      "to": "hook:useCloseSession",
+      "rel": "uses"
+    },
+    {
+      "from": "component:SessionSummaryPage",
+      "to": "hook:useReport",
+      "rel": "uses"
+    },
+    {
+      "from": "component:SessionSummaryPage",
+      "to": "component:ReportPreview",
+      "rel": "renders"
+    },
+    {
+      "from": "component:SessionSummaryPage",
+      "to": "component:DownloadPdfButton",
+      "rel": "renders"
+    },
+    {
+      "from": "component:SessionSummaryPage",
+      "to": "component:RoleOverrideDialog",
+      "rel": "renders"
+    },
+    {
       "from": "feature:fe-app",
-      "to": "component:StackedBars",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:ClientMeetingsPage",
-      "to": "feature:shared",
+      "to": "feature:Product1OverviewPage",
       "rel": "depends-on"
     },
     {
-      "from": "feature:ClientMeetingsPage",
-      "to": "component:ClientMeetingsPage",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:ClientOverviewPage",
-      "to": "feature:fe-app",
+      "from": "feature:fe-app",
+      "to": "feature:Product2OverviewPage",
       "rel": "depends-on"
     },
     {
-      "from": "feature:ClientOverviewPage",
-      "to": "feature:shared",
+      "from": "feature:fe-app",
+      "to": "feature:ScenariosPage",
       "rel": "depends-on"
     },
     {
-      "from": "feature:ClientOverviewPage",
-      "to": "component:ClientOverviewPage",
-      "rel": "contains"
+      "from": "feature:fe-app",
+      "to": "feature:StressTestPage",
+      "rel": "depends-on"
     },
     {
-      "from": "feature:ClientOverviewPage",
-      "to": "component:ClientInfoPanel",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:ClientOverviewPage",
-      "to": "component:ProductGroupCard",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:ClientOverviewPage",
-      "to": "hook:useClientOverview",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useClientOverview",
-      "to": "url:GET /clients/{clientId}/overview",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:ClientOverviewPage",
-      "to": "hook:useClientRole",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useClientRole",
-      "to": "url:GET /clients/{clientId}/role",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:ClientOverviewPage",
-      "to": "hook:useCreateSession",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useCreateSession",
-      "to": "url:POST /clients/{clientId}/sessions",
-      "rel": "calls"
+      "from": "feature:fe-app",
+      "to": "feature:SessionSummaryPage",
+      "rel": "depends-on"
     },
     {
       "from": "feature:ClientSearchPage",
       "to": "feature:fe-app",
       "rel": "depends-on"
-    },
-    {
-      "from": "feature:ClientSearchPage",
-      "to": "component:ClientSearchPage",
-      "rel": "contains"
     },
     {
       "from": "feature:ClientSearchPage",
@@ -1315,6 +2030,196 @@
       "from": "hook:useClient",
       "to": "url:GET /clients/{clientId}",
       "rel": "calls"
+    },
+    {
+      "from": "feature:ClientSearchPage",
+      "to": "component:ClientSearchPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ClientSearchPage",
+      "to": "hook:useClientSearch",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ClientSearchPage",
+      "to": "component:DataTable",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:ClientOverviewPage",
+      "to": "feature:fe-app",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:ClientOverviewPage",
+      "to": "hook:useCreateSession",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useCreateSession",
+      "to": "url:POST /clients/{clientId}/sessions",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:ClientOverviewPage",
+      "to": "hook:useClientOverview",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useClientOverview",
+      "to": "url:GET /clients/{clientId}/overview",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:ClientOverviewPage",
+      "to": "component:ProductGroupCard",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ProductGroupCard",
+      "to": "component:LineChart",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:ClientOverviewPage",
+      "to": "component:ClientInfoPanel",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:ClientOverviewPage",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:ClientOverviewPage",
+      "to": "component:ClientOverviewPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ClientOverviewPage",
+      "to": "hook:useSessionStore",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ClientOverviewPage",
+      "to": "hook:useClientOverview",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ClientOverviewPage",
+      "to": "hook:useSessions",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ClientOverviewPage",
+      "to": "hook:useCreateSession",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ClientOverviewPage",
+      "to": "component:ClientInfoPanel",
+      "rel": "renders"
+    },
+    {
+      "from": "component:ClientOverviewPage",
+      "to": "component:ProductGroupCard",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:shared",
+      "to": "component:MeetingsListPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:MeetingsListPage",
+      "to": "hook:useSessions",
+      "rel": "uses"
+    },
+    {
+      "from": "component:MeetingsListPage",
+      "to": "component:DataTable",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:ClientMeetingsPage",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:ClientMeetingsPage",
+      "to": "component:ClientMeetingsPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ClientMeetingsPage",
+      "to": "component:MeetingsListPage",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:PreparationSessionsPage",
+      "to": "feature:shared",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:PreparationSessionsPage",
+      "to": "component:PreparationSessionsPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:PreparationSessionsPage",
+      "to": "component:MeetingsListPage",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:ParametersPage",
+      "to": "feature:fe-app",
+      "rel": "depends-on"
+    },
+    {
+      "from": "feature:ParametersPage",
+      "to": "hook:useParameters",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useParameters",
+      "to": "url:GET /admin/parameters",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:ParametersPage",
+      "to": "hook:useUpsertParameter",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useUpsertParameter",
+      "to": "url:PUT /admin/parameters/{key}",
+      "rel": "calls"
+    },
+    {
+      "from": "feature:ParametersPage",
+      "to": "component:ParameterRow",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:ParametersPage",
+      "to": "component:ParametersPage",
+      "rel": "contains"
+    },
+    {
+      "from": "component:ParametersPage",
+      "to": "hook:useParameters",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ParametersPage",
+      "to": "hook:useUpsertParameter",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ParametersPage",
+      "to": "component:ParameterRow",
+      "rel": "renders"
     },
     {
       "from": "feature:ImportsPage",
@@ -1347,48 +2252,23 @@
       "rel": "contains"
     },
     {
-      "from": "feature:ParametersPage",
-      "to": "feature:fe-app",
-      "rel": "depends-on"
+      "from": "component:ImportsPage",
+      "to": "hook:useImportBatches",
+      "rel": "uses"
     },
     {
-      "from": "feature:ParametersPage",
-      "to": "component:ParameterRow",
-      "rel": "contains"
+      "from": "component:ImportsPage",
+      "to": "hook:useTriggerImport",
+      "rel": "uses"
     },
     {
-      "from": "feature:ParametersPage",
-      "to": "hook:useParameters",
-      "rel": "contains"
+      "from": "component:ImportsPage",
+      "to": "component:DataTable",
+      "rel": "renders"
     },
     {
-      "from": "hook:useParameters",
-      "to": "url:GET /admin/parameters",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:ParametersPage",
-      "to": "hook:useUpsertParameter",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useUpsertParameter",
-      "to": "url:PUT /admin/parameters/{key}",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:ParametersPage",
-      "to": "component:ParametersPage",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:PreparationSessionsPage",
-      "to": "feature:shared",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:PreparationSessionsPage",
-      "to": "component:PreparationSessionsPage",
+      "from": "feature:fe-app",
+      "to": "hook:usePresentationSubscriber",
       "rel": "contains"
     },
     {
@@ -1432,9 +2312,39 @@
       "rel": "contains"
     },
     {
+      "from": "component:Product1Mirror",
+      "to": "hook:useProduct1Overview",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product1Mirror",
+      "to": "component:ProjectionTables",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product1Mirror",
+      "to": "component:CoverRatioChart",
+      "rel": "renders"
+    },
+    {
       "from": "feature:PresentationPage",
       "to": "component:Product2Mirror",
       "rel": "contains"
+    },
+    {
+      "from": "component:Product2Mirror",
+      "to": "hook:useProduct2Overview",
+      "rel": "uses"
+    },
+    {
+      "from": "component:Product2Mirror",
+      "to": "component:ProjectionTables",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Product2Mirror",
+      "to": "component:CoverRatioChart",
+      "rel": "renders"
     },
     {
       "from": "feature:PresentationPage",
@@ -1447,6 +2357,16 @@
       "rel": "contains"
     },
     {
+      "from": "component:ScenariosMirror",
+      "to": "hook:useScenarios",
+      "rel": "uses"
+    },
+    {
+      "from": "component:ScenariosMirror",
+      "to": "hook:useBaselinePrices",
+      "rel": "uses"
+    },
+    {
       "from": "feature:PresentationPage",
       "to": "feature:StressTestPage",
       "rel": "depends-on"
@@ -1457,439 +2377,49 @@
       "rel": "contains"
     },
     {
+      "from": "component:StressMirror",
+      "to": "hook:useStressTest",
+      "rel": "uses"
+    },
+    {
+      "from": "component:StressMirror",
+      "to": "hook:useBaselinePrices",
+      "rel": "uses"
+    },
+    {
+      "from": "component:StressMirror",
+      "to": "component:TransportPriceChart",
+      "rel": "renders"
+    },
+    {
+      "from": "component:StressMirror",
+      "to": "component:StressTable",
+      "rel": "renders"
+    },
+    {
       "from": "feature:PresentationPage",
       "to": "component:PresentationPage",
       "rel": "contains"
     },
     {
-      "from": "feature:Product1OverviewPage",
-      "to": "component:CitySelector",
-      "rel": "contains"
+      "from": "component:PresentationPage",
+      "to": "hook:usePresentationSubscriber",
+      "rel": "uses"
     },
     {
-      "from": "feature:Product1OverviewPage",
-      "to": "feature:fe-app",
-      "rel": "depends-on"
+      "from": "component:PresentationPage",
+      "to": "component:ProductMirror",
+      "rel": "renders"
     },
     {
-      "from": "feature:Product1OverviewPage",
-      "to": "hook:usePeerSimulation1",
-      "rel": "contains"
+      "from": "component:PresentationPage",
+      "to": "component:ScenariosMirror",
+      "rel": "renders"
     },
     {
-      "from": "hook:usePeerSimulation1",
-      "to": "url:POST /session/product1/peer-simulation",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:Product1OverviewPage",
-      "to": "hook:useProduct1Movements",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useProduct1Movements",
-      "to": "url:PUT /session/product1/movements",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:Product1OverviewPage",
-      "to": "hook:useProduct1Overview",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useProduct1Overview",
-      "to": "url:GET /session/product1/overview",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:Product1OverviewPage",
-      "to": "hook:useProduct1Projection",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useProduct1Projection",
-      "to": "url:GET /session/product1/projection",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:Product1OverviewPage",
-      "to": "feature:shared",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:Product1OverviewPage",
-      "to": "component:Product1OverviewPage",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:Product2OverviewPage",
-      "to": "feature:fe-app",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:Product2OverviewPage",
-      "to": "component:TransportModeSelector",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:Product2OverviewPage",
-      "to": "hook:usePeerSimulation2",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:usePeerSimulation2",
-      "to": "url:POST /session/product2/peer-simulation",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:Product2OverviewPage",
-      "to": "hook:useProduct2Movements",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useProduct2Movements",
-      "to": "url:PUT /session/product2/movements",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:Product2OverviewPage",
-      "to": "hook:useProduct2Overview",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useProduct2Overview",
-      "to": "url:GET /session/product2/overview",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:Product2OverviewPage",
-      "to": "hook:useProduct2Projection",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useProduct2Projection",
-      "to": "url:GET /session/product2/projection",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:Product2OverviewPage",
-      "to": "feature:shared",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:Product2OverviewPage",
-      "to": "component:Product2OverviewPage",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:ScenariosPage",
-      "to": "feature:fe-app",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:ScenariosPage",
-      "to": "component:ScenarioEditor",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:ScenariosPage",
-      "to": "component:ShockRow",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:ScenariosPage",
-      "to": "hook:useScenarios",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useScenarios",
-      "to": "url:GET /session/scenarios",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:ScenariosPage",
-      "to": "hook:useScenarioMutations",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useScenarioMutations",
-      "to": "url:POST /session/scenarios",
-      "rel": "calls"
-    },
-    {
-      "from": "hook:useScenarioMutations",
-      "to": "url:PUT /session/scenarios/{scenarioId}",
-      "rel": "calls"
-    },
-    {
-      "from": "hook:useScenarioMutations",
-      "to": "url:DELETE /session/scenarios/{scenarioId}",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:ScenariosPage",
-      "to": "feature:shared",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:ScenariosPage",
-      "to": "component:ScenariosPage",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:SessionSummaryPage",
-      "to": "feature:fe-app",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:SessionSummaryPage",
-      "to": "component:RoleOverrideDialog",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:SessionSummaryPage",
-      "to": "hook:useCloseSession",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useCloseSession",
-      "to": "url:POST /sessions/{sessionId}/close",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:SessionSummaryPage",
-      "to": "hook:useRoleOverride",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useRoleOverride",
-      "to": "url:PUT /sessions/{sessionId}/role",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:SessionSummaryPage",
-      "to": "feature:shared",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:SessionSummaryPage",
-      "to": "component:SessionSummaryPage",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "feature:fe-app",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:shared",
-      "to": "component:CoverQuotePanel",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "component:CoverRatioChart",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "component:DownloadPdfButton",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "component:MeetingsListPage",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "component:MovementInputModal",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "component:PeerSimulationModal",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "component:ProjectionTables",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "component:ReportPreview",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useBaselinePrices",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useBaselinePrices",
-      "to": "url:GET /session/market/baseline",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useCoverQuote",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useCoverQuote",
-      "to": "url:POST /session/cover/quotes",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useCoverSummary",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useCoverSummary",
-      "to": "url:GET /session/cover/summary",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useCoverPolicies",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useCoverPolicies",
-      "to": "url:GET /clients/{clientId}/cover-policies",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useDownloadReportPdf",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useDownloadReportPdf",
-      "to": "url:GET /api/v1/sessions/{*}/report.pdf",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useReport",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useReport",
-      "to": "url:GET /sessions/{sessionId}/report",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useRegenerateReport",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useRegenerateReport",
-      "to": "url:POST /sessions/{sessionId}/report",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useSessions",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useSessions",
-      "to": "url:GET /sessions",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:shared",
-      "to": "hook:useSession",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useSession",
-      "to": "url:GET /sessions/{sessionId}",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:StressTestPage",
-      "to": "feature:fe-app",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:StressTestPage",
-      "to": "component:DimensionToggle",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:StressTestPage",
-      "to": "component:StressTable",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:StressTestPage",
-      "to": "component:TransportPriceChart",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:StressTestPage",
-      "to": "hook:useRunStressTest",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useRunStressTest",
-      "to": "url:POST /session/stress-test",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:StressTestPage",
-      "to": "hook:useStressTest",
-      "rel": "contains"
-    },
-    {
-      "from": "hook:useStressTest",
-      "to": "url:GET /session/stress-test",
-      "rel": "calls"
-    },
-    {
-      "from": "feature:StressTestPage",
-      "to": "feature:shared",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:StressTestPage",
-      "to": "component:StressTestPage",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:fe-app",
-      "to": "component:AdminRoutesGuard",
-      "rel": "contains"
-    },
-    {
-      "from": "feature:fe-app",
-      "to": "feature:Product1OverviewPage",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:fe-app",
-      "to": "feature:Product2OverviewPage",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:fe-app",
-      "to": "feature:ScenariosPage",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:fe-app",
-      "to": "feature:StressTestPage",
-      "rel": "depends-on"
-    },
-    {
-      "from": "feature:fe-app",
-      "to": "feature:SessionSummaryPage",
-      "rel": "depends-on"
+      "from": "component:PresentationPage",
+      "to": "component:StressMirror",
+      "rel": "renders"
     },
     {
       "from": "feature:fe-app",
@@ -1933,13 +2463,43 @@
     },
     {
       "from": "component:Routing",
+      "to": "component:RootLayout",
+      "rel": "renders"
+    },
+    {
+      "from": "component:Routing",
       "to": "component:AdminRoutesGuard",
       "rel": "renders"
     },
     {
+      "from": "component:Routing",
+      "to": "component:PresentationLayout",
+      "rel": "renders"
+    },
+    {
       "from": "feature:fe-app",
-      "to": "hook:useSessionStore",
+      "to": "component:App",
       "rel": "contains"
+    },
+    {
+      "from": "component:App",
+      "to": "component:Routing",
+      "rel": "renders"
+    },
+    {
+      "from": "feature:fe-app",
+      "to": "component:StackedBars",
+      "rel": "contains"
+    },
+    {
+      "from": "feature:ClientOverviewPage",
+      "to": "hook:useClientRole",
+      "rel": "contains"
+    },
+    {
+      "from": "hook:useClientRole",
+      "to": "url:GET /clients/{clientId}/role",
+      "rel": "calls"
     }
   ]
 }

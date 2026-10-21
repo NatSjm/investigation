@@ -16,8 +16,8 @@ Every key is optional and falls back to the values below (the Harbor layout):
 | `not_pages` | folders under `pages_dir` that are not pages (shared pieces); one row each | `["shared"]` |
 | `page_entry` | file read for the page's purpose and `@docs` tag (`<Page>` = folder name, first match wins) | `["<Page>.tsx", "index.tsx", "index.ts"]` |
 | `hook_dirs` | folder names whose `use*.ts` files are the page's data hooks | `["hook", "hooks", "api"]` |
-| `components_dir` | folder name holding the page's components (`<Name>/` folders or `<Name>.tsx` files) | `components` |
-| `shared_dir` | the in-house component library scanned by `gen-components.py` | `src/components` |
+| `components_dir` | folder name holding the page's components (`<Name>/` folders or `<Name>.tsx` files); `gen-components.py` lists them in its Page components table | `components` |
+| `shared_dir` | the in-house component library: the Library table of `gen-components.py` | `src/components` |
 | `app_dirs` | app shell (routing, layouts, channel modules, entry files): the `fe-app` row | `src/routing`, `src/components/layout`, `src/components/broadcast`, `src/components/hook`, `src/App.tsx`, `src/main.tsx` |
 | `route_files` | files or folders scanned for react-router route objects / `<Route>` | `["src/routing"]` |
 | `route_constants` | files with `export const ROUTES = { KEY: '/path' }` objects, resolved as `ROUTES.KEY` | `["src/constants/routes.ts"]` |
@@ -56,6 +56,9 @@ node scripts/docs/out/gen-graph-fe.js src docs/_generated/graph-export-fe.json
 What the exporter sees: one `feature:` node per page folder (and per `not_pages` folder), exported hooks (`use*`) and
 components (PascalCase), `calls` edges from `api.GET('/session/product1/overview', ...)`-style calls (literal contract
 path + method), `uses` / `renders` edges resolved through the type checker and `depends-on` edges between pages.
+The type checker works from the repository's `tsconfig.json` (a root config that only lists `references` hands over
+to the referenced config that includes `src`), so `@/` aliases and barrel re-exports resolve; the console line names
+the config it used. An export made before that had almost no `renders` / `uses` edges: run it again.
 The exporter keeps literal calls only: it does not read `generated_client` and emits no `calls` edge for a call to a
 generated function; those come from the `API calls` column of `codebase-map.md` through the docs repository's graph.
 

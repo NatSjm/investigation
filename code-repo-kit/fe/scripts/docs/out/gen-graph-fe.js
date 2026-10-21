@@ -10,6 +10,9 @@
 //
 // Output: docs/_generated/graph-export-fe.json, consumed by docs repo scripts/gen-graph.py (edges source=export).
 //
+// Compiler options: the repository's own tsconfig.json (baseUrl, paths such as `@/*`, moduleResolution), see
+// compilerOptions() below; the console line names the config that was used.
+//
 // Run:   npx tsc -p scripts/docs/tsconfig.gen.json && node scripts/docs/out/gen-graph-fe.js [srcDir] [outFile]
 // or     npx ts-node scripts/docs/gen-graph-fe.ts            (if ts-node is already present)
 import * as fs from 'fs';
@@ -65,8 +68,25 @@ function listFiles(dir) {
     }
     return out;
 }
+// With fixed options the checker cannot resolve `@/...` imports, so every `renders` / `uses` edge through one was lost.
+// A Vite-style root tsconfig.json that only lists `references` hands over to the referenced config whose files include
+// srcDir; without any tsconfig the fixed options remain (relative imports only).
+function compilerOptions() {
+    const fallback = { allowJs: false, jsx: ts.JsxEmit.Preserve, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020, noResolve: false };
+    const rootConfig = ts.findConfigFile(repoRoot, ts.sys.fileExists, 'tsconfig.json');
+    if (!rootConfig)
+        return { options: fallback, from: 'built-in defaults (no tsconfig.json)' };
+    const parse = (file) => ts.parseJsonConfigFileContent(ts.readConfigFile(file, ts.sys.readFile).config ?? {}, ts.sys, path.dirname(file));
+    const coversSrc = (p) => p.fileNames.some(f => path.resolve(f).toLowerCase().startsWith(srcDir.toLowerCase() + path.sep));
+    const top = parse(rootConfig);
+    const candidates = [{ file: rootConfig, parsed: top }, ...(top.projectReferences ?? [])
+            .map(r => ts.resolveProjectReferencePath(r)).filter(f => ts.sys.fileExists(f)).map(f => ({ file: f, parsed: parse(f) }))];
+    const chosen = candidates.find(c => coversSrc(c.parsed)) ?? candidates[0];
+    return { options: { ...chosen.parsed.options, noEmit: true }, from: rel(chosen.file) };
+}
 const files = listFiles(srcDir);
-const program = ts.createProgram(files, { allowJs: false, jsx: ts.JsxEmit.Preserve, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020, noResolve: false });
+const configured = compilerOptions();
+const program = ts.createProgram(files, configured.options);
 const checker = program.getTypeChecker();
 for (const sf of program.getSourceFiles()) {
     if (sf.isDeclarationFile || !files.includes(path.resolve(sf.fileName)))
@@ -176,4 +196,4 @@ for (const sf of program.getSourceFiles()) {
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
 const json = { generated: { by: 'process:graph-export-fe' }, nodes: [...nodes.values()], edges: [...edges].map(e => JSON.parse(e)) };
 fs.writeFileSync(outFile, JSON.stringify(json, null, 2) + '\n', 'utf8');
-console.log(`graph-export-fe: ${nodes.size} nodes, ${edges.size} edges -> ${outFile}`);
+console.log(`graph-export-fe: ${nodes.size} nodes, ${edges.size} edges (compiler options: ${configured.from}) -> ${outFile}`);

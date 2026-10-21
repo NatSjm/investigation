@@ -7,10 +7,10 @@
 * [Graph: fe-app (fe)](fe-app.md) - app shell: routing, layouts, providers, channel modules · unverified
 * [Graph: fe-shared (fe)](fe-shared.md) - pieces shared by several pages · unverified
 * [Graph: imports (be)](imports.md) - entry point ImportManager (manager) · unverified
-* [Graph: market (be+fe)](market.md) - /session/:sessionId/scenarios` - second meeting step: list of scenarios of the session, baseline curve info and the editor to add / change / remove scenarios. · unverified
+* [Graph: market (be+fe)](market.md) - entry point MarketManager (manager) · unverified
 * [Graph: meetings (be+fe)](meetings.md) - entry point MeetingManager (manager) · unverified
 * [Graph: presentation (fe)](presentation.md) - /present/:sessionId` - what the client sees on the second screen. · unverified
-* [Graph: product1 (be+fe)](product1.md) - /session/:sessionId/product1` - first meeting step for Product 1: city filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals. · unverified
+* [Graph: product1 (be+fe)](product1.md) - entry point Product1Manager (manager) · unverified
 * [Graph: product2 (be+fe)](product2.md) - /session/:sessionId/product2` - first meeting step for Product 2: transport mode filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals. · unverified
 * [REPO_MAP](REPO_MAP.md) - Ranked architectural map of BE + FE + docs; read first, then one graph/<community>.md · unverified
 * [Graph: reports (be)](reports.md) - entry point ReportManager (manager) · unverified

@@ -4,7 +4,7 @@ title: "Graph: imports (be)"
 description: "entry point ImportManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: imports (be)
@@ -19,8 +19,8 @@ status: stable
 - `class:MovementImportService` - `harbor-core/src/main/kotlin/com/acme/harbor/service/MovementImportService.kt:31` - service; Service
 - `class:MovementMonthlyRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/MovementMonthlyRepository.kt:13` - dao/repository; Repository
 - `class:ImportManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ImportManager.kt:18` - manager; Service
-- `class:MovementsLoadedPublisher` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt:14` - event; Component, KafkaProducer
 - `class:GoodsMovementRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/GoodsMovementRepository.kt:12` - dao/repository; Repository
+- `class:MovementsLoadedPublisher` - `harbor-core/src/main/kotlin/com/acme/harbor/event/MovementsLoadedPublisher.kt:14` - event; Component, KafkaProducer
 - `class:WorkbookReaderFactory` - `harbor-core/src/main/kotlin/com/acme/harbor/component/WorkbookReaderFactory.kt:11` - component; Component
 - `class:DailyMovementImportJob` - `harbor-core/src/main/kotlin/com/acme/harbor/job/DailyMovementImportJob.kt:13` - job; Component, Scheduled
 - `class:ImportBatchRepository` - `harbor-core/src/main/kotlin/com/acme/harbor/dao/repository/ImportBatchRepository.kt:9` - dao/repository; Repository

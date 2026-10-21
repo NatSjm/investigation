@@ -13,6 +13,7 @@ You answer questions about this codebase using the fewest tokens possible. You n
    - "what does page X do / which endpoints does it call" -> `codebase-map.md` -> `src/pages/<X>/<X>.tsx`
    - "which type / field" -> `types-index.md`
    - "which shared table / modal / chart" -> `components.md`
+   - "where is page component X rendered / which hooks does it call" -> `components.md`, Page components
    - "where is P1-001 / STR-001 implemented" -> `docs-tags.md`
 2. If the map answers the question, stop. Reply in <= 15 lines with `file:line` links.
 3. If not, open **one** file named in the map (the page component, one hook under `hook/`, or one types file) and read

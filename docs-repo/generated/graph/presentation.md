@@ -4,7 +4,7 @@ title: "Graph: presentation (fe)"
 description: "/present/:sessionId` - what the client sees on the second screen."
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: presentation (fe)
@@ -19,12 +19,12 @@ status: stable
 - `route:/present/:sessionId` - `src/routing/Routing.tsx:44` - renders PresentationPage
 
 ## components
-- `component:ProductMirror` - `src/pages/PresentationPage/components/ProductMirror/ProductMirror.tsx:24`
-- `component:Product1Mirror` - `src/pages/PresentationPage/components/ProductMirror/ProductMirror.tsx:32`
-- `component:Product2Mirror` - `src/pages/PresentationPage/components/ProductMirror/ProductMirror.tsx:52`
-- `component:PresentationPage` - `src/pages/PresentationPage/PresentationPage.tsx:21`
-- `component:ScenariosMirror` - `src/pages/PresentationPage/components/ScenariosMirror/ScenariosMirror.tsx:10`
 - `component:StressMirror` - `src/pages/PresentationPage/components/StressMirror/StressMirror.tsx:17`
+- `component:PresentationPage` - `src/pages/PresentationPage/PresentationPage.tsx:21`
+- `component:Product2Mirror` - `src/pages/PresentationPage/components/ProductMirror/ProductMirror.tsx:52`
+- `component:Product1Mirror` - `src/pages/PresentationPage/components/ProductMirror/ProductMirror.tsx:32`
+- `component:ProductMirror` - `src/pages/PresentationPage/components/ProductMirror/ProductMirror.tsx:24`
+- `component:ScenariosMirror` - `src/pages/PresentationPage/components/ScenariosMirror/ScenariosMirror.tsx:10`
 
 ## Edges
 - `channel:harbor.session.{*}` -consumed-by-> `feature:PresentationPage` (-> fe-app)
@@ -42,9 +42,25 @@ status: stable
 - `feature:PresentationPage` -depends-on-> `feature:shared` (-> fe-shared) (exact)
 - `feature:PresentationPage` -depends-on-> `feature:StressTestPage` (-> stress) (exact)
 - `spec:PRS-001` -implemented-by-> `feature:PresentationPage` (-> docs)
+- `component:PresentationPage` -renders-> `component:ProductMirror` (exact)
+- `component:PresentationPage` -renders-> `component:ScenariosMirror` (exact)
+- `component:PresentationPage` -renders-> `component:StressMirror` (exact)
+- `component:Product1Mirror` -renders-> `component:CoverRatioChart` (-> fe-shared) (exact)
+- `component:Product1Mirror` -renders-> `component:ProjectionTables` (-> fe-shared) (exact)
+- `component:Product2Mirror` -renders-> `component:CoverRatioChart` (-> fe-shared) (exact)
+- `component:Product2Mirror` -renders-> `component:ProjectionTables` (-> fe-shared) (exact)
 - `component:ProductMirror` -renders-> `component:Product1Mirror` (exact)
 - `component:ProductMirror` -renders-> `component:Product2Mirror` (exact)
+- `component:StressMirror` -renders-> `component:StressTable` (-> stress) (exact)
+- `component:StressMirror` -renders-> `component:TransportPriceChart` (-> stress) (exact)
 - `route:/present/:sessionId` -renders-> `feature:PresentationPage`
+- `component:PresentationPage` -uses-> `hook:usePresentationSubscriber` (-> fe-app) (exact)
+- `component:Product1Mirror` -uses-> `hook:useProduct1Overview` (-> product1) (exact)
+- `component:Product2Mirror` -uses-> `hook:useProduct2Overview` (-> product2) (exact)
+- `component:ScenariosMirror` -uses-> `hook:useBaselinePrices` (-> fe-shared) (exact)
+- `component:ScenariosMirror` -uses-> `hook:useScenarios` (-> market) (exact)
+- `component:StressMirror` -uses-> `hook:useBaselinePrices` (-> fe-shared) (exact)
+- `component:StressMirror` -uses-> `hook:useStressTest` (-> stress) (exact)
 
 ## Specs touching this community
 - `spec:PRS-001` - `features/presentation/PRS-001.md` - status draft; fe src/components/broadcast/sessionChannel.ts:12; fe src/components/hook/usePresentationPublisher.ts:15; fe src/components/hook/usePresentationSubscriber.ts:9; fe src/components/layout/PresentationLayout.tsx:13; fe src/pages/PresentationPage/components/ProductMirror/ProductMirror.tsx:24; fe src/pages/PresentationPage/components/ScenariosMirror/ScenariosMirror.tsx:10; fe src/pages/PresentationPage/components/StressMirror/StressMirror.tsx:17; fe src/pages/PresentationPage/PresentationPage.tsx:21; fe src/types/presentation.ts:9

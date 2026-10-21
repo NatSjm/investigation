@@ -290,7 +290,7 @@ def main():
     sb = [header('Codebase map (FE)', f'{pages_dir}/<Page>/ + {", ".join(cfg["app_dirs"][:2])}')]
     sb.append('One row per page folder: read the page component (entry) and its hooks first; open components only for UI-level questions. '
               f'`{"`, `".join(cfg["not_pages"])}` hold pieces shared by several pages; `fe-app` is the app shell.\n')
-    sb.append('Channels = browser `BroadcastChannel`s (`defines` / `pub` / `sub`), the FE counterpart of Kafka topics; the shared component library is in `components.md`.\n\n')
+    sb.append('Channels = browser `BroadcastChannel`s (`defines` / `pub` / `sub`), the FE counterpart of Kafka topics; the shared component library and where each page component is rendered are in `components.md`.\n\n')
     sb.append('| Page | Purpose | Entry | Files | Components | Hooks | API calls | Channels |\n|---|---|---|---|---|---|---|---|\n')
     for r in rows:
         sb.append(f"| `{r['Page']}` | {escape_cell(r['Desc'])} | `{r['Entry']}` | {r['Files']} | {escape_cell(r['Components'])} | {escape_cell(r['Hooks'])} | {r['Apis']} | {r['Channels']} |\n")

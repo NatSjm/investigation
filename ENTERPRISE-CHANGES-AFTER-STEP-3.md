@@ -830,3 +830,54 @@ Playbook section 3 (item 5, Commands table and Checks), section 10 (the paragrap
 (the `okf-validate.py` row) and section 18 (the context-map prompt finishes with `--changed --strict`); `HANDBOOK.md`
 section 4 (the scripts row); `ANALYST-DOCS-SETUP.md` step 4 (the `AGENTS.md` template: Validate row and the Checks
 section). The Claude wrappers in `.claude/commands/` changed too; they belong to this investigation repository only.
+
+## 25. Page components in the map; the exporter reads the tsconfig (investigation commits after `9b7cb13`, 2026-10-21)
+
+The shaping step's agent could not see the components defined inside page folders. `components.md` listed only the
+shared library (`src/components/**`); `codebase-map.md` names a page's components without `file:line`; and the
+TypeScript exporter lost almost every `renders` / `uses` edge, because it built its program with fixed compiler
+options and ignored the repository's `tsconfig.json`, so every `@/...` import stayed unresolved (Harbor: 3 `renders`,
+0 `uses`). Now:
+
+- `gen-components.py` writes a second table, **Page components**: one row per exported component under
+  `<pages_dir>/<Page>/<components_dir>/` (shared folders included) with its page, purpose, props, where it is rendered
+  (`file:line` of the JSX tag, first per file, its own definition excluded) and the repository's own hooks it calls.
+  The library table is unchanged; the file's title becomes "Components (FE)". The new table's first column is
+  `Page component`, so the docs repository's `gen-graph.py`, which reads every `Component` row as a library component,
+  skips it: an older docs repository is safe too.
+- `gen-graph-fe.ts` takes its compiler options from the repository's `tsconfig.json`; a Vite-style root config that
+  only lists `references` hands over to the referenced config whose files include `src`. Harbor: 53 `renders` and 62
+  `uses` edges (graph 852 edges, was 740), e.g. which modals each overview page renders and which hooks it uses.
+- The playbook's shaping prompt reads the pages' `codebase-map.md` rows and the Page components table, may open each
+  page's entry file (the architect opens no code unless asked) and lists what only a developer can answer.
+
+### 25.1 Frontend kit: files to re-copy whole (into the frontend repository's `scripts/docs/`)
+
+| File | Why |
+|---|---|
+| `scripts/docs/gen-components.py` | the Page components table; the library table unchanged |
+| `scripts/docs/gen-graph-fe.ts` | compiler options from the repository's tsconfig (`compilerOptions()`); the console line names the config it used; rebuild `out/` afterwards |
+| `scripts/docs/README.md` | the `components_dir` and `shared_dir` rows; the exporter paragraph (tsconfig; an older export: run it again) |
+| `scripts/docs/gen-all.py`, `scripts/docs/gen-codebase-map.py` | one sentence each: the index line of `components.md`, the pointer under the codebase map's intro |
+
+### 25.2 Frontend repository: single rows
+
+| File | Rows | Change |
+|---|---|---|
+| `AGENTS.md` | "Read in this order", item 1 | `components.md` (shared UI library, then page components: where each is rendered and which hooks it calls) |
+| `.github/agents/code-reader.agent.md` | Procedure, step 1 | new row: "where is page component X rendered / which hooks does it call" -> `components.md`, Page components |
+
+### 25.3 What to do
+
+1. Frontend repository: `python3 scripts/docs/gen-all.py --root .` and check the Page components table: it lists the
+   components under `src/pages/<Page>/components/` (an empty table means `components_dir` is wrong), and for each
+   dialog the Rendered by column points at the file that opens it. If the repository runs the exporter, also
+   `npx tsc -p scripts/docs/tsconfig.gen.json` and `node scripts/docs/out/gen-graph-fe.js src
+   docs/_generated/graph-export-fe.json`: the console line must name your tsconfig (`tsconfig.app.json` in a Vite
+   repository). Commit `docs/_generated/`.
+2. Docs repository: `python3 scripts/collect-evidence.py --graph` (or your collector job). Nothing to re-copy there.
+3. Re-run the shaping prompt (playbook section 10) for a context whose spec list is still provisional.
+
+### 25.4 Playbook (read only)
+
+Section 10, "With an agent, the shaping step" (the prompt as above); section 14, the `gen-components.py` row.

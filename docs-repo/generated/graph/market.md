@@ -1,10 +1,10 @@
 ---
 type: Document
 title: "Graph: market (be+fe)"
-description: "/session/:sessionId/scenarios` - second meeting step: list of scenarios of the session, baseline curve info and the editor to add / change / remove scenarios."
+description: "entry point MarketManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: market (be+fe)
@@ -24,10 +24,10 @@ status: stable
 
 ## endpoints
 - `endpoint:GET /api/v1/session/scenarios` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:23` - operationId listScenarios; handler ScenarioController.listScenarios; params 
-- `endpoint:GET /api/v1/session/market/baseline` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:41` - operationId getBaselinePrices; handler ScenarioController.getBaselinePrices; params 
 - `endpoint:DELETE /api/v1/session/scenarios/{scenarioId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:36` - operationId deleteScenario; handler ScenarioController.deleteScenario; params scenarioId
 - `endpoint:POST /api/v1/session/scenarios` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:26` - operationId createScenario; handler ScenarioController.createScenario; params 
 - `endpoint:PUT /api/v1/session/scenarios/{scenarioId}` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:31` - operationId updateScenario; handler ScenarioController.updateScenario; params scenarioId
+- `endpoint:GET /api/v1/session/market/baseline` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ScenarioController.kt:41` - operationId getBaselinePrices; handler ScenarioController.getBaselinePrices; params 
 
 ## routes
 - `route:/session/:sessionId/scenarios` - `src/routing/SessionRoutes.tsx:21` - renders ScenariosPage
@@ -48,8 +48,8 @@ status: stable
 - `topic:harbor.market.prices-updated` - produced outside this repo
 
 ## components
-- `component:ScenarioEditor` - `src/pages/ScenariosPage/components/ScenarioEditor/ScenarioEditor.tsx:22`
 - `component:ScenariosPage` - `src/pages/ScenariosPage/ScenariosPage.tsx:17`
+- `component:ScenarioEditor` - `src/pages/ScenariosPage/components/ScenarioEditor/ScenarioEditor.tsx:22`
 - `component:ShockRow` - `src/pages/ScenariosPage/components/ShockRow/ShockRow.tsx:12`
 
 ## tables
@@ -131,8 +131,17 @@ status: stable
 - `context:market` -owns-> `table:market_scenario`
 - `class:BaselinePriceRepository` -persists-to-> `table:baseline_price`
 - `class:MarketScenarioRepository` -persists-to-> `table:market_scenario`
+- `component:ScenarioEditor` -renders-> `component:LineChart` (-> shared-ui) (exact)
+- `component:ScenarioEditor` -renders-> `component:ShockRow` (exact)
+- `component:ScenariosPage` -renders-> `component:ScenarioEditor` (exact)
 - `feature:ScenariosPage` -renders-> `component:LineChart` (-> shared-ui)
 - `route:/session/:sessionId/scenarios` -renders-> `feature:ScenariosPage`
+- `component:ScenariosMirror` -uses-> `hook:useScenarios` (-> presentation) (exact)
+- `component:ScenariosPage` -uses-> `hook:useBaselinePrices` (-> fe-shared) (exact)
+- `component:ScenariosPage` -uses-> `hook:useScenarioMutations` (exact)
+- `component:ScenariosPage` -uses-> `hook:useScenarios` (exact)
+- `hook:useScenarioMutations` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useScenarios` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
 
 ## Specs touching this community
 - `spec:MKT-001` - `features/market/MKT-001.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/manager/MarketManager.kt:22; fe src/pages/ScenariosPage/hook/useScenarios.ts:10; fe src/pages/ScenariosPage/hook/useScenarios.ts:24; fe src/pages/ScenariosPage/ScenariosPage.tsx:17; fe src/pages/shared/hook/useBaselinePrices.ts:11; fe src/types/market.ts:11

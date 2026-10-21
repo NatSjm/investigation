@@ -1,52 +1,52 @@
 # Evidence snapshot manifest - written by scripts/collect-evidence.py; do not edit.
 # Records which source commits the collector-owned files under generated/ describe (be, fe, openapi, asyncapi, be/db).
-collector: { version: '1.0', at: 2026-10-18T05:55:17Z }
+collector: { version: '1.0', at: 2026-10-21T04:58:06Z }
 sources:
-  backend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 79df6ad8b1bcf827e6ea75a004f1dfc23a09be1b, dirty: true }
-  frontend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 79df6ad8b1bcf827e6ea75a004f1dfc23a09be1b, dirty: true }
+  backend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 9b7cb13b9222914649d901ad996f05cd5b874e06, dirty: true }
+  frontend: { remote: 'git@github.com:NatSjm/investigation.git', branch: 'master', commit: 9b7cb13b9222914649d901ad996f05cd5b874e06, dirty: true }
 artifacts:
   - { path: generated/asyncapi/backend.yaml, source: backend, sha256: 16d8e0f62c348da93659c275c45251848beb635d0cd2544fda1f61c3c55292fd }
-  - { path: generated/be/api-index.md, source: backend, sha256: 3209aa57223d87557206e24ce5806d57270fd172a84992ba2f1be08ea43e1430 }
-  - { path: generated/be/codebase-map.md, source: backend, sha256: e3c41124e4751db524543a420b3bbd4a36afc40785ce56264a396c472f90100f }
-  - { path: generated/be/components.md, source: backend, sha256: c3a5fd223704b833981cb5e245ffb58cc7a9829f2a22dc58698253979a601fa8 }
-  - { path: generated/be/datasets.md, source: backend, sha256: 3b0dd4e72ceeb0826588c984c40206342e19fc8c2ed4c23aa2f8854ae2cb3620 }
-  - { path: generated/be/db-schema.md, source: backend, sha256: 1df0c97112c0381710c7cf7ab6ca7b7fe959878a4fe68412873329e7ca545a50 }
-  - { path: generated/be/db/README.md, source: backend, sha256: f896d51a8f30abfb9979d4168e0880a82cf77ba3e0ee3226ac745c6410520367 }
-  - { path: generated/be/db/schema.json, source: backend, sha256: 4ea147a409236a3080ffda82e40e1a7c2113d5da23c330e9640911ec6c2981bd }
+  - { path: generated/be/api-index.md, source: backend, sha256: 324711777035b956c49fedd6b72416f96d97bfb4f2e5fdf2858a92ca8a256ad7 }
+  - { path: generated/be/codebase-map.md, source: backend, sha256: c65dcba16e1f6d718f946e32ed1b719ade92f2f84ecc8f0c4959725b9ba97ecc }
+  - { path: generated/be/components.md, source: backend, sha256: a1958fc70d22305942bbf88b49189b2beaa200d5b90d6291cf86e5ab14fbc6c6 }
+  - { path: generated/be/datasets.md, source: backend, sha256: 50926bbf5b60f7ef16f7f6e5490c1c0151bd039a2bf26a4e20d74a46abbaabe2 }
+  - { path: generated/be/db-schema.md, source: backend, sha256: 345b93729c3a4d8270303ce81c658963d541c43e50a497bfe5891403208e6b8c }
+  - { path: generated/be/db/README.md, source: backend, sha256: 441e6c1ff528faa1730107ed221a9fbca0c84950eaf442858500b87a530cfaf4 }
+  - { path: generated/be/db/schema.json, source: backend, sha256: 4bd39ae16a9fe7f973446309e4f22e6c61190eb1543463b2a1ed2b8d1a8fa8e2 }
   - { path: generated/be/db/schema/erd/overview.mmd, source: backend, sha256: faa6187f52c542fe7b170bbcd291d37415d6170185e5408d03b6a06c4a1d66a1 }
-  - { path: generated/be/db/schema/tables/baseline_price.md, source: backend, sha256: b12cd2a9d006067d19d3ca94911715feb6c8227e56909284e50fd388bb91d839 }
-  - { path: generated/be/db/schema/tables/client_profile.md, source: backend, sha256: 9d011bde4c882bd01cbf752e7730ae29b093565f55921f14266c90afe1043386 }
-  - { path: generated/be/db/schema/tables/client_role.md, source: backend, sha256: 01974e7f37dc28904878443be9b1d780a1c664810fc2d9c3f12df36b2952b7d1 }
-  - { path: generated/be/db/schema/tables/cover_policy.md, source: backend, sha256: f1b34908ce8f6ab6de731ec4813c9d2de27225e982d1cc08178b7867077e1360 }
-  - { path: generated/be/db/schema/tables/cover_quote.md, source: backend, sha256: 6b8de5ea4c89ccf4a8d3861dd6960d016bb58636c234ea0f8c67616c4e7eb711 }
-  - { path: generated/be/db/schema/tables/goods_movement.md, source: backend, sha256: 0c5b3ecedd22df8ecea18ab60bf8aa272a087f7359cfe3a90bbdd5f0afb215c4 }
-  - { path: generated/be/db/schema/tables/import_batch.md, source: backend, sha256: 4e518301a1f170135340284657842f9836abf2f41c43981f468f195d44578731 }
-  - { path: generated/be/db/schema/tables/market_scenario.md, source: backend, sha256: b5d1fe67f90a3b0ea90510b358cd1b6bde52db113c7ffaf244db4f02a61e28c6 }
-  - { path: generated/be/db/schema/tables/meeting_report.md, source: backend, sha256: e90402bb7bc8feafe2c9d3741fc47bb107d4b58582bbf089167555246a2ec0b1 }
-  - { path: generated/be/db/schema/tables/meeting_session.md, source: backend, sha256: 4615d6a66cfd5d0612f8a90226b39e1b605741154d70c02649efee2c73e42363 }
-  - { path: generated/be/db/schema/tables/movement_monthly.md, source: backend, sha256: 0358ccf2874b77db1a2e7e77315638ba3631de440db887e32a179899ee78fcf6 }
-  - { path: generated/be/db/schema/tables/parameter_set.md, source: backend, sha256: 47d45b85a4d692d68380e78d09219410b8f136fa85944b6aef58654f967f07b8 }
-  - { path: generated/be/db/schema/tables/projection_by_dimension.md, source: backend, sha256: 7a03b0fd3aa502fee134b8d27e09c3e93bc9eec211e16059550fac35de079e09 }
-  - { path: generated/be/db/schema/tables/projection_by_direction.md, source: backend, sha256: 1a920b5612d52a5668a245e1e00f51a69b8d2900e2aa40fd9f0a7f803ef7f9f4 }
-  - { path: generated/be/db/schema/tables/projection_by_subproduct.md, source: backend, sha256: 9aacea0602fc41b9a45c03284eadf49c3e50d2f9aefdede166badb9264529d41 }
-  - { path: generated/be/db/schema/tables/projection_summary.md, source: backend, sha256: 52d2ee41732d4e590d4952ce1d51fd3ba3d45401105419486121e4147bfe3a5a }
-  - { path: generated/be/db/schema/tables/session_client_config.md, source: backend, sha256: 8ffa2cd7a6a8593e59b26ceceed5c7e213e46a282fb1dd896ba476a1422cf4ef }
-  - { path: generated/be/db/schema/tables/session_movement_input.md, source: backend, sha256: 4ace49c017d1e920a4e70013f42884661a0a1f79579b3fda46ee03759e2a0abb }
-  - { path: generated/be/db/schema/tables/session_peer_simulation.md, source: backend, sha256: dba923f6deb046ec72cfa9d55d77aa64b1eea3706e6a9d7ae17cbb82aae88b2c }
-  - { path: generated/be/db/schema/tables/shedlock.md, source: backend, sha256: 1fb5bb07fc762d8bc8d6aea991bb1f6983b109cee43ad297f6c0b38f7e197aec }
-  - { path: generated/be/db/schema/tables/stress_test_result.md, source: backend, sha256: 22ec56d17622a2d2dca2b8182e20a82ce1dd3192e9cb96fc1c2ade5160a91a6e }
-  - { path: generated/be/docs-gen.json, source: backend, sha256: 9ac9bd1ad0e26af536d837a163792c61e7f478d0c0349ce148577720a3eb3467 }
-  - { path: generated/be/docs-tags.md, source: backend, sha256: 3a00b62227e051aaadc595801e007b1d5eb6b8734b0d0082588153f52b469a08 }
-  - { path: generated/be/events.md, source: backend, sha256: 33db831e6f782cdc4b0ec4122cb870a48a5a55db1328b6f04e0de86b37349bf4 }
-  - { path: generated/be/jobs.md, source: backend, sha256: 958ebd8f613f46e96a0951a5b7563035fa85977cca0f70c338409e165c9ad393 }
-  - { path: generated/be/parameters.md, source: backend, sha256: 425fb2c660fdeaa08262a66323e203c811346e8f09bea919af68fa587ebe8328 }
-  - { path: generated/fe/codebase-map.md, source: frontend, sha256: 51c1569c4e39e9a4689f32d40ecc97547f3d51243c69aff0160ecf11984ebe62 }
-  - { path: generated/fe/components.md, source: frontend, sha256: ca85ce05624ed54760f8927c5e03f79675ae823764f1785eb406bd19bf393481 }
-  - { path: generated/fe/docs-gen.json, source: frontend, sha256: 1308ecda73af5157e217f55eedd90772c3df035a5fb7ad5bb2f4a05be26a6a5d }
-  - { path: generated/fe/docs-tags.md, source: frontend, sha256: 67f69b7812682fd3cc3d2ddd35313722431089dfb19702eb4ad4140130f89003 }
-  - { path: generated/fe/graph-export-fe.json, source: frontend, sha256: f7e60130b8a735bb7dda48e11f25f1996b4f4468666a937c3a6e9f27be75b359 }
-  - { path: generated/fe/routes.md, source: frontend, sha256: 38f6b47c5a93b75a491e4cb2ab992022644666f07a7979baad4bc320cc8e7a7d }
-  - { path: generated/fe/types-index.md, source: frontend, sha256: 9df291c364ea005cbd713066b0dfb0918d8cc06f8a31c21902935de573dcc877 }
+  - { path: generated/be/db/schema/tables/baseline_price.md, source: backend, sha256: b0204b4f966aae59a40120e1ea3244a5d81a8790beedd9c28df48c697339151a }
+  - { path: generated/be/db/schema/tables/client_profile.md, source: backend, sha256: efff18d6b1224ef0cfcbbfa9a4c25bf53827850c21f13c1df8f48c613736ede4 }
+  - { path: generated/be/db/schema/tables/client_role.md, source: backend, sha256: 6bc1c5a2f2ad11438359d17c6bce45ec09529a880b4c753a12cb6ba2cc445f5e }
+  - { path: generated/be/db/schema/tables/cover_policy.md, source: backend, sha256: 7d273c30fb01d54e0d77d0d83b72c9b92c6813bdacb57baaf8b506d0cab3c9eb }
+  - { path: generated/be/db/schema/tables/cover_quote.md, source: backend, sha256: 30a115ed8635f3c2632e5225eaff0ee351ec24618524c5959b22b529a07340cc }
+  - { path: generated/be/db/schema/tables/goods_movement.md, source: backend, sha256: 0b2a18e39aa684d8a7e189cf569d294be3ae29b670c99554373ebc875a2db25d }
+  - { path: generated/be/db/schema/tables/import_batch.md, source: backend, sha256: d6042ccf260b746f4adf3a4bfa4679bc0d1cd79ce70bd83cca09464d9ba095b5 }
+  - { path: generated/be/db/schema/tables/market_scenario.md, source: backend, sha256: f38b9dad5d998c944fb3334cab5a0ab4d798d8c0461226fffe08c17c389d94ad }
+  - { path: generated/be/db/schema/tables/meeting_report.md, source: backend, sha256: 115cf6c2395805cf192eec3f547f0f47c560b808e43295346cb14c764e214b3b }
+  - { path: generated/be/db/schema/tables/meeting_session.md, source: backend, sha256: d395a7984fe102c3a1249e82fac896bf2519a56306340209332fe8ffb3689503 }
+  - { path: generated/be/db/schema/tables/movement_monthly.md, source: backend, sha256: 5dde54358c4a36f63cd3046edf098bae649dd5b08874dd8863ae619427c5bdb5 }
+  - { path: generated/be/db/schema/tables/parameter_set.md, source: backend, sha256: cfd7e2e2f1a42dae9b90a5580c9d6d2c13f6954e62101d770506e1d01045a078 }
+  - { path: generated/be/db/schema/tables/projection_by_dimension.md, source: backend, sha256: 1061b2806896972c2d4f641c3f91bfb92b3d90f3a9441acfdbfa3397ccaa1a93 }
+  - { path: generated/be/db/schema/tables/projection_by_direction.md, source: backend, sha256: beecebd4cc14ff090bb2833d62b7ba5d6949f0d87334fb381f05ffe8ae0301cb }
+  - { path: generated/be/db/schema/tables/projection_by_subproduct.md, source: backend, sha256: cc76a0a1c6a11d391f14e991fe0ff4ff260e40bb218fa8fb6bf0ed10705db607 }
+  - { path: generated/be/db/schema/tables/projection_summary.md, source: backend, sha256: e158b1b6423f06a104b7dd8f9fe203efe6237b5817e79edaf94892f357e17c12 }
+  - { path: generated/be/db/schema/tables/session_client_config.md, source: backend, sha256: 8aff4cbef8a072d1ae56e25271e27bc01a0e5ce9c9cc356a32184d33a619b1c9 }
+  - { path: generated/be/db/schema/tables/session_movement_input.md, source: backend, sha256: 9fd5edccf8c58be0dd281574577d78eef1608c20d3710393a0f8d6c42504a92d }
+  - { path: generated/be/db/schema/tables/session_peer_simulation.md, source: backend, sha256: 8e38471a6bd056a9b63b0e6ba1efd877a7dea0f8253c20c531c5e3421f827337 }
+  - { path: generated/be/db/schema/tables/shedlock.md, source: backend, sha256: eb05ebe17473df1b5365405c4ebeb1641d38d5e3e87edb17ec27f6cde15e0773 }
+  - { path: generated/be/db/schema/tables/stress_test_result.md, source: backend, sha256: d6085d972bff76c71f4a17944b10c3465bf52304236e6835a5e3d5b4238e2a86 }
+  - { path: generated/be/docs-gen.json, source: backend, sha256: 6dcb8967c68615724c95014e27bf80cae7d132350c7bd0c509a1d005483444b2 }
+  - { path: generated/be/docs-tags.md, source: backend, sha256: 8d0fb91ab28be9bbdef1420ed55c7613556329e1fc11ddf6c2353198774e30ca }
+  - { path: generated/be/events.md, source: backend, sha256: 7b9fe6d2719a19c997242f985dc524c21d8e86791845ba08f95bc030ec85b8b0 }
+  - { path: generated/be/jobs.md, source: backend, sha256: da02f7438c6852ed666541c02f9dc60ad1092465856eb4029bce354dd2557645 }
+  - { path: generated/be/parameters.md, source: backend, sha256: 1bc1ecc3474c38deb73ad2498cef4d22a2638f691bd2a41fab701067088a0436 }
+  - { path: generated/fe/codebase-map.md, source: frontend, sha256: 972108e6cd73451216dd0dfa0324ddf4fa53ee077fa4017087a1a84b57930d50 }
+  - { path: generated/fe/components.md, source: frontend, sha256: fe51dcb5acc6bbf1562612d85c71ed5019064171b40e40be1ee96d4d766c30f7 }
+  - { path: generated/fe/docs-gen.json, source: frontend, sha256: d6c31e29b3dfb7e6bb5e75bea5ddf7b14b058bdd1e6be4c53984e0ead93d827d }
+  - { path: generated/fe/docs-tags.md, source: frontend, sha256: 56837da9efa37c60544fd0955161335962f67a66df5067ca9ac48c80a9ba84d4 }
+  - { path: generated/fe/graph-export-fe.json, source: frontend, sha256: 762bbc3bec259b130818d45b8ea752b937f054217a45424657c0d9e564b2ecfe }
+  - { path: generated/fe/routes.md, source: frontend, sha256: f86809fa6fac295cdbf77b450fe86b6872610f718a7e90a7916fa638ea5f29e4 }
+  - { path: generated/fe/types-index.md, source: frontend, sha256: 4aedf7c878f1e57be0f90b8cad183fee2c715abb7f256bb22c7886b1141d36c2 }
   - { path: generated/openapi/backend.yaml, source: backend, sha256: 181c725e8658b73e5d8a13757337becf9accdcd85da24dd7bb51da0934aa5216 }
   - { path: generated/openapi/external/client-registry.yaml, source: backend, sha256: 52be9f4b9bcf490f81a623aa5262f7a7ad95e4d7c76d7f1e9c61b6f5bd7282e6 }
   - { path: generated/openapi/external/cover-provider.yaml, source: backend, sha256: 0ca69ffc6aa51e95caeb981485c306027435f6c034658ad894323610588e3379 }

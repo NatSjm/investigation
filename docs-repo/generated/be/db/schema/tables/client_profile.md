@@ -4,7 +4,7 @@ title: "client_profile"
 description: "A client of the platform: master data merged from the client registry, one row per external reference."
 generated:
   by: process:db-docs
-  at: 2026-10-18
+  at: 2026-10-21
 status: stable
 ---
 # client_profile

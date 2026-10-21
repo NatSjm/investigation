@@ -62,7 +62,7 @@
     "schema_dirs": ["kafka-client/src/main/resources"]
   },
   "jobs": { "annotation": "Scheduled", "lock_annotation": "SchedulerLock" },
-  "migrations": { "dir_pattern": "/db/migration/", "file_patterns": ["V*.sql", "R*.sql"], "view_patterns": ["*view*.sql"] },
+  "migrations": { "dir_pattern": "/db/migration/", "file_patterns": ["V*.sql", "R*.sql"], "view_patterns": ["*view*.sql"], "view_dirs": [] },
   "parameters": {
     "enum_name": "ParameterKey",
     "table": "parameter_set",

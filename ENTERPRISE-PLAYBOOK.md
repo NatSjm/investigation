@@ -588,11 +588,16 @@ table column or chart series names a calculation document instead of carrying a 
 first rows of the migration board; it is cheaper to split a spec on paper than after stories cite its rule IDs.
 
 **With an agent, the shaping step.** Ask `@architect`: "From `generated/graph/<ctx>.md`, `generated/fe/routes.md`,
-`generated/fe/components.md` and the rules in `features/conventions.md` 'Shaping specs', propose the spec list of context
-<ctx>: one row per screen and per modal or sub-capability with rules of its own, with ID, title, the page or component
-that renders it, the backend operations it owns, and the behaviour that belongs to another context (cite that context).
-Evidence only, no rules written." The lead and the developer confirm the list; the rows go to the board. The four runs
-below are agent runs with a human review each; Run 4 is the only human-written step.
+the rows of the context's pages in `generated/fe/codebase-map.md` (components, hooks, API calls),
+`generated/fe/components.md` (the library and the Page components table: where each page component is rendered, which
+hooks it calls) and the rules in `features/conventions.md` 'Shaping specs', propose the spec list of context <ctx>.
+You may open the entry file of each page named in `codebase-map.md`, nothing else. One row per screen and per modal or
+sub-capability with rules of its own, with ID, title, the page or component that renders it (`file:line`), the backend
+operations it owns, and the behaviour that belongs to another context (cite that context); what only a developer can
+answer (how a surface opens, which validation it has) as questions. Evidence only, no rules written." The architect
+never opens code unless asked, hence the one named file per page. The lead and the developer confirm the list and
+answer the questions; the rows go to the board. The four runs below are agent runs with a human review each; Run 4 is
+the only human-written step.
 
 **Run 1, skeleton from the code.** `/spec-skeleton-from-graph billing BIL-001`. The `spec-writer` reads the context's
 graph file, the contracts and the components map, plus exactly one source file, the context's entry point, and writes
@@ -741,7 +746,7 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 | Generator | Backend output | Frontend output |
 |---|---|---|
 | `gen-codebase-map.py` | modules and layers with class counts, sub-packages such as `dao/model` as layers of their own (layout from `docs-gen.json`) | page folders with purpose, hooks, components, API calls (literal paths, and `METHOD /path` for calls to a generated client named in `generated_client`), BroadcastChannels (layout from `docs-gen.json`) |
-| `gen-components.py` | one row per class: layer or sub-layer, annotations, injected dependencies, tables, `file:line` | the shared component library: props, used-by pages |
+| `gen-components.py` | one row per class: layer or sub-layer, annotations, injected dependencies, tables, `file:line` | the shared component library (props, used-by pages), then the page components (page, props, where each is rendered as `file:line`, hooks it calls) |
 | `gen-routes.py` | - | URL -> page component, nested routes joined, route constants resolved, enclosing layout |
 | `gen-api-index.py` | every OpenAPI operation with its handler (matched by operationId or by verb + path), plus hand-written routes outside the contract | - |
 | `gen-events.py` | topics with producers, consumers, payload type linked to its schema file (`TOPIC` constants of the declaring class, literals and `${property}` names resolved) | - |

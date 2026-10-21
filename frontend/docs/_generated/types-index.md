@@ -4,7 +4,7 @@ title: "Types index (FE)"
 description: "Generated map: Types index (FE), derived from src/types/**/*.ts, src/pages/**/*.types.ts, src/pages/**/types.ts; read instead of source files."
 generated:
   by: process:gen-docs
-  at: 2026-10-16
+  at: 2026-10-21
 status: stable
 ---
 # Types index (FE)

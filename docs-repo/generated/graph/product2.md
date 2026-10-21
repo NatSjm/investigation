@@ -4,7 +4,7 @@ title: "Graph: product2 (be+fe)"
 description: "/session/:sessionId/product2` - first meeting step for Product 2: transport mode filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals."
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: product2 (be+fe)
@@ -13,9 +13,9 @@ status: stable
 16 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## hooks
+- `hook:useProduct2Overview` - `src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:12`
 - `hook:usePeerSimulation2` - `src/pages/Product2OverviewPage/hook/usePeerSimulation2.ts:10`
 - `hook:useProduct2Movements` - `src/pages/Product2OverviewPage/hook/useProduct2Movements.ts:11`
-- `hook:useProduct2Overview` - `src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:12`
 - `hook:useProduct2Projection` - `src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:30`
 
 ## contexts
@@ -25,17 +25,17 @@ status: stable
 - `feature:Product2OverviewPage` - `src/pages/Product2OverviewPage/Product2OverviewPage.tsx` - /session/:sessionId/product2` - first meeting step for Product 2: transport mode filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals.
 
 ## endpoints
-- `endpoint:GET /api/v1/session/product2/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:24` - operationId getProduct2Overview; handler Product2Controller.getProduct2Overview; params 
 - `endpoint:GET /api/v1/session/product2/projection` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:42` - operationId getProduct2Projection; handler Product2Controller.getProduct2Projection; params 
 - `endpoint:POST /api/v1/session/product2/peer-simulation` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:36` - operationId postProduct2PeerSimulation; handler Product2Controller.postProduct2PeerSimulation; params 
 - `endpoint:PUT /api/v1/session/product2/movements` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:30` - operationId putProduct2Movements; handler Product2Controller.putProduct2Movements; params 
+- `endpoint:GET /api/v1/session/product2/overview` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:24` - operationId getProduct2Overview; handler Product2Controller.getProduct2Overview; params 
 
 ## routes
 - `route:/session/:sessionId/product2` - `src/routing/SessionRoutes.tsx:20` - renders Product2OverviewPage
 
 ## classes
-- `class:Product2Controller` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:21` - api; RestController
 - `class:Product2Manager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/Product2Manager.kt:26` - manager; Service
+- `class:Product2Controller` - `harbor-core/src/main/kotlin/com/acme/harbor/api/Product2Controller.kt:21` - api; RestController
 - `class:Product2ProjectionRefreshListener` - `harbor-core/src/main/kotlin/com/acme/harbor/event/Product2ProjectionRefreshListener.kt:17` - event; Component, KafkaListener
 
 ## components
@@ -94,7 +94,22 @@ status: stable
 - `spec:P2-003` -implemented-by-> `class:Product2ProjectionRefreshListener` (-> docs)
 - `spec:P2-003` -implemented-by-> `feature:Product2OverviewPage` (-> docs)
 - `feature:Product2OverviewPage` -produces-> `channel:harbor.session.{*}` (-> fe-app)
+- `component:Product2OverviewPage` -renders-> `component:CoverQuotePanel` (-> fe-shared) (exact)
+- `component:Product2OverviewPage` -renders-> `component:CoverRatioChart` (-> fe-shared) (exact)
+- `component:Product2OverviewPage` -renders-> `component:MovementInputModal` (-> fe-shared) (exact)
+- `component:Product2OverviewPage` -renders-> `component:PeerSimulationModal` (-> fe-shared) (exact)
+- `component:Product2OverviewPage` -renders-> `component:ProjectionTables` (-> fe-shared) (exact)
+- `component:Product2OverviewPage` -renders-> `component:TransportModeSelector` (exact)
 - `route:/session/:sessionId/product2` -renders-> `feature:Product2OverviewPage`
+- `component:Product2Mirror` -uses-> `hook:useProduct2Overview` (-> presentation) (exact)
+- `component:Product2OverviewPage` -uses-> `hook:usePeerSimulation2` (exact)
+- `component:Product2OverviewPage` -uses-> `hook:usePresentationPublisher` (-> fe-app) (exact)
+- `component:Product2OverviewPage` -uses-> `hook:useProduct2Movements` (exact)
+- `component:Product2OverviewPage` -uses-> `hook:useProduct2Overview` (exact)
+- `hook:usePeerSimulation2` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useProduct2Movements` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useProduct2Overview` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useProduct2Projection` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
 
 ## Specs touching this community
 - `spec:P2-001` - `features/product2/P2-001.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/manager/Product2Manager.kt:27; fe src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:12; fe src/pages/Product2OverviewPage/hook/useProduct2Overview.ts:30; fe src/pages/Product2OverviewPage/Product2OverviewPage.tsx:25; fe src/types/product2.ts:15

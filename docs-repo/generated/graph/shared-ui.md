@@ -4,7 +4,7 @@ title: "Graph: shared-ui (fe)"
 description: "Neighbourhood of shared-ui"
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: shared-ui (fe)
@@ -17,8 +17,8 @@ status: stable
 - `component:LineChart` - `src/components/LineChart/LineChart.tsx:33` - library/-; Thin recharts wrapper: multi-series line chart over a month axis.
 - `component:Modal` - `src/components/Modal/Modal.tsx:14` - library/-; Minimal accessible dialog: closes on Escape and backdrop click, traps nothing fancy.
 - `component:PresentationLayout` - `src/components/layout/PresentationLayout.tsx:13` - library/layout; Minimal layout for the client-facing window `/present/:sessionId`: no main navigation, no admin links,
-- `component:RootLayout` - `src/components/layout/RootLayout.tsx:13` - library/layout; Top navigation + current session badge; every page renders inside the outlet.
 - `component:SessionLayout` - `src/components/layout/SessionLayout.tsx:14` - library/layout; Layout for `/session/:sessionId/*`. Loads the session, mirrors it into the session store
+- `component:RootLayout` - `src/components/layout/RootLayout.tsx:13` - library/layout; Top navigation + current session badge; every page renders inside the outlet.
 - `component:StackedBars` - `src/components/StackedBars/StackedBars.tsx:22` - library/-; Thin recharts wrapper: stacked bars per month (one stack segment per series).
 
 ## Edges
@@ -29,6 +29,21 @@ status: stable
 - `feature:fe-app` -contains-> `component:RootLayout` (-> fe-app) (exact)
 - `feature:fe-app` -contains-> `component:SessionLayout` (-> fe-app) (exact)
 - `feature:fe-app` -contains-> `component:StackedBars` (-> fe-app) (exact)
+- `component:ClientSearchPage` -renders-> `component:DataTable` (-> clients) (exact)
+- `component:CoverRatioChart` -renders-> `component:LineChart` (-> fe-shared) (exact)
+- `component:ImportsPage` -renders-> `component:DataTable` (-> admin) (exact)
+- `component:MeetingsListPage` -renders-> `component:DataTable` (-> fe-shared) (exact)
+- `component:MovementInputModal` -renders-> `component:Modal` (-> fe-shared) (exact)
+- `component:PeerSimulationModal` -renders-> `component:LineChart` (-> fe-shared) (exact)
+- `component:PeerSimulationModal` -renders-> `component:Modal` (-> fe-shared) (exact)
+- `component:ProductGroupCard` -renders-> `component:LineChart` (-> clients) (exact)
+- `component:ProjectionTables` -renders-> `component:DataTable` (-> fe-shared) (exact)
+- `component:RoleOverrideDialog` -renders-> `component:Modal` (-> meetings) (exact)
+- `component:Routing` -renders-> `component:PresentationLayout` (-> fe-app) (exact)
+- `component:Routing` -renders-> `component:RootLayout` (-> fe-app) (exact)
+- `component:ScenarioEditor` -renders-> `component:LineChart` (-> market) (exact)
+- `component:StressTable` -renders-> `component:DataTable` (-> stress) (exact)
+- `component:TransportPriceChart` -renders-> `component:LineChart` (-> stress) (exact)
 - `feature:ClientOverviewPage` -renders-> `component:LineChart` (-> clients)
 - `feature:ClientSearchPage` -renders-> `component:DataTable` (-> clients)
 - `feature:fe-app` -renders-> `component:PresentationLayout` (-> fe-app)
@@ -42,6 +57,12 @@ status: stable
 - `feature:shared` -renders-> `component:Modal` (-> fe-shared)
 - `feature:StressTestPage` -renders-> `component:DataTable` (-> stress)
 - `feature:StressTestPage` -renders-> `component:LineChart` (-> stress)
+- `component:PresentationLayout` -uses-> `hook:useSession` (-> fe-shared) (exact)
+- `component:PresentationLayout` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `component:RootLayout` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `component:SessionLayout` -uses-> `hook:usePresentationPublisher` (-> fe-app) (exact)
+- `component:SessionLayout` -uses-> `hook:useSession` (-> fe-shared) (exact)
+- `component:SessionLayout` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
 
 ## Specs touching this community
 - none (add `@docs <ID>` tags)

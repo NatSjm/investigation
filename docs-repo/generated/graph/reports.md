@@ -4,7 +4,7 @@ title: "Graph: reports (be)"
 description: "entry point ReportManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: reports (be)
@@ -16,9 +16,9 @@ status: stable
 - `context:reports` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt` - entry point ReportManager (manager)
 
 ## endpoints
-- `endpoint:GET /api/v1/sessions/{sessionId}/report` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:21` - operationId getReport; handler ReportController.getReport; params sessionId
 - `endpoint:GET /api/v1/sessions/{sessionId}/report.pdf` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:27` - operationId downloadReportPdf; handler ReportController.downloadReportPdf; params sessionId
 - `endpoint:POST /api/v1/sessions/{sessionId}/report` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:24` - operationId regenerateReport; handler ReportController.regenerateReport; params sessionId
+- `endpoint:GET /api/v1/sessions/{sessionId}/report` - `harbor-core/src/main/kotlin/com/acme/harbor/api/ReportController.kt:21` - operationId getReport; handler ReportController.getReport; params sessionId
 
 ## classes
 - `class:ReportManager` - `harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt:27` - manager; Service

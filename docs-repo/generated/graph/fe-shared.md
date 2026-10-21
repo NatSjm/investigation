@@ -4,7 +4,7 @@ title: "Graph: fe-shared (fe)"
 description: "pieces shared by several pages"
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: fe-shared (fe)
@@ -13,27 +13,27 @@ status: stable
 18 nodes. Read this file instead of walking the module; open only the `file:line` you need.
 
 ## hooks
+- `hook:useBaselinePrices` - `src/pages/shared/hook/useBaselinePrices.ts:11`
+- `hook:useSessions` - `src/pages/shared/hook/useSessions.ts:9`
+- `hook:useSession` - `src/pages/shared/hook/useSessions.ts:20`
+- `hook:useCoverQuote` - `src/pages/shared/hook/useCoverQuote.ts:11`
+- `hook:useCoverSummary` - `src/pages/shared/hook/useCoverSummary.ts:10`
 - `hook:useDownloadReportPdf` - `src/pages/shared/hook/useDownloadReportPdf.ts:10`
 - `hook:useRegenerateReport` - `src/pages/shared/hook/useReport.ts:28`
 - `hook:useReport` - `src/pages/shared/hook/useReport.ts:12`
 - `hook:useCoverPolicies` - `src/pages/shared/hook/useCoverSummary.ts:23`
-- `hook:useCoverQuote` - `src/pages/shared/hook/useCoverQuote.ts:11`
-- `hook:useCoverSummary` - `src/pages/shared/hook/useCoverSummary.ts:10`
-- `hook:useBaselinePrices` - `src/pages/shared/hook/useBaselinePrices.ts:11`
-- `hook:useSession` - `src/pages/shared/hook/useSessions.ts:20`
-- `hook:useSessions` - `src/pages/shared/hook/useSessions.ts:9`
 
 ## features
 - `feature:shared` - `src/pages/shared` - pieces shared by several pages
 
 ## components
-- `component:CoverQuotePanel` - `src/pages/shared/components/CoverQuotePanel/CoverQuotePanel.tsx:19`
-- `component:CoverRatioChart` - `src/pages/shared/components/CoverRatioChart/CoverRatioChart.tsx:18`
-- `component:DownloadPdfButton` - `src/pages/shared/components/DownloadPdfButton/DownloadPdfButton.tsx:12`
 - `component:MeetingsListPage` - `src/pages/shared/components/MeetingsListPage/MeetingsListPage.tsx:44`
-- `component:MovementInputModal` - `src/pages/shared/components/MovementInputModal/MovementInputModal.tsx:30`
-- `component:PeerSimulationModal` - `src/pages/shared/components/PeerSimulationModal/PeerSimulationModal.tsx:22`
 - `component:ProjectionTables` - `src/pages/shared/components/ProjectionTables/ProjectionTables.tsx:70`
+- `component:CoverRatioChart` - `src/pages/shared/components/CoverRatioChart/CoverRatioChart.tsx:18`
+- `component:CoverQuotePanel` - `src/pages/shared/components/CoverQuotePanel/CoverQuotePanel.tsx:19`
+- `component:PeerSimulationModal` - `src/pages/shared/components/PeerSimulationModal/PeerSimulationModal.tsx:22`
+- `component:MovementInputModal` - `src/pages/shared/components/MovementInputModal/MovementInputModal.tsx:30`
+- `component:DownloadPdfButton` - `src/pages/shared/components/DownloadPdfButton/DownloadPdfButton.tsx:12`
 - `component:ReportPreview` - `src/pages/shared/components/ReportPreview/ReportPreview.tsx:19`
 
 ## Edges
@@ -91,9 +91,49 @@ status: stable
 - `spec:P1-003` -implemented-by-> `feature:shared` (-> docs)
 - `spec:RPT-001` -implemented-by-> `feature:shared` (-> docs)
 - `spec:SES-001` -implemented-by-> `feature:shared` (-> docs)
+- `component:ClientMeetingsPage` -renders-> `component:MeetingsListPage` (-> meetings) (exact)
+- `component:CoverRatioChart` -renders-> `component:LineChart` (-> shared-ui) (exact)
+- `component:MeetingsListPage` -renders-> `component:DataTable` (-> shared-ui) (exact)
+- `component:MovementInputModal` -renders-> `component:Modal` (-> shared-ui) (exact)
+- `component:PeerSimulationModal` -renders-> `component:LineChart` (-> shared-ui) (exact)
+- `component:PeerSimulationModal` -renders-> `component:Modal` (-> shared-ui) (exact)
+- `component:PreparationSessionsPage` -renders-> `component:MeetingsListPage` (-> meetings) (exact)
+- `component:Product1Mirror` -renders-> `component:CoverRatioChart` (-> presentation) (exact)
+- `component:Product1Mirror` -renders-> `component:ProjectionTables` (-> presentation) (exact)
+- `component:Product1OverviewPage` -renders-> `component:CoverQuotePanel` (-> product1) (exact)
+- `component:Product1OverviewPage` -renders-> `component:CoverRatioChart` (-> product1) (exact)
+- `component:Product1OverviewPage` -renders-> `component:MovementInputModal` (-> product1) (exact)
+- `component:Product1OverviewPage` -renders-> `component:PeerSimulationModal` (-> product1) (exact)
+- `component:Product1OverviewPage` -renders-> `component:ProjectionTables` (-> product1) (exact)
+- `component:Product2Mirror` -renders-> `component:CoverRatioChart` (-> presentation) (exact)
+- `component:Product2Mirror` -renders-> `component:ProjectionTables` (-> presentation) (exact)
+- `component:Product2OverviewPage` -renders-> `component:CoverQuotePanel` (-> product2) (exact)
+- `component:Product2OverviewPage` -renders-> `component:CoverRatioChart` (-> product2) (exact)
+- `component:Product2OverviewPage` -renders-> `component:MovementInputModal` (-> product2) (exact)
+- `component:Product2OverviewPage` -renders-> `component:PeerSimulationModal` (-> product2) (exact)
+- `component:Product2OverviewPage` -renders-> `component:ProjectionTables` (-> product2) (exact)
+- `component:ProjectionTables` -renders-> `component:DataTable` (-> shared-ui) (exact)
+- `component:SessionSummaryPage` -renders-> `component:DownloadPdfButton` (-> meetings) (exact)
+- `component:SessionSummaryPage` -renders-> `component:ReportPreview` (-> meetings) (exact)
 - `feature:shared` -renders-> `component:DataTable` (-> shared-ui)
 - `feature:shared` -renders-> `component:LineChart` (-> shared-ui)
 - `feature:shared` -renders-> `component:Modal` (-> shared-ui)
+- `component:ClientOverviewPage` -uses-> `hook:useSessions` (-> clients) (exact)
+- `component:CoverQuotePanel` -uses-> `hook:useCoverQuote` (exact)
+- `component:CoverQuotePanel` -uses-> `hook:useCoverSummary` (exact)
+- `component:DownloadPdfButton` -uses-> `hook:useDownloadReportPdf` (exact)
+- `component:MeetingsListPage` -uses-> `hook:useSessions` (exact)
+- `component:PresentationLayout` -uses-> `hook:useSession` (-> shared-ui) (exact)
+- `component:ReportPreview` -uses-> `hook:useRegenerateReport` (exact)
+- `component:ScenariosMirror` -uses-> `hook:useBaselinePrices` (-> presentation) (exact)
+- `component:ScenariosPage` -uses-> `hook:useBaselinePrices` (-> market) (exact)
+- `component:SessionLayout` -uses-> `hook:useSession` (-> shared-ui) (exact)
+- `component:SessionSummaryPage` -uses-> `hook:useReport` (-> meetings) (exact)
+- `component:StressMirror` -uses-> `hook:useBaselinePrices` (-> presentation) (exact)
+- `component:StressTestPage` -uses-> `hook:useBaselinePrices` (-> stress) (exact)
+- `hook:useBaselinePrices` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useCoverQuote` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
+- `hook:useCoverSummary` -uses-> `hook:useSessionStore` (-> fe-app) (exact)
 
 ## Specs touching this community
 - `spec:COV-001` - be harbor-core/src/main/kotlin/com/acme/harbor/manager/CoverManager.kt:26; fe src/pages/shared/components/CoverQuotePanel/CoverQuotePanel.tsx:19; fe src/pages/shared/hook/useCoverQuote.ts:11; fe src/pages/shared/hook/useCoverSummary.ts:10; fe src/pages/shared/hook/useCoverSummary.ts:23; fe src/types/cover.ts:13

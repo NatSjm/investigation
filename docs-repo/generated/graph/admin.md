@@ -4,7 +4,7 @@ title: "Graph: admin (be+fe)"
 description: "/admin/parameters` - parameter sets with product group filter and inline editing."
 generated:
   by: process:gen-graph
-  at: 2026-10-20
+  at: 2026-10-21
 status: stable
 ---
 # Graph: admin (be+fe)
@@ -43,9 +43,9 @@ status: stable
 - `class:ParameterValidator` - `harbor-core/src/main/kotlin/com/acme/harbor/validator/ParameterValidator.kt:16` - validator; Component
 
 ## components
-- `component:ParameterRow` - `src/pages/ParametersPage/components/ParameterRow/ParameterRow.tsx:14`
 - `component:ParametersPage` - `src/pages/ParametersPage/ParametersPage.tsx:9`
 - `component:ImportsPage` - `src/pages/ImportsPage/ImportsPage.tsx:22`
+- `component:ParameterRow` - `src/pages/ParametersPage/components/ParameterRow/ParameterRow.tsx:14`
 
 ## tables
 - `table:parameter_set` - `harbor-core/src/main/resources/db/migration/V9__parameters.sql` - Admin parameters: one value per key and scope (product group, country, value), valid from a date. (9 columns)
@@ -99,9 +99,15 @@ status: stable
 - `spec:ADM-001` -implemented-by-> `feature:ParametersPage` (-> docs)
 - `context:admin` -owns-> `table:parameter_set`
 - `class:ParameterRepository` -persists-to-> `table:parameter_set`
+- `component:ImportsPage` -renders-> `component:DataTable` (-> shared-ui) (exact)
+- `component:ParametersPage` -renders-> `component:ParameterRow` (exact)
 - `feature:ImportsPage` -renders-> `component:DataTable` (-> shared-ui)
 - `route:/admin/imports` -renders-> `feature:ImportsPage`
 - `route:/admin/parameters` -renders-> `feature:ParametersPage`
+- `component:ImportsPage` -uses-> `hook:useImportBatches` (exact)
+- `component:ImportsPage` -uses-> `hook:useTriggerImport` (exact)
+- `component:ParametersPage` -uses-> `hook:useParameters` (exact)
+- `component:ParametersPage` -uses-> `hook:useUpsertParameter` (exact)
 
 ## Specs touching this community
 - `spec:ADM-001` - `features/admin/ADM-001.md` - status draft; be harbor-core/src/main/kotlin/com/acme/harbor/manager/AdminManager.kt:25; fe src/pages/ImportsPage/hook/useImportBatches.ts:10; fe src/pages/ImportsPage/hook/useImportBatches.ts:22; fe src/pages/ImportsPage/ImportsPage.tsx:22; fe src/pages/ParametersPage/hook/useParameters.ts:20; fe src/pages/ParametersPage/hook/useParameters.ts:9; fe src/pages/ParametersPage/ParametersPage.tsx:9; fe src/routing/AdminRoutesGuard.tsx:16; fe src/types/admin.ts:11
