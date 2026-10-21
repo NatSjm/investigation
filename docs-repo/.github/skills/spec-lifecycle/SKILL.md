@@ -28,7 +28,7 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 - Build the context pack first (`scripts/context-pack.py --task <ID|name|page>`); read the pack, not the repo.
 - Never copy numbers from a legacy page; link the calculation and let Run 3 verify.
 - Never write `verified.by: human:*`; never edit `generated/**`.
-- Finish with `okf-validate.py --changed --strict`, `build-index.py`, a `log.md` line. The `agentStop` hook
+- Finish with `okf-validate.py --strict`, `build-index.py`, a `log.md` line. The `agentStop` hook
   repeats the checks.
 
 ## Planning (migration-lead)

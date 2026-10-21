@@ -36,7 +36,7 @@ or a free-text feature description.
 5. Everything you could not source goes to **Open questions**. Set `status: draft`,
    `generated: { by: copilot/spec-writer, at: <ISO> }`, `stale_after` +90 days, no `verified`.
 6. Add / update the `docs-map.yml` mapping for every `code_refs` directory.
-7. Run `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/okf-validate.py --changed --strict`,
+7. Run `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/okf-validate.py --strict`,
    `python3 scripts/build-index.py`; append a `## <date>` line to `log.md` ("created <ID>").
 
 ## Output

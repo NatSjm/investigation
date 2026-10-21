@@ -107,10 +107,11 @@ question to a spec takes the spec row; one that changed no file runs nothing.
 |---|---|
 | nothing (a question, a pack, a graph query, analytics: `coverage-matrix.py` writes a valid file) | nothing |
 | `work-items/<slug>.yml` or `work-items/<ID>.yml` | `python3 scripts/validate-work-items.py work-items/<file>.yml` (step 7) |
-| a spec (Open questions, a proposed rule, frontmatter links) or a draft calculation under `domain/calculations/` | `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/build-index.py`, `python3 scripts/okf-validate.py --changed --strict`; a `log.md` line when you created a concept |
+| a spec (Open questions, a proposed rule, frontmatter links) or a draft calculation under `domain/calculations/` | `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/build-index.py`, `python3 scripts/okf-validate.py --strict`; a `log.md` line when you created a concept |
 | `work-items/<slug>.md`, `contracts/proposed/*` | no local checker reads them (CI lints proposals): keep to `work-items/_analysis-template.md` and `contracts/conventions.md` |
 
-Fix what the checks report in your own files; a `stale` line or a problem counted under "other files" is not yours.
+Fix what the checks report in your own files; a `stale` line is freshness, not a failure, and an older problem in a
+file your task did not touch is reported, not fixed.
 
 ## Output
 Files only (`work-items/<slug>.md`, `work-items/<ID|slug>.yml`, optional spec Open-questions update, proposals under

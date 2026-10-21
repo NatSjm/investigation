@@ -64,7 +64,7 @@ what matches no line is new work: add the context it belongs to as a subject, it
 |---|---|
 | Task context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget N]` (several `--task` = one merged pack; no cap unless `--budget`) |
 | Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
-| Validate (see Checks) | `python3 scripts/okf-validate.py --changed --strict` (the concept files you changed; no flag = whole bundle, `--path <folder or file>`); `python3 scripts/validate-frontmatter.py [<file>]`; `python3 scripts/validate-work-items.py [<file>]` |
+| Validate (see Checks) | `python3 scripts/okf-validate.py --strict` (the whole bundle; `--path <folder or file>` lets only that part fail); `python3 scripts/validate-frontmatter.py [<file>]`; `python3 scripts/validate-work-items.py [<file>]` |
 | Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |
 | Graph | `python3 scripts/gen-graph.py [--check]`; `python3 scripts/graph-query.py --node spec:P1-001 --depth 2` / `--files <paths>` / `--find <text>` |
 | Changed code -> specs | `git -C ../backend diff --name-only main | sed 's#^#be/#' | python3 scripts/map-paths.py` |
@@ -76,10 +76,10 @@ Never after each edit; the `agentStop` hook runs the full set again when you sto
 
 - Changed no file by hand (a question, a pack, a graph query, analytics - generators write valid files): run nothing.
 - Changed a concept (a `.md` of the bundle: `features/`, `domain/`, `architecture/`, `flows/`, `contracts/`, root
-  pages): `build-index.py`, then `okf-validate.py --changed --strict` (`--changed origin/main` on a branch that already
-  holds your commits, as the coding agent's does). Only the files you changed can fail, and a link broken by your
-  rename or deletion counts as yours; problems in other files are one count line, not yours to fix.
-  A spec or a calculation also gets `validate-frontmatter.py <file>`.
+  pages): `build-index.py`, then `okf-validate.py --strict` over the whole bundle (quick; it runs no git command).
+  The hook and CI keep the bundle at zero warnings, so what it reports normally comes from your edit, a link your
+  rename or deletion broke in another file included; an older problem in a file your task did not touch is reported,
+  not fixed. A spec or a calculation also gets `validate-frontmatter.py <file>`.
 - Changed a work-item file: `validate-work-items.py <file>`.
 - A dated entry in `log.md` for lifecycle events only (created / deprecated / verified / regenerated).
 - A `stale` line is freshness, not a failure: never move `stale_after` or write `verified` to clear it.

@@ -213,7 +213,7 @@ Write these sections, in this order, adapted from `docs-repo/AGENTS.md`:
    specs under 300 lines; diagrams under 25 nodes.
 5. **Commands table and Checks.** Context pack, validators, indexes, graph and graph query, changed paths to
    specs, analytics, collector, migration board; then the Checks: an agent runs the validators once, after the
-   last edit of a task, for what it changed (`okf-validate.py --changed --strict`), never after each edit, and a
+   last edit of a task, for what it changed (`okf-validate.py --strict`), never after each edit, and a
    task that changed no file runs none. Copy both from `docs-repo/AGENTS.md`.
 6. **Agents, prompts, skills.** The list of agent names with one line each, the lifecycle sentence (skeleton,
    legacy merge, calculation audit, owner decision), and the pointer to `migration-status.py`.
@@ -623,7 +623,7 @@ linked calculation audited, no pending page, pack within budget.
 
 After every run: `python3 scripts/okf-validate.py --strict; python3 scripts/build-index.py`, a line in `log.md`, a PR, a review.
 The `agentStop` hook runs the validators anyway. Agents run them once, after the last edit of a run, for what they
-changed (`okf-validate.py --changed --strict`), never after each edit. A `stale` line (past `stale_after`) is
+changed (`okf-validate.py --strict`), never after each edit. A `stale` line (past `stale_after`) is
 freshness, not conformance, and never fails a run: the owner re-verifies, nobody moves the date by hand.
 
 ---
@@ -729,7 +729,7 @@ Docs repository, `scripts/` (Python 3.11+, standard library only, no network unl
 | `graph-viewer.py [--all] [--community <id>] [--out <file>]` | `generated/graph/graph.json` | `.context/graph-viewer.html` (git-ignored), a self-contained page to open in any browser: the whole graph coloured by community (`--all`) or one community at a time, filter, neighbours, node details | - |
 | `gen-graph.py [--check]` | `generated/be|fe/*.md`, `contexts.yml`, `docs-map.yml`, optional precise exports | `generated/graph/REPO_MAP.md`, `<context>.md`, `graph.json` | yes; `--check` writes nothing |
 | `build-index.py [--check]` | frontmatter of every concept | every `index.md` | yes |
-| `okf-validate.py [--changed [BASE]] [--path <folder or file>] [--strict]` | the bundle (with `--changed` / `--path` only those files can fail) | stdout, exit code | yes |
+| `okf-validate.py [--path <folder or file>] [--strict]` | the bundle (with `--path` only those files can fail) | stdout, exit code | yes |
 | `validate-frontmatter.py` | `features/`, `domain/calculations/`, `flows/`, `generated/be/parameters.md` | stdout, exit code | yes |
 | `validate-work-items.py [file]` | `work-items/*.yml`, `_schema.yml`, specs (rule IDs) | stdout, exit code | yes |
 | `coverage-matrix.py` | specs, work items, feature files | `generated/analytics/coverage-matrix.md|json` | yes |
@@ -935,7 +935,7 @@ How to ask, in the CLI or the IDE, from the docs repo root:
 Draft domain/context-map.md for <product>. Evidence: contexts.yml, generated/graph/REPO_MAP.md, generated/be/events.md.
 Follow the structure of this file exactly: <paste or attach docs-repo/domain/context-map.md from the investigation repo>.
 Frontmatter status: draft, generated.by: copilot/architect. Where the evidence does not show a relationship, write
-"unknown" and add an open question; do not infer from names. Finish with python3 scripts/okf-validate.py --changed --strict.
+"unknown" and add an open question; do not infer from names. Finish with python3 scripts/okf-validate.py --strict.
 ```
 
 Two documents must not be drafted by an agent: the safety section of `AGENTS.md` (section 0) and the content

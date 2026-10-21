@@ -33,7 +33,7 @@ One of:
 7. OKF provenance on every concept you touch: `generated.by: copilot/doc-sync`, `generated.at: <ISO now>`,
    refresh `stale_after`, add a `sources[]` entry for the PR/commit; remove a `human:` verification if the section
    it covered changed.
-8. Run `python3 scripts/okf-validate.py --changed --strict` and `python3 scripts/build-index.py`; append a
+8. Run `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`; append a
    `## YYYY-MM-DD` entry to `log.md`.
 
 ## Output

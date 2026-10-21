@@ -1,6 +1,6 @@
 ---
 name: okf-validate
-description: Check the docs bundle for Open Knowledge Format v0.2 conformance (§11) with a deterministic checker — once at the end of a task that changed concepts (--changed), when asked to validate/lint the bundle, or to migrate v0.1 frontmatter with --migrate. Never after each edit; never eyeball conformance.
+description: Check the docs bundle for Open Knowledge Format v0.2 conformance (§11) with a deterministic checker — once at the end of a task that changed concepts, when asked to validate/lint the bundle, or to migrate v0.1 frontmatter with --migrate. Never after each edit; never eyeball conformance.
 ---
 
 # Validate the OKF bundle
@@ -12,15 +12,14 @@ Pick the checker by environment:
 
 | Where | Command |
 |---|---|
-| Dev machine (no pyyaml) | `scripts/okf-validate.py [--changed [BASE]] [--path <folder or file>] [--strict] [--max-warnings N]` |
+| Dev machine (no pyyaml) | `scripts/okf-validate.py [--path <folder or file>] [--strict] [--max-warnings N]` |
 | CI / full checker | `python3 .github/skills/okf-validate/scripts/okf_validate.py <bundle> --strict` (needs `pyyaml`; `--json` for machine output). It has **no exclude list**, so point it at a staged copy of `index.md log.md README.md architecture domain features generated` (see `.github/workflows/docs-quality.yml`), not at the repo root. |
 
-An agent runs it once, after the last edit of a task that changed concepts, as `--changed --strict`; a task that
-only read runs nothing, and the `agentStop` hook runs the whole bundle again (`AGENTS.md`, Checks).
-`--changed` takes the files changed since BASE (default `HEAD`) plus untracked ones, `--path` a folder or a file; both
-only choose which files can fail. The whole bundle is always read, so links resolve from its root (the folder whose
-`index.md` carries `okf_version`), a link broken by a renamed or deleted file counts against the change, and the other
-files' problems are one count line.
+An agent runs it once, after the last edit of a task that changed concepts, as `--strict` over the whole bundle; a
+task that only read runs nothing, and the `agentStop` hook runs it again (`AGENTS.md`, Checks). The script runs no
+git command: what to check is a path, never a diff.
+`--path <folder or file>` only chooses which files can fail. The whole bundle is always read, so links resolve from
+its root (the folder whose `index.md` carries `okf_version`) and the other files' problems are one count line.
 
 Template files (`_template.md`, `template.md`) are checked for §11 only; placeholder values do not raise warnings.
 

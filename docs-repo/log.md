@@ -3,10 +3,9 @@
 ## 2026-10-21
 * **Checks once, at the end of a task, for what it changed.** Agents no longer validate after each edit: `AGENTS.md`
   (section Checks), the `okf` and `okf-validate` skills and the `analyst` agent (its Checks table) run the validators
-  once, after the last edit, only for what the task changed; a question, a pack or analytics runs none.
-  `scripts/okf-validate.py --changed [BASE]` checks only the concept files changed since BASE (untracked included; a
-  link broken by a rename or deletion counts against the change), `--path` resolves links from the bundle root, and a
-  past `stale_after` is listed as `stale` without failing a run (freshness, not conformance).
+  once, after the last edit, for the kind of file the task changed; a question, a pack or analytics runs none.
+  `scripts/okf-validate.py` keeps checking the whole bundle and runs no git command; `--path` resolves links from the
+  bundle root, and a past `stale_after` is listed as `stale` without failing a run (freshness, not conformance).
 * **Page components; renders and uses edges (regenerated).** [generated/fe/components.md](/generated/fe/components.md)
   gains a Page components table: one row per component in a page folder with its page, props, purpose, where it is
   rendered (`file:line` of the JSX tag) and which of the frontend's hooks it calls. The frontend exporter

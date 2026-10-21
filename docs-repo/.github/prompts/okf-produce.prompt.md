@@ -10,5 +10,5 @@ Sources read: ${input:sources:paths/URLs you want recorded in sources[]}
 
 Follow `.github/skills/okf/SKILL.md` for the chosen mode. Set `generated.by: copilot/doc-sync`. Do not add
 `verified` (a human does). Then, once after the last edit, run `python3 scripts/build-index.py` and
-`python3 scripts/okf-validate.py --changed --strict`.
+`python3 scripts/okf-validate.py --strict`.
 Report: concepts created/updated, index files touched, validation result (<= 10 lines).

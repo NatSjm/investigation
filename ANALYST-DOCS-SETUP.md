@@ -167,7 +167,7 @@ the `file:line` it names.
 |---|---|
 | Context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget N]` (several `--task` = one merged pack; no cap unless `--budget`) |
 | Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
-| Validate (see Checks) | `python3 scripts/okf-validate.py --changed --strict` (the concept files you changed; no flag = whole bundle); `python3 scripts/validate-frontmatter.py [<file>]`; `python3 scripts/validate-work-items.py [<file>]` |
+| Validate (see Checks) | `python3 scripts/okf-validate.py --strict` (the whole bundle; `--path <folder or file>` lets only that part fail); `python3 scripts/validate-frontmatter.py [<file>]`; `python3 scripts/validate-work-items.py [<file>]` |
 | Indexes | `python3 scripts/build-index.py` |
 | Graph | `python3 scripts/graph-query.py --node spec:<ID> --depth 2` / `--files <paths>` / `--find <text>` |
 | Migration board | `python3 scripts/migration-status.py --scope all` |
@@ -175,9 +175,9 @@ the `file:line` it names.
 
 ## Checks: once, at the end of a task, for what it changed
 Never after each edit; the `agentStop` hook runs the full set again. A task that changed no file by hand (a
-question, a pack, analytics) runs nothing. Changed a concept: `build-index.py`, then
-`okf-validate.py --changed --strict` (only your files can fail; problems elsewhere are one count line) and
-`validate-frontmatter.py <file>` for a spec or a calculation. Changed a work-item file:
+question, a pack, analytics) runs nothing. Changed a concept: `build-index.py`, then `okf-validate.py --strict`
+over the whole bundle (no git involved; the hook and CI keep it at zero warnings, so what it reports normally comes
+from your edit) and `validate-frontmatter.py <file>` for a spec or a calculation. Changed a work-item file:
 `validate-work-items.py <file>`. A dated line in `log.md` for lifecycle events only. A `stale` line never fails
 a run: never move `stale_after` or write `verified` to clear it.
 

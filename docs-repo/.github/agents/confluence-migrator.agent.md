@@ -35,7 +35,7 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
    and cite it with `[^conf-<slug>]`; set `generated.by: copilot/confluence-migrator`, `generated.at`, `status: draft`.
 6. Move the processed page to `confluence-import/<space>/_done/` (keep the file for audit; its image links keep
    working there, the `_attachments/` folder stays where it is); set its header `status: migrated|obsolete`.
-7. `python3 scripts/okf-validate.py --changed --strict`, `python3 scripts/build-index.py`; log the migration
+7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log the migration
    in `log.md`.
 
 ## Never

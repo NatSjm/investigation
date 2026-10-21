@@ -781,6 +781,9 @@ of the analyst agent), 17.2 (the decision, revised with its reason) and section 
 
 ## 24. Checks once, at the end of a task, for what it changed (investigation commits after `35b86cb`, 2026-10-21)
 
+> Section 26 withdraws the `--changed` option described below. Apply this section with the files as they are now in
+> the investigation repository, read every `--changed --strict` in 24.2 as `--strict`, and skip the `README.md` row.
+
 Agents ran `okf-validate.py --strict` after nearly every step. Their own files rarely asked for it, but `AGENTS.md`
 ("Before finishing any edit"), the `okf` skill (three times) and the `okf-validate` skill's description ("before
 committing any doc change") did, and every step of a task counted as "finishing". The runs checked almost nothing:
@@ -881,3 +884,45 @@ options and ignored the repository's `tsconfig.json`, so every `@/...` import st
 ### 25.4 Playbook (read only)
 
 Section 10, "With an agent, the shaping step" (the prompt as above); section 14, the `gen-components.py` row.
+
+## 26. The validator runs no git command (investigation commits after `0ce3b54`, 2026-10-21)
+
+Section 24 gave `okf-validate.py` a `--changed [BASE]` option that asked git which files differ from a base, so that
+only those could fail. Withdrawn: the validator starts no other program, and the whole bundle is quick to check. It
+reads the whole bundle again, with the two fixes of section 24 kept: `--path <folder or file>` resolves links from
+the bundle root, and a past `stale_after` is listed as `stale` without failing a run. The rule stays: the checks run
+once, after the last edit of a task, for the kind of file it changed, never after each edit, and a task that changed
+no file runs none. `okf-validate.py --strict` over the whole bundle is what the hook and CI run too; they keep the
+bundle at zero warnings, so what a run reports normally comes from the agent's own edit.
+
+### 26.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/okf-validate.py` | no `--changed`, no `subprocess`; `--path` against the whole bundle and the `stale` level as in section 24 |
+| `.github/skills/okf-validate/SKILL.md` | description, command row and the paragraph under the table without `--changed` |
+| `.github/skills/okf/SKILL.md` | "Validate once, at the end of the task": the dev-machine line |
+| `.github/skills/okf/PORTING.md`, `scripts/README.md` | the port's additions; the `okf-validate.py` row |
+
+### 26.2 Docs repository: single rows
+
+| File | Rows | Change |
+|---|---|---|
+| `AGENTS.md` | Commands table, Validate row; section Checks, the "Changed a concept" bullet | `okf-validate.py --strict` (the whole bundle; `--path <folder or file>` lets only that part fail); the bullet as in the Harbor file |
+| `.github/agents/analyst.agent.md` | Checks table, the spec row; the sentence under the table | `okf-validate.py --strict`; a `stale` line is freshness, an older problem in a file the task did not touch is reported, not fixed |
+| `.github/agents/architect.agent.md`, `calc-auditor`, `confluence-migrator`, `doc-sync`, `spec-writer`, `test-designer`; `.github/skills/spec-lifecycle/SKILL.md`, `write-feature-spec/SKILL.md`; `.github/prompts/integrations-from-contracts.prompt.md`, `okf-produce.prompt.md` | the final validation step | `okf-validate.py --changed --strict` -> `okf-validate.py --strict` |
+| `README.md` | Local checks block | the line `python3 scripts/okf-validate.py --changed --strict` goes |
+| `CONCEPT.md` | the validators row of the tooling table | drop "(`--changed`)" |
+
+### 26.3 What to do
+
+Section 24 never applied: apply it with the files as they are now and read every `--changed --strict` in its 24.2 as
+`--strict` (skip its `README.md` row); this section is then done. Section 24 applied: re-copy the files of 26.1 and
+edit the rows of 26.2. The hook and CI are unchanged.
+
+### 26.4 Playbook and guides (read only)
+
+Playbook section 3 (item 5), section 10 (the paragraph after the four runs), section 14 (the `okf-validate.py` row)
+and section 18 (the context-map prompt finishes with `--strict`); `HANDBOOK.md` section 4 (the scripts row);
+`ANALYST-DOCS-SETUP.md` step 4 (the Validate row and the Checks section). The Claude wrappers in `.claude/commands/`
+name `--strict` again.

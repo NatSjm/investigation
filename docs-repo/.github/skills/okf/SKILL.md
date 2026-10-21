@@ -51,8 +51,8 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
 ## Validate once, at the end of the task
 Only when the task changed concepts, once after the last edit, never after each edit; a task that only read runs
 nothing (`AGENTS.md`, Checks). The `agentStop` hook runs the full set again.
-- Dev machine (no pyyaml): `scripts/okf-validate.py --changed --strict` - only the concept files you changed can fail;
-  problems in other files are one count line, not yours to fix.
+- Dev machine (no pyyaml): `scripts/okf-validate.py --strict` - the whole bundle, no git involved; the hook and CI
+  keep it at zero warnings, so what it reports normally comes from your edit.
 - CI / full checker: `python3 .github/skills/okf-validate/scripts/okf_validate.py . --strict` (see `okf-validate` skill).
 Fix every ERROR in your files; under `--strict` fix their warnings too. A `stale` line never fails a run: a person
 re-verifies, a generator refreshes; never move `stale_after` or write `verified` to clear it.
