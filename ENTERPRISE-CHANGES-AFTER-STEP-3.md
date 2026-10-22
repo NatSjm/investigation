@@ -924,3 +924,31 @@ unchanged at 852 edges) and on two scratch repositories: a Vite-style root `tsco
 Nothing to copy: `gen-graph.py` reads the same JSON shape. After the next `collect-evidence.py --graph` run
 `generated/fe/graph-export-fe.json` differs only in order (and the manifest in its hash); the graph files stay as they
 are. `code-repo-kit/README.md` (investigation only) names the TypeScript 7 requirement in the kit's file list.
+
+## 26. How to fill the Known state column (investigation commits after `e05e285`, 2026-10-22)
+
+One topic: the **Known state** column of the quarantine inventory had no written vocabulary, only the class list of
+the migrator and a few words in the runbook. The quarantine README gains a section "Triage: the Known state column",
+placed between the quarantine rules and the tables it describes: where the column is (the hand-kept "Current pages"
+table and every table of the generated inventory), who reads it (people only: no agent reads the table, so a page's
+note is quoted in the request that starts its run), what to write (class with who takes it, condition, target), finished
+examples, the one-line rule (a `|` splits the cell and the importer keeps only the last piece), that notes are kept by
+page path (a page renamed in Confluence starts again at `to triage`), what a wrong note costs, and what happens after
+migration (the row takes the `_done/` path and the importer replaces the triage note with `migrated <date>` or
+`obsolete` from the page header; a fuller sentence written then stays). The `process` class is described as how the
+team works, not product behaviour: behaviour across contexts is `feature-spec` with a flow as target. Rule 8 points at
+the section. Checked: a re-import keeps the section and a filled note, and a note containing `|` keeps only its last
+piece; the importer's `--check`, `okf-validate.py --strict` and `build-index.py --check` are clean.
+
+### 26.1 Docs repository: one section to copy (the README holds your inventory, so it is not re-copied whole)
+
+Copy the section from its heading `## Triage: the Known state column` to the line before `## Current pages` into your
+`confluence-import/README.md`, right after the quarantine rules, and append `; what to write: "Triage" below` to the
+last sentence of rule 8. Your inventory and your notes stay as they are. The section writes `<KEY>` for the space key
+and names the inventory markers without spelling them out: do not add the full marker comment to it, because the
+importer replaces everything from the first marker it finds.
+
+### 26.2 Runbook and playbook (read only)
+
+Runbook step 3 and playbook section 9 point at the section; the playbook adds that no agent reads the column. No kit
+file and no script changes.

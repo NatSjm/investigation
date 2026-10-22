@@ -64,7 +64,8 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
 3. The importer writes the inventory table into `confluence-import/README.md` (page, `confluence_id`,
    `last_modified`, author, images, guessed context from the title and the spec IDs the page cites); the analysts fill
    the **Known state** column: guessed class (`feature-spec | calculation | architecture | decision | glossary |
-   process | obsolete`) and target concept. Sort the work by business value and age; pages older than the last major
+   process | obsolete`), condition and target concept (vocabulary and examples: the "Triage" section of
+   `confluence-import/README.md`). Sort the work by business value and age; pages older than the last major
    release are suspects by default. A later export is imported the same way: pages already under `_done/` are not
    rewritten, and the inventory flags those whose export is newer than their migrated copy (Run 2 again).
 

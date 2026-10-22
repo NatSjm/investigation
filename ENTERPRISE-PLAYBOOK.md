@@ -556,7 +556,9 @@ pages move to `_done/` with `status: migrated|obsolete`; only the images a page 
 customer data is deleted before the import; the folder is excluded from the validators.
 
 Triage the inventory with the analysts: for each page the target context and a known state (current, partly outdated,
-obsolete, formula page). Formula pages are routed to the calculation audit, never merged by hand.
+obsolete, formula page). Formula pages are routed to the calculation audit, never merged by hand. The vocabulary and
+examples for the Known state column are in the "Triage" section of `confluence-import/README.md`. No agent reads that
+column, so quote a page's note in the request that starts its run.
 
 **With an agent.** The export and the import script are not agent work. The triage is: 1. `/migration-plan <SPACE>`
 (agent `migration-lead`) lists the imported pages per target context and the unassigned ones, and proposes a target from

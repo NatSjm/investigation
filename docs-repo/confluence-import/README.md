@@ -63,7 +63,81 @@ and images (never anything under `_done/`, never a page without `imported_from`)
    may link it from its screenshots section only when it shows synthetic data.
 7. This folder is excluded from `okf-validate.py` and markdownlint; do not add frontmatter `type` here.
 8. Pages with an `imported_from` header are generated: fix the export or the importer and re-run, never the page.
-   In the generated inventory below only the **Known state** column is hand-edited (it survives a re-import).
+   In the generated inventory below only the **Known state** column is hand-edited (it survives a re-import; what to
+   write: "Triage" below).
+
+## Triage: the Known state column
+
+**Where.** The last column, **Known state**, of the tables below: "Current pages" for hand-placed pages, and the
+generated inventory (between its two `confluence-import:inventory` comment markers), one table per section, one row per
+page. In the generated tables every other cell is rewritten on each import; replace the words `to triage` with your
+note.
+
+**Who reads it.** People. Nothing parses the note and no agent reads the table: `migration-lead` proposes targets for
+unassigned pages in `migration/<scope>.md` (Lead notes), and you confirm or correct them here. When you start the run
+for a page, quote its note in the request, for example
+`@confluence-migrator confluence-import/<KEY>/business/<page>.md - triage: feature-spec, target ADM-001`.
+
+**What to write.** Three parts, separated by commas, in any wording.
+
+1. **Class**: what the page is about, which decides who takes it.
+
+   | Class | The page describes | Goes to |
+   |---|---|---|
+   | `feature-spec` | a screen, a modal, business rules, or product behaviour across contexts | `confluence-migrator`, into `features/<context>/<ID>.md`; behaviour across contexts ends up in a flow (`flows/<name>.md`), which `architect` writes from the specs |
+   | `calculation` | how a number is computed: a formula, thresholds, rounding, worked examples | `calc-auditor` (`/audit-calculation <page>`), into `domain/calculations/<name>.md`; never merged by hand |
+   | `architecture` | what the application is, its parts, integrations, deployment | `architect`, into `architecture/`; a page on what the application is and who uses it goes to `architecture/overview.md` |
+   | `decision` | why something was done one way | `architect`, as an ADR under `architecture/adr/` |
+   | `glossary` | term definitions | `confluence-migrator`, into `domain/glossary.md` |
+   | `process` | how the team works (releases, reviews, onboarding), not what the product does | usually `obsolete`; a procedure that still matters, such as deployment, goes to `architect` as a document under `architecture/` |
+   | `obsolete` | nothing the code does any more | `confluence-migrator` (or you): header `status: obsolete` with one line why, page moved to `<KEY>/_done/` |
+
+   Product or process? A page that would still be true after the whole team was replaced is about the product
+   (`feature-spec` or `architecture`); one that would change with the people is `process`. A page with two kinds of
+   content gets both classes joined by `+` and says which part goes where: the migrator takes the page once and hands
+   the formula part to the calc-auditor. A screen page that only quotes a threshold stays `feature-spec`: the migrator
+   links the calculation instead of copying the value.
+
+2. **Condition**, one of:
+   - `current`
+   - `partly outdated (<what is wrong>)`
+   - `outdated`
+   - `formula page`: the substance of the page is a computation; its class is `calculation`
+   - `duplicate of <page>`
+   - `contains client data (<where>)`: delete it from `raw-html/` and re-import before anyone migrates the page (rule 6)
+
+   Pages older than the last major release are suspects by default.
+
+3. **Target**, when you know it: a spec ID (`ADM-001`), a calculation name (`cover_ratio`), a flow (`flows/<name>.md`)
+   or a concept path. Otherwise write `target unknown`: the migrator then finds the target from the page and reports
+   it, while a wrong guess sends facts into the less suitable spec.
+
+**Examples of finished cells**
+
+- `feature-spec, current, target ADM-001`
+- `feature-spec, partly outdated (export step removed in 2025), target SES-001 and flows/meeting-journey.md`
+- `feature-spec + calculation, current, screen rules to ADM-001, premium formula section to cover_ratio`
+- `calculation, formula page, target cover_ratio`
+- `architecture, current, target architecture/overview.md (purpose, users, system context)`
+- `glossary, current`
+- `obsolete, module decommissioned 2024`
+- `duplicate of business/cover-quote-rules.md`
+- `contains client data (screenshot), clean before migration`
+
+**One line, no `|`.** A `|` splits the cell and the importer keeps only the last piece; use commas. The note is kept by
+page path: a page renamed in Confluence gets a new file name and its row starts again at `to triage`, and a page
+removed from the export loses its row.
+
+**When the note is wrong.** It is a routing hint, not a fact. The migrator classifies the page itself (a formula page
+labelled `feature-spec` still goes to the calc-auditor), checks every claim against `generated/`, and reports the
+target it chose; the diff of every run is reviewed. The costly mistake is `obsolete` on a page that is not: nobody
+migrates it until someone looks again.
+
+**After migration.** When a page moves to `<KEY>/_done/`, its row takes the `_done/` path and the importer fills the
+cell from the page header, for example `migrated 2026-10-28` or `obsolete`; your triage note is replaced at that
+moment. Replace it with a fuller sentence if you like, for example
+`migrated 2026-10-28 into ADM-001, 2 conflicts as open questions`: it stays on later imports. In the "Current pages"
+table you update the cell yourself.
 
 ## Current pages (space `HARBOR`)
 
