@@ -19,4 +19,6 @@ Known gaps of the standard-library port vs `okf_validate.py`: no `--migrate` (v0
 checks, no JSON output. Use the Python checker in CI for full §11 + warnings coverage.
 Additions of the port: `--path <folder or file>` chooses which files can fail while the whole bundle is still read
 (links resolve from the root `index.md` that carries `okf_version`); a past `stale_after` is listed as `stale` and
-never fails a run (the reference checker does not report it).
+never fails a run (the reference checker does not report it). A repo rule of this bundle, not of the OKF spec: in a draft `Feature Spec` no person has
+verified, a business rule without a `(source: ...)` marker, a marker naming no `sources[].id`, or a code marker without a
+`#symbol` is a warning (`features/conventions.md`, "Provenance per rule").

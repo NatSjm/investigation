@@ -137,6 +137,13 @@ from quarantine, `(source: contract <operationId>)`, `(source: person <id>)`. A 
 spec is an `okf-validate --strict` warning. Verification removes nothing: the marker is what the verifier checks.
 Cheap: a convention in `write-feature-spec` and `legacy-page-audit`, one check in the validator.
 
+*Applied 2026-10-23* (`features/conventions.md`, "Provenance per rule"): the code form names the `sources[]` entry
+and a symbol, `(source: code <sources-id>#<method>)`, not a `file:line` - lines rot on the next commit and nothing
+refreshes them, a method name survives edits inside the file and is what the verifier opens; `(source: spec BR-..)`
+added for mirrored rules that defer to another rule; the validator warns on a draft, unverified spec whose rule has
+no marker, whose marker names no `sources[].id`, or whose code marker names no symbol. The eleven Harbor draft specs
+carry the markers; the two verified ones are exempt.
+
 ### G. Gaps register (from Reversa)
 Open questions stay in the spec's `## Open questions`; `coverage-report` (docs-analytics) lists them bundle-wide
 with spec, age and whom the question is addressed to, oldest first, next to stale and unverified specs. A question

@@ -605,7 +605,12 @@ the only human-written step.
 graph file, the contracts and the components map, plus exactly one source file, the context's entry point, and writes
 `features/billing/BIL-001.md`: API, events, data and UI flow from the graph with exact names; summary, actors and
 business rules from the entry point's documentation, each rule one MUST sentence with an ID; everything unsourced
-under Open questions; `status: draft`, no `verified`. Do this for every context in one sitting; it is mechanical.
+under Open questions; `status: draft`, no `verified`. Two rules of `features/conventions.md` shape the result: `api[]`
+holds only the operations this context handles, and what the screen calls elsewhere stays in the API table with its
+owner (consumers read `api[]` as scope: pack contracts, coverage, API tests); and every rule ends with a source marker
+naming the symbol it came from, `(source: code manager#<method>)`, never a line range, so the owner at Run 4 opens one
+method per rule instead of the file (`okf-validate.py --strict` warns on a draft rule without one). Do this for every
+context in one sitting; it is mechanical.
 
 **Run 2, legacy pages.** `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run. New facts are
 merged into the skeleton, contradictions become `> ⚠️ CONFLICT (legacy: <page>)` callouts, unverifiable claims

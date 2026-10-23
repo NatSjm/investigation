@@ -80,6 +80,16 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
   tags (`@BR-<ID>-<n>`) cite the rule, so a rule must not contain two independent assertions.
 - Claims are backed by `sources[]` entries and footnotes whose label equals a `sources[].id` (manager file,
   controller, legacy page).
+- **Provenance per rule.** Until a person verifies the spec, every rule written from evidence ends with a source
+  marker after its footnotes, one per rule: `(source: code <sources-id>#<symbol>)` names the `sources[]` entry of
+  the file and the method, function or component inside it whose code or KDoc states the rule (never a line range:
+  lines rot on the next commit and nothing refreshes them, a symbol survives edits inside the file);
+  `(source: legacy <sources-id>)` for a rule only a Confluence page states; `(source: contract <operationId>)` for a
+  rule that restates the contract; `(source: person human:<id>)` for a rule a person dictated;
+  `(source: spec BR-<ID>-<n>)` for a mirrored rule that defers to another rule. A rule with a code and a legacy
+  footnote takes the code form. The marker is what the verifier checks at Run 4 (open the symbol, not the file)
+  and it stays after verification. `okf-validate.py --strict` warns on a draft rule without one; proposed and
+  withdrawn rules are exempt, their own marker carries the origin.
 - **Proposed rules.** Behaviour an analyst asked for that the code does not have yet is written as a rule in the
   same section, continuing the numbering, with the marker **proposed** (request `<slug>`) right after the ID:
   `- **BR-P1-001-12** **proposed** (request quarterly-view-across-products) — … MUST …`. It is cited by stories
@@ -102,6 +112,13 @@ Open questions → Change log. Keep empty sections with "none".
 
 - Endpoints: `METHOD /path` exactly as in `generated/openapi/backend.yaml`, contract anchor
   `generated/openapi/backend.yaml#/paths/~1session~1product1~1overview`.
+- Owned versus called operations: the frontmatter `api[]` lists only the operations whose handler belongs to the
+  spec's context (the endpoint's community in `generated/graph/<ctx>.md`); a frontend-only context has `api: []`.
+  Every operation the screen calls still appears in the API / Events table, and one handled by another context
+  carries `owned by <SPEC-ID>` (or `owned by <context>, no spec yet`) in its Purpose column and is never listed in
+  `api[]`. Consumers read `api[]` as scope: the context pack pulls a contract excerpt per entry, `coverage-matrix.py`
+  counts endpoints by it and the test designer tags API tests from it; a called operation reaches the pack through
+  the spec that owns it.
 - Topics: exact names from `generated/asyncapi/backend.yaml#/channels/<topic>`.
 - Operations or topics that exist only as a design: contract column `contracts/proposed/<ID>.openapi.yaml#/paths/...`
   and the word **proposed** in the Purpose column; switched to the `generated/` anchor by `doc-sync` once implemented

@@ -1,6 +1,16 @@
 # Update Log
 
 ## 2026-10-23
+* **Two spec rules: owned operations in `api[]`, a source marker per rule.** `features/conventions.md` gains
+  "Owned versus called operations" (`api[]` lists only the operations the spec's context handles; a called operation
+  of another context stays in the API / Events table with `owned by <SPEC-ID>`; consumers read `api[]` as scope) and
+  "Provenance per rule" (until a person verifies the spec every rule ends with `(source: code <sources-id>#<symbol>)`,
+  or the legacy / contract / person / spec form - a symbol, never a line range). `okf-validate.py --strict` warns on a
+  draft rule without a marker. Applied: the 11 draft specs carry 68 markers (verified CLI-001 and SES-001 exempt);
+  [PRS-001](/features/presentation/PRS-001.md) `api[]` emptied (frontend-only, every call owned elsewhere), its API
+  table names the owners, BR-10 cites `PresentationLayout`; MKT-001 BR-3 cites the listener, STR-001 BR-7 the
+  calculator, BR-8 defers to SES-001 BR-5. Agents and skills updated (spec-writer, confluence-migrator, doc-sync,
+  write-feature-spec, run checklist, features instructions, AGENTS.md); catalogue and coverage matrix regenerated.
 * **Frontmatter block lists no longer read across keys.** `scripts/_common.py` `get_list()`: the block form
   (`api:` followed by indented `- ` lines) used a DOTALL regex and returned every indented item of the keys below as
   well, so a spec with block-list `api`, `tables` and `calculations` had its calculation links inside `api[]` (packs

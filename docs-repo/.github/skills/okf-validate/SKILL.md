@@ -29,6 +29,8 @@ Interpret the result:
 - **warn** — soft: missing `title`/`description`, broken cross-link (spec-tolerated), non-ISO date, actor not
   matching §7 shapes, `Attested Computation` without `runtime`, frontmatter in a reserved file, root `index.md`
   with unexpected keys. Fix when cheap; `--strict` turns them into failures.
+  Repo rule (not OKF): in a draft `Feature Spec` without `verified`, a business rule with no `(source: ...)` marker,
+  a marker naming no `sources[].id`, or a code marker without `#symbol` (`features/conventions.md`, "Provenance per rule").
 - **stale** — past `stale_after` (§5.5): freshness, not conformance. Listed, never counted as a warning, never fails
   a run (the reference checker does not report it). A person re-verifies a spec, its generator refreshes a generated
   page; never move `stale_after` or write `verified` to clear it.

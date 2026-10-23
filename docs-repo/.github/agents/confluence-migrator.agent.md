@@ -25,7 +25,9 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
    the source language still find the concept. Keep numbers, IDs and field names verbatim. Translated business
    rules are `status: draft` until an owner adds `verified.by: human:<id>`.
 2. Find the existing target: `python3 scripts/context-pack.py --task "<page title keywords>"` lists candidate specs.
-   - Target exists -> merge only *new* facts; mark contradictions with `> ⚠️ CONFLICT (legacy: <page>)`.
+   - Target exists -> merge only *new* facts; mark contradictions with `> ⚠️ CONFLICT (legacy: <page>)`. Every
+     business rule you add ends, after its footnote, with `(source: legacy conf-<slug>)`; you open no code, so the
+     code form of the marker is never yours (`features/conventions.md`, "Provenance per rule").
    - None -> create from the matching template (or hand to `spec-writer` if the context has a graph community).
 3. Verify claims against `generated/` (contracts, `api-index.md`, `events.md`, `db-schema.md`, `routes.md`). Mark
    unverifiable claims with `> ❓ UNVERIFIED (legacy: <page>, <date>)`. Removed features (e.g. steps that no longer

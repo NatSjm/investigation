@@ -4,6 +4,8 @@
 - [ ] API / Events / Data / UI flow filled from `generated/graph/<ctx>.md` and the contracts, names exact
 - [ ] Summary / Actors / Business rules from the manager KDoc only; each BR one MUST / MUST NOT assertion
 - [ ] `code_refs` from node locations (file only), `context`, `api`, `events`, `tables` set
+- [ ] `api[]` holds only operations handled in this context; a called operation of another context is in the API table with `owned by <SPEC-ID>`
+- [ ] every rule ends with a `(source: code manager#<method>)` marker naming the symbol it came from, never a line range
 - [ ] `status: draft`, `generated.by: copilot/spec-writer`, no `verified`
 - [ ] `docs-map.yml` mapping added or confirmed; `log.md` line "created <ID>"
 - [ ] everything unsourced is under Open questions, not invented
@@ -26,6 +28,7 @@
 
 ## Run 4 - owner decision (human)
 - [ ] each open question answered; decision recorded as a Change log row with date and reference
+- [ ] each rule checked against the symbol its `(source: ...)` marker names (the method, not the file); the markers stay
 - [ ] `verified: { by: human:<id>, at: <ISO> }` and `stale_after` (+90 days) added; `status: stable`
 - [ ] legacy page keeps `superseded_by: <concept>` for the audit trail
 - [ ] `build-index.py` run; badge shows *human-reviewed*

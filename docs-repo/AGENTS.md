@@ -49,7 +49,10 @@ what matches no line is new work: add the context it belongs to as a subject, it
 - Every concept under `architecture/`, `domain/`, `features/`, `flows/` (cross-context behaviour, `type: Flow`), `generated/` has frontmatter with `type`; folders use
   `index.md` (built by `scripts/build-index.py`), never `README.md`.
 - Provenance: set `generated: { by: copilot/<agent>, at: <ISO> }` on anything you write; cite `sources[]` with
-  `[^id]`; never write `verified.by: human:<id>` yourself; `status: draft` until a person verifies.
+  `[^id]`; never write `verified.by: human:<id>` yourself; `status: draft` until a person verifies. A business rule
+  you write ends with its source marker, `(source: code <sources-id>#<symbol>)` or the legacy / contract / person /
+  spec form (`features/conventions.md`, "Provenance per rule"); a spec's `api[]` lists only the operations its own
+  context handles ("Owned versus called operations").
 - Traceability IDs are mandatory: specs `<CTX>-<NNN>` (`CLI SES IMP P1 P2 COV MKT STR RPT ADM`), rules
   `BR-<ID>-<n>`, calculations `snake_case`. Work items and test scenarios cite them.
 - Terminology from `domain/glossary.md`; English only in files (answer in the user's language in chat).

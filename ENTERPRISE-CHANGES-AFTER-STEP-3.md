@@ -989,3 +989,62 @@ If any spec, calculation or flow writes `api`, `events`, `channels`, `tables`, `
 rebuilt on the next `context-pack.py` run) and run `python3 scripts/gen-catalogue.py` once; `gen-catalogue.py --check`
 tells you whether the catalogue changed. No kit file, no agent, no prompt and no playbook change; writing the lists
 inline is still fine and is what the Harbor specs do.
+
+## 28. Owned operations in `api[]`; a source marker per business rule (investigation commits after `0947b9e`, 2026-10-23)
+
+Two conventions, both prompted by the first enterprise spec and its agent's review of it. **Owned versus called
+operations:** the spec-writer filled `api[]` with every endpoint of the graph neighbourhood (twelve on a screen that
+handles three), and every consumer reads `api[]` as scope - the context pack pulls a contract excerpt per entry, the
+coverage matrix counts endpoints by it, the test designer tags API tests from it. Now `api[]` lists only the operations
+whose handler belongs to the spec's context (the endpoint's community in the graph; `api: []` for a frontend-only
+context); every operation the screen calls still appears in the API / Events table, and one handled by another context
+carries `owned by <SPEC-ID>` (or `owned by <context>, no spec yet`) in its Purpose column. A called operation reaches
+the pack through the spec that owns it, so until that context has a skeleton its contract excerpt is not in the pack -
+the reason to finish every Run 1 before Run 2. **Provenance per rule** (pattern F of `EXTERNAL-PATTERNS.md`, adopted
+2026-10-22): until a person verifies the spec, every rule ends, after its footnotes, with one marker:
+`(source: code <sources-id>#<symbol>)` names the `sources[]` entry of the file and the method, function or component
+whose code or KDoc states the rule - a symbol, never a line range, because lines rot on the next commit and nothing
+refreshes them while a symbol survives edits inside the file; `(source: legacy <sources-id>)`,
+`(source: contract <operationId>)`, `(source: person human:<id>)`, and `(source: spec BR-<ID>-<n>)` for a mirrored rule
+that defers to another rule. Proposed and withdrawn rules carry none. The marker is what the owner checks at Run 4 (the
+method, not the file) and it stays after verification. `okf-validate.py --strict` warns on a draft, unverified
+`Feature Spec` whose rule has no marker, whose marker names no `sources[].id`, or whose code marker names no symbol.
+
+Applied to Harbor: the eleven draft specs carry 68 markers, read from the manager, service, validator, listener, modal
+and page files their `sources[]` name (the three mirrored product-2 specs mostly `spec BR-P1-...`); the two verified
+specs are exempt. `PRS-001` (frontend-only) had six called operations in `api[]`: now `api: []`, the table names the
+owners (SES-001, P1-001, P2-001, MKT-001, STR-001), and the catalogue's endpoint lines no longer list PRS-001 as a spec
+of those operations. Where the footnoted file did not state the rule, a `sources[]` entry for the file that does was
+added (MKT-001 listener, STR-001 calculator, PRS-001 layout). Checked: the validator reports the three warning kinds on
+a throwaway spec copy and zero on the bundle; `validate-frontmatter.py`, `validate-work-items.py`, `build-index.py`,
+`gen-graph.py --check` clean; catalogue and coverage matrix regenerated (PRS-001 lines only).
+
+### 28.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/okf-validate.py` | the marker warnings (draft, unverified Feature Spec: no marker, unknown `sources[].id`, code marker without symbol) |
+| `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 1: `api[]` owned only, a marker per rule; Run 4: check the symbol each marker names |
+| `.github/skills/okf-validate/SKILL.md` | the warn bullet names the repo rule |
+| `.github/skills/okf/PORTING.md` | the additions paragraph names the repo rule (CRLF file) |
+
+### 28.2 Docs repository: sections and sentences to merge (your copies carry your own wording)
+
+| File | Where | What |
+|---|---|---|
+| `features/conventions.md` | "Business rules", after the `sources[]` bullet | the **Provenance per rule** bullet |
+| `features/conventions.md` | "References inside a spec", after the Endpoints bullet | the **Owned versus called operations** bullet |
+| `.github/instructions/features.instructions.md` | after the numbering bullet; after the endpoints bullet | one bullet each |
+| `.github/agents/spec-writer.agent.md` | step 2 API / Events; steps 3 and 4 | `api` owned only, table with owner; marker `code manager#<method>`, `legacy conf-<slug>` |
+| `.github/agents/confluence-migrator.agent.md` | step 2, target exists | every rule it adds ends with `(source: legacy conf-<slug>)`; never the code form |
+| `.github/agents/doc-sync.agent.md` | step 4 | a rule it adds or rewrites ends with the code or contract marker; `api[]` owned only |
+| `.github/skills/write-feature-spec/SKILL.md` | steps 3 and 4 | the same two sentences |
+| `AGENTS.md` | Provenance bullet | one sentence naming both rules |
+
+### 28.3 Afterwards, in your repository
+
+Refresh the first spec with `spec-from-code` once the rules are in (it keeps the file and its change log and reworks
+the API section and the rule markers); do not rerun the skeleton. Every later skeleton follows the rules from the start.
+Until the markers are in, `okf-validate.py --strict` warns on each draft rule, so copy the validator together with the
+conventions and refresh the drafts in the same change, or keep the old validator until the refresh is done. Playbook
+section 10 (Run 1 paragraph) and `EXTERNAL-PATTERNS.md` pattern F (applied note) are read only.

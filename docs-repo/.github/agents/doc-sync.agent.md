@@ -25,7 +25,10 @@ One of:
    API / Events row from the proposal link to the `generated/` anchor, drop the **proposed** marker and the `needs-contract`
    label in `work-items/<ID>.yml`, and delete the proposal (or set `x-status: implemented`, `x-implemented-in`).
    Update the spec: business rules, API, data, edge cases; append a **Change log** row
-   (`YYYY-MM-DD - <what> - <PR/commit>`); set `last_verified`.
+   (`YYYY-MM-DD - <what> - <PR/commit>`); set `last_verified`. A rule you add or rewrite ends, after its footnote,
+   with `(source: code <sources-id>#<symbol>)` naming the handler or manager method you read in step 3, or
+   `(source: contract <operationId>)` when the contract diff alone explains it; `api[]` keeps only the operations
+   this context handles (`features/conventions.md`, "Provenance per rule", "Owned versus called operations").
 5. If a `harbor-core/src/main/kotlin/com/acme/harbor/utils/**` path changed, do not edit the formula yourself: set the calculation concept to
    `status: draft`, add an open question and hand over to `calc-auditor` (chat summary).
 6. Changed path with no mapping: add a `TODO` entry in `docs-map.yml` and, if the context has no spec at all,

@@ -15,11 +15,20 @@ description: Rules for feature specs (structure, numbering, traceability, proven
   Edge cases -> Open questions -> Change log.
 - Business rules are numbered `BR-<ID>-<n>`, one testable MUST / MUST NOT statement each, so tests and work items
   can cite them. Renumbering is forbidden once a rule is cited; deprecate instead.
+- Until a person verifies the spec, every rule ends with a source marker after its footnotes:
+  `(source: code <sources-id>#<symbol>)` (the `sources[]` entry and the method / function / component that states
+  the rule, never a line range), `(source: legacy <sources-id>)`, `(source: contract <operationId>)`,
+  `(source: person human:<id>)` or `(source: spec BR-<ID>-<n>)` for a mirrored rule. Proposed and withdrawn rules
+  carry none. `okf-validate.py --strict` warns on a draft rule without one (`features/conventions.md`, "Provenance per rule").
 - Reference calculations by link to `domain/calculations/<name>.md`; do not duplicate formulas.
 - Reference endpoints as `METHOD /path` with the `operationId` from `generated/openapi/backend.yaml`; reference
   Kafka topics by exact name from `generated/asyncapi/backend.yaml` (or from `generated/be/events.md`, which also
   names the schema file of each payload, when there is no AsyncAPI document); reference tables by name from
   `generated/be/db-schema.md`. Session-scoped endpoints (`/session/**`) mention the `X-Harbor-Session` header once.
+- Frontmatter `api[]` lists only the operations whose handler belongs to the spec's context (`api: []` for a
+  frontend-only context). An operation the screen calls but another context handles stays in the API / Events
+  table with `owned by <SPEC-ID>` (or `owned by <context>, no spec yet`) in its Purpose column and is never in
+  `api[]`: consumers read `api[]` as scope (`features/conventions.md`, "Owned versus called operations").
 - `code_refs` are paths relative to the code repo roots (`be/harbor-core/src/main/kotlin/com/acme/harbor/<layer>/<Class>.kt`,
   `fe/src/pages/<Page>/...`), taken from the graph neighbourhood (`generated/graph/<community>.md`),
   `generated/be/components.md` or `generated/*/docs-tags.md`.
