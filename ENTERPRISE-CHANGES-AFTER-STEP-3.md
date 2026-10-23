@@ -952,3 +952,40 @@ importer replaces everything from the first marker it finds.
 
 Runbook step 3 and playbook section 9 point at the section; the playbook adds that no agent reads the column. No kit
 file and no script changes.
+
+## 27. Block lists in frontmatter were read across keys (investigation commits after `6a7009c`, 2026-10-23)
+
+One bug, found on the first enterprise spec. `scripts/_common.py` `get_list()` reads a frontmatter list written either
+inline (`api: ["GET /a", "GET /b"]`) or as a block (`api:` followed by indented `- ` lines). The block form used a
+DOTALL regex, so the item pattern ran across lines and the list went on until the end of the frontmatter: every
+indented `- ` line of the keys below was returned as an item of the key above. A spec whose `api`, `events`, `tables`
+and `calculations` are block lists therefore had its calculation links and table names inside `api[]`. Harbor never
+showed it because every Harbor spec writes those four lists inline. The enterprise `spec-writer` wrote them as blocks
+(valid, and the template shows the block form for `code_refs`), and the first context pack listed five calculation
+documents under Contracts as "not found in the contract (verify the path)".
+
+Who reads lists through this helper: `context-pack.py` (`api`, `events`, `channels`, `calculations`, `flows`, `specs`,
+`contexts`, `code_refs`, `tables`, `used_by`, `tags`, `aliases` - the Contracts, Flows, Calculations and Graph sections of
+a pack), `gen-catalogue.py` (the API, Events, Flows and Specs columns) and `migration-status.py` (`specs` and
+`contexts` of flows). `validate-frontmatter.py`, `build-index.py` and `gen-graph.py` match their fields with their own
+patterns and were not affected, which is why the validators stayed green on a spec with the symptom.
+
+The fix: the block regex has no DOTALL flag any more, an item is one line (`[^\r\n]*`), and only a line that starts
+with indentation and `- ` continues the list, so the next top-level key ends it. Checked with a frontmatter whose
+`api`, `tables` and `calculations` are block lists (each key returns its own items) and on the whole Harbor bundle:
+`okf-validate.py --strict`, `build-index.py --check`, `validate-frontmatter.py`, `validate-work-items.py`,
+`gen-catalogue.py --check` and `gen-graph.py --check` clean, outputs unchanged (inline lists were never affected).
+
+### 27.1 Docs repository: one file to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/_common.py` | `get_list()` block form: no DOTALL, one line per item, the next top-level key ends the list |
+
+### 27.2 Afterwards, in your repository
+
+If any spec, calculation or flow writes `api`, `events`, `channels`, `tables`, `calculations`, `flows`, `specs` or
+`contexts` as a block list, its packs and the catalogue carried the extra items: delete `.context/` (git-ignored,
+rebuilt on the next `context-pack.py` run) and run `python3 scripts/gen-catalogue.py` once; `gen-catalogue.py --check`
+tells you whether the catalogue changed. No kit file, no agent, no prompt and no playbook change; writing the lists
+inline is still fine and is what the Harbor specs do.

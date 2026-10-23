@@ -81,9 +81,11 @@ def get_list(fm, key):
     m = re.search(r'(?m)^' + re.escape(key) + r':\s*\[([^\]]*)\]', fm, re.I)
     if m:
         return [x for x in (s.strip().strip('"').strip("'") for s in m.group(1).split(',')) if x]
-    m = re.search(r'(?ms)^' + re.escape(key) + r':\s*\r?\n((?:\s+-\s+.*\r?\n?)+)', fm, re.I)
+    # Items are the consecutive indented `- ` lines right after the key; the next top-level key ends the list.
+    # No DOTALL here: with it `.*` ran across lines and the list swallowed every indented item of the keys below.
+    m = re.search(r'(?m)^' + re.escape(key) + r':[ \t]*\r?\n((?:[ \t]+-[ \t]+[^\r\n]*\r?\n?)+)', fm, re.I)
     if m:
-        return [x.group(1).strip().strip('"').strip("'") for x in re.finditer(r'(?m)^\s+-\s+(.+?)\s*$', m.group(1))]
+        return [x.group(1).strip().strip('"').strip("'") for x in re.finditer(r'(?m)^[ \t]+-[ \t]+(.+?)[ \t]*$', m.group(1))]
     return []
 
 

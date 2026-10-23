@@ -1,5 +1,12 @@
 # Update Log
 
+## 2026-10-23
+* **Frontmatter block lists no longer read across keys.** `scripts/_common.py` `get_list()`: the block form
+  (`api:` followed by indented `- ` lines) used a DOTALL regex and returned every indented item of the keys below as
+  well, so a spec with block-list `api`, `tables` and `calculations` had its calculation links inside `api[]` (packs
+  listed them under Contracts as not found). One item per line now; the next top-level key ends the list. Harbor
+  specs write these lists inline and were never affected; catalogue, graph and indexes unchanged.
+
 ## 2026-10-21
 * **Checks once, at the end of a task, for what it changed.** Agents no longer validate after each edit: `AGENTS.md`
   (section Checks), the `okf` and `okf-validate` skills and the `analyst` agent (its Checks table) run the validators
