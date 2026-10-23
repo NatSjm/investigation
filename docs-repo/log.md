@@ -1,6 +1,9 @@
 # Update Log
 
 ## 2026-10-23
+* **Spec prefix: 3 to 5 characters.** `.github/prompts/context-map-from-code.prompt.md` told the architect "2-3
+  uppercase letters"; the validators accept `[A-Z][A-Z0-9]*` before the dash, so the prompt now says 3-5 uppercase
+  letters or digits, one token (`TARIF`, never `TA-RIF`). No validator or spec changed.
 * **Two spec rules: owned operations in `api[]`, a source marker per rule.** `features/conventions.md` gains
   "Owned versus called operations" (`api[]` lists only the operations the spec's context handles; a called operation
   of another context stays in the API / Events table with `owned by <SPEC-ID>`; consumers read `api[]` as scope) and

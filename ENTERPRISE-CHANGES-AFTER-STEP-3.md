@@ -1048,3 +1048,36 @@ the API section and the rule markers); do not rerun the skeleton. Every later sk
 Until the markers are in, `okf-validate.py --strict` warns on each draft rule, so copy the validator together with the
 conventions and refresh the drafts in the same change, or keep the old validator until the refresh is done. Playbook
 section 10 (Run 1 paragraph) and `EXTERNAL-PATTERNS.md` pattern F (applied note) are read only.
+
+## 29. Spec prefixes of 3 to 5 characters (investigation commits after `c944aed`, 2026-10-23)
+
+A review of the ID scheme asked two things: may a spec prefix be longer than three letters, and may a context name
+carry a hyphen (`billing-configuration`). Nothing in the kit blocks either: every reader of `contexts.yml` parses the
+key as `[\w-]+`, and every place that matches a spec ID (`validate-frontmatter.py`, `okf-validate.py`,
+`coverage-matrix.py`, `migration-status.py`, `context-pack.py`, `validate-work-items.py`) matches `[A-Z][A-Z0-9]*`
+before the dash, so `TARIF-001` and `BR-TARIF-001-3` pass. The prefix must stay one token of capitals and digits:
+`TA-RIF-001` fails. The only text that said otherwise was one line of the architect prompt `context-map-from-code`
+("2-3 uppercase letters"); it now says 3-5 uppercase letters or digits, one token, unique, from the word the code and
+the business both use. Longer than five stops being readable in rule IDs, Gherkin tags and Jira keys.
+
+### 29.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/prompts/context-map-from-code.prompt.md` | the spec-prefix sentence of the table bullet |
+
+### 29.2 Renaming a context or cutting one in two (no kit file involved)
+
+Do it before Run 1 of the context: a prefix ends up in file names, rule IDs, `@docs` tags, Jira keys and test names,
+and nothing cites it yet at that stage. When the cut follows a class split in the code (one class family per product
+type, `InvoicingDomestic*` and `InvoicingExport*` out of `Invoicing*`), split the code first and rerun the generators,
+because specs cite symbols (`code_refs`, the provenance markers). Then `contexts.yml` (keys, prefixes; the longer
+prefix wins, so `InvoicingDomestic` beats `Invoicing` without a wildcard entry), the folders under `features/` with
+their `index.md` and the `context:` line of any draft, `docs-map.yml` rows, `domain/context-map.md`, the "Contexts at
+a glance" table of `architecture/overview.md`, the context list and the ID line of `AGENTS.md`, the prefix table of
+`features/conventions.md`, Known state notes in the Confluence inventory that name a target context. Then
+`gen-graph.py`, `build-index.py`, `migration-status.py`, `gen-catalogue.py`, delete `.context/`, and check with
+`map-paths.py` (one real path per context) and `graph-query.py --node context:<name>`. The pieces still named after
+the undivided family (a controller, a result entity and its table, the page if one serves both halves) go to the
+context whose screen spec documents the page; the other context's first spec cites that screen and mirrors identical
+rules as `(source: spec BR-...)` (`features/conventions.md`, "Shaping specs" items 4 and 5).

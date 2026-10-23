@@ -51,7 +51,8 @@ only what the evidence shows.
   `tags: [domain, architecture]`, `status: draft`, `generated: { by: copilot/architect, at: <ISO timestamp> }`.
   No other keys.
 - the table: Context | Spec prefix | BE class-name prefixes | Backend entry point | FE pages / routes | Specs.
-  Spec prefix: 2-3 uppercase letters, unique. Specs column: `missing (<PREFIX>-001 backlog)` for every context
+  Spec prefix: 3-5 uppercase letters or digits, one token (`TARIF`, never `TA-RIF`: the validators match
+  `[A-Z][A-Z0-9]*` before the dash), unique, from the word the code and the business both use. Specs column: `missing (<PREFIX>-001 backlog)` for every context
   without a spec. Backend entry point and FE pages cells are real file paths, page folder names or route paths you saw.
 - the `shared` paragraph listing the actual unprefixed classes.
 - the Mermaid flowchart: one node per context, one edge per relationship you have evidence for, the edge label
