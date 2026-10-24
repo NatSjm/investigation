@@ -14,7 +14,9 @@ description: Rules for calculation concepts (OKF Attested Computation) - formula
   (`period` = first day of month), and performance notes (`horizon months x scenarios x dimension values`).
 - `used_by[]` lists every spec ID that links the calculation; keep it in sync with the specs' `calculations[]`.
 - `## Parameters` names `parameter_set` keys exactly as in `generated/be/parameters.md` (generated catalogue: seeded defaults, readers, validator). `validate-frontmatter.py` rejects a key the catalogue lacks and reports a catalogue key no document explains. The calculation owns the **meaning** of a key (unit, bound, formula it feeds); the admin spec `ADM-001` owns scope, versioning and validation.
-- `code_refs` point at `be/harbor-core/src/main/kotlin/com/acme/harbor/utils/<Class>.kt` (file, optional `#Lx-Ly`)
+- `code_refs` point at `be/harbor-core/src/main/kotlin/com/acme/harbor/utils/<Class>.kt` and its test: the file only, never a
+  line range or `file:line` (lines rot on the next commit and nothing refreshes them; a symbol survives). The place inside
+  the file is named by symbol: the test method in the worked-example row, the function or property in an audit row.
   as resolved through `generated/be/docs-tags.md` (`@docs <name>`).
 - Legacy descriptions (Confluence) are evidence, not truth: cite them in `sources[]` and mark any difference
   with `> ⚠️ CONFLICT (legacy: <page>)` until `calc-auditor` resolves it.

@@ -17,14 +17,14 @@ generated: { by: copilot/doc-sync, at: 2026-01-01T00:00:00Z }
 # stale_after: <ISO>
 sources:
   - id: impl
-    resource: <code URL#Lx-Ly>
+    resource: <code URL of the file, no line anchor>
     title: <X>.kt
 # --- repo extensions ---
 name: <snake_case_name>
 used_by: [CTX-000]
 code_refs:
-  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/<X>.kt#L10-L80
-  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/<X>Test.kt        # source of worked examples
+  - backend/harbor-core/src/main/kotlin/com/acme/harbor/utils/<X>.kt            # file only, never #Lx-Ly or :line
+  - backend/harbor-core/src/test/kotlin/com/acme/harbor/utils/<X>Test.kt        # source of worked examples (rows name the test method)
 last_verified: null
 ---
 

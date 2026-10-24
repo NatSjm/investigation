@@ -1105,3 +1105,24 @@ markers name the right class. Splitting such a context by prefix is the other an
 
 Your copies name the service layer where these name the manager (`entry_layer` = `service`); keep that wording when you
 merge. Playbook section 10 (Run 1 paragraph) is read only.
+
+## 31. Calculation `code_refs`: files, never line ranges (investigation commits after `454a5bc`, 2026-10-24)
+
+Found on the first enterprise calculation audit: `calc-auditor` wrote `utils/<Class>.kt:<line>` into `code_refs`. It
+was following the kit: `domain/calculations/_template.md` carried `#L10-L80` and `URL#Lx-Ly` as examples and
+`.github/instructions/calculations.instructions.md` said "file, optional `#Lx-Ly`", while the spec rule adopted in
+section 28 says a symbol, never a line range, because lines rot on the next commit and nothing refreshes them. The four
+files now agree: `code_refs` and `sources[]` name the calculator and its test as files; the place inside a file is a
+symbol, the test method in a worked-example row, the function or property in an audit row; the `file:line` of
+`generated/be/docs-tags.md` says where the auditor reads and never enters the concept. Strip the `:<line>` suffixes
+from your calculation documents' `code_refs` by hand (no validator rejects them; a flow's `code_refs` with a line
+suffix match no graph node in `context-pack.py --files`, so its impact section comes back empty).
+
+### 31.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `domain/calculations/_template.md` | the two `code_refs` lines and the `sources[].resource` placeholder |
+| `.github/instructions/calculations.instructions.md` | the `code_refs` bullet |
+| `.github/agents/calc-auditor.agent.md` | step 2: `file:line` is where you read, not what you write |
+| `.github/skills/calculation-spec/SKILL.md` | step 7: file only, symbol in the rows |

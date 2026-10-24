@@ -1,6 +1,11 @@
 # Update Log
 
 ## 2026-10-24
+* **Calculations: `code_refs` are files, never line ranges.** The calculation template (`#L10-L80`, `URL#Lx-Ly`) and
+  `calculations.instructions.md` ("optional `#Lx-Ly`") still allowed line ranges, so `calc-auditor` wrote them while
+  the spec rule (conventions, "Provenance per rule") says a symbol, never a line. Template, instructions,
+  `calc-auditor` step 2 and the `calculation-spec` skill now say: file only in `code_refs` and `sources[]`, the test
+  method in a worked-example row, the function in an audit row; the `file:line` of the tags map is where to read.
 * **Skeleton prompt: optional entry file.** `/spec-skeleton-from-graph <ctx> <ID> [entry file]`: a context whose
   entry layer holds one class per screen and no `<Prefix>Manager` gets one entry point on its `context:` node, right
   for the first spec only; the call now names the file of this spec's screen and the spec-writer reads it instead (one

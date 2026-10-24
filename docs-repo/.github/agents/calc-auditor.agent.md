@@ -19,7 +19,9 @@ A calculation name (`stress_test_monthly`), a spec ID (audit all calculations it
 1. `python3 scripts/context-pack.py --task <name>`; read the calculation concept (formula, parameters, conventions,
    worked examples) and the legacy pages the pack lists.
 2. Locate the implementation through `generated/be/docs-tags.md` (`@docs <name>` -> `file:line`). Open exactly
-   two files in `../backend`: the calculator class and its test (`.../calc/<Class>Test.kt`). Nothing else.
+   two files in `../backend`: the calculator class and its test (`.../calc/<Class>Test.kt`). Nothing else. The
+   `file:line` is where you read, not what you write: `code_refs` and `sources[]` name the file only, a worked-example
+   row names the test method, an audit row the function or property; never a line number or range in the concept.
 3. Compare, item by item: formula terms, parameter names and defaults (`generated/be/db-schema.md` ->
    `parameter_set` seeds in `V9__parameters.sql` if the class reads parameters), thresholds, rounding mode and scale,
    sign conventions (importer / exporter / mixed), month-grid convention, and every worked example against the

@@ -16,7 +16,9 @@ description: Document a business computation (monthly projection, cover ratio, s
 5. Worked examples table: >= 3 rows - typical, boundary, degenerate (zero / empty / MIXED role).
 6. State: rounding mode and scale, units and price basis, month-grid convention, parameter keys (`parameter_set`)
    with defaults, performance notes (`horizon months x scenarios x dimension values`).
-7. Frontmatter: `runtime: kotlin`, `parameters[]`, `executor.resource` = the test file, `used_by[]`, `code_refs`.
+7. Frontmatter: `runtime: kotlin`, `parameters[]`, `executor.resource` = the test file, `used_by[]`, `code_refs` (the
+   calculator and its test, file only; the `file:line` of step 2 says where to read, a line never enters the concept:
+   name the test method in the worked-example row and the function in an audit row).
 8. Link back from every feature spec that uses it (`calculations[]`).
 
 See `references/conventions.md` for the vocabulary (rounding, month grid, sign conventions, scenarios).
