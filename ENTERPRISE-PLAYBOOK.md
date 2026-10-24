@@ -44,6 +44,15 @@ Deferred until the trigger named:
   `migration-lead`: with the first task of that kind.
 - `@docs` tags and `tag-docs` (section 6, item 8): when a calculation without a spec appears on the board.
 - Parameter and dataset headers (17.7): when `gen-parameters.py` and `gen-datasets.py` leave `skip_generators`.
+  The parameter generator expects one key enum and one key-value table. A backend whose administrator edits values
+  in several typed tables (one table per parameter family, each with its own columns) keeps `gen-parameters.py` in
+  `skip_generators`: without `generated/be/parameters.md` the parameter check of `validate-frontmatter.py` is
+  skipped and nothing else reads the file. The tables are documented anyway: a `COMMENT ON` per table and column in
+  the migrations (the table pages and the graph notes come from them), the admin spec's Data section listing the
+  columns each screen writes with the rule that governs the write, and every calculation naming the value it reads
+  as `table.column` in its Inputs table (its `## Parameters` section says "none"). Name the context `admin` even
+  so: the validator exempts exactly that name from the parameter check, and the catalogue for typed tables is a
+  later kit addition that will need it. The admin spec's title can still read "Administration".
 - Confluence publish, the reader test of 17.3 and a human-facing rendering of the repository: after the first
   analytics tasks.
 - The analyst agent (section 12) and the gate of section 16 stay as written; the pilot track is week 1 of phase 1,
@@ -260,6 +269,10 @@ contexts:
 If your backend is organised by package rather than by layer, prefixes still work (most classes are named after
 their area); if not, extend `Context-Of` in `gen-graph.py` and `migration-status.py` to match on the package path.
 Iterate until `generated/graph/REPO_MAP.md` shows a `shared` community that holds only true helpers (section 8).
+Context names are free (lowercase, digits, hyphens; `data-imports` is as good as `imports`), chosen once with the
+prefix, with three exceptions: `shared` and `fe-shared` are the communities of unmatched classes and pages, and the
+administration context is `admin`, the one name `validate-frontmatter.py` exempts from the parameter check (pilot
+track, deferred list). The word people see in titles and the catalogue is free text.
 
 **`docs-map.yml`** is the manual mapping the other analyses recommended: code path globs to the documents they affect.
 Write one row per context now, even before any spec exists (`specs: []` is allowed and shows as backlog):
@@ -894,6 +907,10 @@ reach a calculation on the screen". Both are generated in the backend and collec
 - `parameters.md`: keep the parameter keys in one enum and the defaults in the migrations; the generator reads both.
   Every calculation that reads a key fills its `## Parameters` table with the key exactly as in the catalogue; the
   admin spec maps each key to the document that owns its meaning (`features/admin/ADM-001.md` is the model).
+  Parameters kept in several typed tables instead of one key-value table are outside the generator's shape: skip it
+  and document the tables as the pilot track's deferred list says (migration comments, admin Data section,
+  `table.column` inputs in the calculations); a table mode of the generator is the kit change that would bring
+  them into the two-way check.
   `validate-frontmatter.py` fails on a key the catalogue lacks and on a catalogue key no document explains, so
   expect red CI until the mapping is complete. The rule in one sentence: the calculation owns the meaning, the admin
   spec owns scope, versioning and validation, the key string is the join.
