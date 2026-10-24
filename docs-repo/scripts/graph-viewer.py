@@ -81,7 +81,9 @@ const sel = document.getElementById('community'), filt = document.getElementById
 const legend = document.getElementById('legend'), legendh = document.getElementById('legendh');
 sel.insertAdjacentHTML('beforeend', `<option value="*">${DATA.all} (${DATA.nodes.length} nodes)</option>`);
 for (const c of DATA.communities) sel.insertAdjacentHTML('beforeend', `<option value="${c.id}">${c.id} (${c.nodes} nodes, ${c.repo})</option>`);
-sel.value = DATA.communities.some(c=>c.id===DATA.start) ? DATA.start : '*';
+// communities that exist only on nodes (`docs`: the spec and calculation nodes) are selectable too
+for (const id of COMS) if (!DATA.communities.some(c=>c.id===id)) { const ns = DATA.nodes.filter(n=>n.community===id); sel.insertAdjacentHTML('beforeend', `<option value="${id}">${id} (${ns.length} nodes, ${ns[0]?.repo||''})</option>`); }
+sel.value = COMS.includes(DATA.start) ? DATA.start : '*';
 const canvas = document.getElementById('c'), ctx = canvas.getContext('2d');
 let nodes=[], edges=[], scale=1, ox=0, oy=0, drag=null, selected=null, raf=0, ticks=0, all=false, match=null;
 function setLegend(){

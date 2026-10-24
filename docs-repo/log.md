@@ -1,6 +1,10 @@
 # Update Log
 
 ## 2026-10-24
+* **Graph viewer: the `docs` community is selectable.** `graph.json` lists the code communities only; the spec and
+  calculation nodes carry the community `docs`, which the viewer drew in the legend but left out of the dropdown, so
+  the legend click did nothing and `--community docs` fell back to the whole graph. The dropdown now adds every
+  community found on nodes; `.context/graph-viewer.html` regenerated.
 * **Calculations: a source marker per Formula step and on the Conventions paragraph.** Pattern F applied to
   calculations: until a person verifies the document, every numbered step of the Formula step list and the
   Conventions paragraph end with `(source: code <sources-id>#<symbol>)` naming the function, property or constant

@@ -1168,3 +1168,19 @@ in step 3 while `ScenarioPricePath.apply` rounds with `money()` (scale 2). Left 
 Your calculation documents written before this section: run `audit-calculation` on each (the auditor adds the markers
 from what it reads) or add them by hand, one symbol per step; until then `okf-validate.py --strict` warns on each draft
 step, so copy the validator together with the instructions and refresh the drafts in the same change.
+
+## 33. Graph viewer: the `docs` community is selectable (investigation commits after `7b0edf8`, 2026-10-24)
+
+Spec and calculation nodes carry the community `docs` in `graph.json`, while the file's `communities` list names the
+code communities only (contexts, `shared`, `fe-app`, `fe-shared`, page communities). `graph-viewer.py` built its
+dropdown from that list, so `docs` appeared in the legend of the whole-graph view with its node count but could not be
+opened: the legend click did nothing and `--community docs` fell back to the whole graph. The dropdown now adds every
+community found on nodes that the list lacks, and the start community is checked against the same set. Open the
+`docs` entry to see the specs and calculations alone, with the neighbours option on to see the classes, endpoints and
+pages their `implemented-by` edges reach. Agents never read the page; this changes nothing for them.
+
+### 33.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/graph-viewer.py` | the dropdown options for node-only communities |
