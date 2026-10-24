@@ -211,8 +211,9 @@ Write these sections, in this order, adapted from `docs-repo/AGENTS.md`:
    `<product>`; Confluence is a publish target; the code repositories are inputs; Jira and the tests repository are
    outputs. One OKF v0.2 bundle: every document has frontmatter with `type`, every folder a generated `index.md`.
 2. **Work task-scoped: build the context pack first.** The command `python3 scripts/context-pack.py --task <ID|name|text>`,
-   what the pack contains, and the sentence "Read the pack, not the repository. Open anything else only to answer a
-   question the pack leaves open, and then only the `file:line` it names."
+   what the pack contains, and the sentence "Read the pack first. After it the analyst opens or searches the
+   documentation folders freely; other agents open the documentation files their procedure names; code only at the
+   `file:line` the pack names."
 3. **Read order when there is no pack**, cheapest first: `index.md` of the area, the spec, the calculation, `contexts.yml`
    and `generated/graph/REPO_MAP.md`, the maps under `generated/be|fe`, the contracts under `generated/openapi|asyncapi`,
    and only then source code in the sibling checkouts, smallest range, located through the graph or `docs-tags.md`.
@@ -894,6 +895,14 @@ spec), the files read are listed in the analysis document, and `coverage-matrix.
 answered from code per spec in an **answered from code** column: the gaps that cost analyst time, which the
 migration lead uses to order the next spec runs. The spec-writer and the calculation auditor keep their narrower
 reading on purpose.
+
+Revised once more the same day, for the documentation itself: the pack was also the only way into `features/`,
+`domain/` and the other documentation folders, so an analyst that wanted a neighbour spec had to rebuild the pack
+with another `--task`. That rule was written against code browsing and swept the documentation along. The analyst
+now opens or searches the documentation folders freely after the pack (never the raw Confluence HTML or the
+attachments); the pack stays mandatory as the recorded slice a task starts from and as the only source of the
+graph neighbourhood and of a merged slice over several subjects. Other agents keep opening the documentation files
+their procedure names; code access is unchanged.
 Headless runs that should have this access pass `--add-dir ../backend --add-dir ../frontend`; runs that should not,
 simply omit the flags and the CLI refuses the path.
 

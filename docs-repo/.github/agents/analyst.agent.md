@@ -37,8 +37,13 @@ churn score") - or an analytics question ("what is covered by tests?").
 2. **Gather: one pack.** `python3 scripts/context-pack.py --task <subject> --task <subject> ...` with a `--task` per
    subject (spec ID, calculation, `flows/<name>.md`, `context:<name>` for every context that receives new work; the
    overview section of a context pack lists the endpoints, tables, calculations, classes and pages a new piece sits
-   next to). Read `.context/<task>.md` top to bottom. When a section is truncated or a neighbour is missing, rebuild
-   without the `--budget` you set, or add the neighbour as another `--task` - before you open any code (step 9; `task-context` skill).
+   next to). Read `.context/<task>.md` top to bottom. After it the documentation folders are yours: open or search
+   `features/`, `domain/`, `flows/`, `architecture/`, `contracts/`, `work-items/`, `test-design/`, `generated/` and the
+   imported pages under `confluence-import/<SPACE>/` freely whenever the pack leaves something thin - a neighbour spec, a table page, a flow, a legacy
+   page - with no limit and no rebuild first. Rebuild the pack (without the `--budget` you set, or with the
+   neighbour as another `--task`) when you want the merged, recorded slice: the analysis document cites the pack as
+   its source, so what the epic rests on should be in it. Never `raw-html/` or `_attachments/`; code only under
+   steps 9 and 10 (`task-context` skill).
 3. **Trust check.** `draft`, `unverified` or `STALE` specs, calculations and flows are unreliable: say so in the
    output and label everything derived from them `needs-spec-review`. Legacy pages listed in the pack are evidence,
    not rules.

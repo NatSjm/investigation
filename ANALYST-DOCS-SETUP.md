@@ -137,8 +137,9 @@ Agents orient through indexes, never through directory listings.
 ## Work task-scoped: build the context pack first
 For any task about a feature, calculation, change or ticket run
 `python3 scripts/context-pack.py --task <spec ID | calculation | graph node | free text>` and read `.context/<task>.md`.
-Read the pack, not the repository. Open anything else only to answer a question the pack leaves open, and then only
-the `file:line` it names.
+Read the pack first. After it the analyst opens or searches the documentation folders freely (never `raw-html/` or
+`_attachments/`); other agents open the documentation files their procedure names; code only at the `file:line` the
+pack names.
 
 ## Read order when there is no pack (cheapest first)
 1. `index.md` -> the area's `index.md` (one line + trust badge per concept)

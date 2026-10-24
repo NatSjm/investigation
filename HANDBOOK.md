@@ -27,9 +27,9 @@ The idea has four parts:
    it, when it was verified, and when it goes stale.
 3. **A graph joins both**: generated maps plus documentation tags become an architectural graph whose communities are
    the business contexts. "What is affected", "where is it", "what talks to what" are answered without opening code.
-4. **Agents never search; they read a pack.** For each task a script assembles a budgeted context pack: the spec,
-   its calculations, the graph neighbourhood, the contracts, the tables, related work. The analyst reads that and
-   nothing else.
+4. **Agents start from a pack, not from a search.** For each task a script assembles a budgeted context pack: the spec,
+   its calculations, the graph neighbourhood, the contracts, the tables, related work. The analyst reads that first,
+   then the documentation folders freely; code only through its steps 9 and 10.
 
 Everything else in the workspace serves one of those four parts.
 

@@ -1,6 +1,13 @@
 # Update Log
 
 ## 2026-10-24
+* **Analyst: the documentation folders are free after the pack.** The pack was the only way into `features/`,
+  `domain/` and the other documentation folders, so a neighbour spec meant a rebuilt pack. The analyst now opens or
+  searches `features/`, `domain/`, `flows/`, `architecture/`, `contracts/`, `work-items/`, `test-design/`,
+  `generated/` and the imported Confluence pages freely after the pack (never `raw-html/` or `_attachments/`); the
+  pack stays mandatory as the recorded slice and as the only source of the graph neighbourhood and a merged slice.
+  Other agents open the documentation files their procedure names; code access unchanged (steps 9 and 10).
+  Analyst agent step 2, `task-context` skill, pack footer rule, `AGENTS.md`, `CONCEPT.md`, routing table.
 * **Analyst: a free reading pass when a question still blocks.** The five map-located ranges of step 9 stopped the
   analyst wherever a context's documentation had not caught up. A question that still blocks the answer or the
   analysis after them now earns one free reading pass over `../backend` and `../frontend` (search, whole files, call

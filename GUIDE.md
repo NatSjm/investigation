@@ -26,7 +26,8 @@ The idea in three sentences. The code repositories generate small maps of themse
 tables, routes); the docs repo collects them, together with the contracts, as one versioned snapshot (one collector,
 one pull request, a manifest of source commits). The docs repo joins the maps into an architectural graph and holds
 the human-owned specs, calculations and glossary with trust metadata. For any task a script builds a **context pack**
-(the spec, its calculations, the graph neighbourhood, the contracts, the tables) and the analyst agent reads only that.
+(the spec, its calculations, the graph neighbourhood, the contracts, the tables); the analyst agent reads that first
+and the documentation folders freely after it.
 
 ---
 

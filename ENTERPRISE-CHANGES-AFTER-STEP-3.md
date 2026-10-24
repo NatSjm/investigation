@@ -1228,3 +1228,38 @@ under section 23 already cite `code-read` and are counted without any edit.
 Playbook section 0 (safety table row, the paragraph on letting Copilot read the code), section 12 (the analyst
 summary), section 15 (the catalogue row) and 17.2 (a second revision paragraph with the reason); `GUIDE.md`,
 `HANDBOOK.md` and `ANALYST-DOCS-SETUP.md` (step 10 added to its agent copy) say the same. No kit file changes.
+
+## 35. Analyst: the documentation folders are free after the pack (investigation commits after `e06b5bf`, 2026-10-24)
+
+"Read the pack, not the repository" was written to keep agents out of the code and swept the documentation along:
+the pack was the only sanctioned way into `features/`, `domain/` and the other folders, so an analyst that wanted a
+neighbour spec, a table page or a legacy page had to rebuild the pack with another `--task` first. Those folders are
+the agent's own material, cheap and safe to read, and the detour bought nothing. The analyst now opens or searches
+`features/`, `domain/`, `flows/`, `architecture/`, `contracts/`, `work-items/`, `test-design/`, `generated/` and the
+imported pages under `confluence-import/<SPACE>/` freely after the pack, with no limit and no rebuild first; the raw
+Confluence HTML and the attachments stay off limits as before. The pack stays mandatory: it is the recorded slice a
+task starts from (the analysis document cites it), the only source of the graph neighbourhood with its cross-context
+edges, and the way to a merged slice over several subjects. Rebuilding it is for the record, not a precondition for
+reading. Other agents keep opening the documentation files their procedure names, and code access is unchanged
+(steps 9 and 10, section 34).
+
+### 35.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/analyst.agent.md` | step 2: the folders the analyst may open after the pack, when to rebuild instead - if you adapted the file's domain sentence, re-apply it |
+| `.github/skills/task-context/SKILL.md` | the footer rule wording, the Consume bullet on the documentation folders, step 4 of the escalation |
+| `scripts/context-pack.py` | the pack footer rule; the rest unchanged |
+
+### 35.2 Docs repository: sentences to merge
+
+| File | Where | What |
+|---|---|---|
+| `AGENTS.md` | the context pack paragraph | "Read the pack first. ... the analyst opens or searches the documentation folders freely ...; other agents open the documentation files their procedure names; code only at the `file:line` the pack names" in place of "Read the pack, not the repository ..." |
+| `CONCEPT.md` | the context pack paragraph and the summary table row | the same change in one clause each |
+| `.github/copilot-instructions.md` | the analyst row of the routing table | "context pack, then the documentation folders freely; ..." |
+
+### 35.3 Playbook and guides (read only)
+
+Playbook section 1 (the quoted sentence) and 17.2 (a third revision paragraph); `HANDBOOK.md` part 4, `GUIDE.md`
+and `ANALYST-DOCS-SETUP.md` say the same. No kit file changes.

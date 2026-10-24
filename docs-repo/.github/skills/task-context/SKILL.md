@@ -51,8 +51,8 @@ glossary aliases) is a fallback for one-subject requests and must not be trusted
 7. **Data** - the `db-schema.md` sections for `tables[]`.
 8. **Related** - `work-items/<ID>.yml` story summaries, `test-design/features/<ID>.feature` scenario names.
 9. **Legacy** - `confluence-import/**` pages mentioning the ID or title keywords (listed, first lines only, marked unverified).
-10. **Footer** - sources used, sections truncated, and the rule: *open nothing else unless a question below is
-   unanswered; then only the `file:line` named above*.
+10. **Footer** - sources used, sections truncated, and the rule: *the pack is the recorded slice; the documentation
+   folders may be opened after it, code only at the `file:line` named above*.
 
 See `references/pack-anatomy.md` for the exact section markers the agents rely on, how several subjects are merged
 into one pack and how `--task` is resolved.
@@ -64,6 +64,12 @@ into one pack and how `--task` is resolved.
   go back to `generated/catalogue.md`, choose the subjects there and rebuild per subject; do not merge candidates blindly.
 - A truncated section (`... (truncated: see <path>)`) tells you exactly which file to open if you need more.
 - If the pack has no graph section, the graph is missing or stale: run `python3 scripts/gen-graph.py` or say so.
+- **The analyst browses the documentation folders freely after the pack**: `features/`, `domain/`, `flows/`,
+  `architecture/`, `contracts/`, `work-items/`, `test-design/`, `generated/` and the imported pages under
+  `confluence-import/<SPACE>/` (never `raw-html/` or `_attachments/`). They are the agent's own material, cheap and
+  safe to read; the pack exists to record what a task started from and to compute what no file shows (the graph
+  neighbourhood, the merged slice of several subjects), not to keep the agent out of the documentation. Other
+  agents open the documentation files their procedure names. Code stays behind the steps below.
 
 ## When the pack is not enough (escalate in this order, stop at the first step that answers)
 1. Rebuild without the `--budget` you set (there is none by default) - truncated sections come back.
@@ -72,6 +78,8 @@ into one pack and how `--task` is resolved.
    node in question - no files opened.
 4. Rebuild with the neighbour the pack points at as another subject (`--task <ID> --task <linked calculation | spec
    of another context | flows/<name>.md | context:<name>>`): one pack, the shared sections merged, nothing read twice.
+   The analyst may instead open the neighbour's document directly (the bullet above); the rebuild is for the
+   recorded slice, not a precondition.
 5. Open exactly the `file:line` the pack names, 40-120 lines, chosen by `write-feature-spec/references/source-priority.md`
    (unit test for edge cases, manager for intent, validator for error codes). Never a whole layer, never a code search.
 6. Still missing -> it is a documentation gap, not a context problem: write it as an open question in the spec,
