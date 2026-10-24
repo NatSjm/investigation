@@ -17,6 +17,7 @@ description: Rules for calculation concepts (OKF Attested Computation) - formula
 - `code_refs` point at `be/harbor-core/src/main/kotlin/com/acme/harbor/utils/<Class>.kt` and its test: the file only, never a
   line range or `file:line` (lines rot on the next commit and nothing refreshes them; a symbol survives). The place inside
   the file is named by symbol: the test method in the worked-example row, the function or property in an audit row.
+  The file itself is resolved through `generated/be/docs-tags.md` (`@docs <name>`).
 - **Provenance per step.** Until a person verifies the document, every numbered step of the Formula step list and the
   Conventions paragraph end, after their footnotes, with one source marker: `(source: code <sources-id>#<symbol>)`
   names the `sources[]` entry of the file and the function, property or constant that implements the step (`impl#build`,
@@ -24,6 +25,5 @@ description: Rules for calculation concepts (OKF Attested Computation) - formula
   `(source: spec BR-<ID>-<n>)` as in `features/conventions.md`. The marker is what `calc-auditor` checks at Run 3 and the
   owner at Run 4 (open the symbol, not the file) and it stays after verification. `okf-validate.py --strict` warns on a
   draft step or paragraph without one; a calculation tagged `proposed` (no implementation yet) is exempt.
-  as resolved through `generated/be/docs-tags.md` (`@docs <name>`).
 - Legacy descriptions (Confluence) are evidence, not truth: cite them in `sources[]` and mark any difference
   with `> ⚠️ CONFLICT (legacy: <page>)` until `calc-auditor` resolves it.
