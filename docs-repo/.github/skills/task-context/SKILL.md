@@ -80,7 +80,11 @@ into one pack and how `--task` is resolved.
 The analyst may do step 5 when steps 1-4 leave a question open that its answer or analysis needs, and may locate the
 range itself through the maps (`graph-query.py --find`, `generated/be/components.md`, `generated/fe/codebase-map.md`,
 `docs-tags.md`) - at most five ranges per task, each finding cited as `code-read <file:line>` and written as an Open
-question (analyst agent, step 9).
+question (analyst agent, step 9). When a question still blocks its answer or analysis after the five ranges, the analyst
+alone takes one free reading pass over `../backend` and `../frontend` (search, whole files, call chains; analyst agent
+step 10): the findings carry the same `code-read` citation and Open question, the files read are listed in the analysis
+document's Sources, and `coverage-matrix.py` counts the questions answered from code per spec. Step 6 stays the rule
+for every other agent and for a question the pass leaves open.
 
 ## Why a script and not "just search"
 Deterministic, budgeted, reviewable (the pack can be attached to the PR), cheap (one read instead of 10-20 tool

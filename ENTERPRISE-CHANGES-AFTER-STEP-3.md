@@ -1184,3 +1184,47 @@ pages their `implemented-by` edges reach. Agents never read the page; this chang
 | File | Why |
 |---|---|
 | `scripts/graph-viewer.py` | the dropdown options for node-only communities |
+
+## 34. Analyst: a free reading pass when a question still blocks (investigation commits after `69095ed`, 2026-10-24)
+
+Section 23 gave the analyst five code ranges per task, located through the maps, and made "five used and still open"
+a stop. In a context whose documentation has not caught up, which is the normal state during migration, the stop
+lands on the analyst: no answer, no epic, a handoff that waits for a spec run. The documentation gap became the
+analyst's failure. Now a question that still blocks the answer or the analysis after the five ranges earns one
+**free reading pass** over `../backend` and `../frontend`: search by text, open whole files, follow the chain from
+the controller through the service and validator to the test, no range limit (analyst agent step 10). Three
+disciplines keep the method intact. The pass is for a blocking question only: curiosity, a check of what the pack
+already says and "is this intended" never earn it, because code says what the system does, not whether it is
+wanted. The files read are listed in the analysis document's Sources (one chat line for a question), so the cost
+stays visible. And every finding keeps the step 9 discipline: `code-read <file:line>` with the manifest commit,
+unverified, `needs-spec-review`, an Open question in the spec whose item names `code-read`. That item is what
+`coverage-matrix.py` counts in the new **answered from code** column (`openQuestionsFromCode` in the JSON): the
+open questions the analyst had to settle from source, per spec, the documentation gaps that cost analyst time;
+the migration lead orders the next spec runs by it. A Copilot CLI session without the sibling folders counts as
+code not reachable: record the question and stop, as before. The spec-writer (manager file only in Run 1) and
+the calculation auditor (the symbol each marker names) keep their narrower reading on purpose.
+
+### 34.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/analyst.agent.md` | description and role sentence; step 4 (step 9 or 10); step 8 (the new column); step 9's last bullet hands over to step 10; step 10 new - if you adapted the file's domain sentence, re-apply it |
+| `.github/prompts/analyse-request.prompt.md` | steps 2 and 3 name the pass |
+| `.github/skills/task-context/SKILL.md` | the analyst paragraph under "When the pack is not enough" |
+| `.github/skills/docs-analytics/SKILL.md` | the "Where did the documentation run out?" row, the report shape |
+| `work-items/_analysis-template.md` | Parts evidence may come from step 10; Sources lists the free pass files |
+| `scripts/coverage-matrix.py` | `open_items()` (an item with its continuation lines), the **answered from code** column and JSON field, the footnote |
+| `scripts/context-pack.py` | the pack footer rule names steps 9 and 10; the rest unchanged |
+
+### 34.2 Docs repository: single rows
+
+`.github/copilot-instructions.md`, the analyst row of the routing table: "..., then a free reading pass for a question
+that still blocks". `CONCEPT.md`, the context pack paragraph: the same clause. Run `python3 scripts/coverage-matrix.py`
+once after copying so `generated/analytics/coverage-matrix.md` carries the column; existing Open questions written
+under section 23 already cite `code-read` and are counted without any edit.
+
+### 34.3 Playbook and guides (read only)
+
+Playbook section 0 (safety table row, the paragraph on letting Copilot read the code), section 12 (the analyst
+summary), section 15 (the catalogue row) and 17.2 (a second revision paragraph with the reason); `GUIDE.md`,
+`HANDBOOK.md` and `ANALYST-DOCS-SETUP.md` (step 10 added to its agent copy) say the same. No kit file changes.

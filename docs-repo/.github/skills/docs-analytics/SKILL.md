@@ -16,13 +16,15 @@ Gherkin, and the graph's spec coverage.
 | Which specs are trustworthy? | badges in `features/index.md`, `features/<ctx>/index.md` (`human-reviewed`, `machine-confirmed`, `unverified`, `STALE`, `draft`) | `python3 scripts/build-index.py` |
 | Which code has no spec / which spec has no code? | `generated/graph/REPO_MAP.md` -> **Spec coverage** (`spec + code`, `code only`, `spec only`) | `python3 scripts/gen-graph.py` |
 | What is open? | `## Open questions` sections; `questions[]` in `work-items/*.yml` | `search` for `- [ ]` under features/ |
+| Where did the documentation run out? | `generated/analytics/coverage-matrix.md`, column **answered from code**: open questions the analyst settled from source (`code-read` items) | `python3 scripts/coverage-matrix.py` |
 | What changed recently? | `log.md`; spec **Change log** tables | - |
 | Which specs does a code change hit? | `scripts/map-paths.py`, `graph-query.py --files` | - |
 
 ## Report shape (<= 25 lines)
 1. Scope and date; number of specs by status/badge.
-2. Table: spec | BRs | with story | with scenario | badge | stale_after.
-3. Gaps: `code only` communities (write spec), `spec only` (tag code), rules without scenarios, drafts older than 30 days.
+2. Table: spec | BRs | with story | with scenario | answered from code | badge | stale_after.
+3. Gaps: `code only` communities (write spec), `spec only` (tag code), rules without scenarios, drafts older than 30 days,
+   specs with the most questions answered from code (the analyst had to read source: refresh them first).
 4. Top 3 actions with the prompt to run (`/spec-skeleton-from-graph`, `/tests-from-spec`, `/audit-calculation`).
 
 ## Rules

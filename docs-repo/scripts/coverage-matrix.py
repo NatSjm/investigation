@@ -18,6 +18,20 @@ from _common import (repo_root, read_text_or_empty, write_text, get_fm, get_val,
 SPEC_NAME = re.compile(r'^[A-Z][A-Z0-9]*-\d{3}[a-z]?\.md$', re.I)
 
 
+def open_items(text):
+    """Open question items (`- [ ]` with their indented continuation lines), one string each."""
+    items, open_ = [], False
+    for line in text.splitlines():
+        if re.match(r'^\s*-\s*\[ \]', line):
+            items.append(line)
+            open_ = True
+        elif open_ and line.startswith((' ', '\t')) and not re.match(r'^\s*-\s', line):
+            items[-1] += ' ' + line.strip()
+        else:
+            open_ = False
+    return items
+
+
 def unique(items):
     out = []
     for x in items:
@@ -67,7 +81,9 @@ def main():
         # stories that cite a rule of this spec (a request epic's other stories belong to other specs)
         stories = sum(1 for b in re.split(r'(?m)^\s{2}-\s+id:', wi)[1:] if re.search(r'rule:\s*BR-' + re.escape(sid) + r'-\d+\b', b, re.I))
         scenarios = len(re.findall(r'(?m)^\s*Scenario', ft))
-        open_q = len(re.findall(r'(?m)^\s*-\s*\[ \]', t))
+        items = open_items(t)
+        open_q = len(items)
+        from_code = sum(1 for x in items if 'code-read' in x)
         missing_story = [b for b in brs if b not in with_story]
         missing_scenario = [b for b in brs if b not in with_scenario]
 
@@ -81,9 +97,9 @@ def main():
         ctx = get_val(fm, 'context')
         bd = badge(fm, now)
         sa = get_val(fm, 'stale_after')
-        rows.append(f'| {sid} | {ctx} | {len(brs)} | {len(with_story)} ({stories} stories) | {len(with_scenario)} ({scenarios} scenarios) | {open_q} | {bd} | {sa} | {fmt_missing(missing_story, len(brs))} | {fmt_missing(missing_scenario, len(brs))} |')
+        rows.append(f'| {sid} | {ctx} | {len(brs)} | {len(with_story)} ({stories} stories) | {len(with_scenario)} ({scenarios} scenarios) | {open_q} | {from_code} | {bd} | {sa} | {fmt_missing(missing_story, len(brs))} | {fmt_missing(missing_scenario, len(brs))} |')
         js.append({'id': sid, 'context': ctx, 'rules': len(brs), 'rulesWithStory': len(with_story), 'rulesWithScenario': len(with_scenario),
-                   'stories': stories, 'scenarios': scenarios, 'openQuestions': open_q, 'badge': bd, 'staleAfter': sa,
+                   'stories': stories, 'scenarios': scenarios, 'openQuestions': open_q, 'openQuestionsFromCode': from_code, 'badge': bd, 'staleAfter': sa,
                    'rulesWithoutStory': missing_story, 'rulesWithoutScenario': missing_scenario})
 
     calc_rows = []
@@ -113,8 +129,8 @@ stale_after: {(now + timedelta(days=14)).strftime('%Y-%m-%d')}T00:00:00Z
 
 ## Feature specs
 
-| Spec | Context | BRs | with story | with scenario | open questions | badge | stale_after | BR numbers without story | BR numbers without scenario |
-|---|---|---|---|---|---|---|---|---|---|
+| Spec | Context | BRs | with story | with scenario | open questions | answered from code | badge | stale_after | BR numbers without story | BR numbers without scenario |
+|---|---|---|---|---|---|---|---|---|---|---|
 {chr(10).join(rows)}
 
 ## Calculations
@@ -122,6 +138,9 @@ stale_after: {(now + timedelta(days=14)).strftime('%Y-%m-%d')}T00:00:00Z
 | Calculation | used_by | worked examples | audited | badge |
 |---|---|---|---|---|
 {chr(10).join(calc_rows)}
+
+**answered from code**: open questions whose item cites `code-read` - the analyst had to settle them from source
+(analyst agent steps 9 and 10), so the documentation ran out there; refresh those specs first.
 
 Spec coverage of the code (`spec + code` / `code only` / `spec only`): see `generated/graph/REPO_MAP.md`.
 """

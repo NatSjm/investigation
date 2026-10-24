@@ -8,6 +8,7 @@
     "stories": 4,
     "scenarios": 0,
     "openQuestions": 4,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "",
     "rulesWithoutStory": [
@@ -37,6 +38,7 @@
     "stories": 0,
     "scenarios": 0,
     "openQuestions": 1,
+    "openQuestionsFromCode": 0,
     "badge": "human-reviewed",
     "staleAfter": "2027-01-06T00:00:00Z",
     "rulesWithoutStory": [
@@ -71,6 +73,7 @@
     "stories": 0,
     "scenarios": 0,
     "openQuestions": 3,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-07T00:00:00Z",
     "rulesWithoutStory": [
@@ -93,6 +96,7 @@
     "stories": 6,
     "scenarios": 0,
     "openQuestions": 2,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-06T00:00:00Z",
     "rulesWithoutStory": [
@@ -124,6 +128,7 @@
     "stories": 2,
     "scenarios": 0,
     "openQuestions": 2,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-13T00:00:00Z",
     "rulesWithoutStory": [],
@@ -144,6 +149,7 @@
     "stories": 1,
     "scenarios": 0,
     "openQuestions": 4,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-13T00:00:00Z",
     "rulesWithoutStory": [],
@@ -162,6 +168,7 @@
     "stories": 2,
     "scenarios": 0,
     "openQuestions": 2,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-13T00:00:00Z",
     "rulesWithoutStory": [
@@ -197,6 +204,7 @@
     "stories": 0,
     "scenarios": 0,
     "openQuestions": 1,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-13T00:00:00Z",
     "rulesWithoutStory": [
@@ -223,6 +231,7 @@
     "stories": 0,
     "scenarios": 0,
     "openQuestions": 1,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-13T00:00:00Z",
     "rulesWithoutStory": [
@@ -245,6 +254,7 @@
     "stories": 1,
     "scenarios": 0,
     "openQuestions": 3,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-10T00:00:00Z",
     "rulesWithoutStory": [
@@ -282,6 +292,7 @@
     "stories": 0,
     "scenarios": 0,
     "openQuestions": 3,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-07T00:00:00Z",
     "rulesWithoutStory": [
@@ -304,6 +315,7 @@
     "stories": 0,
     "scenarios": 0,
     "openQuestions": 1,
+    "openQuestionsFromCode": 0,
     "badge": "human-reviewed",
     "staleAfter": "2027-01-06T00:00:00Z",
     "rulesWithoutStory": [
@@ -340,6 +352,7 @@
     "stories": 1,
     "scenarios": 9,
     "openQuestions": 2,
+    "openQuestionsFromCode": 0,
     "badge": "draft · unverified",
     "staleAfter": "2027-01-07T00:00:00Z",
     "rulesWithoutStory": [

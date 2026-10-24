@@ -1,6 +1,15 @@
 # Update Log
 
 ## 2026-10-24
+* **Analyst: a free reading pass when a question still blocks.** The five map-located ranges of step 9 stopped the
+  analyst wherever a context's documentation had not caught up. A question that still blocks the answer or the
+  analysis after them now earns one free reading pass over `../backend` and `../frontend` (search, whole files, call
+  chains; analyst agent step 10), for blocking questions only, never for "is this intended". Findings keep the step 9
+  discipline (`code-read` evidence, unverified, `needs-spec-review`, an Open question in the spec), the files read
+  are listed in the analysis document, and `coverage-matrix.py` gained the **answered from code** column (open
+  question items citing `code-read`, `openQuestionsFromCode` in the JSON): the documentation gaps that cost analyst
+  time. Prompt `analyse-request`, the `task-context` and `docs-analytics` skills, the analysis template, the pack
+  footer rule and the routing table updated; spec-writer and calc-auditor unchanged.
 * **Graph viewer: the `docs` community is selectable.** `graph.json` lists the code communities only; the spec and
   calculation nodes carry the community `docs`, which the viewer drew in the legend but left out of the dropdown, so
   the legend click did nothing and `--community docs` fell back to the whole graph. The dropdown now adds every

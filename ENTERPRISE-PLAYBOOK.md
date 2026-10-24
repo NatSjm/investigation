@@ -94,7 +94,7 @@ Read this section first; it is what you will be asked about.
 | Agents never edit `generated/**` or any `index.md` | `scripts/hooks/guard-generated.py` as a `preToolUse` hook; CI `gen-graph.py --check`, `build-index.py --check` |
 | Agents never write `verified.by: human:*` | `AGENTS.md` hard rule; `okf-validate.py` rejects a `verified` whose actor is not `human:`; review of every PR |
 | Every agent-written document is `status: draft` with `generated: { by: copilot/<agent>, at }` | templates, `validate-frontmatter.py`, index badges |
-| The analyst reads at most five code ranges per task, located through the generated maps, never by a code search; other agents open at most the files their procedure names | agent files (`.github/agents/*.agent.md`), context pack footer rule |
+| The analyst reads at most five code ranges per task, located through the generated maps, and takes one free reading pass over both repositories only for a question that still blocks its answer; other agents open at most the files their procedure names | agent files (`.github/agents/*.agent.md`), context pack footer rule |
 | An agent cannot finish with an invalid bundle | `agentStop` hook runs the validators (`.github/hooks/docs-quality.json`) |
 | One run, one human review, one commit | process; branch protection on the docs repo |
 | Synthetic data only in docs, fixtures, packs, work items | `AGENTS.md` hard rule; reviewers; Confluence attachments are not imported |
@@ -117,7 +117,8 @@ keep the `preToolUse` guard on, and never auto-merge an agent's PR. Interactive 
 rules; the hooks apply to both.
 
 **Is it safe to let Copilot read the code at all?** The documentation agents read maps and contracts first and open a
-named source range only when a procedure says so; the analyst at most five ranges per task. That is less exposure than a developer's
+named source range only when a procedure says so; the analyst at most five ranges per task, plus a free reading pass for a
+question that still blocks its answer. That is less exposure than a developer's
 normal Copilot session. The real controls are the same as for any Copilot use: content exclusion, repository
 permissions, and review of what gets committed.
 
@@ -696,7 +697,8 @@ What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: bu
 graph, contracts, tables, related work), check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
 per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when blocking, into the
 spec's Open questions. Read source only when the pack leaves a question open: at most five ranges, located through
-the maps, each recorded as `code-read` evidence and an open question (decision and setup: 17.2 and section 19). On a finished feature the
+the maps, then a free reading pass for a question that still blocks, each finding recorded as `code-read` evidence and
+an open question (decision and setup: 17.2 and section 19). On a finished feature the
 input is a change request and the output is delta stories only (17.1).
 
 The everyday sequence:
@@ -793,7 +795,7 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 
 | Agent | Input | May read | Writes | Start with it in |
 |---|---|---|---|---|
-| `analyst` | spec ID, calculation, graph node, free text, analytics question | the pack; up to five code ranges located through the maps when it leaves a question open | `work-items/<ID>.yml`, open questions in the spec, `generated/analytics/*` | week 1 |
+| `analyst` | spec ID, calculation, graph node, free text, analytics question | the pack; up to five code ranges located through the maps when it leaves a question open, then a free reading pass for a question that still blocks | `work-items/<ID>.yml`, open questions in the spec, `generated/analytics/*` | week 1 |
 | `spec-writer` | context + ID | pack, `generated/graph/<ctx>.md`, contracts, the entry-point class | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | week 1 |
 | `calc-auditor` | calculation name, spec ID or formula page | the calculator and its unit test, nothing else | `domain/calculations/<name>.md` with audit table | week 1 |
 | `confluence-migrator` | one page path | the page, the pack, `generated/` | merged concept, glossary rows, page moved to `_done/` | week 2 |
@@ -882,6 +884,16 @@ pilot. When a context's specs are verified this access goes mostly unused; an an
 a mature context points at a spec that misses something. The code repositories are sibling checkouts (section 19). Where they are
 not available, for example Copilot chat on github.com or a machine with the docs repo only, the agent records the
 question and stops; nothing else in the procedure depends on code access, so the web experience is not broken.
+
+Revised again 2026-10-24: five ranges were still a stop for the analyst when the documentation of a context had not
+caught up, and a stopped analyst delivers nothing. A question that still blocks the answer or the analysis after the
+five ranges now earns one **free reading pass** over both repositories (search, whole files, call chains; analyst
+agent step 10). The pass is for blocking questions only, never for "is this intended", which code cannot answer. Its
+findings keep the step 9 discipline (`code-read` evidence, unverified, `needs-spec-review`, an Open question in the
+spec), the files read are listed in the analysis document, and `coverage-matrix.py` counts the open questions
+answered from code per spec in an **answered from code** column: the gaps that cost analyst time, which the
+migration lead uses to order the next spec runs. The spec-writer and the calculation auditor keep their narrower
+reading on purpose.
 Headless runs that should have this access pass `--add-dir ../backend --add-dir ../frontend`; runs that should not,
 simply omit the flags and the CLI refuses the path.
 
