@@ -1081,3 +1081,27 @@ a glance" table of `architecture/overview.md`, the context list and the ID line 
 the undivided family (a controller, a result entity and its table, the page if one serves both halves) go to the
 context whose screen spec documents the page; the other context's first spec cites that screen and mirrors identical
 rules as `(source: spec BR-...)` (`features/conventions.md`, "Shaping specs" items 4 and 5).
+
+## 30. Skeleton prompt: an optional entry file (investigation commits after `d2299ce`, 2026-10-24)
+
+A context node carries one entry point: the class `<Prefix><EntryLayer>` when it exists, else the shortest class of the
+entry layer. Run 1 reads exactly that file for Summary, Actors and Business rules. A context whose entry layer holds
+one class per screen and no orchestrator above them (a hedge service and a scenario service behind two pages, no
+`<Prefix>Service`) therefore gets the first screen's class as entry point, and the skeleton of the second screen would
+be drafted from the wrong file. The prompt takes a third, optional argument, the entry file:
+`/spec-skeleton-from-graph <ctx> <ID> service/<ScreenClass>.kt` (CLI: "Follow .github/prompts/spec-skeleton-from-graph.prompt.md
+with community = <ctx>, id = <ID>, entry = service/<ScreenClass>.kt"). The spec-writer reads it instead of the node's
+file, still one source file, and everything after the skeleton is unchanged: the spec's own `code_refs` and source
+markers name the right class. Splitting such a context by prefix is the other answer, when the class names allow it.
+
+### 30.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/prompts/spec-skeleton-from-graph.prompt.md` | the `entry` input and the sentence that uses it |
+| `.github/agents/spec-writer.agent.md` | step 3: the entry file the call names replaces the node's file |
+| `.github/skills/spec-lifecycle/SKILL.md` | Run 1 row: the third argument |
+| `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 1: the source-file item |
+
+Your copies name the service layer where these name the manager (`entry_layer` = `service`); keep that wording when you
+merge. Playbook section 10 (Run 1 paragraph) is read only.

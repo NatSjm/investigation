@@ -2,7 +2,7 @@
 
 ## Run 1 - skeleton (`spec-writer`)
 - [ ] API / Events / Data / UI flow filled from `generated/graph/<ctx>.md` and the contracts, names exact
-- [ ] Summary / Actors / Business rules from the manager KDoc only; each BR one MUST / MUST NOT assertion
+- [ ] Summary / Actors / Business rules from the manager KDoc only (or the entry file the call named, for a second screen of a context with one entry class per screen); each BR one MUST / MUST NOT assertion
 - [ ] `code_refs` from node locations (file only), `context`, `api`, `events`, `tables` set
 - [ ] `api[]` holds only operations handled in this context; a called operation of another context is in the API table with `owned by <SPEC-ID>`
 - [ ] every rule ends with a `(source: code manager#<method>)` marker naming the symbol it came from, never a line range

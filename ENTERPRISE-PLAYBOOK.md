@@ -623,7 +623,13 @@ holds only the operations this context handles, and what the screen calls elsewh
 owner (consumers read `api[]` as scope: pack contracts, coverage, API tests); and every rule ends with a source marker
 naming the symbol it came from, `(source: code manager#<method>)`, never a line range, so the owner at Run 4 opens one
 method per rule instead of the file (`okf-validate.py --strict` warns on a draft rule without one). Do this for every
-context in one sitting; it is mechanical.
+context in one sitting; it is mechanical. One case needs a third argument: a context whose entry layer holds one class
+per screen and no orchestrator above them (a hedge service and a scenario service, two pages, no `<Prefix>Service`).
+The graph names one of them as the context's entry point, the shortest name, so the first skeleton reads the right
+file and the second would read the first screen's. Pass the file of this screen's class as the entry file,
+`/spec-skeleton-from-graph product1 P1-002 service/ScenarioService.kt`; the agent reads it instead of the node's file,
+still exactly one source file. Nothing after the skeleton needs it: the spec's own `code_refs` and markers name the
+right class from then on.
 
 **Run 2, legacy pages.** `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run. New facts are
 merged into the skeleton, contradictions become `> ⚠️ CONFLICT (legacy: <page>)` callouts, unverifiable claims

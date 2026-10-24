@@ -32,7 +32,9 @@ or a free-text feature description.
    - **Calculations** <- `spec:*` nodes of kind calculation; link, never inline;
    - frontmatter `code_refs` <- node locations (file only), `api`, `events`, `tables`, `context`.
 3. For **Summary**, **Actors** and **Business rules** open **only** the manager file named on the `context:` node
-   (layer `manager/`, `<Ctx>Manager.kt`; its KDoc carries the responsibilities). Do not open controllers, calculators, daos
+   (layer `manager/`, `<Ctx>Manager.kt`; its KDoc carries the responsibilities), or the entry file the call names in its
+   place (a context whose entry layer holds one class per screen: the node names the first screen's class, the call
+   names this screen's). One source file either way. Do not open controllers, calculators, daos
    or FE components. Write rules as `BR-<ID>-<n>` MUST statements, one assertion each. Every rule ends, after its
    footnote, with the source marker `(source: code manager#<method>)` naming the manager method (or property, or the
    class when only the class KDoc states it) the rule came from - the symbol, never a line range; a rule that only

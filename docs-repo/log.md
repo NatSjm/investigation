@@ -1,5 +1,12 @@
 # Update Log
 
+## 2026-10-24
+* **Skeleton prompt: optional entry file.** `/spec-skeleton-from-graph <ctx> <ID> [entry file]`: a context whose
+  entry layer holds one class per screen and no `<Prefix>Manager` gets one entry point on its `context:` node, right
+  for the first spec only; the call now names the file of this spec's screen and the spec-writer reads it instead (one
+  source file either way). Prompt, `spec-writer` step 3, `spec-lifecycle` table and Run 1 checklist updated; no
+  script or spec changed.
+
 ## 2026-10-23
 * **Spec prefix: 3 to 5 characters.** `.github/prompts/context-map-from-code.prompt.md` told the architect "2-3
   uppercase letters"; the validators accept `[A-Z][A-Z0-9]*` before the dash, so the prompt now says 3-5 uppercase
