@@ -87,11 +87,11 @@ $$ landedCost_m = value_m \cdot (1 + tariffRate) + qty \cdot handlingCost(city) 
 $$ cumulativeValue_m = \sum_{k \le m} value_k \quad \text{(per group)} $$
 
 Step list:
-1. Build the month grid `m0 .. m0 + horizon - 1` (`MonthGrid.kt`).
-2. For each row and month compute `value` and round (scale 2, HALF_EVEN).[^impl][^rounding]
-3. Compute `landedCost` from the **rounded** value, round again.[^impl]
-4. Group by sub-product / dimension value / direction / all, summing `quantity`, `value`, `landed_cost`.[^impl]
-5. Per group, `cumulative_value(m) = cumulative_value(m-1) + value(m)`.[^impl]
+1. Build the month grid `m0 .. m0 + horizon - 1` (`MonthGrid.kt`). (source: code impl#aggregate)
+2. For each row and month compute `value` and round (scale 2, HALF_EVEN).[^impl][^rounding] (source: code impl#valueRow)
+3. Compute `landedCost` from the **rounded** value, round again.[^impl] (source: code impl#valueRow)
+4. Group by sub-product / dimension value / direction / all, summing `quantity`, `value`, `landed_cost`.[^impl] (source: code impl#aggregate)
+5. Per group, `cumulative_value(m) = cumulative_value(m-1) + value(m)`.[^impl] (source: code impl#group)
 
 # Computation
 ```kotlin
@@ -122,7 +122,7 @@ Month grid: calendar months from the session start month, horizon from `session_
 Rounding: HALF_EVEN scale 2 per row, before grouping; cumulative sums add rounded values · Price basis:
 `session_client_config.price_basis` selects the `unit_price` / baseline leg (`VLD|NRL`, `CST|MRD`) · Missing data:
 modelled row replaces the actual row with the same grouping key; months without rows yield 0 and still appear ·
-Time zone: UTC.
+Time zone: UTC. (source: code rounding#money)
 
 ## Worked examples
 Copied from the executor test.[^tests] Parameters: `tariffRate = 0.05`, `handlingCost(Aldmoor) = 0.80`,

@@ -21,4 +21,5 @@ Additions of the port: `--path <folder or file>` chooses which files can fail wh
 (links resolve from the root `index.md` that carries `okf_version`); a past `stale_after` is listed as `stale` and
 never fails a run (the reference checker does not report it). A repo rule of this bundle, not of the OKF spec: in a draft `Feature Spec` no person has
 verified, a business rule without a `(source: ...)` marker, a marker naming no `sources[].id`, or a code marker without a
-`#symbol` is a warning (`features/conventions.md`, "Provenance per rule").
+`#symbol` is a warning (`features/conventions.md`, "Provenance per rule"); the same for a Formula step or the Conventions
+paragraph of a draft `Attested Computation` not tagged `proposed` (`calculations.instructions.md`, "Provenance per step").

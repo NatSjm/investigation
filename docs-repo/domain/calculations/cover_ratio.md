@@ -61,9 +61,9 @@ $$ coveredValue(m) = \sum_{rows} value_{row}(m) \cdot coveredShare_{policy(row, 
 $$ coverRatio(m) = \frac{coveredValue(m)}{totalValue(m)} \quad (0 \text{ when } totalValue(m) = 0) $$
 
 Step list:
-1. For each projection row and month find the matching policy valid in `m` (none → `coveredShare = 0`).[^impl]
-2. Sum `value × coveredShare` → `coveredValue(m)`; sum `value` → `totalValue(m)`.[^impl]
-3. Divide at scale 4, HALF_EVEN; return `0` when `totalValue(m) = 0`.[^impl]
+1. For each projection row and month find the matching policy valid in `m` (none → `coveredShare = 0`).[^impl] (source: code impl#coveredShare)
+2. Sum `value × coveredShare` → `coveredValue(m)`; sum `value` → `totalValue(m)`.[^impl] (source: code impl#build)
+3. Divide at scale 4, HALF_EVEN; return `0` when `totalValue(m) = 0`.[^impl] (source: code impl#build)
 
 # Computation
 ```kotlin
@@ -78,7 +78,7 @@ object CoverRatioCalculator {
 ## Conventions
 Month grid: session horizon · Rounding: ratio scale 4, HALF_EVEN · Policy matching: by `sub_product`; a policy
 without `sub_product` matches all sub-products of the product group (**to confirm**) · Overlapping policies: shares
-are summed and capped at 1 (**to confirm**) · Time zone: UTC.
+are summed and capped at 1 (**to confirm**) · Time zone: UTC. (source: code impl#coveredShare)
 
 ## Worked examples
 | # | Case | Inputs | Expected output |

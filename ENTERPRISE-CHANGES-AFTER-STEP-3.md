@@ -1126,3 +1126,45 @@ suffix match no graph node in `context-pack.py --files`, so its impact section c
 | `.github/instructions/calculations.instructions.md` | the `code_refs` bullet |
 | `.github/agents/calc-auditor.agent.md` | step 2: `file:line` is where you read, not what you write |
 | `.github/skills/calculation-spec/SKILL.md` | step 7: file only, symbol in the rows |
+
+## 32. Calculations: a source marker per Formula step (investigation commits after `a3340ca`, 2026-10-24)
+
+Section 31 took the line numbers out of the calculation documents; this section puts the symbols in. Pattern F of
+`EXTERNAL-PATTERNS.md`, applied to specs in section 28, now applies to calculations: until a person verifies the
+document, every numbered step of the Formula step list and the Conventions paragraph end, after their footnotes, with
+one marker, `(source: code <sources-id>#<symbol>)` naming the `sources[]` entry of the file and the function, property
+or constant that implements the step (`impl#build`, `rounding#divideAsRatio`), or the legacy / person / spec form of the
+spec rule. `code_refs` stay files (machines read them: impact, docs-map, the freshness gate); the marker is what a
+reader follows (a function is a unit of meaning and survives edits inside the file; a line is true for one commit).
+`calc-auditor` opens the symbol each marker names at Run 3 and compares the step with it; a symbol that no longer
+exists or does not do what the step says is a `DOC-STALE` finding. `okf-validate.py --strict` warns on a draft,
+unverified `Attested Computation` whose Formula step or Conventions paragraph has no marker, whose marker names no
+`sources[].id`, or whose code marker has no symbol; a calculation tagged `proposed` (no implementation yet) is exempt.
+Applied to Harbor: 24 markers on the five draft calculations, symbols read from the calculator files; the two verified
+documents and the proposed roll-up untouched. Checked: the validator reports the three warning kinds on a throwaway
+copy and zero on the bundle; `build-index.py --check` and `validate-frontmatter.py` clean.
+
+Reading the calculators for the symbols also showed one audit candidate: `scenario_price_path` says "round to scale 4"
+in step 3 while `ScenarioPricePath.apply` rounds with `money()` (scale 2). Left for `calc-auditor`, not fixed here.
+
+### 32.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/okf-validate.py` | the Attested Computation marker warnings (step without marker, unknown `sources[].id`, code marker without symbol; `proposed` tag exempt) |
+| `domain/calculations/_template.md` | step list and Conventions line carry the marker placeholders |
+| `.github/agents/calc-auditor.agent.md` | step 2: open the symbol each marker names; a stale symbol is `DOC-STALE`; a step without marker gets one |
+| `.github/skills/calculation-spec/SKILL.md` | steps 4 and 6: the marker per step and on the Conventions paragraph |
+| `.github/skills/okf-validate/SKILL.md` | the warn bullet names the calculation rule |
+| `.github/skills/okf/PORTING.md` | the additions paragraph names the calculation rule (CRLF file) |
+
+### 32.2 Docs repository: sections and sentences to merge
+
+| File | Where | What |
+|---|---|---|
+| `.github/instructions/calculations.instructions.md` | after the `code_refs` bullet | the **Provenance per step** bullet |
+| `AGENTS.md` | provenance bullet of Hard rules | "so does every Formula step and the Conventions paragraph of a calculation" |
+
+Your calculation documents written before this section: run `audit-calculation` on each (the auditor adds the markers
+from what it reads) or add them by hand, one symbol per step; until then `okf-validate.py --strict` warns on each draft
+step, so copy the validator together with the instructions and refresh the drafts in the same change.

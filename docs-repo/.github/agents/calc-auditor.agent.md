@@ -22,6 +22,10 @@ A calculation name (`stress_test_monthly`), a spec ID (audit all calculations it
    two files in `../backend`: the calculator class and its test (`.../calc/<Class>Test.kt`). Nothing else. The
    `file:line` is where you read, not what you write: `code_refs` and `sources[]` name the file only, a worked-example
    row names the test method, an audit row the function or property; never a line number or range in the concept.
+   Every Formula step and the Conventions paragraph end with a source marker, `(source: code impl#<function>)`; open
+   the symbol each marker names and compare the step with it. A step whose marker names a symbol that no longer
+   exists, or that does not do what the step says, is a finding (`DOC-STALE`); a step without a marker gets one from
+   what you read, never a line.
 3. Compare, item by item: formula terms, parameter names and defaults (`generated/be/db-schema.md` ->
    `parameter_set` seeds in `V9__parameters.sql` if the class reads parameters), thresholds, rounding mode and scale,
    sign conventions (importer / exporter / mixed), month-grid convention, and every worked example against the

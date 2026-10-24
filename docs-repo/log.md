@@ -1,6 +1,15 @@
 # Update Log
 
 ## 2026-10-24
+* **Calculations: a source marker per Formula step and on the Conventions paragraph.** Pattern F applied to
+  calculations: until a person verifies the document, every numbered step of the Formula step list and the
+  Conventions paragraph end with `(source: code <sources-id>#<symbol>)` naming the function, property or constant
+  that implements them (or the legacy / person / spec form); `okf-validate.py --strict` warns on a draft step or
+  paragraph without one, with an unknown `sources[].id` or a code marker without symbol; a calculation tagged
+  `proposed` is exempt. Applied to the five draft calculations (24 markers, symbols read from the calculator files:
+  `coveredShare`, `build`, `totals`, `totalsOf`, `divideAsRatio`, `aggregate`, `valueRow`, `group`, `money`,
+  `median`, `simulate`, `factorAt`, `apply`); the two verified ones and the proposed roll-up untouched. Template,
+  calculations instructions, `calc-auditor` step 2 and the `calculation-spec` skill updated.
 * **Calculations: `code_refs` are files, never line ranges.** The calculation template (`#L10-L80`, `URL#Lx-Ly`) and
   `calculations.instructions.md` ("optional `#Lx-Ly`") still allowed line ranges, so `calc-auditor` wrote them while
   the spec rule (conventions, "Provenance per rule") says a symbol, never a line. Template, instructions,

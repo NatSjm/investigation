@@ -48,9 +48,10 @@ What business quantity it produces and on which page / table it is shown.
 ## Formula
 $$ … $$
 
-Step list:
-1. …
-2. …
+Step list (every step ends, after its footnotes, with the symbol that implements it: `(source: code impl#<function>)`,
+or the legacy / person / spec form; never a line - `okf-validate.py --strict` warns on a draft step without one):
+1. …[^impl] (source: code impl#<function>)
+2. …[^impl] (source: code impl#<function>)
 
 # Computation
 ```kotlin
@@ -58,7 +59,7 @@ Step list:
 ```
 
 ## Conventions
-Month grid: · Rounding: · Price basis: · Missing data: · Time zone:
+Month grid: · Rounding: · Price basis: · Missing data: · Time zone: (source: code impl#<function or constant that enforces them>)
 
 ## Worked examples
 | # | Case | Inputs | Expected output |

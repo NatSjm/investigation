@@ -11,11 +11,14 @@ description: Document a business computation (monthly projection, cover ratio, s
    class **only** for the formula body, parameters and rounding - and its unit test for the worked examples.
 3. Worked examples are **copied** from the test (inputs, expected outputs, test method name). Never invent or
    hand-compute rows; if the test lacks a case you need, write an open question "add test case for ...".
-4. Write the formula in LaTeX-style Markdown (`$$ ... $$`) **and** as a plain step list; put the sanctioned code
-   shape (signature + core expression, not the whole class) under `# Computation`.
+4. Write the formula in LaTeX-style Markdown (`$$ ... $$`) **and** as a plain step list; every step ends, after its
+   footnotes, with the symbol that implements it, `(source: code impl#<function>)` (a function, property or constant
+   of a `sources[]` file, never a line); put the sanctioned code shape (signature + core expression, not the whole
+   class) under `# Computation`.
 5. Worked examples table: >= 3 rows - typical, boundary, degenerate (zero / empty / MIXED role).
 6. State: rounding mode and scale, units and price basis, month-grid convention, parameter keys (`parameter_set`)
-   with defaults, performance notes (`horizon months x scenarios x dimension values`).
+   with defaults, performance notes (`horizon months x scenarios x dimension values`); the Conventions paragraph
+   ends with the marker of the symbol that enforces them (`(source: code rounding#money)`).
 7. Frontmatter: `runtime: kotlin`, `parameters[]`, `executor.resource` = the test file, `used_by[]`, `code_refs` (the
    calculator and its test, file only; the `file:line` of step 2 says where to read, a line never enters the concept:
    name the test method in the worked-example row and the function in an audit row).

@@ -185,6 +185,32 @@ def main():
                 if kind == 'code' and '#' not in ref:
                     findings.append(('warn', r, f'{rid} code marker names no symbol (<sources-id>#<symbol>): {ref}'))
 
+        # repo rule "Provenance per step" (.github/instructions/calculations.instructions.md): in a draft Attested
+        # Computation no person has verified and that is not tagged `proposed`, every numbered step of the Formula step
+        # list and the Conventions paragraph end with a source marker (same forms as the spec rule)
+        if typ.lower() == 'attested computation' and (status or '').lower() == 'draft' \
+                and not re.search(r'(?m)^verified:', fm) and not re.search(r'(?m)^tags:.*\bproposed\b', fm):
+            def check_marker(where, body):
+                sm = re.search(r'\(source: (code|legacy|contract|person|spec) ([^\s)]+)\)', body)
+                if not sm:
+                    findings.append(('warn', r, f'{where} has no (source: ...) marker (repo rule: provenance per step)'))
+                    return
+                kind, ref = sm.group(1), sm.group(2)
+                if kind in ('code', 'legacy') and ref.split('#')[0].lower() not in source_ids:
+                    findings.append(('warn', r, f'{where} source marker names no sources[].id: {ref}'))
+                if kind == 'code' and '#' not in ref:
+                    findings.append(('warn', r, f'{where} code marker names no symbol (<sources-id>#<symbol>): {ref}'))
+            fsec = re.search(r'(?ms)^## Formula[^\r\n]*\r?\n(.*?)(?=^#|\Z)', text)
+            if fsec:
+                steps = re.split(r'(?m)^(?=\d+\.\s)', fsec.group(1))
+                for st in steps:
+                    sm_ = re.match(r'(\d+)\.\s', st)
+                    if sm_:
+                        check_marker(f'Formula step {sm_.group(1)}', st.split('\n\n')[0].split('\r\n\r\n')[0])
+            csec = re.search(r'(?ms)^## Conventions[^\r\n]*\r?\n(.*?)(?=^#|\Z)', text)
+            if csec and csec.group(1).strip():
+                check_marker('Conventions', csec.group(1))
+
         # internal links (spec-tolerated → warn), resolved from the bundle root whatever --path is
         for m in re.finditer(r'\]\((/[^)#\s]+\.md|(?:\./|\.\./)[^)#\s]+\.md)', text):
             link = m.group(1)

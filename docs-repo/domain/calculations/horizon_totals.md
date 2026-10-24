@@ -78,12 +78,12 @@ $$ total_k = \sum_{m \in horizon} line_{k,m} \quad \text{for quantity, value, la
 $$ share_k = \frac{value_k}{\sum_{k'} value_{k'}} = \frac{value_k}{overall.value} $$
 
 Step list:
-1. Take the four monthly tables of the session (output of `monthly_projection`).[^impl]
+1. Take the four monthly tables of the session (output of `monthly_projection`).[^impl] (source: code impl#totals)
 2. Per breakdown table, group the lines by key and sum `quantity`, `value`, `landedCost` over all months of the
-   horizon (`sumMoney`: add, then scale 2).[^impl][^rounding]
-3. Overall line: the same sums over the summary table.[^impl]
-4. `shareOfValue = divideAsRatio(value_k, overall.value)` (scale 4, HALF_EVEN, `0.0000` on a zero divisor).[^rounding]
-5. By construction the keys of every breakdown add up to the overall line (the same rows are summed three ways).
+   horizon (`sumMoney`: add, then scale 2).[^impl][^rounding] (source: code impl#totalsOf)
+3. Overall line: the same sums over the summary table.[^impl] (source: code impl#totals)
+4. `shareOfValue = divideAsRatio(value_k, overall.value)` (scale 4, HALF_EVEN, `0.0000` on a zero divisor).[^rounding] (source: code rounding#divideAsRatio)
+5. By construction the keys of every breakdown add up to the overall line (the same rows are summed three ways). (source: code impl#totalsOf)
 
 # Computation
 ```kotlin
@@ -109,7 +109,7 @@ fun totalsOf(lines: List<Line>, overallValue: BigDecimal): List<Total> =
 Rounding: inputs are the already rounded monthly figures (scale 2); sums are not rounded again beyond scale 2; the
 share is scale 4 HALF_EVEN · Price basis: inherited from the monthly tables · Missing data: a key with no rows does
 not appear; an empty projection yields an overall line of zeros with share `0.0000` and empty breakdowns · The
-dimension filter of the overview (`?city=`) restricts the monthly `byDimension` table and therefore its totals too.
+dimension filter of the overview (`?city=`) restricts the monthly `byDimension` table and therefore its totals too. (source: code impl#totals)
 
 ## Worked examples
 Copied from the executor test.[^tests] Monthly lines as in `monthly_projection` (tariff 0.05, handling Aldmoor 0.80,

@@ -60,10 +60,10 @@ $$ price_s(m) = baseline(m) \cdot \prod_{shock:\, fromMonth \le m} (1 + priceCha
 $$ transportPrice_s(m) = transportBaseline(m) \cdot \prod_{shock:\, fromMonth \le m} (1 + transportChangePct_{shock}) $$
 
 Step list:
-1. Sort shocks by `fromMonth`.[^impl]
+1. Sort shocks by `fromMonth`.[^impl] (source: code impl#factorAt)
 2. For each month `m` multiply the baseline by `(1 + pct)` of every shock whose `fromMonth <= m` (shocks are
-   cumulative, not replacing).[^impl]
-3. Round to scale 4; the baseline scenario is the empty shock list.[^impl]
+   cumulative, not replacing).[^impl] (source: code impl#factorAt)
+3. Round to scale 4; the baseline scenario is the empty shock list.[^impl] (source: code impl#apply)
 
 # Computation
 ```kotlin
@@ -81,7 +81,7 @@ object ScenarioPricePath {
 ## Conventions
 Month grid: session horizon, `fromMonth` is a 0-based index on that grid (**to confirm**) · Rounding: scale 4,
 HALF_EVEN per month · Price basis: corridor leg of `session_client_config.price_basis` · Missing baseline month:
-carry the last known value forward (**to confirm**) · Time zone: UTC.
+carry the last known value forward (**to confirm**) · Time zone: UTC. (source: code impl#apply)
 
 ## Worked examples
 | # | Case | Inputs | Expected output |

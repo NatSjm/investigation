@@ -72,9 +72,9 @@ $$ median(m) = \begin{cases} q_{(n+1)/2} & n \text{ odd} \\ \frac{q_{n/2} + q_{n
 $$ peerQty(m) = median(m) \cdot scalingFactor $$
 
 Step list:
-1. Sort the quantities of month `m`; take the median as defined above (even count: scale 4, HALF_EVEN).[^impl][^rounding]
-2. Multiply by `scalingFactor`; round to scale 2 HALF_EVEN.[^impl][^rounding]
-3. Emit one point per month, months sorted ascending.[^impl]
+1. Sort the quantities of month `m`; take the median as defined above (even count: scale 4, HALF_EVEN).[^impl][^rounding] (source: code impl#median)
+2. Multiply by `scalingFactor`; round to scale 2 HALF_EVEN.[^impl][^rounding] (source: code impl#simulate)
+3. Emit one point per month, months sorted ascending.[^impl] (source: code impl#simulate)
 
 # Computation
 ```kotlin
@@ -94,7 +94,7 @@ fun simulate(segmentQuantities: Map<YearMonth, List<BigDecimal>>, scalingFactor:
 ## Conventions
 Rounding: median scale 4 (even count), result scale 2, HALF_EVEN · Missing data: a month without peer quantities
 yields `0.00`; the month still appears when it is present in the input map · Segment: the peer segment is a label of
-the client profile; which clients belong to it is decided upstream, not here · Time zone: UTC.
+the client profile; which clients belong to it is decided upstream, not here · Time zone: UTC. (source: code impl#simulate)
 
 ## Worked examples
 Copied from the executor test.[^tests]
