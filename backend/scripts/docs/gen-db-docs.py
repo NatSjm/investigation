@@ -10,165 +10,20 @@ the folder as it is, whoever produced it, so both must keep this layout:
   <db_docs.dir>/schema/tables/<table>.md   description (table comment), columns with comments, relations, constraints
 
 Descriptions are the `COMMENT ON TABLE|COLUMN` statements of the migrations (the data dictionary lives with the DDL).
-Parsed: CREATE TABLE, ALTER TABLE ADD|DROP COLUMN, COMMENT ON; types and constraints are indicative (regex, no DB).
+The DDL is read by _migrations.py (CREATE TABLE, ALTER TABLE ADD|DROP|RENAME|ALTER COLUMN, ADD|DROP CONSTRAINT,
+DROP TABLE, COMMENT ON; schema-qualified and quoted names); types and constraints are indicative (regex, no DB).
 Example: python3 scripts/docs/gen-db-docs.py --root . --out docs/db"""
 import argparse
 import json
 import os
-import re
 import sys
 
 sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
-from _common import read_text, write_text, source_files, posix, rel_path, sort_key, utf8_stdout, load_config, utc_date
+from _common import write_text, sort_key, utf8_stdout, load_config, utc_date
+from _migrations import parse_migrations, relations, type_text, erd_word, erd_label
 
 DEFAULTS = {'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql']},
             'db_docs': {'dir': 'docs/db', 'generate': True, 'database': {'databaseType': 'postgresql', 'name': '', 'schema': 'public'}}}
-SIZE_RX = re.compile(r'^(\w+)\s*\(\s*(\d+)(?:\s*,\s*(\d+))?\s*\)$')
-
-
-def version_key(path):
-    name = os.path.basename(path)
-    m = re.match(r'^V(\d+(?:[._]\d+)*)__', name)
-    if m:
-        parts = [int(x) for x in re.split(r'[._]', m.group(1))]
-        if len(parts) == 1:
-            parts.append(0)
-        return (tuple(parts), name)
-    return ((9999, 0), name)
-
-
-def split_columns(body):
-    """Top-level comma split of a CREATE TABLE body (commas inside parentheses stay)."""
-    parts, depth, cur = [], 0, []
-    for ch in body:
-        if ch == '(':
-            depth += 1
-        elif ch == ')':
-            depth -= 1
-        if ch == ',' and depth == 0:
-            parts.append(''.join(cur))
-            cur = []
-        else:
-            cur.append(ch)
-    parts.append(''.join(cur))
-    return [re.sub(r'\s+', ' ', p.strip()) for p in parts if p.strip()]
-
-
-def parse_type(t):
-    m = SIZE_RX.match(t.strip())
-    if not m:
-        return t.strip().lower(), 0, 0
-    return m.group(1).lower(), int(m.group(2)), int(m.group(3) or 0)
-
-
-def parse_migrations(root, mig):
-    tables = {}   # name -> {'columns': [col], 'source', 'comment', 'checks': [], 'uniques': []}
-    files = sorted((f for f in source_files(root, mig['file_patterns']) if re.search(re.escape(mig['dir_pattern']), posix(f), re.I)), key=version_key)
-    for f in files:
-        sql = re.sub(r'(?m)--[^\n]*', '', read_text(f))
-        rel = rel_path(root, f)
-        for m in re.finditer(r'(?is)CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(\w+)\s*\((.*?)\)\s*;', sql):
-            name = m.group(1).lower()
-            t = {'columns': [], 'source': rel, 'comment': '', 'checks': [], 'uniques': []}
-            for part in split_columns(m.group(2)):
-                cm = re.match(r'^(?:CONSTRAINT\s+(\w+)\s+)?(PRIMARY\s+KEY|UNIQUE|FOREIGN\s+KEY|CHECK)\s*(.*)$', part, re.I)
-                if cm:
-                    kind = cm.group(2).upper().replace('  ', ' ')
-                    if kind == 'PRIMARY KEY':
-                        for c in re.findall(r'\w+', cm.group(3).split(')')[0]):
-                            for col in t['columns']:
-                                if col['name'] == c.lower():
-                                    col['primaryKey'] = True
-                    elif kind == 'FOREIGN KEY':
-                        fm = re.match(r'\(([^)]*)\)\s*REFERENCES\s+(\w+)\s*(?:\(([^)]*)\))?', cm.group(3), re.I)
-                        if fm:
-                            cols = [x.strip().lower() for x in fm.group(1).split(',')]
-                            pcols = [x.strip().lower() for x in (fm.group(3) or 'id').split(',')]
-                            for col in t['columns']:
-                                if col['name'] in cols:
-                                    col['references'] = {'table': fm.group(2).lower(), 'columns': pcols, 'constraint': (cm.group(1) or '').lower()}
-                    elif kind == 'CHECK':
-                        t['checks'].append({'name': (cm.group(1) or '').lower(), 'expression': cm.group(3).strip()})
-                    elif kind == 'UNIQUE':
-                        t['uniques'].append({'name': (cm.group(1) or '').lower(), 'columns': [x.strip().lower() for x in re.findall(r'\w+', cm.group(3).split(')')[0])]})
-                    continue
-                dm = re.match(r'^(\w+)\s+(\w+(?:\s*\([^)]*\))?)(.*)$', part)
-                if not dm:
-                    continue
-                rest = dm.group(3)
-                typ, size, digits = parse_type(dm.group(2))
-                col = {'name': dm.group(1).lower(), 'type': typ, 'size': size, 'digits': digits,
-                       'nullable': not re.search(r'NOT\s+NULL', rest, re.I) and not re.search(r'PRIMARY\s+KEY', rest, re.I),
-                       'primaryKey': bool(re.search(r'PRIMARY\s+KEY', rest, re.I)),
-                       'default': None, 'autoUpdated': typ in ('serial', 'bigserial', 'smallserial') or bool(re.search(r'GENERATED\s+(?:ALWAYS|BY\s+DEFAULT)', rest, re.I)),
-                       'comment': '', 'position': len(t['columns'])}
-                dfm = re.search(r'DEFAULT\s+((?:\'[^\']*\'|\w+(?:\([^)]*\))?))', rest, re.I)
-                if dfm:
-                    col['default'] = dfm.group(1)
-                fk = re.search(r'REFERENCES\s+(\w+)\s*(?:\(([^)]*)\))?', rest, re.I)
-                if fk:
-                    col['references'] = {'table': fk.group(1).lower(), 'columns': [x.strip().lower() for x in (fk.group(2) or 'id').split(',')], 'constraint': ''}
-                cks = re.search(r'CHECK\s*(\(.*\))', rest, re.I)
-                if cks:
-                    t['checks'].append({'name': '', 'expression': cks.group(1)})
-                t['columns'].append(col)
-            tables[name] = t
-        for m in re.finditer(r'(?i)ALTER\s+TABLE\s+(\w+)\s+ADD\s+(?:COLUMN\s+)?(\w+)\s+([^,;]+)', sql):
-            tn = m.group(1).lower()
-            if tn in tables:
-                spec = re.sub(r'\s+', ' ', m.group(3)).strip()
-                tm = re.match(r'^(\w+(?:\s*\([^)]*\))?)(.*)$', spec)
-                typ, size, digits = parse_type(tm.group(1)) if tm else (spec.lower(), 0, 0)
-                rest = tm.group(2) if tm else ''
-                col = {'name': m.group(2).lower(), 'type': typ, 'size': size, 'digits': digits,
-                       'nullable': not re.search(r'NOT\s+NULL', rest, re.I), 'primaryKey': False, 'default': None,
-                       'autoUpdated': False, 'comment': '', 'position': len(tables[tn]['columns']), 'addedIn': rel}
-                dfm = re.search(r'DEFAULT\s+((?:\'[^\']*\'|\w+(?:\([^)]*\))?))', rest, re.I)
-                if dfm:
-                    col['default'] = dfm.group(1)
-                fk = re.search(r'REFERENCES\s+(\w+)\s*(?:\(([^)]*)\))?', rest, re.I)
-                if fk:
-                    col['references'] = {'table': fk.group(1).lower(), 'columns': [x.strip().lower() for x in (fk.group(2) or 'id').split(',')], 'constraint': ''}
-                tables[tn]['columns'].append(col)
-        for m in re.finditer(r'(?i)ALTER\s+TABLE\s+(\w+)\s+DROP\s+(?:COLUMN\s+)?(\w+)', sql):
-            tn = m.group(1).lower()
-            if tn in tables:
-                tables[tn]['columns'] = [c for c in tables[tn]['columns'] if c['name'] != m.group(2).lower()]
-        for m in re.finditer(r"(?is)COMMENT\s+ON\s+TABLE\s+(\w+)\s+IS\s+'((?:[^']|'')*)'", sql):
-            tn = m.group(1).lower()
-            if tn in tables:
-                tables[tn]['comment'] = m.group(2).replace("''", "'").strip()
-        for m in re.finditer(r"(?is)COMMENT\s+ON\s+COLUMN\s+(\w+)\.(\w+)\s+IS\s+'((?:[^']|'')*)'", sql):
-            tn = m.group(1).lower()
-            for col in tables.get(tn, {'columns': []})['columns']:
-                if col['name'] == m.group(2).lower():
-                    col['comment'] = m.group(3).replace("''", "'").strip()
-    for t in tables.values():
-        for i, col in enumerate(t['columns']):
-            col['position'] = i
-    return tables
-
-
-def relations(tables):
-    """parents / children per table from the column references."""
-    parents = {tn: [] for tn in tables}
-    children = {tn: [] for tn in tables}
-    for tn, t in tables.items():
-        for col in t['columns']:
-            ref = col.get('references')
-            if not ref:
-                continue
-            parents[tn].append({'table': ref['table'], 'columns': [col['name']], 'parentColumns': ref['columns'], 'constraint': ref['constraint']})
-            children.setdefault(ref['table'], []).append({'table': tn, 'columns': [col['name']], 'parentColumns': ref['columns'], 'constraint': ref['constraint']})
-    return parents, children
-
-
-def type_text(col):
-    if col['size'] and col['digits']:
-        return f"{col['type']}({col['size']}, {col['digits']})"
-    if col['size']:
-        return f"{col['type']}({col['size']})"
-    return col['type']
 
 
 def md_cell(s):
@@ -218,16 +73,18 @@ def main():
     write_text(os.path.join(out, 'schema.json'), json.dumps(js, indent=2, ensure_ascii=False) + '\n')
 
     # ---------- ER diagram ----------
+    # Mermaid erDiagram: `type name PK, FK` (the keys comma-separated), type and name single words, a relationship per
+    # foreign key labelled with its column(s)
     erd = ['erDiagram\n']
     for tn in names:
-        erd.append(f'  {tn} {{\n')
+        erd.append(f'  {erd_word(tn)} {{\n')
         for c in tables[tn]['columns']:
-            keys = ' '.join(k for k, on in (('PK', c['primaryKey']), ('FK', bool(c.get('references')))) if on)
-            erd.append(f"    {c['type']} {c['name']}{(' ' + keys) if keys else ''}\n")
+            keys = ', '.join(k for k, on in (('PK', c['primaryKey']), ('FK', bool(c.get('references')))) if on)
+            erd.append(f"    {erd_word(c['type'])} {erd_word(c['name'])}{(' ' + keys) if keys else ''}\n")
         erd.append('  }\n')
     for tn in names:
         for p in parents.get(tn, []):
-            erd.append(f"  {p['table']} ||--o{{ {tn} : {','.join(p['columns'])}\n")
+            erd.append(f"  {erd_word(p['table'])} ||--o{{ {erd_word(tn)} : {erd_label(p['columns'])}\n")
     emit(os.path.join(out, 'schema', 'erd', 'overview.mmd'), ''.join(erd))
 
     # ---------- one page per table ----------

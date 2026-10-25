@@ -4,7 +4,7 @@ title: "cover_policy"
 description: "Cover policies of a client per product group and sub-product: covered share, premium rate, validity."
 generated:
   by: process:db-docs
-  at: 2026-10-21
+  at: 2026-10-25
 status: stable
 ---
 # cover_policy

@@ -4,7 +4,7 @@ title: "movement_monthly"
 description: "Monthly aggregate of goods_movement per client, sub-product, city, transport mode and direction; the input of every projection."
 generated:
   by: process:db-docs
-  at: 2026-10-21
+  at: 2026-10-25
 status: stable
 ---
 # movement_monthly

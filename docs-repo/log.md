@@ -1,5 +1,15 @@
 # Update Log
 
+## 2026-10-25
+* **Database documentation: the ER diagram parses and `ALTER TABLE` foreign keys are relations.** The kit's
+  `gen-db-docs.py` wrote a primary-and-foreign key column as `PK FK` (Mermaid wants `PK, FK`) and its migration
+  reader knew only an inline `REFERENCES` and a `FOREIGN KEY` inside the `CREATE TABLE` body with plain names, so a
+  key added by `ALTER TABLE ... ADD CONSTRAINT`, a schema-qualified or quoted name, a second `ADD COLUMN` in one
+  statement and a composite key were missing from `schema.json`, the table pages and the diagram. The reader is now
+  `scripts/docs/_migrations.py` (backend kit), shared with `gen-db-schema.py`; `generated/be/db/` and
+  `generated/be/db-schema.md` re-collected (Harbor: same 21 tables and 18 relations, the two `PK, FK` lines the only
+  diagram change); the `gen-graph.py` diagram fallback accepts a quoted composite label.
+
 ## 2026-10-24
 * **Analyst: the documentation folders are free after the pack.** The pack was the only way into `features/`,
   `domain/` and the other documentation folders, so a neighbour spec meant a rebuilt pack. The analyst now opens or

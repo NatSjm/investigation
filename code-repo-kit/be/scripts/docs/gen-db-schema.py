@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Approximate DB schema from Flyway SQL migrations (CREATE TABLE / ALTER TABLE ADD|DROP COLUMN). No database needed.
+"""Approximate DB schema from Flyway SQL migrations (CREATE TABLE, ALTER TABLE ADD|DROP|RENAME|ALTER COLUMN, ADD|DROP
+CONSTRAINT, DROP TABLE; read by _migrations.py). No database needed.
 Migrations are the SQL files matching `migrations.file_patterns` under a folder matching `migrations.dir_pattern`
 (docs-gen.json). Views are the files matching `migrations.view_patterns` under that folder or under any folder of
 `migrations.view_dirs`. Liquibase changelogs (XML/YAML) are not parsed; point the pattern at the SQL-formatted changelogs."""
@@ -11,21 +12,11 @@ import sys
 sys.dont_write_bytecode = True  # no __pycache__ next to the scripts
 from _common import (read_text, write_text, source_files, resolve_out, rel_path, header, escape_cell, posix,
                      sort_key, utf8_stdout, load_config, module_dirs, main_sources)
+from _migrations import parse_migrations, relations, type_text, erd_word, erd_label
 
 DEFAULTS = {'modules': [], 'source_root': 'src/main/kotlin', 'test_pattern': '', 'exclude_paths': [],
             'migrations': {'dir_pattern': '/db/migration/', 'file_patterns': ['V*.sql', 'R*.sql'], 'view_patterns': [],
                            'view_dirs': []}}
-
-
-def version_key(path):
-    name = os.path.basename(path)
-    m = re.match(r'^V(\d+(?:[._]\d+)*)__', name)
-    if m:
-        parts = [int(x) for x in re.split(r'[._]', m.group(1))]
-        if len(parts) == 1:
-            parts.append(0)
-        return (tuple(parts), name)
-    return ((9999, 0), name)
 
 
 def main():
@@ -39,42 +30,18 @@ def main():
     cfg = load_config(root, DEFAULTS, a.config)
     mig = cfg['migrations']
 
+    # columns as `type flags` (PK, NN, FK->parent; `(+<migration>)` when a later migration added the column), one
+    # relationship per foreign key
+    parsed = parse_migrations(root, mig)
+    parents, _ = relations(parsed)
     tables = {}
-    migrations = sorted((f for f in source_files(root, mig['file_patterns']) if re.search(re.escape(mig['dir_pattern']), posix(f), re.I)),
-                        key=version_key)
-    for f in migrations:
-        sql = read_text(f)
-        rel = rel_path(root, f)
-        for m in re.finditer(r'(?is)CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(\w+)\s*\((.*?)\)\s*;', sql):
-            name = m.group(1).lower()
-            cols = {}
-            for line in re.split(r',\s*\r?\n', m.group(2), flags=re.I):
-                l = line.strip()
-                if re.match(r'^(PRIMARY\s+KEY|CONSTRAINT|UNIQUE|FOREIGN\s+KEY|CHECK)', l, re.I):
-                    continue
-                cm = re.match(r'^(\w+)\s+(\w+(?:\s*\([^)]*\))?)(.*)$', l)
-                if cm:
-                    col_name = cm.group(1).lower()
-                    col_type = cm.group(2)
-                    rest = cm.group(3)
-                    flags = []
-                    if re.search(r'PRIMARY\s+KEY', rest, re.I):
-                        flags.append('PK')
-                    if re.search(r'NOT\s+NULL', rest, re.I):
-                        flags.append('NN')
-                    fk = re.search(r'REFERENCES\s+(\w+)', rest)
-                    if fk:
-                        flags.append(f'FK->{fk.group(1).lower()}')
-                    cols[col_name] = f"{col_type} {' '.join(flags)}".strip()
-            tables[name] = {'cols': cols, 'src': rel}
-        for m in re.finditer(r'(?i)ALTER\s+TABLE\s+(\w+)\s+ADD\s+(?:COLUMN\s+)?(\w+)\s+([^,;]+)', sql):
-            tn = m.group(1).lower()
-            if tn in tables:
-                tables[tn]['cols'][m.group(2).lower()] = re.sub(r'\s+', ' ', m.group(3)).strip() + f' (+{rel})'
-        for m in re.finditer(r'(?i)ALTER\s+TABLE\s+(\w+)\s+DROP\s+(?:COLUMN\s+)?(\w+)', sql):
-            tn = m.group(1).lower()
-            if tn in tables:
-                tables[tn]['cols'].pop(m.group(2).lower(), None)
+    for tn, t in parsed.items():
+        cols = {}
+        for c in t['columns']:
+            flags = [f for f, on in (('PK', c['primaryKey']), ('NN', not c['nullable'] and not c['primaryKey']),
+                                     (f"FK->{c.get('references', {}).get('table', '')}", bool(c.get('references')))) if on]
+            cols[c['name']] = f"{type_text(c)} {' '.join(flags)}".strip() + (f" (+{c['addedIn']})" if c.get('addedIn') else '')
+        tables[tn] = {'cols': cols, 'src': t['source'], 'fks': parents.get(tn, [])}
 
     # views: SQL files matching migrations.view_patterns under the migrations folder or under any of migrations.view_dirs
     # (CREATE [OR REPLACE] VIEW ... AS SELECT ...)
@@ -109,10 +76,8 @@ def main():
     sb.append(f'{len(tables)} table(s). Derived by regex from migrations - types/constraints are indicative; verify against a real DB for DDL work.\n\n')
     sb.append('```mermaid\nerDiagram\n')
     for tn, tbl in tables.items():
-        for c, spec in tbl['cols'].items():
-            fk = re.search(r'FK->(\w+)', spec, re.I)
-            if fk:
-                sb.append(f'  {fk.group(1)} ||--o{{ {tn} : {c}\n')
+        for fk in tbl['fks']:
+            sb.append(f"  {erd_word(fk['table'])} ||--o{{ {erd_word(tn)} : {erd_label(fk['columns'])}\n")
     sb.append('```\n\n')
     for tn, tbl in tables.items():
         sb.append(f'## `{tn}`\nCreated in `{tbl["src"]}`\n')

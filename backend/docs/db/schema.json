@@ -4,7 +4,7 @@
     "name": "harbor",
     "schema": "public"
   },
-  "generatedAt": "2026-10-17",
+  "generatedAt": "2026-10-25",
   "generatedBy": "scripts/docs/gen-db-docs.py (from the migrations)",
   "tables": [
     {

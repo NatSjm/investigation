@@ -4,7 +4,7 @@ title: "Graph: clients (be+fe)"
 description: "/clients/:clientId` - client info panel plus one card per product group."
 generated:
   by: process:gen-graph
-  at: 2026-10-21
+  at: 2026-10-25
 status: stable
 ---
 # Graph: clients (be+fe)

@@ -1263,3 +1263,49 @@ reading. Other agents keep opening the documentation files their procedure names
 
 Playbook section 1 (the quoted sentence) and 17.2 (a third revision paragraph); `HANDBOOK.md` part 4, `GUIDE.md`
 and `ANALYST-DOCS-SETUP.md` say the same. No kit file changes.
+
+## 36. Database documentation: the ER diagram parses and `ALTER TABLE` foreign keys are relations (investigation commits after `1aba808`, 2026-10-25)
+
+Two defects of `gen-db-docs.py`, both seen on the first enterprise run. The ER diagram wrote a column that is both
+primary and foreign key as `uuid summary_periods_id PK FK`; Mermaid wants the keys comma-separated (`PK, FK`) and
+stopped on the line ("Expecting 'BLOCK_STOP', 'ATTRIBUTE_WORD', ',', 'COMMENT', got 'ATTRIBUTE_KEY'"). And the
+relations were incomplete: the migration parser knew only an inline `REFERENCES` and a `FOREIGN KEY` constraint
+written inside the `CREATE TABLE` body, with plain names; a foreign key added later (`ALTER TABLE x ADD CONSTRAINT
+fk FOREIGN KEY (...) REFERENCES y`), a schema-qualified or quoted table name (`public.x`, `"x"`), the second column
+of an `ALTER TABLE ... ADD COLUMN a, ADD COLUMN b` statement, a `CREATE TABLE` followed by `WITH (...)` and a
+composite foreign key all went missing, in `schema.json`, the table pages and the diagram alike (`db-schema.md` had
+the same gaps). The DDL reader is now one module, `scripts/docs/_migrations.py`, shared by `gen-db-docs.py` and
+`gen-db-schema.py`: statements and column lists are split with comments, string literals and dollar quotes honoured,
+and it reads `CREATE TABLE` (plain, schema-qualified or quoted names, column and table constraints, the multi-word
+PostgreSQL types), `ALTER TABLE` with several actions per statement (`ADD [COLUMN]`, `ADD [CONSTRAINT] FOREIGN KEY
+| PRIMARY KEY | UNIQUE | CHECK`, `DROP [COLUMN]`, `DROP CONSTRAINT`, `RENAME [COLUMN]`, `ALTER COLUMN ... TYPE | SET|DROP
+NOT NULL | SET|DROP DEFAULT`), `DROP TABLE` and `COMMENT ON TABLE|COLUMN`. A schema prefix is dropped and names are
+lower-cased, as before. A composite key is one relation (`columns` holds every column; the diagram label is quoted,
+`"a_id, b_id"`); the shapes of `schema.json`, the table pages and the diagram are otherwise unchanged. Checked on a
+throwaway migration set with every syntax above (4 tables, 7 relations, all found) and on the Harbor backend (same
+21 tables and 18 relations as before, the two `PK, FK` lines the only diagram change); both diagrams parsed by
+Mermaid 11.4.1 in a browser. The `gen-graph.py` fallback that reads relations from the `db-schema.md` diagram when
+`schema.json` is absent accepts the quoted label.
+
+### 36.1 Backend repository (kit `be/scripts/docs/`): files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/docs/_migrations.py` | new: the shared migration reader |
+| `scripts/docs/gen-db-docs.py` | reads through `_migrations.py`; the ER diagram writes `PK, FK` and quotes a composite relationship label; the rest unchanged |
+| `scripts/docs/gen-db-schema.py` | reads through `_migrations.py`; one relationship per foreign key in its diagram; a column added by a later migration keeps its `(+<migration>)` suffix |
+| `scripts/docs/README.md` | a row for `_migrations.py` |
+
+Then rerun `python3 scripts/docs/gen-all.py` in the backend and commit `docs/db/` and `docs/_generated/db-schema.md`
+(the collector copies `docs/db/` to the docs repository on its next run). If relations are still missing after the
+rerun, the migrations use a syntax the reader does not know: send one such statement.
+
+### 36.2 Docs repository: single rows
+
+| File | Where | What |
+|---|---|---|
+| `scripts/gen-graph.py` | the `erDiagram` fallback loop after the `db_relations` loop | the relationship regex accepts a quoted label: `:\s*"?([\w, ]+?)"?\s*$` in place of `:\s*(\w+)`, with the comment line above it |
+
+### 36.3 Playbook (read only)
+
+Section 14: the `gen-db-schema.py` and `gen-db-docs.py` rows name `_migrations.py` and the `ALTER TABLE` foreign keys.

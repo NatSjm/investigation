@@ -4,7 +4,7 @@ title: "import_batch"
 description: "One received movement file: its status and row counts."
 generated:
   by: process:db-docs
-  at: 2026-10-21
+  at: 2026-10-25
 status: stable
 ---
 # import_batch

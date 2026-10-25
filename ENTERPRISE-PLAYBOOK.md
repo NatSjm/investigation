@@ -779,8 +779,8 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 | `gen-routes.py` | - | URL -> page component, nested routes joined, route constants resolved, enclosing layout |
 | `gen-api-index.py` | every OpenAPI operation with its handler (matched by operationId or by verb + path), plus hand-written routes outside the contract | - |
 | `gen-events.py` | topics with producers, consumers, payload type linked to its schema file (`TOPIC` constants of the declaring class, literals and `${property}` names resolved) | - |
-| `gen-db-schema.py` | tables and columns from the migrations, plus the views defined next to them | - |
-| `gen-db-docs.py` (via `gen-all.py`, off with `db_docs.generate: false`) | the database documentation folder: `schema.json`, one page per table (comment, columns with comments, relations, constraints), ER diagram, index; from the migrations and their `COMMENT ON` statements | - |
+| `gen-db-schema.py` | tables and columns from the migrations (read by `_migrations.py`, shared with `gen-db-docs.py`: `CREATE TABLE`, `ALTER TABLE` add / drop / rename / alter column and add / drop constraint, `DROP TABLE`, schema-qualified and quoted names), plus the views defined next to them | - |
+| `gen-db-docs.py` (via `gen-all.py`, off with `db_docs.generate: false`) | the database documentation folder: `schema.json`, one page per table (comment, columns with comments, relations, constraints), ER diagram, index; from the migrations and their `COMMENT ON` statements; a foreign key added by `ALTER TABLE ... ADD CONSTRAINT` is a relation like an inline `REFERENCES`, a composite key one relation | - |
 | `gen-jobs.py` | scheduled jobs with cron, class and distributed-lock name (ShedLock) | - |
 | `gen-parameters.py` | admin parameter catalogue: key, seeded defaults per scope, readers, validator (cross-checked against the calculations by `validate-frontmatter.py`) | - |
 | `gen-datasets.py` | named synthetic datasets (seed scripts, integration fixtures): purpose, tables and row counts, loaders, one sample row - analysts cite setups by name instead of describing rows | - |

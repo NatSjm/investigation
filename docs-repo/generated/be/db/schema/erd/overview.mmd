@@ -75,7 +75,7 @@ erDiagram
     timestamp created_at
   }
   meeting_report {
-    uuid session_id PK FK
+    uuid session_id PK, FK
     jsonb payload
     varchar pdf_path
     varchar status
@@ -160,7 +160,7 @@ erDiagram
     numeric cumulative_value
   }
   session_client_config {
-    uuid session_id PK FK
+    uuid session_id PK, FK
     integer horizon_months
     varchar price_basis
     varchar cover_preference

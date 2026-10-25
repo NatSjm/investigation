@@ -388,7 +388,8 @@ def main():
             for rel_ in db_relations(tbl):
                 label = f"fk {rel_['column']}" + (' (implied, no constraint)' if rel_['implied'] else '')
                 add_edge(f"table:{rel_['parent']}", nid, label, 'db-docs')
-    for m in re.finditer(r'(?m)^\s*(\w+)\s*\|[|o}{\-]+\s*(\w+)\s*:\s*(\w+)', schema):
+    # relationship label: one column as a bare word, a composite key quoted ("a_id, b_id")
+    for m in re.finditer(r'(?m)^\s*(\w+)\s*\|[|o}{\-]+\s*(\w+)\s*:\s*"?([\w, ]+?)"?\s*$', schema):
         if not db_tables:
             add_edge(f'table:{m.group(2)}', f'table:{m.group(1)}', f'fk {m.group(3)}')
 

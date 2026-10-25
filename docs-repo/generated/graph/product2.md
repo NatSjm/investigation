@@ -4,7 +4,7 @@ title: "Graph: product2 (be+fe)"
 description: "/session/:sessionId/product2` - first meeting step for Product 2: transport mode filter, the four projection tables, cover ratio chart, cover quote panel and the two input modals."
 generated:
   by: process:gen-graph
-  at: 2026-10-21
+  at: 2026-10-25
 status: stable
 ---
 # Graph: product2 (be+fe)
