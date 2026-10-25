@@ -41,7 +41,8 @@ glossary aliases) is a fallback for one-subject requests and must not be trusted
    For a calculation subject **Calculation** (formula, worked examples), for a flow subject **Flow** (its body) and
    **Specs in the flow** (Summary + the rules the flow cites, per spec), for a context subject **Context overview**
    (specs, endpoints, tables, calculations, topics, classes by layer, pages, integrations, proposed contracts).
-3. **Calculations** linked from the spec - Purpose, Formula, Conventions, Worked examples (never the Kotlin block).
+3. **Calculations** linked from the spec - Purpose, Formula with the sanctioned code shape (the `# Computation` block),
+   Conventions, Worked examples, Audit.
 4. **Flows** the spec takes part in (`flows:` in the spec or `specs:` in the flow) - Purpose, Trigger, Participants, Steps,
    Invariants and assumptions; the cross-context behaviour the single spec does not show.
 5. **Graph neighbourhood** - `graph-query.py --node spec:<ID> --depth 2`: nodes by kind with `file:line`, edges,

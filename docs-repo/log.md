@@ -1,6 +1,12 @@
 # Update Log
 
 ## 2026-10-25
+* **Context pack: the sanctioned code shape of a calculation is in the pack, by rule.** The `task-context` skill said
+  a linked calculation comes "never with the Kotlin block", while `context-pack.py` carried the `# Computation` block
+  inside Formula for a calculation linked from a spec and replaced it with a pointer when the calculation was the
+  subject. Decision: keep the block (short, and the most precise statement of rounding and inclusive thresholds).
+  Both branches now include it, demoted under the pack's headings; the skill, `pack-anatomy.md` and the
+  investigation notes say so.
 * **Database documentation: the ER diagram parses and `ALTER TABLE` foreign keys are relations.** The kit's
   `gen-db-docs.py` wrote a primary-and-foreign key column as `PK FK` (Mermaid wants `PK, FK`) and its migration
   reader knew only an inline `REFERENCES` and a `FOREIGN KEY` inside the `CREATE TABLE` body with plain names, so a

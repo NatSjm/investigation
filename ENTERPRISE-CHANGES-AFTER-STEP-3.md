@@ -1309,3 +1309,29 @@ rerun, the migrations use a syntax the reader does not know: send one such state
 ### 36.3 Playbook (read only)
 
 Section 14: the `gen-db-schema.py` and `gen-db-docs.py` rows name `_migrations.py` and the `ALTER TABLE` foreign keys.
+
+## 37. Context pack: the sanctioned code shape of a calculation is in the pack, by rule (investigation commits after `bed8293`, 2026-10-25)
+
+The `task-context` skill described the Calculations section of a pack as "Purpose, Formula, Conventions, Worked
+examples (never the Kotlin block)", and `pack-anatomy.md` said "never the code block" for a calculation subject.
+`context-pack.py` did neither consistently: the `# Computation` block of a concept is a level-1 heading between
+`## Formula` and `## Conventions`, the section cutter used for a calculation linked from a spec stops only at the
+next `##`, so the block rode along inside Formula (as a stray `# Computation` heading in the pack), while the cutter
+used when the calculation is itself the subject stops at `#` too and replaced the block with a pointer line. Decision:
+the block stays in the pack. It is 10-15 lines per calculation, it is the most precise statement of rounding mode,
+scale and inclusive thresholds on the page, and it is documentation the analyst may open anyway. Both branches now
+include it: for a calculation subject the `Calculation` section lists Purpose, Inputs, Outputs, Formula,
+**Computation** (demoted to `##`), Conventions, Worked examples, Audit, Open questions and the pointer line is gone;
+for a linked calculation the `# Computation` heading inside Formula is demoted to `**Computation**`. The skill, the
+anatomy reference and the investigation notes say the block is included. Checked on the `client_role_classification`
+and `CLI-001` packs.
+
+### 37.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/context-pack.py` | calculation-subject branch includes `# Computation` demoted to `##`, no pointer line; linked-calculation branch demotes the heading to `**Computation**` |
+| `.github/skills/task-context/SKILL.md` | anatomy item 3: Formula with the sanctioned code shape, Audit listed |
+| `.github/skills/task-context/references/pack-anatomy.md` | the `## Calculation` row lists Computation instead of "never the code block" |
+
+No generated file changes; `.context/` packs are rebuilt on the next run.

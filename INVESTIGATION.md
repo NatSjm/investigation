@@ -109,7 +109,7 @@ pattern and the file discipline but do not adopt its CLI (no third-party tooling
 `scripts/context-pack.py --task <spec ID | calculation | graph node | free text> [--budget 500] [--print]` writes
 `.context/<task>.md` (git-ignored). Sections in priority order, lower ones truncated when over budget: header with trust
 badge (`human-reviewed | machine-confirmed | unverified`, `STALE`), spec body or its key sections, linked calculations
-(formula + worked examples, never the Kotlin), depth-2 graph neighbourhood with `file:line`, the OpenAPI `paths` of the
+(formula + sanctioned code shape + worked examples), depth-2 graph neighbourhood with `file:line`, the OpenAPI `paths` of the
 spec's `api[]` and the AsyncAPI channels of its `events[]`, `db-schema.md` sections for `tables[]`, existing work items and
 scenarios, legacy pages mentioning the subject (marked unverified), footer with sources and truncations. Skill `task-context`:
 read once, quote `BR-*` and `file:line`, treat the badge as part of the answer, open nothing else unless an open question names

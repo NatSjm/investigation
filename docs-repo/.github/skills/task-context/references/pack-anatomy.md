@@ -6,7 +6,7 @@
 |---|---|---|
 | `## Subject` | resolution of `--task`; frontmatter of the spec / calculation / flow, or the `contexts.yml` entry of a context; `index.md` badge logic | 1 |
 | `## Spec` | `features/<ctx>/<ID>.md` body | 1 (reduced to key sections if > 200 lines) |
-| `## Calculation` | `domain/calculations/<name>.md` (Purpose, Inputs, Outputs, Formula, Conventions, Worked examples, Audit, Open questions; never the code block) when the subject is a calculation | 1 |
+| `## Calculation` | `domain/calculations/<name>.md` (Purpose, Inputs, Outputs, Formula, Computation - the sanctioned code shape, demoted to `##` -, Conventions, Worked examples, Audit, Open questions) when the subject is a calculation | 1 |
 | `## Flow` | `flows/<name>.md` body when the subject is a flow | 1 (reduced to key sections if > 200 lines) |
 | `## Context overview` | when the subject is `context:<name>`: its specs (or "none yet" with the ID the first one gets), the flows it takes part in, endpoints with operationId and summary, tables owned, calculations implemented by its classes, Kafka topics produced / consumed, classes by layer, FE pages with routes, its rows of `architecture/integrations.md`, the lines of `architecture/overview.md` that mention it, proposed contracts tagged with it - the overview for placing new work in the context | 1 |
 | `## Specs in the flow` | for a flow subject: every spec of its `specs[]` with Summary and the business rules the flow text cites (`P1-001 BR-8`, `BR-STR-001-3`) | 2 |

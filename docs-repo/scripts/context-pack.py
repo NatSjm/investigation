@@ -242,12 +242,13 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
                     keep.append(m.group(1) + '\n' + m.group(2).rstrip())
             add_section('Spec', '\n\n'.join(keep) + f'\n\n... (reduced to key sections: see `{rel(repo, file)}`)', 1, rel(repo, file))
         elif kind == 'calculation':
+            # The `# Computation` block (sanctioned code shape, a level-1 heading in the concept) is kept, demoted to `##`
             keep = []
-            for h in ('Purpose', 'Inputs', 'Outputs', 'Formula', 'Conventions', 'Worked examples', 'Audit', 'Open questions'):
-                m = re.search(r'(?ms)^(##\s+' + re.escape(h) + r'[^\r\n]*)\r?\n(.*?)(?=^#{1,2}\s|\Z)', body)
+            for h in ('Purpose', 'Inputs', 'Outputs', 'Formula', 'Computation', 'Conventions', 'Worked examples', 'Audit', 'Open questions'):
+                m = re.search(r'(?ms)^#{1,2}\s+(' + re.escape(h) + r'[^\r\n]*)\r?\n(.*?)(?=^#{1,2}\s|\Z)', body)
                 if m:
-                    keep.append(m.group(1) + '\n' + m.group(2).rstrip())
-            add_section('Calculation', '\n\n'.join(keep) + f'\n\n(sanctioned code shape: `# Computation` block in `{rel(repo, file)}`)', 1, rel(repo, file))
+                    keep.append('## ' + m.group(1) + '\n' + m.group(2).rstrip())
+            add_section('Calculation', '\n\n'.join(keep), 1, rel(repo, file))
         elif kind == 'flow':
             if len(lines) > 200 or (budget and len(lines) > budget * 0.6):
                 keep = []
@@ -316,7 +317,9 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
             ct = read_text_or_empty(cp)
             cfm = get_fm(ct)
             sources.append(c)
-            pieces = [f'**{h}**\n{s}' for h in ('Purpose', 'Formula', 'Conventions', 'Worked examples', 'Audit') if (s := get_section(ct, h))]
+            # Formula runs up to the next `##`, so it carries the `# Computation` block (sanctioned code shape); demote its heading
+            pieces = [f'**{h}**\n' + re.sub(r'(?m)^#\s+Computation\s*$', '**Computation**', s)
+                      for h in ('Purpose', 'Formula', 'Conventions', 'Worked examples', 'Audit') if (s := get_section(ct, h))]
             parts.append({'Key': c, 'Text': f"### {get_val(cfm, 'title')} (`{c}`) - badge: {badge(cfm, now)}\n" + '\n\n'.join(pieces)})
         add_section('Calculations', '\n\n'.join(p['Text'] for p in parts), 2, 'domain/calculations/', parts)
 
