@@ -969,7 +969,7 @@ the budget is escalation step 1 as before. A change request keeps the full pack 
 every section and the analysis document cites the pack. Measured: the CLI-001 pack goes from 521 to about 215 lines
 at budget 200, the calculation pack is 131 lines with nothing truncated. When the section does not answer, the
 question's first escalation is a search of the documentation folders and one opened document, cited; the pack is
-rebuilt only when the question turns out structural (the graph section) or spans two subjects. The free search was
+rebuilt only when the question turns out structural (the graph section) or spans several subjects. The free search was
 permitted since 17.2's third revision but was not a numbered step, and an agent takes the numbered steps.
 
 ---

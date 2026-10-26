@@ -9,7 +9,7 @@
   full pack. Analyst agent steps 1 and 2, `analyse-request` prompt, `task-context` skill, `AGENTS.md`,
   `CONCEPT.md`, routing table. Same day: when the section does not answer, the question's first escalation is a
   search of the documentation folders and one opened document, cited; the pack is rebuilt only for a structural
-  or two-subject question (analyst step 4, prompt step 2, the skill's escalation step 1).
+  or multi-subject question (analyst step 4, prompt step 2, the skill's escalation step 1).
 
 ## 2026-10-25
 * **Context pack: the sanctioned code shape of a calculation is in the pack, by rule.** The `task-context` skill said

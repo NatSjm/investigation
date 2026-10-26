@@ -1379,12 +1379,12 @@ Section 3 item 2 (the AGENTS.md sentence), the analyst summary in section 12, an
 Section 35 allowed the analyst to open or search the documentation folders after the pack, in a sentence of step 2;
 the numbered escalation ladder still began with "rebuild without the budget" and "rebuild with the neighbour as
 another subject", and an agent takes the numbered steps. So a question whose section did not answer most likely
-produced a second subject's whole slice (body, calculations, graph neighbourhood) where one grep and one opened
+produced another subject's whole slice (body, calculations, graph neighbourhood) where one grep and one opened
 document would do. Now question mode says it: when the section read does not answer, search `features/`, `domain/`,
 `flows/`, `architecture/`, `contracts/`, `generated/` and `confluence-import/<SPACE>/` for the term, open the
 document that matches and cite it; rebuild the pack (another `--task`, no budget) only when the question turns out
-structural (which endpoint, table or topic, who calls what: the graph section) or spans two subjects. The skill's
-escalation step 1 is split the same way (question: search first; change request or structural / two-subject
+structural (which endpoint, table or topic, who calls what: the graph section) or spans several subjects. The skill's
+escalation step 1 is split the same way (question: search first; change request or structural / multi-subject
 question: rebuild), the later steps keep their numbers.
 
 ### 39.1 Docs repository: files to re-copy whole
@@ -1399,7 +1399,7 @@ question: rebuild), the later steps keep their numbers.
 
 | File | Where | What |
 |---|---|---|
-| `CONCEPT.md` | "How the analyst works", move 3 | "For a question it answers from the section it read, searching the documentation folders for the term when that section does not answer and rebuilding the pack only for a structural or two-subject question" |
+| `CONCEPT.md` | "How the analyst works", move 3 | "For a question it answers from the section it read, searching the documentation folders for the term when that section does not answer and rebuilding the pack only for a structural or multi-subject question" |
 
 ### 39.3 Playbook (read only)
 

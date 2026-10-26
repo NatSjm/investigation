@@ -37,7 +37,7 @@ churn score") - or an analytics question ("what is covered by tests?").
    subject that answers it**: the calculation when it asks how a value is computed or classified (a glossary alias
    such as *Exporter* points at it), the spec when it asks what a screen shows or allows, the flow when it asks in
    which order things happen across contexts; `context:<name>` places new work and is never a question's subject.
-   One subject, two only when the question spans them.
+   One subject; several only when the question spans them.
 2. **Gather: one pack.** `python3 scripts/context-pack.py --task <subject> --task <subject> ...` with a `--task` per
    subject (spec ID, calculation, `flows/<name>.md`, `context:<name>` for every context that receives new work; the
    overview section of a context pack lists the endpoints, tables, calculations, classes and pages a new piece sits
@@ -60,7 +60,7 @@ churn score") - or an analytics question ("what is covered by tests?").
    folders first**: grep `features/`, `domain/`, `flows/`, `architecture/`, `contracts/`, `generated/` and
    `confluence-import/<SPACE>/` for the term, open the document that matches, cite it; rebuild the pack (another
    `--task`, no budget) only when the question turns out structural (which endpoint, table or topic, who calls
-   what: the graph section) or spans two subjects. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step
+   what: the graph section) or spans several subjects. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step
    or a contract operation. Separate **facts** (stable, human-reviewed), **unverified** (draft / legacy) and **unknown**.
    Say in one line how you read the question (which subjects). For an unknown that matters, append an evidence
    request to the spec's **Open questions**: question, documents checked, missing fact, likely source location if
