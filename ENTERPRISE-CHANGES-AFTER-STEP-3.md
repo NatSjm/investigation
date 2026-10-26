@@ -1443,3 +1443,22 @@ that several specs for one page are normal.
 ### 40.3 Playbook (read only)
 
 Section 10, "Run 2, legacy pages".
+
+## 41. Context pack: the UI flow survives the spec reduction (investigation commits after `ca41b7e`, 2026-10-26)
+
+A spec body longer than 200 lines, or than 60 % of a `--budget`, is reduced to key sections before the ranked
+truncation runs. The keep list was Summary, Actors, Business rules, API, Data, Calculations, Edge cases, Open
+questions; `UI flow` was not in it. With the question budget of 200 (section 38) every spec over 120 body lines
+(Harbor: P1-001, ADM-001) was reduced, so a "what does the screen show or allow" question, the one a spec subject
+exists for, got a pack without the screen's flow and only the pointer "reduced to key sections". `UI flow` is now
+kept (10-15 lines per spec); the task-context skill's anatomy item 2 and the `## Spec` row of `pack-anatomy.md` list
+the sections kept and both triggers of the reduction. Measured at budget 200: P1-001 221 lines and ADM-001 213
+lines, both reduced, both with the UI flow section; CLI-001 unchanged (not reduced).
+
+### 41.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/context-pack.py` | `UI flow` in the spec reduction keep list |
+| `.github/skills/task-context/SKILL.md` | anatomy item 2 names the kept sections and both triggers |
+| `.github/skills/task-context/references/pack-anatomy.md` | the `## Spec` row says the same |

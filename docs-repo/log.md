@@ -1,6 +1,10 @@
 # Update Log
 
 ## 2026-10-26
+* **Context pack: the UI flow survives the spec reduction.** A spec body above 200 lines or 60 % of the budget is
+  reduced to key sections; the keep list lacked `UI flow`, so with the question budget of 200 a spec over 120 lines
+  (P1-001, ADM-001) reached the analyst without the section a "what does the screen show or allow" question reads.
+  `UI flow` is in the keep list; the skill and `pack-anatomy.md` name the sections kept.
 * **Confluence migrator: targets from the catalogue, a page may touch several specs.** Step 2 found the target
   spec through the pack script's keyword matcher on the page title, so a page describing two contexts was merged
   into one spec (or into a new duplicate), and a context given in the message could act as a filter that dropped

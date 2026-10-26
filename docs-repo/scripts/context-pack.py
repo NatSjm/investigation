@@ -236,7 +236,8 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
         lines = split_lines(body)
         if kind == 'spec' and (len(lines) > 200 or (budget and len(lines) > budget * 0.6)):
             keep = []
-            for h in ('Summary', 'Actors', 'Business rules', 'API', 'Data', 'Calculations', 'Edge cases', 'Open questions'):
+            # UI flow stays in: it is the section a "what does the screen show or allow" question reads
+            for h in ('Summary', 'Actors', 'Business rules', 'UI flow', 'API', 'Data', 'Calculations', 'Edge cases', 'Open questions'):
                 m = re.search(r'(?ms)^(##\s+' + re.escape(h) + r'[^\r\n]*)\r?\n(.*?)(?=^##\s|\Z)', body)
                 if m:
                     keep.append(m.group(1) + '\n' + m.group(2).rstrip())

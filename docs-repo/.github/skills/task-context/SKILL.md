@@ -47,7 +47,8 @@ glossary aliases) is a fallback for one-subject requests and must not be trusted
 ## Anatomy (in priority order; lower sections are truncated first when over budget)
 1. **Header** - subject, resolution (spec / calculation / node / candidates), trust badge
    (`status`, `human-reviewed | machine-confirmed | unverified`, `STALE`), `last_verified`, `stale_after`.
-2. **Spec** - whole body when <= 200 lines, otherwise Summary, Business rules, API / Events, Data, Open questions.
+2. **Spec** - whole body when <= 200 lines and <= 60 % of the budget, otherwise reduced to Summary, Actors,
+   Business rules, UI flow, API / Events, Data, Calculations, Edge cases, Open questions (a pointer names the file).
    For a calculation subject **Calculation** (formula, worked examples), for a flow subject **Flow** (its body) and
    **Specs in the flow** (Summary + the rules the flow cites, per spec), for a context subject **Context overview**
    (specs, endpoints, tables, calculations, topics, classes by layer, pages, integrations, proposed contracts).
