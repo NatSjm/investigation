@@ -1,6 +1,13 @@
 # Update Log
 
 ## 2026-10-26
+* **Confluence migrator: targets from the catalogue, a page may touch several specs.** Step 2 found the target
+  spec through the pack script's keyword matcher on the page title, so a page describing two contexts was merged
+  into one spec (or into a new duplicate), and a context given in the message could act as a filter that dropped
+  the other context's facts while the page moved to `_done/`. The migrator now reads `generated/catalogue.md`,
+  names every spec the page touches, merges each fact into the spec of the context that owns the behaviour, sends
+  a cross-context sequence to a flow or an Open question, cites the page in every spec touched, and moves the page
+  once, only when every context it describes has a spec. Run 2 checklist, lifecycle row, CONCEPT, routing table.
 * **Analyst: progressive disclosure inside the pack.** The procedure said "build one pack, read it top to bottom"
   for every input, so a question was answered after reading the change-request pack of the spec (CLI-001: 521
   lines) when the answer sat in one section of the calculation the glossary alias pointed at. A question now takes

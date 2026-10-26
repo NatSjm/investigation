@@ -11,12 +11,13 @@
 - [ ] everything unsourced is under Open questions, not invented
 
 ## Run 2 - legacy merge (`confluence-migrator`)
-- [ ] exactly one page processed
-- [ ] only new facts merged; contradictions as `> ⚠️ CONFLICT (legacy: <page>)`; unverifiable as `> ❓ UNVERIFIED`
+- [ ] exactly one page processed; every spec it touches named from the catalogue (a context given in the message was a primary target, not a filter)
+- [ ] only new facts merged, each into the spec of the context that owns the behaviour; a cross-context sequence went to a flow or an Open question, not to two specs
+- [ ] contradictions as `> ⚠️ CONFLICT (legacy: <page>)`; unverifiable as `> ❓ UNVERIFIED`
 - [ ] no number, threshold or formula copied from the page
-- [ ] `sources[]` entry `conf-<slug>` with `last_modified`; citations `[^conf-<slug>]`
+- [ ] `sources[]` entry `conf-<slug>` with `last_modified` in every spec touched; citations `[^conf-<slug>]`
 - [ ] new terms in `domain/glossary.md` (Aliases column for the legacy wording)
-- [ ] page moved to `confluence-import/<SPACE>/_done/` with header `status: migrated | obsolete`
+- [ ] page moved to `confluence-import/<SPACE>/_done/` with header `status: migrated | obsolete` - only when every context it describes has a spec; otherwise left in place with the pending part as an Open question
 - [ ] no client data, screenshots or personal names
 
 ## Run 3 - calculation (`calc-auditor`)

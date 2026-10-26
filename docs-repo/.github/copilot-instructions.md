@@ -22,7 +22,7 @@ contain the relevant `file:line` references.
 | Gherkin + fixtures for the tests repo | `test-designer` | `/tests-from-spec` | spec BRs + worked examples |
 | HLD / ADR / integration map | `architect` | `/hld-from-spec` | architecture/, contracts |
 | Blast radius of a change | `impact-analyst` | `/impact-from-graph` | `generated/graph/` only |
-| Legacy Confluence page -> concept | `confluence-migrator` | - | the page + generated maps |
+| Legacy Confluence page -> concept | `confluence-migrator` | - | the page, `generated/catalogue.md` (every spec the page touches), the pack, generated maps |
 | OKF conformance | - | `/okf-validate`, `/okf-produce` | validators |
 
 Agents hand off in the natural order: `spec-writer` -> `analyst` -> `test-designer`; `calc-auditor` findings go

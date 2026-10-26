@@ -12,7 +12,7 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 | Run | Owner | May read | Writes | Exit state |
 |---|---|---|---|---|
 | 1 Skeleton | `spec-writer` via `/spec-skeleton-from-graph <ctx> <ID> [entry file]` | context pack: `generated/graph/<ctx>.md`, contracts, `generated/be/components.md`; one source file: `manager/<Ctx>Manager.kt`, or the entry file the call names when the context has one entry class per screen | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | `status: draft`, open questions listed |
-| 2 Legacy merge | `confluence-migrator <page>` (one page per run) | the page, the pack | merged facts, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]`, glossary terms, page -> `_done/` | `draft`; every legacy claim cited |
+| 2 Legacy merge | `confluence-migrator <page>` (one page per run; the page may touch several specs, each fact goes to the context that owns it) | the page, the catalogue, the pack | merged facts, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]`, glossary terms, page -> `_done/` | `draft`; every legacy claim cited |
 | 3 Calculation | `calc-auditor` via handoff or `/audit-calculation <name>` | calculator class + its unit test only | `domain/calculations/<name>.md` (`## Audit <date>` table, open questions) | calculation `stable` only when all rows `MATCH` |
 | 4 Owner decision | human | open questions | Change log rows, `verified: { by: human:<id>, at }`, `stale_after` | `status: stable`, badge *human-reviewed* |
 | ongoing | `doc-sync` per generated-diff PR | generated diff, pack | Change log row, `last_verified` | stays `stable`, or back to `draft` if a BR changed |

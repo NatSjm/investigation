@@ -24,11 +24,24 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
    `source_lang: <code>`, `lang: en`, and put the original title / key terms into `aliases: [...]` so searches in
    the source language still find the concept. Keep numbers, IDs and field names verbatim. Translated business
    rules are `status: draft` until an owner adds `verified.by: human:<id>`.
-2. Find the existing target: `python3 scripts/context-pack.py --task "<page title keywords>"` lists candidate specs.
-   - Target exists -> merge only *new* facts; mark contradictions with `> ⚠️ CONFLICT (legacy: <page>)`. Every
+2. Find the targets through the catalogue. Read `generated/catalogue.md` (one line per context, flow, spec with its
+   aliases, calculation, endpoint, topic, table and glossary alias) and name **every spec the page touches**: a
+   legacy page often describes the behaviour of several contexts. A context given in the message is the primary
+   target, never a filter. Then build one pack for the named specs (`python3 scripts/context-pack.py --task <ID>
+   --task <ID> ...`); the script's own free-text matcher (`--task "<page title keywords>"`) is a fallback for a page
+   whose words match no catalogue line.
+   - Target exists -> merge only *new* facts, **each fact into the spec of the context that owns that behaviour**
+     (`features/conventions.md`, "Ownership is by rule, not by component"); a sequence across contexts the page
+     describes belongs to a flow under `flows/`, never to a rule repeated in two specs - when no flow exists, record
+     it as an Open question in the primary spec. Mark contradictions with `> ⚠️ CONFLICT (legacy: <page>)`. Every
      business rule you add ends, after its footnote, with `(source: legacy conf-<slug>)`; you open no code, so the
-     code form of the marker is never yours (`features/conventions.md`, "Provenance per rule").
+     code form of the marker is never yours (`features/conventions.md`, "Provenance per rule"). Every spec you
+     touched gets the `sources[]` entry of step 5.
    - None -> create from the matching template (or hand to `spec-writer` if the context has a graph community).
+   - A context the page describes has **no spec yet** -> merge what has a target, record the rest as an Open
+     question in the primary spec ("legacy <page> states ... for <context>, no spec yet") and leave the page out
+     of `_done/` (step 6) so the board keeps listing it; it is rerun after that context's Run 1, and only the new
+     facts are merged then.
 3. Verify claims against `generated/` (contracts, `api-index.md`, `events.md`, `db-schema.md`, `routes.md`). Mark
    unverifiable claims with `> ❓ UNVERIFIED (legacy: <page>, <date>)`. Removed features (e.g. steps that no longer
    have a route or endpoint) are recorded in the spec's Change log as "legacy mentions X - not present in code".
@@ -36,13 +49,14 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
 5. Provenance: add a `sources[]` entry (`{ id: conf-<slug>, title, resource, author: human:<page author>, last_modified }`)
    and cite it with `[^conf-<slug>]`; set `generated.by: copilot/confluence-migrator`, `generated.at`, `status: draft`.
 6. Move the processed page to `confluence-import/<space>/_done/` (keep the file for audit; its image links keep
-   working there, the `_attachments/` folder stays where it is); set its header `status: migrated|obsolete`.
+   working there, the `_attachments/` folder stays where it is); set its header `status: migrated|obsolete`. A
+   page is processed once: it moves when every spec it touches has received its facts, not per context.
 7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log the migration
    in `log.md`.
 
 ## Never
 - Copy client data, screenshots with real data, or personal names of clients.
-- Rewrite more than the page you were given in one run.
+- Rewrite more than the page you were given in one run (several specs for one page are normal; a second page is not).
 
 ## Output
 Files only; chat: classification + target path per page, <= 1 line each.

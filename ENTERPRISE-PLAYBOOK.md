@@ -634,8 +634,12 @@ file and the second would read the first screen's. Pass the file of this screen'
 still exactly one source file. Nothing after the skeleton needs it: the spec's own `code_refs` and markers name the
 right class from then on.
 
-**Run 2, legacy pages.** `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run. New facts are
-merged into the skeleton, contradictions become `> ⚠️ CONFLICT (legacy: <page>)` callouts, unverifiable claims
+**Run 2, legacy pages.** `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run. The migrator
+names every spec the page touches from `generated/catalogue.md` - a legacy page often describes several contexts,
+and a context you name in the message is the primary target, not a filter - and merges each fact into the spec of
+the context that owns that behaviour; a sequence across contexts goes to a flow, or to an Open question when none
+exists; a context the page describes that has no skeleton yet keeps the page out of `_done/` until its Run 1 (the
+board keeps listing it). New facts are merged into the skeleton, contradictions become `> ⚠️ CONFLICT (legacy: <page>)` callouts, unverifiable claims
 `> ❓ UNVERIFIED`, domain terms go to the glossary, the page is cited in `sources[]` and moved to `_done/`. No number,
 threshold or formula is copied from a page.
 

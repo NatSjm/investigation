@@ -1404,3 +1404,42 @@ question: rebuild), the later steps keep their numbers.
 ### 39.3 Playbook (read only)
 
 17.9, last sentences.
+
+## 40. Confluence migrator: targets from the catalogue, a page may touch several specs (investigation commits after `aefa08d`, 2026-10-26)
+
+The migrator's step 2 found "the existing target" by running the pack script with the page title as free text,
+the keyword matcher the `task-context` skill itself calls a fallback not to be trusted across contexts, and the
+procedure spoke of one target. A legacy page often describes the behaviour of several contexts; with a title naming
+one of them the matcher returned one spec and everything was merged there, rules of the other context included
+(against "Ownership is by rule, not by component"); with a title naming neither, a new spec was created next to two
+existing skeletons; and a context named in the message could act as a filter, so one context's facts were merged,
+the page moved to `_done/`, and the other context's facts were lost without the board ever showing the page again
+(`migration-status.py` lists a page under every context it mentions, but only while it is outside `_done/`).
+Step 2 now starts from `generated/catalogue.md`, like the analyst: name every spec the page touches, a context given
+in the message is the primary target and never a filter, build one pack for the named specs, keep the title matcher
+as the fallback for a page whose words match no catalogue line. Each fact is merged into the spec of the context that
+owns that behaviour; a sequence across contexts belongs to a flow, or to an Open question in the primary spec when no
+flow exists; every spec touched gets the `sources[]` entry. A page is processed once and moves to `_done/` when every
+spec it touches has received its facts (step 6); when a context it describes has no spec yet, the rest is recorded as
+an Open question in the primary spec and the page stays in place so the board keeps listing it, to be rerun after
+that context's Run 1 (only new facts are merged then). The "never rewrite more than the page" rule says explicitly
+that several specs for one page are normal.
+
+### 40.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/confluence-migrator.agent.md` | step 2 rewritten (catalogue, every spec touched, ownership by rule, flow or Open question, no-spec-yet case), step 6 "processed once", the Never line |
+| `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 2 items: specs named from the catalogue, fact per owning spec, `sources[]` in every spec touched, `_done/` only when every context has a spec |
+
+### 40.2 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `.github/skills/spec-lifecycle/SKILL.md` | the Run 2 row | "(one page per run; the page may touch several specs, each fact goes to the context that owns it)", Reads: "the page, the catalogue, the pack" |
+| `CONCEPT.md` | the lifecycle list, item 2 | the sentence of section 40 in short (specs named from the catalogue, fact per owning context, flow for a sequence, `_done/` once every context has a spec) |
+| `.github/copilot-instructions.md` | the routing row of `confluence-migrator` | Reads: "the page, `generated/catalogue.md` (every spec the page touches), the pack, generated maps" |
+
+### 40.3 Playbook (read only)
+
+Section 10, "Run 2, legacy pages".
