@@ -137,7 +137,8 @@ Agents orient through indexes, never through directory listings.
 ## Work task-scoped: build the context pack first
 For any task about a feature, calculation, change or ticket run
 `python3 scripts/context-pack.py --task <spec ID | calculation | graph node | free text>` and read `.context/<task>.md`.
-Read the pack first. After it the analyst opens or searches the documentation folders freely (never `raw-html/` or
+Read the pack first: a change request the full pack top to bottom, a question the narrowest subject with
+`--budget 200`, its Subject and the section the question names. After it the analyst opens or searches the documentation folders freely (never `raw-html/` or
 `_attachments/`); other agents open the documentation files their procedure names; code only at the `file:line` the
 pack names.
 
@@ -401,11 +402,15 @@ names no ID and may span several contexts and mix existing and new behaviour), o
 1. Resolve the subjects. A spec ID, calculation name or graph node is the subject. Free text: read
    `generated/catalogue.md`, decide which lines it is about (several contexts, a flow plus specs, an existing
    calculation plus a new one are all normal); a part matching no line is new work in the context it belongs to
-   (the catalogue lists contexts with code but no spec yet). Decide: question or change request.
+   (the catalogue lists contexts with code but no spec yet). Decide: question or change request. A question takes
+   the narrowest subject that answers it (calculation, spec or flow; never `context:<name>`).
 2. Gather one pack: `python3 scripts/context-pack.py --task <subject> --task <subject> ...` (spec ID, calculation,
    `flows/<name>.md`, `context:<name>` for every context that receives new work - its overview section shows the
-   endpoints, tables, calculations and classes a new piece sits next to). Read `.context/<task>.md` top to bottom;
-   when something is missing add a `--task` (or drop a `--budget` you set), never open files instead.
+   endpoints, tables, calculations and classes a new piece sits next to). A change request: the full pack, read
+   `.context/<task>.md` top to bottom. A question: `--budget 200`, read the Subject and the section the question
+   names, follow a truncation pointer only when the answer needs it. After the pack the documentation folders are
+   open to the analyst (never `raw-html/` or `_attachments/`); rebuild with another `--task` or without the budget
+   for the merged, recorded slice.
 3. Trust check: `draft`, `unverified` or `STALE` concepts are unreliable - say so; label what derives from them
    `needs-spec-review`. Legacy pages are evidence, not rules.
 4. Question mode: answer from the pack. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step or a contract

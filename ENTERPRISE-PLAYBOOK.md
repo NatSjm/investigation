@@ -211,9 +211,10 @@ Write these sections, in this order, adapted from `docs-repo/AGENTS.md`:
    `<product>`; Confluence is a publish target; the code repositories are inputs; Jira and the tests repository are
    outputs. One OKF v0.2 bundle: every document has frontmatter with `type`, every folder a generated `index.md`.
 2. **Work task-scoped: build the context pack first.** The command `python3 scripts/context-pack.py --task <ID|name|text>`,
-   what the pack contains, and the sentence "Read the pack first. After it the analyst opens or searches the
-   documentation folders freely; other agents open the documentation files their procedure names; code only at the
-   `file:line` the pack names."
+   what the pack contains, and the sentence "Read the pack first. A change request takes the full pack top to bottom;
+   a question takes the narrowest subject with `--budget 200` and reads the Subject and the section it names. After
+   it the analyst opens or searches the documentation folders freely; other agents open the documentation files
+   their procedure names; code only at the `file:line` the pack names."
 3. **Read order when there is no pack**, cheapest first: `index.md` of the area, the spec, the calculation, `contexts.yml`
    and `generated/graph/REPO_MAP.md`, the maps under `generated/be|fe`, the contracts under `generated/openapi|asyncapi`,
    and only then source code in the sibling checkouts, smallest range, located through the graph or `docs-tags.md`.
@@ -694,8 +695,8 @@ Phase 2 of the plan (section 16): run the analyst on real tasks only after the "
 for the contexts those tasks touch (the scope of section 1). A task that crosses into an out-of-scope context is
 the signal to bring that context through Runs 1 to 4 next, not to let the analyst guess.
 
-What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: build the pack, read it top to bottom (spec, calculations, flows,
-graph, contracts, tables, related work), check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
+What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: build the pack and, for a change request, read it top to bottom (spec, calculations, flows,
+graph, contracts, tables, related work) - a question takes the narrowest subject with `--budget 200` and reads only the section it names (17.9) -, check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
 per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when blocking, into the
 spec's Open questions. Read source only when the pack leaves a question open: at most five ranges, located through
 the maps, then a free reading pass for a question that still blocks, each finding recorded as `code-read` evidence and
@@ -952,6 +953,21 @@ reach a calculation on the screen". Both are generated in the backend and collec
 **17.8 API design rules.** Reserved: `.github/skills/api-design/` for your enterprise API conventions and a Spectral
 ruleset under `contracts/`, linted by `docs-quality.yml` for both `generated/openapi/` and `contracts/proposed/`.
 Until it exists, proposals are reviewed by a human against the written conventions.
+
+**17.9 Progressive disclosure inside the pack (2026-10-26).** The bundle discloses progressively, index to index, but
+the analyst's procedure said "build one pack, read it top to bottom" for every input, so a small question ("how do we
+know a client is an exporter?") was answered after reading a 500-line pack of the spec that links the calculation,
+with five table pages and the graph neighbourhood in between, while the answer sits in twenty lines of the
+calculation concept. Two causes: subject resolution had no rule for the narrowest kind, so the spec won over the
+calculation the glossary alias pointed at; and question mode reused the change-request pack. Now a question takes
+the narrowest subject that answers it (calculation for "how is it computed or classified", spec for "what does the
+screen show or allow", flow for "in which order across contexts", never `context:<name>`), is built with
+`--budget 200` (the ranked truncation keeps the Subject, the spec or calculation body and the linked calculations
+whole and turns the graph, contracts, tables, related items and legacy pages into pointers) and the analyst reads
+the Subject and the section the question names; a pointer is followed only when the answer needs it, and dropping
+the budget is escalation step 1 as before. A change request keeps the full pack read top to bottom: the epic uses
+every section and the analysis document cites the pack. Measured: the CLI-001 pack goes from 521 to about 215 lines
+at budget 200, the calculation pack is 131 lines with nothing truncated.
 
 ---
 

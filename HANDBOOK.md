@@ -76,7 +76,8 @@ inventing our own metadata because it already defines the things we would have h
   reader can trace any sentence to where it came from.
 - **Progressive disclosure**: every folder has a generated `index.md`, one line per concept with description and
   badge. Agents navigate index to index and open only what they need; they never list directories. `README.md` is
-  forbidden inside the bundle so that there is exactly one entry file per folder.
+  forbidden inside the bundle so that there is exactly one entry file per folder. The context pack (2.6) keeps the
+  principle: a change request reads the whole slice, a question reads one section of the narrowest subject.
 - **A lifecycle log** (`log.md`): created, verified, deprecated, regenerated.
 - **A validator** (`okf-validate.py`, plus the reference Python checker in CI) that fails the build when any of the
   above is missing.
@@ -90,12 +91,14 @@ which agents never see (the pack strips it) and people can fold. Our repository-
 `code_refs`, `api`, `events`, `tables`, `calculations`, `jira`, `tests`) are allowed extensions.
 
 ### 2.6 Context packs
-`scripts/context-pack.py --task <x>` writes `.context/<task>.md`: a ranked, budgeted (default 500 lines) selection
-for one task. Sections in priority order: subject and badge, spec body, calculations, flows, graph neighbourhood,
-contracts, tables, related work items and tests, legacy pages, and a footer naming what was truncated. Lower
-sections are cut first. The pack is deterministic, attachable to a PR, and cheap: one read instead of twenty tool
-calls. When it is not enough, the escalation order is fixed (wider budget, follow the pointer, deeper graph, a second
-pack, one named line range, then it is a documentation gap).
+`scripts/context-pack.py --task <x>` writes `.context/<task>.md`: a ranked selection for one task, sized by its
+subjects and capped only when `--budget N` is given. Sections in priority order: subject and badge, spec body,
+calculations, flows, graph neighbourhood, contracts, tables, related work items and tests, legacy pages, and a footer
+naming what was truncated. Lower sections are cut first. The pack is deterministic, attachable to a PR, and cheap:
+one read instead of twenty tool calls. A change request takes the full pack and reads it top to bottom; a question
+takes the narrowest subject (calculation, spec or flow) with `--budget 200` and reads the Subject and the section it
+names, the truncated sections being pointers. When it is not enough, the escalation order is fixed (drop the budget,
+follow the pointer, deeper graph, a second pack, one named line range, then it is a documentation gap).
 
 ### 2.7 The architectural graph
 `gen-graph.py` turns the maps into nodes (`context:`, `class:`, `endpoint:`, `topic:`, `table:`, `feature:`,

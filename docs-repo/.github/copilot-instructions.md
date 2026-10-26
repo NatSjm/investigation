@@ -15,7 +15,7 @@ contain the relevant `file:line` references.
 | Job | Agent (`@name`) | Prompt (`/name`) | Reads |
 |---|---|---|---|
 | Stories, subtasks, estimates, questions for Jira | `analyst` | `/jira-from-spec`, `/coverage-report` | context pack, then the documentation folders freely; up to five code ranges located through the maps when a question stays open, then a free reading pass for one that still blocks |
-| A request in free text: a question, or a change spanning contexts with existing and new behaviour -> analysis document, confirmed reading, request epic | `analyst` | `/analyse-request` | `generated/catalogue.md` + one merged context pack |
+| A request in free text: a question, or a change spanning contexts with existing and new behaviour -> analysis document, confirmed reading, request epic | `analyst` | `/analyse-request` | `generated/catalogue.md` + one merged context pack (a question: the narrowest subject, `--budget 200`, one section read) |
 | New or refreshed feature spec | `spec-writer` | `/spec-skeleton-from-graph`, `/spec-from-code` | graph neighbourhood + one manager file |
 | Keep specs in sync with a code change / generated PR | `doc-sync` | - | `map-paths.py` output, generated maps, contracts |
 | Check a formula doc or legacy page against the code | `calc-auditor` | `/audit-calculation` | calculation doc, `docs-tags.md`, one class + its test |

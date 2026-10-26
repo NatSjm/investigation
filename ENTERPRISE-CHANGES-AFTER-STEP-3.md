@@ -1335,3 +1335,41 @@ and `CLI-001` packs.
 | `.github/skills/task-context/references/pack-anatomy.md` | the `## Calculation` row lists Computation instead of "never the code block" |
 
 No generated file changes; `.context/` packs are rebuilt on the next run.
+
+## 38. Analyst: progressive disclosure inside the pack (investigation commits after `058c674`, 2026-10-26)
+
+The bundle discloses progressively (index to index, one line per concept, open only what you need), but the
+analyst's procedure said "build one pack, read it top to bottom" for every input. A small question ("how do we know
+a client is an exporter?") therefore resolved to the spec CLI-001 and read its 521-line pack, five table pages and
+the graph neighbourhood included, when the answer is the Formula of `client_role_classification`, the calculation
+the glossary alias *Exporter* points at, in about twenty lines. Two causes: subject resolution had no rule for the
+narrowest kind, and question mode reused the change-request pack. Now **a question takes the narrowest subject that
+answers it** - the calculation for "how is it computed or classified", the spec for "what does the screen show or
+allow", the flow for "in which order across contexts", never `context:<name>` (it places new work) - and is built
+with `--budget 200`; the analyst reads the Subject with its badge and the section the question names, follows a
+`... (truncated: see <path>)` pointer only when the answer needs it, and drops the budget (escalation step 1, as
+before) only for the merged slice. **A change request keeps the full pack read top to bottom**: every section feeds
+the epic and the analysis document cites the pack. No script change: the ranked truncation already keeps the
+Subject, the spec or calculation body and the linked calculations whole at budget 200 and turns the rest into
+pointers (CLI-001: about 215 lines; `client_role_classification`: 131 lines, nothing truncated). HANDBOOK 2.6 also
+lost its stale "default 500 lines": the pack has no default cap.
+
+### 38.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/analyst.agent.md` | step 1: narrowest subject for a question; step 2: change request full pack top to bottom, question `--budget 200` and one section read |
+| `.github/prompts/analyse-request.prompt.md` | steps 1 and 2 say the same |
+| `.github/skills/task-context/SKILL.md` | the disclosure paragraph under the title, a question example in Build, the first Consume bullet |
+
+### 38.2 Docs repository: single sentences to merge
+
+| File | Where | What |
+|---|---|---|
+| `AGENTS.md` | the pack paragraph, after "**Read the pack first.** It is the recorded slice the task starts from" | ": a change request takes the full pack top to bottom; a question takes the narrowest subject (calculation, spec or flow, never a context) with `--budget 200` and reads the Subject and the section it names, the rest stays a pointer" |
+| `CONCEPT.md` | "How the analyst works", move 2 | replace "It reads the pack top to bottom and nothing else." with the change-request / question sentences of section 38 |
+| `.github/copilot-instructions.md` | routing row of `/analyse-request` | the Reads cell adds "(a question: the narrowest subject, `--budget 200`, one section read)" |
+
+### 38.3 Playbook (read only)
+
+Section 3 item 2 (the AGENTS.md sentence), the analyst summary in section 12, and 17.9.

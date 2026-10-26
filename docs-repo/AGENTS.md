@@ -20,7 +20,9 @@ It writes `.context/<task>.md` (git-ignored; sized by its subjects, roughly 1000
 calculations and neighbourhood, more with several subjects, `--budget N` to cap it): the spec with its trust badge, linked calculations
 (formula + worked examples), the flows it takes part in, the depth-2 graph neighbourhood (endpoints, classes, tables, topics, FE routes with
 `file:line`), the OpenAPI operations and tables involved, existing work items / tests, and legacy pages that mention
-the subject. **Read the pack first.** It is the recorded slice the task starts from. After it the analyst opens or
+the subject. **Read the pack first.** It is the recorded slice the task starts from: a change request takes the full
+pack top to bottom; a question takes the narrowest subject (calculation, spec or flow, never a context) with
+`--budget 200` and reads the Subject and the section it names, the rest stays a pointer. After it the analyst opens or
 searches the documentation folders freely (never `raw-html/` or `_attachments/`); other agents open the documentation
 files their procedure names; code only at the `file:line` the pack names, the analyst also under its steps 9 and 10.
 Skill: `.github/skills/task-context/SKILL.md`.

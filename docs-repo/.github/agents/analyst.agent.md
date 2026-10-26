@@ -33,11 +33,20 @@ churn score") - or an analytics question ("what is covered by tests?").
    and glossary alias) and decide which lines the request is about - several contexts, a flow plus specs, an existing
    calculation plus a new one are all normal. A part that matches no line is **new** work: note the context it belongs
    to (`contexts.yml`, the catalogue's Contexts table, including contexts with code but no spec yet) and the nearest
-   existing line. Decide whether the input is a question or a change request.
+   existing line. Decide whether the input is a question or a change request. **A question takes the narrowest
+   subject that answers it**: the calculation when it asks how a value is computed or classified (a glossary alias
+   such as *Exporter* points at it), the spec when it asks what a screen shows or allows, the flow when it asks in
+   which order things happen across contexts; `context:<name>` places new work and is never a question's subject.
+   One subject, two only when the question spans them.
 2. **Gather: one pack.** `python3 scripts/context-pack.py --task <subject> --task <subject> ...` with a `--task` per
    subject (spec ID, calculation, `flows/<name>.md`, `context:<name>` for every context that receives new work; the
    overview section of a context pack lists the endpoints, tables, calculations, classes and pages a new piece sits
-   next to). Read `.context/<task>.md` top to bottom. After it the documentation folders are yours: open or search
+   next to). **A change request** takes the full pack, no `--budget`: read `.context/<task>.md` top to bottom, the
+   epic uses every section and the analysis document cites the pack. **A question** takes a budgeted pack,
+   `--budget 200`: read the Subject with its badge and the section the question names (Business rules, Calculations,
+   Flows, Contracts, Data), follow a `... (truncated: see <path>)` pointer only when the answer needs that section,
+   rebuild without the budget only for the merged slice of several subjects; the rest of the pack is disclosed, not
+   read. After it the documentation folders are yours: open or search
    `features/`, `domain/`, `flows/`, `architecture/`, `contracts/`, `work-items/`, `test-design/`, `generated/` and the
    imported pages under `confluence-import/<SPACE>/` freely whenever the pack leaves something thin - a neighbour spec, a table page, a flow, a legacy
    page - with no limit and no rebuild first. Rebuild the pack (without the `--budget` you set, or with the

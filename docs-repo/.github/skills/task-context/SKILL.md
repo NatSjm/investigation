@@ -9,9 +9,19 @@ The bundle is bigger than any task. The pack is the **budgeted slice** of it for
 deterministically by a script, so every agent starts from the same pack - sized by its subjects, each item bounded
 on its own, nothing truncated unless `--budget N` is given - and can tell what it did not get.
 
+The bundle discloses progressively (index to index, one line per concept, open only what you need) and the pack
+keeps that principle rather than replacing it. **A change request** needs the whole slice: every section feeds the
+epic (graph for subtasks, tables for datasets, contracts for proposals) and the analysis document cites the pack,
+so it is built without a budget and read top to bottom. **A question** needs one section of one subject: it takes
+the narrowest subject that answers it (the calculation for "how is it computed", the spec for "what does the screen
+show", the flow for "in which order across contexts", never `context:<name>`), `--budget 200`, and the reader opens
+the Subject with its badge and the section the question names; the other sections are disclosed as pointers
+(`... (truncated: see <path>)`) and read only when the answer needs them. Escalation step 1 below brings them back.
+
 ## Build
 ```bash
 python3 scripts/context-pack.py --task P1-001                       # spec ID
+python3 scripts/context-pack.py --task client_role_classification --budget 200   # a question: narrowest subject, budgeted
 python3 scripts/context-pack.py --task stress_test_monthly          # calculation
 python3 scripts/context-pack.py --task "topic:harbor.meetings.session-closed"   # graph node
 python3 scripts/context-pack.py --task flows/session-inputs-recalculation.md    # flow: body + the rules it cites in each spec
@@ -59,7 +69,9 @@ See `references/pack-anatomy.md` for the exact section markers the agents rely o
 into one pack and how `--task` is resolved.
 
 ## Consume
-- Read the pack once, top to bottom. Quote `BR-*`, node ids and `file:line` from it.
+- A change request or a writing task: read the pack once, top to bottom. A question: the Subject, its badge and the
+  section the question names; a truncated section is a pointer, not a gap. Quote `BR-*`, node ids and `file:line`
+  from what you read.
 - Treat the trust badge as part of the answer: `draft` / `unverified` / `STALE` -> say it, label outputs `needs-spec-review`.
 - `candidates:` in the header means the script's keyword matcher was used on free text and found several specs:
   go back to `generated/catalogue.md`, choose the subjects there and rebuild per subject; do not merge candidates blindly.

@@ -1,5 +1,14 @@
 # Update Log
 
+## 2026-10-26
+* **Analyst: progressive disclosure inside the pack.** The procedure said "build one pack, read it top to bottom"
+  for every input, so a question was answered after reading the change-request pack of the spec (CLI-001: 521
+  lines) when the answer sat in one section of the calculation the glossary alias pointed at. A question now takes
+  the narrowest subject (calculation, spec or flow; never a context), `--budget 200`, and the analyst reads the
+  Subject and the section the question names, the truncated sections being pointers; a change request keeps the
+  full pack. Analyst agent steps 1 and 2, `analyse-request` prompt, `task-context` skill, `AGENTS.md`,
+  `CONCEPT.md`, routing table.
+
 ## 2026-10-25
 * **Context pack: the sanctioned code shape of a calculation is in the pack, by rule.** The `task-context` skill said
   a linked calculation comes "never with the Kotlin block", while `context-pack.py` carried the `# Computation` block
