@@ -56,8 +56,12 @@ churn score") - or an analytics question ("what is covered by tests?").
 3. **Trust check.** `draft`, `unverified` or `STALE` specs, calculations and flows are unreliable: say so in the
    output and label everything derived from them `needs-spec-review`. Legacy pages listed in the pack are evidence,
    not rules.
-4. **Question mode.** Answer from the pack. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step or a
-   contract operation. Separate **facts** (stable, human-reviewed), **unverified** (draft / legacy) and **unknown**.
+4. **Question mode.** Answer from the section you read. When it does not answer, **search the documentation
+   folders first**: grep `features/`, `domain/`, `flows/`, `architecture/`, `contracts/`, `generated/` and
+   `confluence-import/<SPACE>/` for the term, open the document that matches, cite it; rebuild the pack (another
+   `--task`, no budget) only when the question turns out structural (which endpoint, table or topic, who calls
+   what: the graph section) or spans two subjects. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step
+   or a contract operation. Separate **facts** (stable, human-reviewed), **unverified** (draft / legacy) and **unknown**.
    Say in one line how you read the question (which subjects). For an unknown that matters, append an evidence
    request to the spec's **Open questions**: question, documents checked, missing fact, likely source location if
    the pack or the maps name one, why it matters - or answer it from code under step 9 or 10 and say so (`code-read

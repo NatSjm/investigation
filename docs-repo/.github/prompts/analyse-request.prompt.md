@@ -12,8 +12,9 @@ Mode: ${input:mode:question|analysis|work-items} (default `work-items`: analysis
    A `question` takes the narrowest subject that answers it (calculation for "how is it computed / classified", spec
    for "what does the screen show / allow", flow for "in which order across contexts"; never `context:<name>`) and
    `--budget 200`; a change request takes the full pack.
-2. `question`: read the Subject with its badge and the section the question names, follow a truncation pointer only
-   when the answer needs it; answer with citations (`BR-<ID>-<n>`, calculation, flow step, operationId), facts /
+2. `question`: read the Subject with its badge and the section the question names; when it does not answer, search
+   the documentation folders for the term and open the matching document (cited), rebuild the pack only for a
+   structural question (graph) or a second subject; answer with citations (`BR-<ID>-<n>`, calculation, flow step, operationId), facts /
    unverified / unknown separated, one line on how you read the question. A question the pack leaves open may be
    answered from at most five code ranges located through the maps (analyst agent step 9) and, when it still blocks
    the answer, from a free reading pass over both code repositories (step 10); cited as `code-read <file:line>`,

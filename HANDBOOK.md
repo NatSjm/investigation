@@ -97,8 +97,9 @@ calculations, flows, graph neighbourhood, contracts, tables, related work items 
 naming what was truncated. Lower sections are cut first. The pack is deterministic, attachable to a PR, and cheap:
 one read instead of twenty tool calls. A change request takes the full pack and reads it top to bottom; a question
 takes the narrowest subject (calculation, spec or flow) with `--budget 200` and reads the Subject and the section it
-names, the truncated sections being pointers. When it is not enough, the escalation order is fixed (drop the budget,
-follow the pointer, deeper graph, a second pack, one named line range, then it is a documentation gap).
+names, the truncated sections being pointers. When it is not enough, the escalation order is fixed (a question
+searches the documentation folders first; then drop the budget, follow the pointer, deeper graph, a second pack,
+one named line range, then it is a documentation gap).
 
 ### 2.7 The architectural graph
 `gen-graph.py` turns the maps into nodes (`context:`, `class:`, `endpoint:`, `topic:`, `table:`, `feature:`,

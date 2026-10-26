@@ -413,7 +413,9 @@ names no ID and may span several contexts and mix existing and new behaviour), o
    for the merged, recorded slice.
 3. Trust check: `draft`, `unverified` or `STALE` concepts are unreliable - say so; label what derives from them
    `needs-spec-review`. Legacy pages are evidence, not rules.
-4. Question mode: answer from the pack. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step or a contract
+4. Question mode: answer from the section you read; when it does not answer, search the documentation folders for
+   the term and open the matching document (cited), rebuild the pack only for a structural question or a second
+   subject. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step or a contract
    operation. Separate **facts** (stable specs), **unverified** (draft / legacy) and **unknown**; say in one line how
    you read the question. For an unknown that matters, append an evidence request to the spec's **Open questions**:
    question, documents checked, missing fact, likely source location if known, why it matters. Never guess. Stop.

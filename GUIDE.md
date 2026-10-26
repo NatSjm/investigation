@@ -239,7 +239,7 @@ Example task: "add a transport-mode toggle to the stress table".
 The analyst does not start from the code, and for a question it does not start from the whole pack either: the
 narrowest subject (calculation, spec or flow) with `--budget 200`, the Subject and the section the question names,
 the rest as pointers; a change request reads the full pack. If the pack is not enough it escalates in a fixed order (task-context
-skill, "When the pack is not enough"): wider pack, graph, then at most five code ranges located through the
+skill, "When the pack is not enough"): for a question a search of the documentation folders, then a wider pack, graph, then at most five code ranges located through the
 generated maps, and only for a question that still blocks its answer a free reading pass over both repositories. Every
 finding is recorded as `code-read` evidence and an open question in the spec instead of a guess, and the coverage
 matrix counts the questions answered from code per spec, so a gap that cost analyst time becomes visible.

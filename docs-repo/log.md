@@ -7,7 +7,9 @@
   the narrowest subject (calculation, spec or flow; never a context), `--budget 200`, and the analyst reads the
   Subject and the section the question names, the truncated sections being pointers; a change request keeps the
   full pack. Analyst agent steps 1 and 2, `analyse-request` prompt, `task-context` skill, `AGENTS.md`,
-  `CONCEPT.md`, routing table.
+  `CONCEPT.md`, routing table. Same day: when the section does not answer, the question's first escalation is a
+  search of the documentation folders and one opened document, cited; the pack is rebuilt only for a structural
+  or two-subject question (analyst step 4, prompt step 2, the skill's escalation step 1).
 
 ## 2026-10-25
 * **Context pack: the sanctioned code shape of a calculation is in the pack, by rule.** The `task-context` skill said

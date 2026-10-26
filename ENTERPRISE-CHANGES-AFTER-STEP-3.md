@@ -1373,3 +1373,34 @@ lost its stale "default 500 lines": the pack has no default cap.
 ### 38.3 Playbook (read only)
 
 Section 3 item 2 (the AGENTS.md sentence), the analyst summary in section 12, and 17.9.
+
+## 39. Analyst: a question searches the documentation folders before it rebuilds the pack (investigation commits after `83ed2a2`, 2026-10-26)
+
+Section 35 allowed the analyst to open or search the documentation folders after the pack, in a sentence of step 2;
+the numbered escalation ladder still began with "rebuild without the budget" and "rebuild with the neighbour as
+another subject", and an agent takes the numbered steps. So a question whose section did not answer most likely
+produced a second subject's whole slice (body, calculations, graph neighbourhood) where one grep and one opened
+document would do. Now question mode says it: when the section read does not answer, search `features/`, `domain/`,
+`flows/`, `architecture/`, `contracts/`, `generated/` and `confluence-import/<SPACE>/` for the term, open the
+document that matches and cite it; rebuild the pack (another `--task`, no budget) only when the question turns out
+structural (which endpoint, table or topic, who calls what: the graph section) or spans two subjects. The skill's
+escalation step 1 is split the same way (question: search first; change request or structural / two-subject
+question: rebuild), the later steps keep their numbers.
+
+### 39.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/analyst.agent.md` | step 4 opens with the search-first sentence |
+| `.github/prompts/analyse-request.prompt.md` | step 2 says the same |
+| `.github/skills/task-context/SKILL.md` | escalation step 1 split for questions |
+
+### 39.2 Docs repository: one sentence to merge
+
+| File | Where | What |
+|---|---|---|
+| `CONCEPT.md` | "How the analyst works", move 3 | "For a question it answers from the section it read, searching the documentation folders for the term when that section does not answer and rebuilding the pack only for a structural or two-subject question" |
+
+### 39.3 Playbook (read only)
+
+17.9, last sentences.

@@ -85,7 +85,11 @@ into one pack and how `--task` is resolved.
   agents open the documentation files their procedure names. Code stays behind the steps below.
 
 ## When the pack is not enough (escalate in this order, stop at the first step that answers)
-1. Rebuild without the `--budget` you set (there is none by default) - truncated sections come back.
+1. A question: search the documentation folders for the term (`features/`, `domain/`, `flows/`, `architecture/`,
+   `contracts/`, `generated/`, `confluence-import/<SPACE>/`), open the document that matches and cite it; one grep
+   and one file are cheaper than a second subject's slice. A change request, or a question that turns out structural
+   (graph) or two-subject: rebuild without the `--budget` you set (there is none by default) - truncated sections
+   come back.
 2. Follow the pointer of the truncated or thin section: open that one file under `generated/` (schema, contract, map).
 3. Go deeper in the graph: `python3 scripts/graph-query.py --node <id> --depth 3`, or start from the table / topic / class
    node in question - no files opened.
