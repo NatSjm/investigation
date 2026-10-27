@@ -25,7 +25,8 @@ A context name (`product2`), a list of contexts, a Confluence space key (`HARBOR
 ## Procedure
 1. `python3 scripts/migration-status.py --scope <scope>` (for a space key use `all`). It writes `migration/<scope>.md`:
    per context the runs due with their commands, pending legacy pages, calculations without concept or audit,
-   specs waiting for an owner, and the pages that mention no context.
+   specs waiting for an owner, the pages that mention no context, and the architecture pages (by title) with their
+   `@architect` command.
 2. Read the generated file and `generated/graph/REPO_MAP.md` (PageRank order = business weight). Add, below the
    generated text under `## Lead notes <date>`:
    - the **order** in which contexts should be processed (highest-ranked "code only" contexts first; a context whose

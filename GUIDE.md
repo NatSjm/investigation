@@ -151,7 +151,7 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 | `calc-auditor` | verify a calculation concept or formula page against code | calculation name, spec ID or page | `## Audit <date>` table, open questions | calculator class + its unit test, nothing else |
 | `doc-sync` | keep specs in sync with code changes | changed paths or a generated diff | spec change-log rows, `last_verified` | narrow ranges only when the contract diff cannot explain behaviour |
 | `test-designer` | Gherkin scenarios and synthetic fixtures | spec ID or work items | `test-design/features/<ID>.feature`, fixtures | no |
-| `architect` | HLD, ADRs, integration map | spec ID or decision | `architecture/hld/<ID>.md`, `adr/NNNN-*.md` | never |
+| `architect` | HLD, ADRs, integration map; legacy architecture, decision and process pages | spec ID, decision or `confluence-import/<SPACE>/<page>.md` | `architecture/hld/<ID>.md`, `adr/NNNN-*.md`, merged `overview.md` / `integrations.md` prose, page moved to `_done/` | never |
 | `impact-analyst` | blast radius of a change | file paths or a node | checklist across BE / FE / docs | no (graph only) |
 | `migration-lead` | plan and track the documentation migration | context, space key or `all` | `migration/<scope>.md` | no |
 
@@ -298,7 +298,8 @@ The full plan with risks is [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md); th
 ### Week 2 - Pilot context end to end
 1. `/spec-skeleton-from-graph <ctx> <PFX>-001` (Run 1). Review the draft with the owner for 15 minutes.
 2. Export the Confluence pages of the context (space export to HTML; importer per [MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md)),
-   triage them in the inventory table, then `@confluence-migrator <page>` one page per run (Run 2).
+   triage them in the inventory table, then `@confluence-migrator <page>` one page per run (Run 2); architecture,
+   decision and process pages go to `@architect <page>` instead, after `/integrations-from-contracts`.
 3. `/audit-calculation <name>` for each calculation of the context (Run 3). Expect findings; that is the value.
 4. Owner decides the open questions, adds `verified.by` (Run 4). The index badge turns *human-reviewed*.
 5. `context-pack.py --task <PFX>-001`: the pack must fit the budget and contain spec, calculations, graph,

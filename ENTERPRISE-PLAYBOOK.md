@@ -580,7 +580,9 @@ column, so quote a page's note in the request that starts its run.
 (agent `migration-lead`) lists the imported pages per target context and the unassigned ones, and proposes a target from
 the title, the context map and the glossary; the analyst confirms or corrects in the inventory table. 2. A page the lead
 marks as a formula page goes to `/audit-calculation <path of the page>` (agent `calc-auditor` accepts a legacy page as
-input) instead of Run 2. 3. Everything else waits for Run 2 (`@confluence-migrator`, section 10), one page per run.
+input) instead of Run 2. 3. An architecture, decision or process page goes to `@architect <path of the page>`
+(section 10, "Architecture pages"); the board lists it under "Architecture pages". 4. Everything else waits for Run 2
+(`@confluence-migrator`, section 10), one page per run.
 
 ---
 
@@ -642,6 +644,18 @@ exists; a context the page describes that has no skeleton yet keeps the page out
 board keeps listing it). New facts are merged into the skeleton, contradictions become `> ⚠️ CONFLICT (legacy: <page>)` callouts, unverifiable claims
 `> ❓ UNVERIFIED`, domain terms go to the glossary, the page is cited in `sources[]` and moved to `_done/`. No number,
 threshold or formula is copied from a page.
+
+**Architecture pages.** `@architect confluence-import/<SPACE>/<page>.md` (task "Legacy page"), one page per run, for
+a page about what the application is, its parts, integrations or deployment, a decision, or a procedure that still
+matters. They are not part of a spec's runs and wait for one thing only: `/integrations-from-contracts` (section 5)
+must have refreshed `architecture/integrations.md`, and `scope = overview-draft` rewritten the overview while it
+still carried the reference text, so the page is merged into evidence and checked against it. The architect writes
+the page's prose into `overview.md`, the `manual` rows and prose of `integrations.md`, a draft ADR or a document under
+`architecture/`; a claim that differs from a `gen` row or from existing prose becomes a `> ⚠️ CONFLICT` callout,
+never an edit; the page moves to `_done/`. A page with a feature part goes to the migrator first, which merges that
+part and hands the rest to the architect. The board lists these pages by title (integration, deployment, decision,
+architecture, also the Czech stems); a page the title does not give away is classified in the triage note and
+handed over by the migrator.
 
 **Run 3, calculations.** `/audit-calculation <name>` for every calculation the context uses. The `calc-auditor`
 opens the calculator and its unit test, nothing else, and writes or audits `domain/calculations/<name>.md`: formula,

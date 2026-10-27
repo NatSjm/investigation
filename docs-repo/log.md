@@ -1,5 +1,15 @@
 # Update Log
 
+## 2026-10-27
+* **Legacy architecture pages reach the architect.** The triage table and the runbook sent architecture, decision
+  and process pages to `architect`, but the architect had no procedure for a legacy page, the migrator handed off
+  only formula pages, the runbook also listed these pages under the migrator, and the board offered
+  `@confluence-migrator` for every page without a context. The architect has a "Legacy page" task (target by
+  content: overview prose, `manual` rows of the integration map, a draft ADR or a document; `gen` rows never edited,
+  differences as conflicts; run after the integration map refresh, not after the specs), the migrator hands these
+  pages off, and `migration-status.py` lists pages whose title reads as architecture under "Architecture pages" with
+  the `@architect` command (Harbor: `deployment-notes`, `kafka-topics`).
+
 ## 2026-10-26
 * **Context pack: the UI flow survives the spec reduction.** A spec body above 200 lines or 60 % of the budget is
   reduced to key sections; the keep list lacked `UI flow`, so with the question budget of 200 a spec over 120 lines

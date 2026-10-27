@@ -18,4 +18,6 @@ description: Quarantine rules for imported legacy pages - evidence to be verifie
 - Migrated pages move to `confluence-import/<SPACE>/_done/`; obsolete pages get `status: obsolete` and one line why.
 - Numbers, formulas, thresholds and field names in legacy pages are the most likely to be stale - a formula page
   is handled by `calc-auditor` (compare with the unit test), not copied by `confluence-migrator`.
+- An architecture, decision or still-relevant process page is handled by `architect` (task "Legacy page", into
+  `architecture/`), not by `confluence-migrator`.
 - Never copy client data, screenshots with real data or personal names into concepts.

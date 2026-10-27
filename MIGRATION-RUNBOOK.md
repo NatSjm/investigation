@@ -79,13 +79,19 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
 
 ### Step 5: merge Confluence pages, one page per run
 
-- `@confluence-migrator confluence-import/<SPACE>/<page>.md` for feature, architecture, decision, glossary and
-  process pages. It finds the target with `context-pack.py`, merges only new facts, marks conflicts and unverifiable
+- `@confluence-migrator confluence-import/<SPACE>/<page>.md` for feature, glossary and obsolete pages. It names
+  every spec the page touches from `generated/catalogue.md`, merges only new facts, marks conflicts and unverifiable
   claims, extracts terms into the glossary, adds the `sources[]` entry, moves the page to `_done/`, validates, logs.
 - Formula pages are handed to `calc-auditor` (`audit-calculation` prompt). It opens exactly two files (calculator and
   its unit test), writes the `## Audit <date>` table with `MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED`, and never
   changes numbers itself. Non-MATCH rows become open questions naming an owner.
-- Architecture pages go to `architect` (ADR from `architecture/adr/template.md`, integration map refresh).
+- Architecture, decision and still-relevant process pages go to `@architect confluence-import/<SPACE>/<page>.md`
+  (task "Legacy page"; the board lists them, and the migrator hands one off when it is given one). Run them after
+  `/integrations-from-contracts` has refreshed `architecture/integrations.md` (and `scope = overview-draft` while the
+  overview still carries the reference text), not after the skeletons: the architect merges the page's prose into
+  `overview.md`, the `manual` rows of `integrations.md`, an ADR from `architecture/adr/template.md` or a document under
+  `architecture/`, marks claims that differ from a `gen` row as conflicts, and moves the page to `_done/`. A page with a
+  feature part goes to the migrator first, which merges that part and hands the rest on.
 - Pages in another language are translated during normalisation through the glossary `Aliases` column; the original
   title and key terms go into `aliases:` so searches in the source language still work.
 

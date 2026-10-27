@@ -86,8 +86,8 @@ for a page, quote its note in the request, for example
    |---|---|---|
    | `feature-spec` | a screen, a modal, business rules, or product behaviour across contexts | `confluence-migrator`, into `features/<context>/<ID>.md`; behaviour across contexts ends up in a flow (`flows/<name>.md`), which `architect` writes from the specs |
    | `calculation` | how a number is computed: a formula, thresholds, rounding, worked examples | `calc-auditor` (`/audit-calculation <page>`), into `domain/calculations/<name>.md`; never merged by hand |
-   | `architecture` | what the application is, its parts, integrations, deployment | `architect`, into `architecture/`; a page on what the application is and who uses it goes to `architecture/overview.md` |
-   | `decision` | why something was done one way | `architect`, as an ADR under `architecture/adr/` |
+   | `architecture` | what the application is, its parts, integrations, deployment | `architect` (`@architect <page>`, task "Legacy page", after `/integrations-from-contracts`), into `architecture/`; a page on what the application is and who uses it goes to `architecture/overview.md` |
+   | `decision` | why something was done one way | `architect` (`@architect <page>`), as an ADR under `architecture/adr/` |
    | `glossary` | term definitions | `confluence-migrator`, into `domain/glossary.md` |
    | `process` | how the team works (releases, reviews, onboarding), not what the product does | usually `obsolete`; a procedure that still matters, such as deployment, goes to `architect` as a document under `architecture/` |
    | `obsolete` | nothing the code does any more | `confluence-migrator` (or you): header `status: obsolete` with one line why, page moved to `<KEY>/_done/` |

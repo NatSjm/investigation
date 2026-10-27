@@ -1462,3 +1462,49 @@ lines, both reduced, both with the UI flow section; CLI-001 unchanged (not reduc
 | `scripts/context-pack.py` | `UI flow` in the spec reduction keep list |
 | `.github/skills/task-context/SKILL.md` | anatomy item 2 names the kept sections and both triggers |
 | `.github/skills/task-context/references/pack-anatomy.md` | the `## Spec` row says the same |
+
+## 42. Legacy architecture pages reach the architect (investigation commits after `d9d90a8`, 2026-10-27)
+
+The triage table of `confluence-import/README.md` and the runbook sent `architecture`, `decision` and still-relevant
+`process` pages to `architect`, but nothing carried them there: `architect.agent.md` had no task for a legacy page and
+did not read `confluence-import/`; the migrator classified these pages and then handled them like feature pages
+(only `calculation` was handed off); the runbook listed them under the migrator in one bullet and under the
+architect in the next; and `migration-status.py` printed `@confluence-migrator` for every page without a context
+(Harbor: `technical/deployment-notes.md`, `technical/kafka-topics.md`). Now:
+
+- `architect` has a **Legacy page** task: one page per run, after `/integrations-from-contracts` (scope
+  `integrations`, and `overview-draft` while the overview carries the reference text), not after the specs; target by
+  content (overview prose; `manual` rows and prose of `integrations.md`; a draft ADR with the alternatives the page
+  gives, a missing one as an open question; a document under `architecture/` for a procedure); claims checked against
+  `generated/`, a `gen` row or existing prose never edited, a difference is a CONFLICT callout; glossary terms;
+  `sources[]` and `generated.by: copilot/architect`, `status: draft`; page to `_done/` unless a part was handed off.
+  Hand-offs to `confluence-migrator` (feature part) and `calc-auditor` (formula part).
+- `confluence-migrator` hands these pages to `architect` without editing; a `feature-spec + architecture` page is
+  merged for its feature part first, then handed on, and the architect moves it (the last agent moves the page).
+- `migration-status.py` routes a page whose title reads as architecture (`ARCH_TITLE`: architecture, integration,
+  deployment, infrastructure, hosting, Kafka, decision, with the Czech stems) to `@architect`: inside a context's
+  Run 2 line, or in a new "Architecture pages" block for pages without a context. The title wins over a formula word
+  in the body. Check the list of stems against your export's titles.
+
+### 42.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/architect.agent.md` | description, hand-offs, the "Legacy page" task, `log.md` line |
+| `.github/agents/confluence-migrator.agent.md` | description, hand-off to `architect`, step 1 routes architecture / decision / process pages, step 6 "the last agent moves the page" |
+| `scripts/migration-status.py` | `ARCH_TITLE`, the `architecture?` kind, `@architect` routing, the "Architecture pages" block, the order-of-work sentence; regenerate `migration/all.md` after copying |
+
+### 42.2 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `.github/copilot-instructions.md` | routing table, after the `architect` row | new row: legacy architecture / decision / process page -> `architecture/`, agent `architect` (task "Legacy page"), reads the page, `architecture/`, generated maps and contracts |
+| `.github/agents/migration-lead.agent.md` | procedure step 1 | the generated file also lists "the architecture pages (by title) with their `@architect` command" |
+| `.github/instructions/confluence-import.instructions.md` | after the formula-page bullet | "An architecture, decision or still-relevant process page is handled by `architect` (task "Legacy page", into `architecture/`), not by `confluence-migrator`." |
+| `CONCEPT.md` | agents table, rows `architect` and `confluence-migrator` | architect: job adds legacy architecture, decision and process pages, reads the page, writes glossary and `_done/`, hands off to migrator / calc-auditor; migrator: hands off also to `architect` |
+| `confluence-import/README.md` | Triage class table, rows `architecture` and `decision` | the command `@architect <page>` (task "Legacy page", after `/integrations-from-contracts` for `architecture`) |
+
+### 42.3 Playbook (read only)
+
+Section 9, "With an agent" (item 3 new), and section 10, "Architecture pages" after Run 2. `MIGRATION-RUNBOOK.md`
+Step 5, `GUIDE.md` and `HANDBOOK.md` agent tables say the same.
