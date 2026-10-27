@@ -87,7 +87,9 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
   developer confirm it, Run 1 (step 4) writes it from the code, the page is rerun.
 - Formula pages are handed to `calc-auditor` (`audit-calculation` prompt). It opens exactly two files (calculator and
   its unit test), writes the `## Audit <date>` table with `MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED`, and never
-  changes numbers itself. Non-MATCH rows become open questions naming an owner.
+  changes numbers itself. Non-MATCH rows become open questions naming an owner. A page that is screen rules plus a
+  formula section (`feature-spec + calculation`) goes to the migrator first: it merges the screen rules, links the
+  calculation instead of copying values, and hands the formula part to the auditor; the last agent moves the page.
 - Architecture, decision and still-relevant process pages go to `@architect confluence-import/<SPACE>/<page>.md`
   (task "Legacy page"; the board lists them, and the migrator hands one off when it is given one). Run them after
   `/integrations-from-contracts` has refreshed `architecture/integrations.md` (and `scope = overview-draft` while the

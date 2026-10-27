@@ -1538,17 +1538,26 @@ excludes them from every context. (b) The migrator's step 6 said a page with an 
 migrator; both agents now say "the last agent that takes the page moves it", in either direction. (c) A mixed page
 (`feature-spec + architecture`) whose feature part left a candidate spec or hit a context without a spec must stay
 out of `_done/` for the rerun, but the hand-off told the architect to move it; the migrator's hand-off now says
-whether the page may move, and the architect's step 6 respects it.
+whether the page may move, and the architect's step 6 respects it. (d) The same for a `feature-spec + calculation`
+page: the triage README said "the migrator takes the page once and hands the formula part to the calc-auditor",
+but the migrator's procedure only knew the pure formula page (hand off and stop), the auditor set the page header
+and never moved the page to `_done/` nor cited it in the concept, and nothing sent the screen rules of a page that
+reached the auditor first back to the migrator. The migrator now merges the screen rules of a mixed page (a rule
+that quotes a threshold links the calculation concept instead of carrying the value) and hands the formula part
+on with whether the page may move; the auditor cites the page in the concept's `sources[]`, moves it when it is the
+last agent, and has a hand-off to the migrator for the screen rules of a page that reached it first. The board's
+formula-page line says when to run the migrator instead.
 
 ### 43.1 Docs repository: files to re-copy whole
 
 | File | Why |
 |---|---|
+| `.github/agents/calc-auditor.agent.md` | hand-off to `confluence-migrator`; step 5: `sources[]`, move to `_done/` when last, screen rules never the auditor's |
 | `.github/agents/confluence-migrator.agent.md` | step 2: the "no spec covers the capability" bullet (candidate line) replaces "create from the template"; step 1 and the architect hand-off say whether a mixed page may move; step 6: the last agent moves the page, both directions; Never: create a spec |
 | `.github/agents/architect.agent.md` | step 6 of "Legacy page": the page stays when the migrator's hand-off says so (candidate spec or context without a spec pending) |
 | `scripts/migration-status.py` | `Candidates` read from each spec's Open questions, the `**Shaping - candidate spec**` line with the next free number, `shaping` in the summary; architecture pages listed once outside the contexts and excluded from their runs; regenerate `migration/all.md` after copying |
 | `.github/skills/spec-lifecycle/SKILL.md` | "Which run am I in?": the candidate-spec and architecture-page cases; Planning and "Ready for the analyst" paragraphs |
-| `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 2: no spec created (candidate line), `_done/` only without a pending candidate, the architect hand-off item |
+| `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 2: no spec created (candidate line), `_done/` only without a pending candidate, the architect hand-off item; Run 3: page cited and moved when the auditor is last, screen rules handed to the migrator |
 
 ### 43.2 Docs repository: single rows to merge
 
@@ -1557,6 +1566,8 @@ whether the page may move, and the architect's step 6 respects it.
 | `.github/agents/migration-lead.agent.md` | procedure step 2, after the unassigned-pages bullet | new bullet: for every candidate spec the proposed ID and title, spec of its own or part of an existing one, the developer who confirms it; the confirmed row goes to the board before its Run 1 |
 | `CONCEPT.md` | lifecycle item 2; the "ready for the analyst" sentence | "The migrator never creates a spec: a capability no spec covers becomes a `candidate spec:` open question, the lead and a developer confirm it, Run 1 writes it from the code and the page is rerun."; readiness adds "and no candidate spec is pending (architecture pages belong to `architect`, not to a context)" |
 | `confluence-import/README.md` | Triage, part 3 "Target", after "a wrong guess sends facts into the less suitable spec" | "A page about a screen or modal that no spec covers yet gets no target and no new spec from the migrator: it leaves a `candidate spec:` open question, the board lists it as a shaping decision, and the spec is written from the code (Run 1) before the page is rerun." |
+| `confluence-import/README.md` | Triage, part 1, the "Product or process?" paragraph | "...hands the formula part to the calc-auditor (or the architecture part to the architect); the last agent that takes the page moves it to `_done/`." |
+| `CONCEPT.md` | agents table, row `calc-auditor`, "Hands off to" | add "`confluence-migrator` for the screen rules of a mixed legacy page" |
 
 ### 43.3 Playbook (read only)
 

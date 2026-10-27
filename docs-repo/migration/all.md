@@ -46,7 +46,7 @@ Spec prefix `CLI`; BE class prefixes `Client`, `Role`; FE pages `ClientSearchPag
 Spec prefix `SES`; BE class prefixes `Session`, `Meeting`, `RoleOverride`, `SessionClientConfig`; FE pages `ClientMeetingsPage`, `PreparationSessionsPage`, `SessionSummaryPage`. Graph: `generated/graph/meetings.md`.
 
 - [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/meeting-flow.md` (last_modified 2025-09-02, status imported): `@confluence-migrator confluence-import/HARBOR/meeting-flow.md`
-- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/business/cover-quote-rules.md` (last_modified 2025-09-02, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/business/cover-quote-rules.md` (agent `calc-auditor`)
+- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/business/cover-quote-rules.md` (last_modified 2025-09-02, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/business/cover-quote-rules.md` (agent `calc-auditor`); a screen page that only quotes a threshold, or has a formula section beside its screen rules, is `feature-spec`: `@confluence-migrator confluence-import/HARBOR/business/cover-quote-rules.md` instead, it hands the formula part on
 
 ## imports
 
@@ -79,7 +79,7 @@ Spec prefix `P2`; BE class prefixes `Product2`; FE pages `Product2OverviewPage`.
 Spec prefix `COV`; BE class prefixes `Cover`; FE pages none. Graph: `generated/graph/cover.md`.
 
 - [ ] **Run 1 - skeleton** `COV-001`: `/spec-skeleton-from-graph cover COV-001` (agent `spec-writer`; REPO_MAP: code only)
-- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/business/cover-quote-rules.md` (last_modified 2025-09-02, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/business/cover-quote-rules.md` (agent `calc-auditor`)
+- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/business/cover-quote-rules.md` (last_modified 2025-09-02, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/business/cover-quote-rules.md` (agent `calc-auditor`); a screen page that only quotes a threshold, or has a formula section beside its screen rules, is `feature-spec`: `@confluence-migrator confluence-import/HARBOR/business/cover-quote-rules.md` instead, it hands the formula part on
 - [ ] **Run 3 - calculation audit** `cover_ratio` (no audit table, status draft): `/audit-calculation cover_ratio`
 
 ## market
@@ -93,7 +93,7 @@ Spec prefix `MKT`; BE class prefixes `Market`, `Scenario`, `BaselinePrice`; FE p
 
 Spec prefix `STR`; BE class prefixes `Stress`; FE pages `StressTestPage`. Graph: `generated/graph/stress.md`.
 
-- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/stress-test-calculation.md` (last_modified 2025-06-14, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/stress-test-calculation.md` (agent `calc-auditor`)
+- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/stress-test-calculation.md` (last_modified 2025-06-14, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/stress-test-calculation.md` (agent `calc-auditor`); a screen page that only quotes a threshold, or has a formula section beside its screen rules, is `feature-spec`: `@confluence-migrator confluence-import/HARBOR/stress-test-calculation.md` instead, it hands the formula part on
 - [ ] **Run 3 - calculation audit** `stress_test_monthly` (no audit table, status stable): `/audit-calculation stress_test_monthly`
 - [ ] **Run 4 - owner decision** `STR-001` (2 open question(s), status draft, no verified.by): decide the open questions in `features/stress/STR-001.md`, record them in the Change log, add `verified: { by: human:<id>, at }` and `stale_after`
 
@@ -107,7 +107,7 @@ Spec prefix `RPT`; BE class prefixes `Report`, `DocumentService`; FE pages none.
 
 Spec prefix `ADM`; BE class prefixes `Admin`, `Parameter`; FE pages `ParametersPage`, `ImportsPage`. Graph: `generated/graph/admin.md`.
 
-- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/business/admin-parameters-page.md` (last_modified 2025-10-03, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/business/admin-parameters-page.md` (agent `calc-auditor`)
+- [ ] **Run 2 - legacy merge** `confluence-import/HARBOR/business/admin-parameters-page.md` (last_modified 2025-10-03, status imported): looks like a formula page: `/audit-calculation confluence-import/HARBOR/business/admin-parameters-page.md` (agent `calc-auditor`); a screen page that only quotes a threshold, or has a formula section beside its screen rules, is `feature-spec`: `@confluence-migrator confluence-import/HARBOR/business/admin-parameters-page.md` instead, it hands the formula part on
 - [ ] **Run 4 - owner decision** `ADM-001` (4 open question(s), status draft, no verified.by): decide the open questions in `features/admin/ADM-001.md`, record them in the Change log, add `verified: { by: human:<id>, at }` and `stale_after`
 
 ## presentation

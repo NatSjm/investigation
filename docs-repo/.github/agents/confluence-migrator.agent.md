@@ -5,7 +5,7 @@ tools: ['read', 'edit', 'search', 'execute']
 handoffs:
   - label: Formula page - audit against code
     agent: calc-auditor
-    prompt: Audit the legacy page ${input:page} against the calculation implementation and its unit test.
+    prompt: Audit the legacy page ${input:page} against the calculation implementation and its unit test; screen rules already merged, if any, are listed in the chat, with whether the page may move to _done/ (not while a candidate spec or a context without a spec keeps it in place).
   - label: Architecture / decision page - migrate into architecture/
     agent: architect
     prompt: Migrate the legacy page ${input:page} into architecture/ (task "Legacy page"); feature facts already merged, if any, are listed in the chat, with whether the page may move to _done/ (not while a candidate spec or a context without a spec keeps it in place).
@@ -22,6 +22,11 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
 ## Procedure
 1. Read the page. Classify: `feature-spec` | `calculation` | `architecture` | `decision` | `glossary` |
    `process` | `obsolete`. A `calculation` page is **not** migrated by you: hand it to `calc-auditor` and stop.
+   A page with two classes (`feature-spec + calculation`, a screen page with a formula section): merge the screen
+   rules yourself (steps 2 to 5), a rule that quotes a threshold or a formula links the calculation concept
+   (`domain/calculations/<name>.md`) instead of carrying the value, leave the page in place, then hand the formula
+   part to `calc-auditor` naming the specs you touched and whether the page may move (step 6); the auditor moves it
+   when it may. A screen page that only quotes a threshold has no formula part: it stays `feature-spec`.
    Neither is an `architecture` page (what the application is, its parts, integrations, deployment), a `decision`
    page (why something was done one way) or a `process` page that still matters (a deployment procedure): hand it
    to `architect` (task "Legacy page") and stop, without editing anything. A page with two classes
@@ -67,8 +72,8 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
 6. Move the processed page to `confluence-import/<space>/_done/` (keep the file for audit; its image links keep
    working there, the `_attachments/` folder stays where it is); set its header `status: migrated|obsolete`. A
    page is processed once: it moves when every spec it touches has received its facts, not per context, and only
-   by the last agent that takes it: when you hand the rest to `architect`, the architect moves it; when `architect`
-   handed the feature part to you, you move it.
+   by the last agent that takes it: when you hand the rest to `architect` or `calc-auditor`, that agent moves it;
+   when `architect` or `calc-auditor` handed the feature part to you, you move it.
 7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log the migration
    in `log.md`.
 

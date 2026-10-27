@@ -19,7 +19,10 @@
   it, Run 1 writes it from the code, the page is rerun. Run 2 checklist, lifecycle skill ("Which run am I in?",
   "Ready for the analyst"), migration-lead step 2, CONCEPT, import README triage. A mixed page
   (`feature-spec + architecture`) whose feature part left a candidate stays out of `_done/`: the migrator's
-  hand-off says whether the page may move, the architect's step 6 respects it.
+  hand-off says whether the page may move, the architect's step 6 respects it. The same for a
+  `feature-spec + calculation` page: the migrator merges the screen rules (a threshold links the concept, never
+  the value) and hands the formula part on; `calc-auditor` cites the page in the concept, moves it when it is the
+  last agent, and hands the screen rules of a page that reached it first to the migrator.
 
 ## 2026-10-26
 * **Context pack: the UI flow survives the spec reduction.** A spec body above 200 lines or 60 % of the budget is

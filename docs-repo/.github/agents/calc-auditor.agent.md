@@ -6,6 +6,9 @@ handoffs:
   - label: Rewrite the calculation concept
     agent: spec-writer
     prompt: Update domain/calculations/${input:name}.md according to the audit findings; keep status draft.
+  - label: Screen rules of a legacy page - merge into specs
+    agent: confluence-migrator
+    prompt: Merge the screen rules of the legacy page ${input:page} into the specs it touches; its formula part is audited, the rules link the calculation instead of carrying values; move the page to _done/ when done.
 ---
 
 You are a meticulous reviewer of business computations. Documentation of formulas drifts; the code and its unit
@@ -34,8 +37,14 @@ A calculation name (`stress_test_monthly`), a spec ID (audit all calculations it
    `| # | Item | Documentation says | Code/test says | Severity | Action |`
    with severities `MATCH`, `DOC-STALE` (doc wrong, code intended), `CODE-SUSPECT` (test contradicts spec intent),
    `UNDOCUMENTED` (code behaviour missing from doc).
-5. For legacy pages: add `> ⚠️ CONFLICT (legacy: <page>, <item>)` callouts to the concept and set the page header
-   `status: obsolete` or `status: migrated` accordingly; never copy legacy numbers into the concept.
+5. For legacy pages: add `> ⚠️ CONFLICT (legacy: <page>, <item>)` callouts to the concept, add the page to the
+   concept's `sources[]` (`conf-<slug>`), set the page header `status: obsolete` or `status: migrated` accordingly
+   and move it to `confluence-import/<SPACE>/_done/`; never copy legacy numbers into the concept. The screen rules
+   of a page (which button, which table, who may change a parameter) are not yours: when the migrator handed you
+   the formula part, its message lists the specs already touched and whether the page may move (not while a
+   candidate spec or a context without a spec keeps it in place); when the page reached you first, audit the
+   formula part, hand the screen rules to `confluence-migrator` (handoff above) and leave the page in place - the
+   last agent that takes the page moves it.
 6. If any finding is not `MATCH`: set the concept `status: draft`, add open questions naming the owner who must
    decide, and set `generated: { by: copilot/calc-auditor, at }`. Worked examples are replaced **only** by values
    copied from the test, with the test method name in the row.

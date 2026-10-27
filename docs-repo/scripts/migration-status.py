@@ -188,7 +188,7 @@ def main():
 
     def route(p):
         if p['Kind'] == 'calculation?':
-            return 'looks like a formula page: ' + code(f"/audit-calculation {p['File']}") + ' (agent ' + code('calc-auditor') + ')'
+            return 'looks like a formula page: ' + code(f"/audit-calculation {p['File']}") + ' (agent ' + code('calc-auditor') + '); a screen page that only quotes a threshold, or has a formula section beside its screen rules, is `feature-spec`: ' + code(f"@confluence-migrator {p['File']}") + ' instead, it hands the formula part on'
         return code(f"@confluence-migrator {p['File']}")
 
     # architecture pages are not a spec's run: they go to `architect` after the integration map refresh and never

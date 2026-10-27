@@ -95,7 +95,8 @@ for a page, quote its note in the request, for example
    Product or process? A page that would still be true after the whole team was replaced is about the product
    (`feature-spec` or `architecture`); one that would change with the people is `process`. A page with two kinds of
    content gets both classes joined by `+` and says which part goes where: the migrator takes the page once and hands
-   the formula part to the calc-auditor. A screen page that only quotes a threshold stays `feature-spec`: the migrator
+   the formula part to the calc-auditor (or the architecture part to the architect); the last agent that takes the
+   page moves it to `_done/`. A screen page that only quotes a threshold stays `feature-spec`: the migrator
    links the calculation instead of copying the value.
 
 2. **Condition**, one of:

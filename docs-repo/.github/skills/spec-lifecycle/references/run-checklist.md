@@ -27,7 +27,7 @@
 - [ ] `## Audit <date>` table with one row per claim; severities `MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED`
 - [ ] worked examples replaced only by values copied from the test, test method named
 - [ ] non-MATCH -> `status: draft` + open question naming the owner; `used_by` specs listed in chat
-- [ ] legacy formula page header set to `obsolete | migrated`
+- [ ] legacy formula page header set to `obsolete | migrated`, page cited in the concept's `sources[]`, moved to `_done/` when the auditor is the last agent to take it (screen rules merged by the migrator before, or none); screen rules of a mixed page handed to `confluence-migrator`, never merged by the auditor
 
 ## Run 4 - owner decision (human)
 - [ ] each open question answered; decision recorded as a Change log row with date and reference
