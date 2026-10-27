@@ -8,7 +8,7 @@ handoffs:
     prompt: Audit the legacy page ${input:page} against the calculation implementation and its unit test.
   - label: Architecture / decision page - migrate into architecture/
     agent: architect
-    prompt: Migrate the legacy page ${input:page} into architecture/ (task "Legacy page"); feature facts already merged, if any, are listed in the chat.
+    prompt: Migrate the legacy page ${input:page} into architecture/ (task "Legacy page"); feature facts already merged, if any, are listed in the chat, with whether the page may move to _done/ (not while a candidate spec or a context without a spec keeps it in place).
 ---
 
 You are migrating legacy documentation into this docs-as-code repository.
@@ -26,7 +26,8 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
    page (why something was done one way) or a `process` page that still matters (a deployment procedure): hand it
    to `architect` (task "Legacy page") and stop, without editing anything. A page with two classes
    (`feature-spec + architecture`): merge the feature facts yourself (steps 2 to 5), leave the page in place, then
-   hand the rest to `architect` naming the specs you touched; the architect moves the page (step 6).
+   hand the rest to `architect` naming the specs you touched and whether the page may move (step 6: it may not
+   while a candidate spec or a context without a spec keeps it in place); the architect moves it when it may.
    **Language**: the repository is English. If the page is in another language, translate while normalising using
    `domain/glossary.md` (`Aliases` column) for every domain term - add missing terms there first. Set frontmatter
    `source_lang: <code>`, `lang: en`, and put the original title / key terms into `aliases: [...]` so searches in

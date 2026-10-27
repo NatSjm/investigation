@@ -1535,13 +1535,17 @@ state, against the rule that these pages are not a spec's run. The board now lis
 "Architecture pages" block (with the contexts each mentions), counts them in the summary line separately and
 excludes them from every context. (b) The migrator's step 6 said a page with an architecture part is moved by
 `architect`, which was wrong when the architect had taken the page first and handed its feature part to the
-migrator; both agents now say "the last agent that takes the page moves it", in either direction.
+migrator; both agents now say "the last agent that takes the page moves it", in either direction. (c) A mixed page
+(`feature-spec + architecture`) whose feature part left a candidate spec or hit a context without a spec must stay
+out of `_done/` for the rerun, but the hand-off told the architect to move it; the migrator's hand-off now says
+whether the page may move, and the architect's step 6 respects it.
 
 ### 43.1 Docs repository: files to re-copy whole
 
 | File | Why |
 |---|---|
-| `.github/agents/confluence-migrator.agent.md` | step 2: the "no spec covers the capability" bullet (candidate line) replaces "create from the template"; step 6: the last agent moves the page, both directions; Never: create a spec |
+| `.github/agents/confluence-migrator.agent.md` | step 2: the "no spec covers the capability" bullet (candidate line) replaces "create from the template"; step 1 and the architect hand-off say whether a mixed page may move; step 6: the last agent moves the page, both directions; Never: create a spec |
+| `.github/agents/architect.agent.md` | step 6 of "Legacy page": the page stays when the migrator's hand-off says so (candidate spec or context without a spec pending) |
 | `scripts/migration-status.py` | `Candidates` read from each spec's Open questions, the `**Shaping - candidate spec**` line with the next free number, `shaping` in the summary; architecture pages listed once outside the contexts and excluded from their runs; regenerate `migration/all.md` after copying |
 | `.github/skills/spec-lifecycle/SKILL.md` | "Which run am I in?": the candidate-spec and architecture-page cases; Planning and "Ready for the analyst" paragraphs |
 | `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 2: no spec created (candidate line), `_done/` only without a pending candidate, the architect hand-off item |

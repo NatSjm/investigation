@@ -56,7 +56,8 @@ external services behind OpenAPI contracts).
      human:<page author>, last_modified }`) cited with `[^conf-<slug>]`, `generated.by: copilot/architect`,
      `status: draft` until the page owner re-verifies.
   6. Move the page to `confluence-import/<SPACE>/_done/` with header `status: migrated|obsolete`, unless you handed
-     a part off (the agent taking the last part moves it).
+     a part off (the agent taking the last part moves it) or the migrator's hand-off says the page stays (a
+     candidate spec or a context without a spec is pending; the page is rerun after that context's Run 1).
 
 ## Style
 Mermaid only (`C4Context`, `C4Container`, `sequenceDiagram`, `erDiagram`, `flowchart`); one diagram <= 25 nodes.
