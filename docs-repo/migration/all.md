@@ -13,7 +13,7 @@ generated: { by: process:migration-status, at: 2026-10-27T00:00:00Z }
 
 ## Summary
 
-Runs due: skeleton 2, legacy merge 5, calculation 5, owner decision 14. Contexts ready for the analyst: 0 of 11.
+Runs due: skeleton 2, legacy merge 5, calculation 5, owner decision 14; shaping decisions (candidate specs) 0; architecture pages 2. Contexts ready for the analyst: 0 of 11.
 
 | Context | Spec prefix | Specs | Calculations | Legacy pages pending | State |
 |---|---|---|---|---|---|
@@ -29,11 +29,11 @@ Runs due: skeleton 2, legacy merge 5, calculation 5, owner decision 14. Contexts
 | admin | ADM | `ADM-001` (draft) | none | 1 | 2 run(s) due |
 | presentation | PRS | `PRS-001` (draft) | none | 0 | 1 run(s) due |
 
-Architecture pages (no context; agent `architect`, task "Legacy page", one page per run, after `/integrations-from-contracts` has refreshed `architecture/integrations.md`; confirm the class in the triage note):
+Architecture pages (not a spec's run and not counted above; agent `architect`, task "Legacy page", one page per run, after `/integrations-from-contracts` has refreshed `architecture/integrations.md`; a page that also describes a screen goes to the migrator first, which hands the rest on; confirm the class in the triage note):
 - [ ] `confluence-import/HARBOR/technical/deployment-notes.md` (last_modified 2025-10-01, status imported): `@architect confluence-import/HARBOR/technical/deployment-notes.md`
 - [ ] `confluence-import/HARBOR/technical/kafka-topics.md` (last_modified 2025-09-02, status imported): `@architect confluence-import/HARBOR/technical/kafka-topics.md`
 
-Order of work: Run 1 for every context without a spec first (code is the truth, pages are merged into a skeleton), then Run 2 page by page, Run 3 as the handoff after each spec, Run 4 by the owner. Architecture pages wait only for the integration map refresh, not for the specs. One run, one review, one commit.
+Order of work: Run 1 for every context without a spec first (code is the truth, pages are merged into a skeleton), then Run 2 page by page, Run 3 as the handoff after each spec, Run 4 by the owner. A candidate spec a page left behind is a shaping decision before its Run 1, never a spec written from the page. Architecture pages wait only for the integration map refresh, not for the specs. One run, one review, one commit.
 
 ## clients
 

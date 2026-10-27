@@ -32,6 +32,9 @@ A context name (`product2`), a list of contexts, a Confluence space key (`HARBOR
    - the **order** in which contexts should be processed (highest-ranked "code only" contexts first; a context whose
      calculations are `used_by` many specs before its users);
    - for every unassigned legacy page a proposed target (read only its title and first paragraph);
+   - for every **candidate spec** (a shaping line the board reads from a spec's Open questions): the proposed ID
+     and title, whether it is a spec of its own or fits an existing one (`features/conventions.md`, "Shaping
+     specs"), and the developer who confirms it; the confirmed row goes to the board before its Run 1;
    - which Run 1 items may go to the Copilot coding agent in batch (one issue per context, same prompt) and which
      must stay interactive (every Run 2);
    - blockers: missing `@docs` tags (a manager with no row in `generated/be/docs-tags.md`), prefixes missing in

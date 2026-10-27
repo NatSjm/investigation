@@ -8,7 +8,16 @@
   content: overview prose, `manual` rows of the integration map, a draft ADR or a document; `gen` rows never edited,
   differences as conflicts; run after the integration map refresh, not after the specs), the migrator hands these
   pages off, and `migration-status.py` lists pages whose title reads as architecture under "Architecture pages" with
-  the `@architect` command (Harbor: `deployment-notes`, `kafka-topics`).
+  the `@architect` command (Harbor: `deployment-notes`, `kafka-topics`). Same day, two corrections: an
+  architecture page is listed once, outside the contexts' runs, and no longer counts as a context's Run 2 or
+  blocks its readiness; and the page is moved by the last agent that takes it in either hand-off direction.
+* **The migrator never creates a spec.** Step 2 still said "no target -> create from the template (or hand to
+  `spec-writer`)", against the lifecycle rule that a spec starts from the code and never from a legacy page, and
+  against the shaping decision the lead takes with a developer. A page about a capability no spec covers now
+  leaves `- [ ] candidate spec: <title> (legacy conf-<slug>; owner: migration lead) - ...` under the primary spec's
+  Open questions; `migration-status.py` lists it as a shaping decision with the next free number, the lead confirms
+  it, Run 1 writes it from the code, the page is rerun. Run 2 checklist, lifecycle skill ("Which run am I in?",
+  "Ready for the analyst"), migration-lead step 2, CONCEPT, import README triage.
 
 ## 2026-10-26
 * **Context pack: the UI flow survives the spec reduction.** A spec body above 200 lines or 60 % of the budget is

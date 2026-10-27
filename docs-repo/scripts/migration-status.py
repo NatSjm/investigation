@@ -8,7 +8,9 @@ domain/calculations/*.md (status, used_by, `## Audit` section), generated/be/doc
 code location), generated/graph/REPO_MAP.md (spec coverage), confluence-import/<SPACE>/*.md not yet in _done/
 (header status; a page is assigned to a context when its text mentions the context name, its spec prefix or a spec
 ID of the context; otherwise it is listed as unassigned). A page whose title reads as architecture
-(integrations, deployment, decisions) is routed to the `architect` agent instead of the migrator.
+(integrations, deployment, decisions) is routed to the `architect` agent instead of the migrator and listed once, outside
+the contexts' runs. A `candidate spec:` line under a spec's Open questions (left by the migrator when a page describes a
+capability no spec covers) is listed as a shaping decision of the context, with the next free spec number.
 Examples:
   python3 scripts/migration-status.py --scope all
   python3 scripts/migration-status.py --scope product2 --print"""
@@ -82,11 +84,13 @@ def main():
         sid = get_val(fm, 'id') or os.path.splitext(os.path.basename(f))[0]
         ctx = get_val(fm, 'context') or context_of_spec_id(sid)
         open_q = 0
+        candidates = []   # "candidate spec: <title> (...)" lines the migrator leaves when a page describes a capability no spec covers
         om = re.search(r'(?s)## Open questions\r?\n(.*?)(\r?\n## |\Z)', t, re.I)
         if om:
             open_q = len(re.findall(r'(?m)^\s*- \[ \]', om.group(1)))
+            candidates = [c.strip() for c in re.findall(r'(?im)^\s*- \[ \] candidate spec:\s*([^(\r\n]+)', om.group(1))]
         specs.setdefault(ctx, []).append({'Id': sid, 'Status': get_val(fm, 'status'), 'Verified': bool(get_val(fm, 'verified')),
-                                          'Open': open_q, 'File': rel(repo, f)})
+                                          'Open': open_q, 'Candidates': candidates, 'File': rel(repo, f)})
 
     # ---------- calculations: tags from code vs concepts ----------
     calcs = {}   # name -> {Name, Class, Location, Ctx, Concept, Status, Audited, UsedBy}
@@ -185,23 +189,33 @@ def main():
     def route(p):
         if p['Kind'] == 'calculation?':
             return 'looks like a formula page: ' + code(f"/audit-calculation {p['File']}") + ' (agent ' + code('calc-auditor') + ')'
-        if p['Kind'] == 'architecture?':
-            return 'looks like an architecture page: ' + code(f"@architect {p['File']}") + ' (task "Legacy page", after ' + code('/integrations-from-contracts') + ')'
         return code(f"@confluence-migrator {p['File']}")
 
-    totals = {'run1': 0, 'run2': 0, 'run3': 0, 'run4': 0, 'ready': 0}
+    # architecture pages are not a spec's run: they go to `architect` after the integration map refresh and never
+    # block a context, so they are listed once at the top, with the contexts they mention, not under each context
+    arch_pages = [p for p in pages if p['Kind'] == 'architecture?']
+
+    totals = {'shaping': 0, 'run1': 0, 'run2': 0, 'run3': 0, 'run4': 0, 'ready': 0}
     summary = []
     detail = []
     for ctx_name in selected:
         c = contexts[ctx_name]
         ctx_specs = sorted(specs.get(ctx_name, []), key=lambda s: sort_key(s['Id']))
         ctx_calcs = calcs_of(ctx_name)
-        ctx_pages = [p for p in pages if ctx_name in p['Ctx']]
+        ctx_pages = [p for p in pages if ctx_name in p['Ctx'] and p['Kind'] != 'architecture?']
         runs = []
         first_id = f"{c['Spec']}-001"
+        numbers = [int(m.group(1)) for s in ctx_specs for m in [re.search(r'-(\d{3})$', s['Id'])] if m]
+        next_id = f"{c['Spec']}-{(max(numbers) + 1 if numbers else 1):03d}"
         if not ctx_specs:
             totals['run1'] += 1
             runs.append('- [ ] **Run 1 - skeleton** ' + code(first_id) + ': ' + code(f'/spec-skeleton-from-graph {ctx_name} {first_id}') + ' (agent ' + code('spec-writer') + f"; REPO_MAP: {'code only' if first_id in code_only else 'not listed'})")
+        for s in ctx_specs:
+            for cand in s['Candidates']:
+                # a shaping decision, not an agent run: the lead and a developer confirm the spec, then Run 1 writes it
+                # from the code and the page is rerun; the next free number is a proposal, the ID is theirs to choose
+                totals['shaping'] += 1
+                runs.append('- [ ] **Shaping - candidate spec** ' + cand + f" (Open question of {code(s['Id'])}): confirm with a developer (" + code('features/conventions.md') + ', "Shaping specs"), add the row to the board, then ' + code(f'/spec-skeleton-from-graph {ctx_name} {next_id}') + ' (next free number) and rerun the page it came from')
         for p in ctx_pages:
             totals['run2'] += 1
             who = route(p)
@@ -250,16 +264,16 @@ def main():
         detail.append('\n')
 
     sb.append('## Summary\n\n')
-    sb.append(f"Runs due: skeleton {totals['run1']}, legacy merge {totals['run2']}, calculation {totals['run3']}, owner decision {totals['run4']}. Contexts ready for the analyst: {totals['ready']} of {len(selected)}.\n\n")
+    sb.append(f"Runs due: skeleton {totals['run1']}, legacy merge {totals['run2']}, calculation {totals['run3']}, owner decision {totals['run4']}; shaping decisions (candidate specs) {totals['shaping']}; architecture pages {len(arch_pages)}. Contexts ready for the analyst: {totals['ready']} of {len(selected)}.\n\n")
     sb.append('| Context | Spec prefix | Specs | Calculations | Legacy pages pending | State |\n|---|---|---|---|---|---|\n')
     for row in summary:
         sb.append(row + '\n')
     sb.append('\n')
-    arch = [p for p in pages if not p['Ctx'] and p['Kind'] == 'architecture?']
-    if arch:
-        sb.append('Architecture pages (no context; agent ' + code('architect') + ', task "Legacy page", one page per run, after ' + code('/integrations-from-contracts') + ' has refreshed ' + code('architecture/integrations.md') + '; confirm the class in the triage note):\n')
-        for p in arch:
-            sb.append('- [ ] ' + code(p['File']) + f" (last_modified {p['Modified']}, status {p['Status']}): " + code(f"@architect {p['File']}") + '\n')
+    if arch_pages:
+        sb.append('Architecture pages (not a spec\'s run and not counted above; agent ' + code('architect') + ', task "Legacy page", one page per run, after ' + code('/integrations-from-contracts') + ' has refreshed ' + code('architecture/integrations.md') + '; a page that also describes a screen goes to the migrator first, which hands the rest on; confirm the class in the triage note):\n')
+        for p in arch_pages:
+            mentions = (', mentions ' + ', '.join(p['Ctx'])) if p['Ctx'] else ''
+            sb.append('- [ ] ' + code(p['File']) + f" (last_modified {p['Modified']}, status {p['Status']}{mentions}): " + code(f"@architect {p['File']}") + '\n')
         sb.append('\n')
     unassigned = [p for p in pages if not p['Ctx'] and p['Kind'] != 'architecture?']
     if unassigned:
@@ -267,7 +281,7 @@ def main():
         for p in unassigned:
             sb.append('- ' + code(p['File']) + f" (last_modified {p['Modified']}, {p['Kind']})\n")
         sb.append('\n')
-    sb.append('Order of work: Run 1 for every context without a spec first (code is the truth, pages are merged into a skeleton), then Run 2 page by page, Run 3 as the handoff after each spec, Run 4 by the owner. Architecture pages wait only for the integration map refresh, not for the specs. One run, one review, one commit.\n\n')
+    sb.append('Order of work: Run 1 for every context without a spec first (code is the truth, pages are merged into a skeleton), then Run 2 page by page, Run 3 as the handoff after each spec, Run 4 by the owner. A candidate spec a page left behind is a shaping decision before its Run 1, never a spec written from the page. Architecture pages wait only for the integration map refresh, not for the specs. One run, one review, one commit.\n\n')
     sb.extend(detail)
 
     text = ''.join(sb)

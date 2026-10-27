@@ -20,6 +20,12 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 ## Which run am I in?
 - No `features/<ctx>/<ID>.md` exists -> Run 1. Never start from a legacy page.
 - Spec exists and a page under `confluence-import/` is not in `_done/` -> Run 2 for that page.
+- A page describes a capability no spec of its context covers -> not a run: Run 2 leaves a `candidate spec:` Open
+  question in the primary spec; the lead and a developer confirm the spec (`features/conventions.md`, "Shaping
+  specs"), Run 1 writes it from the code, Run 2 reruns the page. New specs come from the code or from the analyst
+  (a request in a context without a spec), never from a page.
+- The page is about the application, an integration, a deployment or a decision -> not a spec's run: `architect`,
+  task "Legacy page", after `/integrations-from-contracts`.
 - A `@docs <calculation>` tag in `generated/be/docs-tags.md` has no concept, or the concept has no `## Audit` -> Run 3.
 - Spec is `draft` with open questions and no `verified` -> Run 4 (a person, not an agent).
 - `scripts/migration-status.py --scope <ctx> --print` answers this deterministically.
@@ -33,10 +39,12 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 
 ## Planning (migration-lead)
 `scripts/migration-status.py --scope all` writes `migration/all.md`: per context the runs still due with the exact
-command, pending legacy pages, calculations without concept or audit, specs waiting for an owner. Order of work:
-all Run 1 first (may be batched through the Copilot coding agent, one issue per context), then Run 2 page by page
-interactively, Run 3 as the handoff after each spec, Run 4 by the owner. See `references/run-checklist.md`.
+command, pending legacy pages, candidate specs (shaping decisions), calculations without concept or audit, specs
+waiting for an owner, and the architecture pages once, outside the contexts. Order of work: all Run 1 first (may be
+batched through the Copilot coding agent, one issue per context), then Run 2 page by page interactively, Run 3 as
+the handoff after each spec, Run 4 by the owner. See `references/run-checklist.md`.
 
 ## Ready for the analyst
 No "code only" entry for the context in `generated/graph/REPO_MAP.md`; spec `stable` + `verified`; every linked
-calculation audited; no pending page; the context pack for the ID fits its budget.
+calculation audited; no pending page and no candidate spec (architecture pages are not the context's); the context
+pack for the ID fits its budget.

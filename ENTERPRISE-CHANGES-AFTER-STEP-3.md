@@ -1508,3 +1508,53 @@ architect in the next; and `migration-status.py` printed `@confluence-migrator` 
 
 Section 9, "With an agent" (item 3 new), and section 10, "Architecture pages" after Run 2. `MIGRATION-RUNBOOK.md`
 Step 5, `GUIDE.md` and `HANDBOOK.md` agent tables say the same.
+
+## 43. The migrator never creates a spec; two corrections to section 42 (investigation commits after `3a9f380`, 2026-10-27)
+
+Apply 42 and 43 together: 43.1 re-copies the same three files as 42.1 in their later state, so a file copied once
+from the commits of 43 carries both.
+
+**Candidate specs.** The migrator's step 2 kept a bullet from the first version, "no target -> create from the
+matching template (or hand to `spec-writer` if the context has a graph community)". It contradicts the lifecycle
+("No `features/<ctx>/<ID>.md` exists -> Run 1. Never start from a legacy page") and the shaping decision the lead
+takes with a developer before Run 1 (`features/conventions.md`, "Shaping specs"); the `spec-writer` hand-off it
+names does not exist; and its condition is true for nearly every context, so it chose nothing. A page about a
+modal, sub-capability or screen that no spec of its context covers now gets no spec from the migrator: when the facts
+fit an existing spec within the size caps they are merged there, otherwise the migrator leaves one line the board
+reads under the primary spec's Open questions, `- [ ] candidate spec: <title> (legacy conf-<slug>; owner: migration
+lead) - <what the page describes>`, keeps the page out of `_done/` and reports it. `migration-status.py` lists every
+such line as `**Shaping - candidate spec**` under the context, with the next free spec number proposed for
+`/spec-skeleton-from-graph`; the lead and a developer confirm the spec (or fold it into an existing one), Run 1
+writes it from the code, the page is rerun and only the new facts are merged. A new spec has two origins: the code
+(Run 1) and a request the analyst takes to a context without a spec; a Confluence page is never one. A "Never"
+line says so in the migrator.
+
+**Corrections to 42.** (a) An architecture page that mentions a context was listed inside that context's runs as
+"Run 2 - legacy merge" with the `@architect` command, counted as a legacy merge and blocking the context's "ready"
+state, against the rule that these pages are not a spec's run. The board now lists architecture pages once, in the
+"Architecture pages" block (with the contexts each mentions), counts them in the summary line separately and
+excludes them from every context. (b) The migrator's step 6 said a page with an architecture part is moved by
+`architect`, which was wrong when the architect had taken the page first and handed its feature part to the
+migrator; both agents now say "the last agent that takes the page moves it", in either direction.
+
+### 43.1 Docs repository: files to re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/confluence-migrator.agent.md` | step 2: the "no spec covers the capability" bullet (candidate line) replaces "create from the template"; step 6: the last agent moves the page, both directions; Never: create a spec |
+| `scripts/migration-status.py` | `Candidates` read from each spec's Open questions, the `**Shaping - candidate spec**` line with the next free number, `shaping` in the summary; architecture pages listed once outside the contexts and excluded from their runs; regenerate `migration/all.md` after copying |
+| `.github/skills/spec-lifecycle/SKILL.md` | "Which run am I in?": the candidate-spec and architecture-page cases; Planning and "Ready for the analyst" paragraphs |
+| `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 2: no spec created (candidate line), `_done/` only without a pending candidate, the architect hand-off item |
+
+### 43.2 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `.github/agents/migration-lead.agent.md` | procedure step 2, after the unassigned-pages bullet | new bullet: for every candidate spec the proposed ID and title, spec of its own or part of an existing one, the developer who confirms it; the confirmed row goes to the board before its Run 1 |
+| `CONCEPT.md` | lifecycle item 2; the "ready for the analyst" sentence | "The migrator never creates a spec: a capability no spec covers becomes a `candidate spec:` open question, the lead and a developer confirm it, Run 1 writes it from the code and the page is rerun."; readiness adds "and no candidate spec is pending (architecture pages belong to `architect`, not to a context)" |
+| `confluence-import/README.md` | Triage, part 3 "Target", after "a wrong guess sends facts into the less suitable spec" | "A page about a screen or modal that no spec covers yet gets no target and no new spec from the migrator: it leaves a `candidate spec:` open question, the board lists it as a shaping decision, and the spec is written from the code (Run 1) before the page is rerun." |
+
+### 43.3 Playbook (read only)
+
+Section 10, "Run 2, legacy pages" (last sentences) and "Architecture pages" (listed once, outside the contexts).
+`MIGRATION-RUNBOOK.md` Step 5 has the candidate bullet.

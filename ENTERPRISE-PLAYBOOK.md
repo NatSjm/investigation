@@ -643,7 +643,11 @@ the context that owns that behaviour; a sequence across contexts goes to a flow,
 exists; a context the page describes that has no skeleton yet keeps the page out of `_done/` until its Run 1 (the
 board keeps listing it). New facts are merged into the skeleton, contradictions become `> ⚠️ CONFLICT (legacy: <page>)` callouts, unverifiable claims
 `> ❓ UNVERIFIED`, domain terms go to the glossary, the page is cited in `sources[]` and moved to `_done/`. No number,
-threshold or formula is copied from a page.
+threshold or formula is copied from a page. The migrator never creates a spec: a page about a modal or screen that no
+spec of the context covers leaves a `candidate spec:` line under the primary spec's Open questions, the board lists
+it as a shaping decision with the next free number, the lead and a developer confirm it (or fold it into an existing
+spec), Run 1 writes it from the code, and the page is rerun. A new spec has two origins only: the code (Run 1) and a
+request the analyst takes to a context without a spec (section 12); a Confluence page is never one.
 
 **Architecture pages.** `@architect confluence-import/<SPACE>/<page>.md` (task "Legacy page"), one page per run, for
 a page about what the application is, its parts, integrations or deployment, a decision, or a procedure that still
@@ -653,9 +657,9 @@ still carried the reference text, so the page is merged into evidence and checke
 the page's prose into `overview.md`, the `manual` rows and prose of `integrations.md`, a draft ADR or a document under
 `architecture/`; a claim that differs from a `gen` row or from existing prose becomes a `> ⚠️ CONFLICT` callout,
 never an edit; the page moves to `_done/`. A page with a feature part goes to the migrator first, which merges that
-part and hands the rest to the architect. The board lists these pages by title (integration, deployment, decision,
-architecture, also the Czech stems); a page the title does not give away is classified in the triage note and
-handed over by the migrator.
+part and hands the rest to the architect. The board lists these pages once, by title (integration, deployment,
+decision, architecture, also the Czech stems), outside the contexts' runs and without blocking a context's readiness;
+a page the title does not give away is classified in the triage note and handed over by the migrator.
 
 **Run 3, calculations.** `/audit-calculation <name>` for every calculation the context uses. The `calc-auditor`
 opens the calculator and its unit test, nothing else, and writes or audits `domain/calculations/<name>.md`: formula,

@@ -17,7 +17,9 @@
 - [ ] no number, threshold or formula copied from the page
 - [ ] `sources[]` entry `conf-<slug>` with `last_modified` in every spec touched; citations `[^conf-<slug>]`
 - [ ] new terms in `domain/glossary.md` (Aliases column for the legacy wording)
-- [ ] page moved to `confluence-import/<SPACE>/_done/` with header `status: migrated | obsolete` - only when every context it describes has a spec; otherwise left in place with the pending part as an Open question
+- [ ] no spec created: a capability no spec covers is a `- [ ] candidate spec: <title> (legacy conf-<slug>; owner: migration lead) - ...` line under the primary spec's Open questions (the board lists it as a shaping decision)
+- [ ] page moved to `confluence-import/<SPACE>/_done/` with header `status: migrated | obsolete` - only when every context it describes has a spec and no candidate is pending; otherwise left in place with the pending part as an Open question
+- [ ] an architecture, decision or process part was handed to `architect` (the last agent moves the page)
 - [ ] no client data, screenshots or personal names
 
 ## Run 3 - calculation (`calc-auditor`)

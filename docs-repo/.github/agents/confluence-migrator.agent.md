@@ -45,7 +45,14 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
      business rule you add ends, after its footnote, with `(source: legacy conf-<slug>)`; you open no code, so the
      code form of the marker is never yours (`features/conventions.md`, "Provenance per rule"). Every spec you
      touched gets the `sources[]` entry of step 5.
-   - None -> create from the matching template (or hand to `spec-writer` if the context has a graph community).
+   - The context has specs, but **no spec covers the capability** the page describes (a modal, a sub-capability, a
+     screen) -> you create no spec: a spec starts from the code (Run 1), and which specs a context has is a shaping
+     decision of the migration lead with a developer (`features/conventions.md`, "Shaping specs"). When the facts fit
+     an existing spec within the size caps, merge them there. Otherwise record a candidate in the Open questions of
+     the primary spec, on one line the board reads:
+     `- [ ] candidate spec: <title> (legacy conf-<slug>; owner: migration lead) - <what the page describes>`,
+     leave the page out of `_done/` (step 6) and report it. After the candidate's Run 1 the page is rerun and only
+     the new facts are merged.
    - A context the page describes has **no spec yet** -> merge what has a target, record the rest as an Open
      question in the primary spec ("legacy <page> states ... for <context>, no spec yet") and leave the page out
      of `_done/` (step 6) so the board keeps listing it; it is rerun after that context's Run 1, and only the new
@@ -59,13 +66,16 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
 6. Move the processed page to `confluence-import/<space>/_done/` (keep the file for audit; its image links keep
    working there, the `_attachments/` folder stays where it is); set its header `status: migrated|obsolete`. A
    page is processed once: it moves when every spec it touches has received its facts, not per context, and only
-   by the last agent that takes it (a page with an architecture part is moved by `architect`).
+   by the last agent that takes it: when you hand the rest to `architect`, the architect moves it; when `architect`
+   handed the feature part to you, you move it.
 7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log the migration
    in `log.md`.
 
 ## Never
 - Copy client data, screenshots with real data, or personal names of clients.
 - Rewrite more than the page you were given in one run (several specs for one page are normal; a second page is not).
+- Create a spec. A spec starts from the code (Run 1, `spec-writer`); a page is merged into it afterwards. What no
+  spec covers is a `candidate spec:` Open question, never a file.
 
 ## Output
 Files only; chat: classification + target path per page, <= 1 line each.
