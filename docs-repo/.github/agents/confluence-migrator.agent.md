@@ -20,8 +20,12 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
 `<space>/_attachments/<slug>/`, `attachments_not_imported:` the files that were not copied).
 
 ## Procedure
-1. Read the page. Classify: `feature-spec` | `calculation` | `architecture` | `decision` | `glossary` |
-   `process` | `obsolete`. A `calculation` page is **not** migrated by you: hand it to `calc-auditor` and stop.
+1. Read the page. Classify from its content, not from the triage note (the note is a hint you confirm or correct
+   in chat): `feature-spec` | `calculation` | `architecture` | `decision` | `glossary` | `process` | `obsolete`,
+   or **two classes joined by `+`** when the page has two kinds of content, each class decided on its own part. A
+   formula part is text that says how a number is computed - a formula, a rounding rule, a worked example, a
+   threshold with the rule that applies it; a value the screen shows or an administrator sets is not one. A pure
+   `calculation` page is **not** migrated by you: hand it to `calc-auditor` and stop.
    A page with two classes (`feature-spec + calculation`, a screen page with a formula section): merge the screen
    rules yourself (steps 2 to 5), a rule that quotes a threshold or a formula links the calculation concept
    (`domain/calculations/<name>.md`) instead of carrying the value, leave the page in place, then hand the formula

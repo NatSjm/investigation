@@ -22,7 +22,9 @@
   hand-off says whether the page may move, the architect's step 6 respects it. The same for a
   `feature-spec + calculation` page: the migrator merges the screen rules (a threshold links the concept, never
   the value) and hands the formula part on; `calc-auditor` cites the page in the concept, moves it when it is the
-  last agent, and hands the screen rules of a page that reached it first to the migrator.
+  last agent, and hands the screen rules of a page that reached it first to the migrator. Step 1 of the migrator
+  says the classification comes from the content, one class or two joined by `+`, and what counts as a formula
+  part (how a number is computed, not a value the screen shows).
 
 ## 2026-10-26
 * **Context pack: the UI flow survives the spec reduction.** A spec body above 200 lines or 60 % of the budget is

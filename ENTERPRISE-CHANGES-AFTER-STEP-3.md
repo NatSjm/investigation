@@ -1553,7 +1553,7 @@ formula-page line says when to run the migrator instead.
 | File | Why |
 |---|---|
 | `.github/agents/calc-auditor.agent.md` | hand-off to `confluence-migrator`; step 5: `sources[]`, move to `_done/` when last, screen rules never the auditor's |
-| `.github/agents/confluence-migrator.agent.md` | step 2: the "no spec covers the capability" bullet (candidate line) replaces "create from the template"; step 1 and the architect hand-off say whether a mixed page may move; step 6: the last agent moves the page, both directions; Never: create a spec |
+| `.github/agents/confluence-migrator.agent.md` | step 1: classification from the content, one class or two joined by `+`, with the test for a formula part (how a number is computed, not a value the screen shows); step 2: the "no spec covers the capability" bullet (candidate line) replaces "create from the template"; step 1 and the hand-offs say whether a mixed page may move; step 6: the last agent moves the page, both directions; Never: create a spec |
 | `.github/agents/architect.agent.md` | step 6 of "Legacy page": the page stays when the migrator's hand-off says so (candidate spec or context without a spec pending) |
 | `scripts/migration-status.py` | `Candidates` read from each spec's Open questions, the `**Shaping - candidate spec**` line with the next free number, `shaping` in the summary; architecture pages listed once outside the contexts and excluded from their runs; regenerate `migration/all.md` after copying |
 | `.github/skills/spec-lifecycle/SKILL.md` | "Which run am I in?": the candidate-spec and architecture-page cases; Planning and "Ready for the analyst" paragraphs |
