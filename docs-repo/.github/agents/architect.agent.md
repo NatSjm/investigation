@@ -55,9 +55,12 @@ external services behind OpenAPI contracts).
   5. Provenance on every file you touched: the `sources[]` entry (`{ id: conf-<slug>, title, resource, author:
      human:<page author>, last_modified }`) cited with `[^conf-<slug>]`, `generated.by: copilot/architect`,
      `status: draft` until the page owner re-verifies.
-  6. Move the page to `confluence-import/<SPACE>/_done/` with header `status: migrated|obsolete`, unless you handed
-     a part off (the agent taking the last part moves it) or the migrator's hand-off says the page stays (a
-     candidate spec or a context without a spec is pending; the page is rerun after that context's Run 1).
+  6. Move the page with `python3 scripts/legacy-done.py <page> --into <architecture file> [--into ...]` (every
+     concept the page went into, the migrator's specs included when it handed the page to you; `--status obsolete
+     --reason "<why>"` for an obsolete page): the script places it under `_done/<section>/`, writes `status`,
+     `migrated` and `superseded_by` and re-points the links, never by hand. Skip it when you handed a part off (the
+     agent taking the last part moves it) or the migrator's hand-off says the page stays (a candidate spec or a
+     context without a spec is pending; the page is rerun after that context's Run 1).
 
 ## Style
 Mermaid only (`C4Context`, `C4Container`, `sequenceDiagram`, `erDiagram`, `flowchart`); one diagram <= 25 nodes.

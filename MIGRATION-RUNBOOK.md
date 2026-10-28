@@ -81,7 +81,8 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
 
 - `@confluence-migrator confluence-import/<SPACE>/<page>.md` for feature, glossary and obsolete pages. It names
   every spec the page touches from `generated/catalogue.md`, merges only new facts, marks conflicts and unverifiable
-  claims, extracts terms into the glossary, adds the `sources[]` entry, moves the page to `_done/`, validates, logs.
+  claims, extracts terms into the glossary, adds the `sources[]` entry and the page title to the specs' `aliases`,
+  moves the page with `scripts/legacy-done.py` (to `_done/<section>/`, with `superseded_by`), validates, logs.
 - The migrator never creates a spec. A page about a capability no spec covers leaves a `candidate spec:` open
   question in the primary spec; the board lists it as a shaping decision with the next free number; the lead and a
   developer confirm it, Run 1 (step 4) writes it from the code, the page is rerun.

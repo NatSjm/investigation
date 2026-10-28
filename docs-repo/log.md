@@ -1,5 +1,17 @@
 # Update Log
 
+## 2026-10-28
+* **A processed legacy page is moved by a script.** `confluence-migrator`, `architect` and `calc-auditor` each moved
+  a page to a flat `_done/` by hand, set `status` themselves, wrote `superseded_by` only for a contradicting page
+  (one page had it) and left the image links to break one level up. `scripts/legacy-done.py <page> --into <concept>
+  [--into ...]` now does the move: `_done/<section>/` from the page header (the REST export's root pages stay at
+  `_done/`), `status`, `migrated` or `obsolete` with `reason`, `superseded_by` naming every concept the page went into
+  (the backward link; `sources[]` is the forward one), every relative link re-pointed (`../_attachments/` one level
+  deeper, a link to a page already under `_done/` follows it, pages under `_done/` that linked the moved page are
+  re-pointed too), no git call. Tested on two Harbor pages and restored. The migrator also puts the page title into
+  the `aliases` of every spec it touched. Agents' move steps, Run 2 and Run 3 checklists, import README (layout,
+  rule 3, after migration), import instructions, AGENTS commands, CONCEPT scripts table.
+
 ## 2026-10-27
 * **Legacy architecture pages reach the architect.** The triage table and the runbook sent architecture, decision
   and process pages to `architect`, but the architect had no procedure for a legacy page, the migrator handed off

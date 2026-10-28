@@ -76,6 +76,7 @@ what matches no line is new work: add the context it belongs to as a subject, it
 | Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |
 | Graph | `python3 scripts/gen-graph.py [--check]`; `python3 scripts/graph-query.py --node spec:P1-001 --depth 2` / `--files <paths>` / `--find <text>` |
 | Changed code -> specs | `git -C ../backend diff --name-only main | sed 's#^#be/#' | python3 scripts/map-paths.py` |
+| Processed legacy page -> `_done/` | `python3 scripts/legacy-done.py <page> --into <concept> [--into ...]` (or `--status obsolete --reason "<why>"`); never move the file by hand |
 | Analytics | `python3 scripts/coverage-matrix.py` (BR <-> story <-> scenario matrix into `generated/analytics/`) |
 
 ## Checks: once, at the end of a task, for what it changed

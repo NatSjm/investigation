@@ -73,9 +73,13 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
 4. Extract domain terms into `domain/glossary.md` (alphabetical, one line each).
 5. Provenance: add a `sources[]` entry (`{ id: conf-<slug>, title, resource, author: human:<page author>, last_modified }`)
    and cite it with `[^conf-<slug>]`; set `generated.by: copilot/confluence-migrator`, `generated.at`, `status: draft`.
-6. Move the processed page to `confluence-import/<space>/_done/` (keep the file for audit; its image links keep
-   working there, the `_attachments/` folder stays where it is); set its header `status: migrated|obsolete`. A
-   page is processed once: it moves when every spec it touches has received its facts, not per context, and only
+   Add the page title (and its original-language title) to the `aliases` of every spec you touched, so a search by
+   the old Confluence name finds the concept.
+6. Move the processed page with `python3 scripts/legacy-done.py <page> --into <concept> [--into ...]` (one `--into`
+   per spec, flow, calculation or architecture file the page went into; `--status obsolete --reason "<why>"` for an
+   obsolete page). The script puts the file under `confluence-import/<space>/_done/<section>/` from the page's
+   `section:` header, writes `status`, `migrated` and `superseded_by`, and re-points the image and page links; never
+   move the file or edit those header lines by hand. A page is processed once: it moves when every spec it touches has received its facts, not per context, and only
    by the last agent that takes it: when you hand the rest to `architect` or `calc-auditor`, that agent moves it;
    when `architect` or `calc-auditor` handed the feature part to you, you move it.
 7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log the migration

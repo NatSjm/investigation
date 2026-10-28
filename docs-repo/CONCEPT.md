@@ -110,6 +110,7 @@ Everything is a plain Python 3.11 script under `scripts/` with long flags, no pa
 | `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py` | errors on a malformed bundle, spec or work-item file | the stop hook, CI, agents once after the last edit of a task, for what they changed |
 | `coverage-matrix.py` | `generated/analytics/coverage-matrix.md`: which rules have stories and scenarios, badges, audits | the analyst's analytics mode, management |
 | `migration-status.py` | `migration/<scope>.md`: the lifecycle runs still due per context with the command for each | the migration lead |
+| `legacy-done.py` | moves a processed legacy page to `confluence-import/<SPACE>/_done/<section>/`, writes `status`, the date and `superseded_by` (every concept it went into), re-points its links | the agent that takes the page last |
 | `map-paths.py`, `check-freshness.py` | changed code paths to affected specs (`docs-map.yml`); the CI gate in the code repos when mapped code changed but no spec was re-verified | doc-sync, the code repos' CI |
 | `confluence-import.py` | the quarantine pages from an HTML export, idempotent | the migration lead |
 | `jira-push.py`, `confluence-publish.py`, `push-to-tests-repo.py`, `confluence-export.py` | stubs that describe the REST calls | integration, when wired |

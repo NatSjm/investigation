@@ -38,8 +38,10 @@ A calculation name (`stress_test_monthly`), a spec ID (audit all calculations it
    with severities `MATCH`, `DOC-STALE` (doc wrong, code intended), `CODE-SUSPECT` (test contradicts spec intent),
    `UNDOCUMENTED` (code behaviour missing from doc).
 5. For legacy pages: add `> ⚠️ CONFLICT (legacy: <page>, <item>)` callouts to the concept, add the page to the
-   concept's `sources[]` (`conf-<slug>`), set the page header `status: obsolete` or `status: migrated` accordingly
-   and move it to `confluence-import/<SPACE>/_done/`; never copy legacy numbers into the concept. The screen rules
+   concept's `sources[]` (`conf-<slug>`) and move it with `python3 scripts/legacy-done.py <page> --into <calculation
+   name> [--into <spec>...]` (`--status obsolete --reason "<why>"` when nothing of it survives): the script places it
+   under `_done/<section>/`, writes `status`, `migrated` and `superseded_by` and re-points the links, never by hand;
+   never copy legacy numbers into the concept. The screen rules
    of a page (which button, which table, who may change a parameter) are not yours: when the migrator handed you
    the formula part, its message lists the specs already touched and whether the page may move (not while a
    candidate spec or a context without a spec keeps it in place); when the page reached you first, audit the

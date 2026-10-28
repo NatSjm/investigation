@@ -18,7 +18,8 @@
 - [ ] `sources[]` entry `conf-<slug>` with `last_modified` in every spec touched; citations `[^conf-<slug>]`
 - [ ] new terms in `domain/glossary.md` (Aliases column for the legacy wording)
 - [ ] no spec created: a capability no spec covers is a `- [ ] candidate spec: <title> (legacy conf-<slug>; owner: migration lead) - ...` line under the primary spec's Open questions (the board lists it as a shaping decision)
-- [ ] page moved to `confluence-import/<SPACE>/_done/` with header `status: migrated | obsolete` - only when every context it describes has a spec and no candidate is pending; otherwise left in place with the pending part as an Open question
+- [ ] page moved by `scripts/legacy-done.py` (under `_done/<section>/`, `status: migrated | obsolete`, `superseded_by` naming every concept it went into, links re-pointed) - only when every context it describes has a spec and no candidate is pending; otherwise left in place with the pending part as an Open question
+- [ ] the page title in the `aliases` of every spec touched
 - [ ] an architecture, decision or process part was handed to `architect` (the last agent moves the page)
 - [ ] no client data, screenshots or personal names
 
@@ -27,7 +28,7 @@
 - [ ] `## Audit <date>` table with one row per claim; severities `MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED`
 - [ ] worked examples replaced only by values copied from the test, test method named
 - [ ] non-MATCH -> `status: draft` + open question naming the owner; `used_by` specs listed in chat
-- [ ] legacy formula page header set to `obsolete | migrated`, page cited in the concept's `sources[]`, moved to `_done/` when the auditor is the last agent to take it (screen rules merged by the migrator before, or none); screen rules of a mixed page handed to `confluence-migrator`, never merged by the auditor
+- [ ] legacy formula page cited in the concept's `sources[]`, moved by `scripts/legacy-done.py` (`superseded_by` the concept) when the auditor is the last agent to take it (screen rules merged by the migrator before, or none); screen rules of a mixed page handed to `confluence-migrator`, never merged by the auditor
 
 ## Run 4 - owner decision (human)
 - [ ] each open question answered; decision recorded as a Change log row with date and reference

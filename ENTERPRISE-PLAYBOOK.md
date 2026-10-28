@@ -568,7 +568,8 @@ Export the space to HTML (the standard space export, no API needed), put each pa
 `confluence-import/README.md` (the analysts write only its **Known state** column). It is idempotent and has `--check`.
 Rules, all enforced by `confluence-import.instructions.md` and the quarantine README: nothing in that folder is
 authoritative; `raw-html/` and the generated pages are never edited by hand; pages are migrated one per run; processed
-pages move to `_done/` with `status: migrated|obsolete`; only the images a page shows are imported, and anything with
+pages move to `_done/<section>/` through `scripts/legacy-done.py`, which writes `status: migrated|obsolete`, the date
+and `superseded_by` (every concept the page went into) and re-points the links; only the images a page shows are imported, and anything with
 customer data is deleted before the import; the folder is excluded from the validators.
 
 Triage the inventory with the analysts: for each page the target context and a known state (current, partly outdated,

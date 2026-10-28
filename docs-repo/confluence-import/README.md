@@ -26,7 +26,7 @@ confluence-import/
   raw-html/<section>/            the HTML export as received (one folder per section = page tree)
   <SPACE>/<section>/<slug>.md    imported pages (header `imported_from` = regenerated, do not edit in place)
   <SPACE>/_attachments/<slug>/   images the pages show (binary, see .gitattributes)
-  <SPACE>/_done/                 migrated or obsolete pages (same depth as a section, so image links keep working)
+  <SPACE>/_done/<section>/       migrated or obsolete pages, mirrored by section (`scripts/legacy-done.py` moves them and re-points their links)
 ```
 
 Import or re-import (idempotent; `--check` writes nothing and exits 1 when the quarantine is out of date):
@@ -50,8 +50,12 @@ and images (never anything under `_done/`, never a page without `imported_from`)
 2. Pages are migrated **one at a time** by the agent `confluence-migrator` (`@confluence-migrator
    confluence-import/HARBOR/<page>.md`) into typed concepts under `features/`, `domain/` or `architecture/`;
    the page is cited in the concept's `sources[]` with its `last_modified` date.
-3. Processed pages move to `<SPACE>/_done/`; a page that contradicts the code is kept with a `superseded_by:` line
-   pointing at the concept so the audit trail survives.
+3. Processed pages move to `<SPACE>/_done/<section>/` through `python3 scripts/legacy-done.py <page> --into
+   <concept> [--into ...]`, never by hand: the script keeps the section from the page header, writes `status`,
+   `migrated` (or `obsolete` with `reason`) and `superseded_by` naming every concept the page went into, and
+   re-points the image and page links. `superseded_by` is the backward link (concept `sources[]` is the forward
+   one): it answers "where did this page go", and a later rendering or the Confluence publisher builds the old page
+   tree with redirects from these headers and `path:`.
 4. Terminology is translated only through `domain/glossary.md` (`Aliases` column); unknown terms are added to the
    glossary first.
 5. After a space is fully migrated, the Confluence pages are replaced by a banner plus a link to the published copy
@@ -136,9 +140,9 @@ labelled `feature-spec` still goes to the calc-auditor), checks every claim agai
 target it chose; the diff of every run is reviewed. The costly mistake is `obsolete` on a page that is not: nobody
 migrates it until someone looks again.
 
-**After migration.** When a page moves to `<KEY>/_done/`, its row takes the `_done/` path and the importer fills the
-cell from the page header, for example `migrated 2026-10-28` or `obsolete`; your triage note is replaced at that
-moment. Replace it with a fuller sentence if you like, for example
+**After migration.** When a page moves to `<KEY>/_done/<section>/` (`scripts/legacy-done.py`), its row takes the
+`_done/` path and the importer fills the cell from the page header, for example `migrated 2026-10-28` or `obsolete`;
+your triage note is replaced at that moment (the script prints the row). Replace it with a fuller sentence if you like, for example
 `migrated 2026-10-28 into ADM-001, 2 conflicts as open questions`: it stays on later imports. In the "Current pages"
 table you update the cell yourself.
 

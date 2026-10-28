@@ -1573,3 +1573,52 @@ formula-page line says when to run the migrator instead.
 
 Section 10, "Run 2, legacy pages" (last sentences) and "Architecture pages" (listed once, outside the contexts).
 `MIGRATION-RUNBOOK.md` Step 5 has the candidate bullet.
+
+## 44. A processed legacy page is moved by a script, into `_done/<section>/` (investigation commits after `ceff3da`, 2026-10-28)
+
+Three agents moved a page to `_done/` by hand: a plain file move to the flat folder, `status` set by the agent,
+`superseded_by` only for a page that contradicts the code (the README rule), and the image links
+(`../_attachments/...`) left as they were, which the flat layout was chosen to keep working while every cross-section
+page link broke once both pages had moved. For a later human rendering (the old Confluence tree with each page
+pointing at its concept, redirects in the publisher) the backward link must exist on every page, not only on the
+contradicting ones.
+
+New script `scripts/legacy-done.py <page> --into <concept> [--into ...] [--status migrated|obsolete --reason "<why>"] [--dry-run]`:
+- the folder is `_done/<section>/` from the page's `section:` header (`_done/` for a page without one, such as the
+  REST export's); the file keeps its name; `_attachments/` stays where it is;
+- the header gets `status`, `migrated: <date>` (or `obsolete: <date>` and `reason:`) and `superseded_by:` with every
+  `--into` (a repo path, a spec ID or a calculation name; the file must exist; one value or a list);
+- every relative link of the body is re-pointed to the same file from the new place (`../_attachments/` becomes
+  `../../_attachments/`); a link whose target already moved under `_done/` follows it there; pages already under
+  `_done/` that linked the moved page are re-pointed to it; `migrated` needs one `--into`, `obsolete` needs `--reason`;
+- it prints the inventory row; it runs no git command (commit the rename with the run).
+
+The importer (`_done/**` by `confluence_id`), the board and the pack builder (`/_done/` at any depth) need no change.
+The three agents call the script in their move step and never move the file or write those header lines by hand;
+the migrator also adds the page title to the `aliases` of every spec it touched, so the old Confluence name finds
+the concept. The one page already in `_done/` (REST export, no section) stays where it is.
+
+### 44.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/legacy-done.py` | new |
+| `.github/agents/confluence-migrator.agent.md` | step 5: page title into `aliases`; step 6: the script instead of a hand move |
+| `.github/agents/architect.agent.md` | "Legacy page" step 6: the script |
+| `.github/agents/calc-auditor.agent.md` | step 5: the script |
+| `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 2: moved by the script, title in `aliases`; Run 3: moved by the script |
+
+### 44.2 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `AGENTS.md` | Commands table, after "Changed code -> specs" | `| Processed legacy page -> `_done/` | `python3 scripts/legacy-done.py <page> --into <concept> [--into ...]` (or `--status obsolete --reason "<why>"`); never move the file by hand |` |
+| `CONCEPT.md` | scripts table, after `migration-status.py` | row `legacy-done.py`: moves a processed legacy page to `_done/<section>/`, writes status, date and `superseded_by`, re-points links; used by the agent that takes the page last |
+| `confluence-import/README.md` | layout block, the `_done/` line | `<SPACE>/_done/<section>/  migrated or obsolete pages, mirrored by section (scripts/legacy-done.py moves them and re-points their links)` |
+| `confluence-import/README.md` | Quarantine rule 3 | processed pages move through the script, never by hand; `superseded_by` names every concept the page went into and is the backward link a later rendering or the publisher builds the old tree from |
+| `confluence-import/README.md` | "After migration" paragraph | `_done/<section>/`, "the script prints the row" |
+| `.github/instructions/confluence-import.instructions.md` | the "Migrated pages move" bullet | processed pages move to `_done/<section>/` through the script, never by a hand move; obsolete pages get `--status obsolete --reason` |
+
+### 44.3 Playbook (read only)
+
+Section 9, the quarantine sentence; `MIGRATION-RUNBOOK.md` Step 5, the migrator bullet.
