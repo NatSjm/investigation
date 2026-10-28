@@ -321,8 +321,9 @@ You already keep the OpenAPI documents in the docs repository. Put them where th
 | The API the frontend calls | `generated/openapi/backend.yaml` | the collector (copied from the backend repo) |
 | APIs of the other services your backend calls | `generated/openapi/external/<service>.yaml` (or `.json`) | the collector if they live in the backend repo (`src/main/resources/api/<service>/`, yaml or json; folder from the backend `docs-gen.json`), otherwise hand-placed with a note in `generated/manifest.yml` |
 | Kafka: AsyncAPI document | `generated/asyncapi/backend.yaml` | the collector |
+| Kafka: payload schemas (Avro `.avsc`, JSON Schema `.json`) | `generated/asyncapi/schemas/<path relative to the schema folder>` (Harbor: `avro/*.avsc`, `json_<service>/*.json`) | the collector, from the folders in `kafka.schema_dirs` of the backend `docs-gen.json`; `generated/be/events.md` names the file of each topic's payload (re-pointed to the copy) and tables its fields |
 | Database documentation (`schema.json`, one page per table with the column comments and relations, ER diagram, index) | `generated/be/db/` | the collector, from the backend folder named by `db_docs.dir` (default `docs/db`); written there either by your database documentation tool (SchemaSpy with its converter script under `docs/db/scripts/`, tbls: set `db_docs.generate: false`; the collector copies pages, `schema.json` and diagrams, never the scripts) or by the kit's `gen-db-docs.py` from the migrations and their `COMMENT ON TABLE\|COLUMN` statements. Keep the comments in the migrations: they are the data dictionary agents cite |
-| Kafka: Avro or JSON schemas only (a `kafka-client` module with `avro/*.avsc` and `json_<service>/*.json`) | they stay in the backend; `generated/be/events.md` lists every topic with producer, consumer, payload type and the path of its schema file (`kafka.schema_dirs` in the backend `docs-gen.json`); set `asyncapi: ""` in `docs-gen.json`, the collector then copies nothing and the agent texts fall back to `events.md` | `events.md` by the generator; add an AsyncAPI document later only if you want the collector to publish one |
+| Kafka: Avro or JSON schemas only (a `kafka-client` module with `avro/*.avsc` and `json_<service>/*.json`, no AsyncAPI document) | the schema files go to `generated/asyncapi/schemas/` as in the row above; `generated/be/events.md` lists every topic with producer, consumer, payload type and the path of its schema file, and the fields of every schema (`kafka.schema_dirs` in the backend `docs-gen.json`); set `asyncapi: ""` in `docs-gen.json`, the collector then copies no AsyncAPI document and the agent texts fall back to `events.md` and the schema copies | `events.md` by the generator, the schema copies by the collector; add an AsyncAPI document later only if you want the collector to publish one |
 
 Rules: keep the complete document and the files it references; an external `$ref` that does not resolve inside
 `generated/` is rejected by the collector. Record the version and retrieval time of a provider specification in the
@@ -499,8 +500,9 @@ One workflow in the docs repository pulls the evidence; the code repositories pu
    ./scripts/collect-evidence.py --backend ../backend --frontend ../frontend --generate --graph
    ./scripts/collect-evidence.py --backend ../backend --frontend ../frontend          # second run: "no change"
    ```
-   It stages maps, contracts and the database documentation folder (as `generated/be/db/`, frontmatter added to its
-   pages), validates the candidate (frontmatter on every map, OpenAPI and AsyncAPI headers,
+   It stages maps, contracts, the Kafka payload schemas (as `generated/asyncapi/schemas/`, the paths in `events.md`
+   re-pointed there) and the database documentation folder (as `generated/be/db/`, frontmatter added to its
+   pages), validates the candidate (frontmatter on every map, OpenAPI and AsyncAPI headers, every schema file parses,
    no unresolved external `$ref`), replaces the collector-owned sets under `generated/` including deletions, writes
    `generated/manifest.yml` with the source commits and a hash per file, then rebuilds graph and indexes. Nothing
    outside `generated/be|fe|openapi|asyncapi` and `manifest.yml` is touched.

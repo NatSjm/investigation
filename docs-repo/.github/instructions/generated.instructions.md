@@ -23,6 +23,7 @@ Use them as your primary, cheap context (each file is a few hundred tokens):
 | `openapi/backend.yaml` | the REST contract both FE and BE are generated from | copied from `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml` |
 | `openapi/external/*.yaml` | contracts between the backend and the external services (client-registry, market-data, cover-provider, document-service, file-exchange) | copied from `backend/harbor-core/src/main/resources/api/` |
 | `asyncapi/backend.yaml` | Kafka topics and payload schemas; optional - a backend with Avro / JSON schemas only has none, and `be/events.md` (topic, producer, consumer, payload type, schema file path) is the Kafka source | copied from `backend/harbor-core/src/main/resources/openapi/harbor-events.yaml` (`asyncapi` in the backend `docs-gen.json`; empty = none) |
+| `asyncapi/schemas/**` | the Kafka payload schemas as the backend declares them: Avro records (`avro/*.avsc`, the events this backend publishes) and JSON Schemas (`json_<service>/*.json`, the events consumed from external services); `be/events.md` names the file of each topic's payload and tables its fields | copied from the folders in `kafka.schema_dirs` of the backend `docs-gen.json` (default `kafka-client/src/main/resources`), path kept relative to the folder |
 | `analytics/coverage-matrix.md` | BR <-> story <-> scenario coverage | `scripts/coverage-matrix.py` (this repo) |
 
 Reading rules:

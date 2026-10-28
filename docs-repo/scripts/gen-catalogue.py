@@ -172,8 +172,14 @@ def main():
 
     # ---------- Kafka topics: generated/be/events.md rows (producers / consumers), graph for the context ----------
     topics = []
+    in_topics = False   # only the rows of the `| Topic | ...` table; the "Payload schemas" field tables are not topics
     for line in split_lines(read_text_or_empty(os.path.join(repo, 'generated', 'be', 'events.md'))):
-        m = re.match(r'^\|\s*`([^`]+)`\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|', line)
+        if re.match(r'^\|\s*Topic\s*\|', line, re.I):
+            in_topics = True
+            continue
+        if not line.startswith('|'):
+            in_topics = False
+        m = re.match(r'^\|\s*`([^`]+)`\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|', line) if in_topics else None
         if not m:
             continue
         def names(cell):

@@ -25,7 +25,7 @@
 - [ ] Consumer idempotency (duplicate message)
 - [ ] Out-of-order message
 - [ ] Poison message -> DLQ
-- [ ] Schema compatibility with `generated/asyncapi/backend.yaml` (or with the schema file `generated/be/events.md` names for the topic)
+- [ ] Schema compatibility with `generated/asyncapi/backend.yaml` and with the payload schema `generated/be/events.md` names for the topic (`generated/asyncapi/schemas/**`, fields listed in `events.md`)
 
 ## UI
 - [ ] Loading / empty / error states

@@ -27,7 +27,8 @@ GENERATORS = [
     ('gen-parameters.py', 'parameters.md'),
     ('gen-datasets.py', 'datasets.md'),
 ]
-DEFAULTS = {'rest': {'open_api': ''}, 'asyncapi': '', 'external_contracts_dir': '', 'parameters': {'enum_name': 'ParameterKey'},
+DEFAULTS = {'rest': {'open_api': ''}, 'asyncapi': '', 'external_contracts_dir': '', 'kafka': {'schema_dirs': []},
+            'parameters': {'enum_name': 'ParameterKey'},
             'datasets': {'seed_dirs': ['scripts/db/seed'], 'fixture_dirs': []}, 'entry_layer': 'manager',
             'db_docs': {'dir': 'docs/db', 'generate': True}}
 
@@ -38,7 +39,7 @@ Read these before opening source. Each file is a few hundred tokens.
 - [codebase-map.md](codebase-map.md): modules, technical layers with their classes, resource folders
 - [components.md](components.md): one row per class - layer, stereotype, injected dependencies, tables, @docs, file:line
 - [api-index.md](api-index.md): REST operations from the contract (method, path, operationId, handler, file:line)
-- [events.md](events.md): Kafka topics with producers/consumers
+- [events.md](events.md): Kafka topics with producers/consumers; the fields of every payload schema (Avro, JSON Schema)
 - [db-schema.md](db-schema.md): tables and columns from migrations, ER diagram
 - [jobs.md](jobs.md): scheduled jobs with their cron triggers
 - [docs-tags.md](docs-tags.md): spec ID (`@docs`) to code location
@@ -77,6 +78,9 @@ def contracts_line(cfg):
         parts.append(f"`{cfg['asyncapi']}` (Kafka)")
     if cfg.get('external_contracts_dir'):
         parts.append(f"`{cfg['external_contracts_dir']}/*.yaml` (external services)")
+    if cfg.get('kafka', {}).get('schema_dirs'):
+        parts.append(', '.join(f'`{d}`' for d in cfg['kafka']['schema_dirs'])
+                     + ' (Kafka payload schemas: Avro `.avsc`, JSON Schema `.json`; the docs collector publishes them as `generated/asyncapi/schemas/`)')
     return ('Contracts: ' + ',\n'.join(parts) + '.\n') if parts else ''
 
 

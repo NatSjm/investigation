@@ -15,20 +15,20 @@ sources:
     title: OpenAPI (backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml)
   - id: topics
     resource: be/harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt
-    title: TOPIC constants of the event/ classes (schemas in kafka-client/src/main/resources)
+    title: TOPIC constants of the event/ classes (schemas in kafka-client/src/main/resources, copied to generated/asyncapi/schemas/)
 ---
 
 # Integrations map
 
 Rows marked `gen` are refreshed by CI from `generated/asyncapi/backend.yaml` and `generated/openapi/`;
 rows marked `manual` are maintained by hand. Topic names are the `TOPIC` constants of the listener and publisher classes[^topics] (payload schemas in the
-`kafka-client` module: Avro for Harbor's own events, JSON Schema for the external ones; classes generated at build); producers and consumers live in the `event/` layer of `core`. Producers call
+`kafka-client` module: Avro for Harbor's own events, JSON Schema for the external ones; classes generated at build; the collector copies the files to `generated/asyncapi/schemas/`, where the Schema column points); producers and consumers live in the `event/` layer of `core`. Producers call
 `producer.send(TOPIC, key, payload)`, consumers use
 `@KafkaListener(topics = [TOPIC], groupId = "${harbor.kafka.groups.<context>}")`.
 
 ## Kafka topics
 
-| Schema (`kafka-client/src/main/resources`) | Topic | Producer | Consumers | Payload | Contract | Feature | Src |
+| Schema (`generated/asyncapi/schemas/`) | Topic | Producer | Consumers | Payload | Contract | Feature | Src |
 |---|---|---|---|---|---|---|---|
 | `avro/MovementsLoaded.avsc` | `harbor.imports.movements-loaded` | `event/MovementsLoadedPublisher` | `event/Product1ProjectionRefreshListener`, `event/Product2ProjectionRefreshListener` | `MovementsLoaded(batchId, clientIds, periodFrom, periodTo)` | `generated/asyncapi/backend.yaml#/channels/harbor.imports.movements-loaded` | IMP-001, P1-001, P2-001 | gen |
 | `json_market-data/PricesUpdated.json` | `harbor.market.prices-updated` | external (`market-data`) | `event/MarketPricesListener` | `PricesUpdated(productGroup, corridor, asOf)` | `generated/asyncapi/backend.yaml#/channels/harbor.market.prices-updated` | MKT-001 | gen |
@@ -96,5 +96,5 @@ path requires header `X-Harbor-Session` (`component/SessionHeaderFilter`, see [S
 | `DailyMovementImportJob` | `0 0 2 * * *` | imports | pulls new files from `file-exchange`, parses into `goods_movement`, emits `movements-loaded` |
 | `MonthlySnapshotJob` | `0 0 3 1 * *` | imports | rolls `goods_movement` up into `movement_monthly` |
 
-[^topics]: `const val TOPIC` in the companion object of each class in `harbor-core/.../event/`; schemas `kafka-client/src/main/resources/{avro,json_<service>}`
+[^topics]: `const val TOPIC` in the companion object of each class in `harbor-core/.../event/`; schemas `kafka-client/src/main/resources/{avro,json_<service>}`, published as `generated/asyncapi/schemas/{avro,json_<service>}/` with their fields tabled in `generated/be/events.md`
 [^openapi]: `generated/openapi/backend.yaml` (copy of `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml`)

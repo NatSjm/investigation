@@ -10,6 +10,10 @@ file hashes. Replaces per-repository "publisher" CI jobs (one owner of publicati
      generated/fe/*.md (+ graph-export-fe.json)      from <frontend>/docs/_generated
      generated/openapi/backend.yaml, external/*.yaml  from the backend contract paths of <backend>/scripts/docs/docs-gen.json
      generated/asyncapi/backend.yaml                  (rest.open_api, external_contracts_dir, asyncapi; Harbor defaults otherwise)
+     generated/asyncapi/schemas/**                    the Kafka payload schemas - every Avro record (.avsc) and JSON Schema (.json with
+                                                      `properties` or `$schema`) under the backend's kafka.schema_dirs, at its path relative
+                                                      to that folder (avro/X.avsc, json_<service>/Y.json); the schema paths written by
+                                                      gen-events.py into events.md are re-pointed to these copies
      generated/be/db/**                               the backend's database documentation folder (db_docs.dir, default docs/db:
                                                       readme.md, schema.json, schema/tables/*.md, schema/erd/*.mmd), whoever wrote it
                                                       (a database tool plus its converter script, or gen-db-docs.py); scripts are not copied;
@@ -78,7 +82,8 @@ def backend_contracts(backend):
     import json
     out = {'open_api': 'harbor-core/src/main/resources/openapi/openapi_harbor.yaml',
            'asyncapi': 'harbor-core/src/main/resources/openapi/harbor-events.yaml',
-           'external_contracts_dir': 'harbor-core/src/main/resources/api', 'db_docs_dir': 'docs/db'}
+           'external_contracts_dir': 'harbor-core/src/main/resources/api', 'db_docs_dir': 'docs/db',
+           'schema_dirs': ['kafka-client/src/main/resources']}
     cfg = os.path.join(backend, 'scripts', 'docs', 'docs-gen.json')
     if os.path.isfile(cfg):
         with open(cfg, 'r', encoding='utf-8-sig') as f:
@@ -90,7 +95,23 @@ def backend_contracts(backend):
                 out[k] = data[k]
         if data.get('db_docs', {}).get('dir'):
             out['db_docs_dir'] = data['db_docs']['dir']
+        if isinstance(data.get('kafka', {}).get('schema_dirs'), list):
+            out['schema_dirs'] = data['kafka']['schema_dirs']
     return out
+
+
+def schema_kind(path):
+    """'avro' for an Avro record, 'json-schema' for a JSON Schema object, '' for any other .avsc/.json file
+    (a fixture, a plain JSON resource); raises ValueError when the file is not JSON at all."""
+    import json
+    data = json.loads(read_text(path))
+    if not isinstance(data, dict):
+        return ''
+    if data.get('type') == 'record' and isinstance(data.get('fields'), list):
+        return 'avro'
+    if path.lower().endswith('.json') and ('properties' in data or '$schema' in data):
+        return 'json-schema'
+    return ''
 
 
 def with_frontmatter(text, rel_name):
@@ -192,6 +213,42 @@ def main():
             for f in sorted(fn, key=str.lower):
                 if f.lower().endswith(('.yaml', '.yml', '.json')):
                     stage_file('openapi', os.path.join(dp, f), 'external/' + f)
+    # Kafka payload schemas: the Avro records and JSON Schemas under kafka.schema_dirs, published under
+    # generated/asyncapi/schemas/ at their path relative to the folder; other files there (event classes, fixtures)
+    # are not collected. The paths gen-events.py wrote into events.md are re-pointed to the copies.
+    problems = []
+    schema_paths = {}   # backend-relative path -> docs-repo path
+    for d in contracts['schema_dirs']:
+        sd = os.path.join(backend, d)
+        if not os.path.isdir(sd):
+            print(f'note: schema folder {posix(d)} (kafka.schema_dirs) not found in the backend')
+            continue
+        for dp, dn, fn in os.walk(sd):
+            dn[:] = sorted((x for x in dn if x.lower() not in ('target', 'build', 'node_modules', '.git')), key=str.lower)
+            for f in sorted(fn, key=str.lower):
+                if not f.lower().endswith(('.avsc', '.json')):
+                    continue
+                src = os.path.join(dp, f)
+                try:
+                    kind = schema_kind(src)
+                except ValueError as e:
+                    problems.append(f"{posix(os.path.relpath(src, backend))}: not JSON ({e})")
+                    continue
+                if not kind:
+                    continue
+                rel_name = 'schemas/' + posix(os.path.relpath(src, sd))
+                if any(x['Rel'] == sets['asyncapi']['Dir'] + '/' + rel_name for x in staged):
+                    problems.append(f"{posix(os.path.relpath(src, backend))}: same relative path as a schema of another folder in kafka.schema_dirs")
+                    continue
+                stage_file('asyncapi', src, rel_name)
+                schema_paths[posix(os.path.relpath(src, backend))] = sets['asyncapi']['Dir'] + '/' + rel_name
+    if schema_paths:
+        ev = next((x for x in staged if x['Rel'] == 'generated/be/events.md'), None)
+        if ev:
+            text = read_text(ev['Path'])
+            for old, new in sorted(schema_paths.items(), key=lambda kv: -len(kv[0])):
+                text = text.replace(old, new)
+            write_text(ev['Path'], text)
     db_dir = os.path.join(backend, contracts['db_docs_dir'])
     if os.path.isdir(db_dir):
         # documentation files only (pages, schema.json, diagrams), relative paths kept (table pages link to the ER
@@ -209,7 +266,6 @@ def main():
         print(f"note: no database documentation folder at {posix(db_dir)} (db_docs.dir); generated/be/db not collected")
 
     # ---------- 4. validate the candidate ----------
-    problems = []
     if not any(f['Set'] == 'be' for f in staged):
         problems.append('backend maps: nothing collected')
     if not any(f['Set'] == 'fe' for f in staged):
@@ -301,7 +357,7 @@ def main():
             os.remove(p)
 
     sb = ['# Evidence snapshot manifest - written by scripts/collect-evidence.py; do not edit.\n',
-          '# Records which source commits the collector-owned files under generated/ describe (be, fe, openapi, asyncapi, be/db).\n',
+          '# Records which source commits the collector-owned files under generated/ describe (be, fe, openapi, asyncapi incl. schemas/, be/db).\n',
           f"collector: {{ version: '{COLLECTOR_VERSION}', at: {now} }}\n", 'sources:\n']
     for s in sources:
         sb.append(f"  {s['name']}: {{ remote: '{s['remote']}', branch: '{s['branch']}', commit: {s['commit']}, dirty: {'true' if s['dirty'] else 'false'} }}\n")

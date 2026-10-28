@@ -18,7 +18,7 @@ external services behind OpenAPI contracts).
 0. `index.md` -> `architecture/index.md` (one-line descriptions + trust badges)
 1. `architecture/**` (existing views, ADRs, integration map)
 2. `generated/graph/REPO_MAP.md` and the relevant `generated/graph/<community>.md`
-3. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` (when present; else `generated/be/events.md` with the schema file paths), `generated/be/db/schema/tables/*.md` (`generated/be/db-schema.md` as fallback)
+3. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` (when present; else `generated/be/events.md`), the payload schemas `generated/asyncapi/schemas/**` (`events.md` names the file of each topic and lists its fields), `generated/be/db/schema/tables/*.md` (`generated/be/db-schema.md` as fallback)
 4. `features/**` frontmatter only (`context`, `api`, `events`, `tables`) via `search`; do not read bodies
 5. Source code: **never**, unless explicitly asked.
 

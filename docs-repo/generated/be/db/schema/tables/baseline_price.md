@@ -4,7 +4,7 @@ title: "baseline_price"
 description: "Baseline price and transport price per product group, corridor and month, as loaded from market data."
 generated:
   by: process:db-docs
-  at: 2026-10-25
+  at: 2026-10-28
 status: stable
 ---
 # baseline_price

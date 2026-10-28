@@ -1622,3 +1622,69 @@ the concept. The one page already in `_done/` (REST export, no section) stays wh
 ### 44.3 Playbook (read only)
 
 Section 9, the quarantine sentence; `MIGRATION-RUNBOOK.md` Step 5, the migrator bullet.
+
+## 45. The Kafka payload schemas reach the docs repo (investigation commits after `44770f1`, 2026-10-28)
+
+The collector copied the AsyncAPI document but never the Avro records (`avro/*.avsc`) and JSON Schemas
+(`json_<service>/*.json`) of `kafka-client/src/main/resources`; `generated/be/events.md` linked each payload to its
+backend path, which exists nowhere in the docs repo, and a backend without an AsyncAPI document (section 7.3) had
+the payload fields nowhere an agent may read.
+
+- Backend kit `scripts/docs/gen-events.py`: `events.md` ends with a "Payload schemas" section - every Avro record
+  and JSON Schema (`.json` with `properties` or `$schema`) under `kafka.schema_dirs`, with its fields (name, type,
+  required, doc) as the file declares them; the generated payload classes are never read. `gen-all.py` names the
+  schema folders in the Contracts line of `index.md`.
+- `scripts/collect-evidence.py`: copies those files to `generated/asyncapi/schemas/<path relative to the schema
+  folder>` (default folder `kafka-client/src/main/resources`, from `kafka.schema_dirs` of the backend
+  `docs-gen.json`; `target/`, `build/` skipped; other files in the folders ignored), rejects the candidate when such
+  a file is not JSON or two folders give the same relative path, and re-points every schema path of `events.md` to
+  the copy (`generated/asyncapi/schemas/avro/X.avsc`). Deletions follow as for every collector-owned set.
+- `scripts/gen-catalogue.py`: reads only the `| Topic |` table of `events.md` (the field tables were counted as
+  topics: 22 instead of 5).
+- `scripts/context-pack.py`: the Kafka line of the Contracts section is followed by one line per topic of the
+  subject with its payload type, its schema file and the field table from `events.md`; the schema file joins Sources.
+
+### 45.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/collect-evidence.py` | schema files staged, validated, re-pointed in `events.md` |
+| `scripts/context-pack.py` | payload lines under the Kafka line |
+| `scripts/gen-catalogue.py` | topic table only |
+| `.github/prompts/integrations-from-contracts.prompt.md` | input 4 and procedure step 1 read the schema paths and fields from `events.md` |
+
+### 45.2 Backend kit (`code-repo-kit/be/scripts/docs`): files to re-copy whole
+
+| File | Why |
+|---|---|
+| `gen-events.py` | Payload schemas section |
+| `gen-all.py` | `kafka.schema_dirs` in the Contracts line of `index.md`; the `events.md` line |
+| `README.md` | the `asyncapi` and `kafka.schema_dirs` rows |
+
+Then run `python3 scripts/docs/gen-all.py` in the backend and `python3 scripts/collect-evidence.py --graph` in the
+docs repo; the first run adds `generated/asyncapi/schemas/**` and changes `generated/be/events.md`.
+
+### 45.3 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `AGENTS.md` | "Read in this order" item 6 | add "and the Kafka payload schemas `generated/asyncapi/schemas/**` (Avro, JSON Schema; `generated/be/events.md` names the file of each topic and lists its fields)" |
+| `.github/instructions/generated.instructions.md` | files table, after `asyncapi/backend.yaml` | row `asyncapi/schemas/**`: the payload schemas as the backend declares them (Avro records for the events it publishes, JSON Schemas for the external ones), `be/events.md` names the file of each topic and tables its fields; origin `kafka.schema_dirs` of the backend `docs-gen.json`, path kept relative to the folder |
+| `.github/agents/architect.agent.md` | sources item 3 | "the payload schemas `generated/asyncapi/schemas/**` (`events.md` names the file of each topic and lists its fields)" |
+| `.github/agents/doc-sync.agent.md` | step 2, the API / Events / Data sentence | "and the payload schemas under `generated/asyncapi/schemas/` (the file `events.md` names for the topic, fields listed there)" |
+| `.github/agents/impact-analyst.agent.md` | Contracts bullet | "the payload schema of a topic is the file `events.md` names under `generated/asyncapi/schemas/`, its fields are listed there" |
+| `.github/instructions/features.instructions.md` | the Kafka topics sentence | "payload fields from the schema file `events.md` names under `generated/asyncapi/schemas/`, listed in its Payload schemas section" |
+| `.github/skills/task-context/SKILL.md` | step 6 Contracts | "each topic with its payload type, the schema file under `generated/asyncapi/schemas/` and the field table of `events.md`" |
+| `.github/skills/task-context/references/pack-anatomy.md` | `## Contracts` row | "then one line per topic with its payload type, its schema file under `generated/asyncapi/schemas/` and the field table from `events.md`" |
+| `.github/skills/gherkin-test-design/references/coverage-checklist.md` | the schema compatibility line | "and with the payload schema `generated/be/events.md` names for the topic (`generated/asyncapi/schemas/**`, fields listed in `events.md`)" |
+| `.github/skills/write-feature-spec/references/source-priority.md` | row 4 | add `asyncapi/schemas/**` (payload fields, also tabled in `generated/be/events.md`) |
+| `CONCEPT.md` | folders table, `generated/` row | "`openapi/` and `asyncapi/` contracts (with the Kafka payload schemas under `asyncapi/schemas/`)" |
+| `scripts/README.md` | `collect-evidence.py` row | "stages maps, contracts and the Kafka payload schemas (`kafka.schema_dirs` of the backend `docs-gen.json` -> `generated/asyncapi/schemas/`, the paths in `events.md` re-pointed there)" |
+| `architecture/integrations.md` | Kafka table header, the paragraph above it, footnote `[^topics]` | the Schema column is relative to `generated/asyncapi/schemas/`; the cells (`avro/X.avsc`, `json_<service>/Y.json`) stay |
+
+### 45.4 Playbook and handbook (read only)
+
+Section 5 contracts table: a new "Kafka: payload schemas" row, the schemas-only row rewritten (the files are
+copied even without an AsyncAPI document); the collector step of section 6 names the schemas. `HANDBOOK.md`
+`collect-evidence.py` row; `code-repo-kit/README.md` CI line; backend `AGENTS.md` item 1 (`events.md`: topics,
+payload fields).

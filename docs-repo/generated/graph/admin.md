@@ -4,7 +4,7 @@ title: "Graph: admin (be+fe)"
 description: "/admin/parameters` - parameter sets with product group filter and inline editing."
 generated:
   by: process:gen-graph
-  at: 2026-10-25
+  at: 2026-10-28
 status: stable
 ---
 # Graph: admin (be+fe)

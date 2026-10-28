@@ -36,7 +36,7 @@ merged key by key, so a partial block keeps the other defaults.
 | `rest.handler_pattern` | regex with one group = the operationId of a handler method | `override\s+fun\s+(\w+)\s*\(` |
 | `rest.controller_annotation` | classes scanned for handlers | `RestController` |
 | `rest.session_header` / `rest.session_marker` | header name added to the Params column when the operation's contract text contains the marker | `X-Harbor-Session` / `SessionHeader` |
-| `asyncapi` | the Kafka contract (index.md, collector); `""` when the backend has none (Avro / JSON schemas only): the collector copies nothing and `events.md` is the Kafka source | `harbor-core/src/main/resources/openapi/harbor-events.yaml` |
+| `asyncapi` | the Kafka contract (index.md, collector); `""` when the backend has none (Avro / JSON schemas only): the collector copies no AsyncAPI document, `events.md` is the Kafka source and the schema files still go to `generated/asyncapi/schemas/` | `harbor-core/src/main/resources/openapi/harbor-events.yaml` |
 | `external_contracts_dir` | OpenAPI files of the external services the backend calls, directly in the folder or one sub-folder per service (`api/<service>/<file>.yaml\|.yml\|.json`); read by index.md and the docs collector | `harbor-core/src/main/resources/api` |
 | `db_docs.dir` | the database documentation folder the docs collector copies (`readme.md`, `schema.json`, `schema/tables/*.md`, `schema/erd/*.mmd`), whoever writes it | `docs/db` |
 | `db_docs.generate` | `true`: `gen-all.py` rebuilds that folder from the migrations with `gen-db-docs.py` (comments from `COMMENT ON TABLE\|COLUMN`); `false`: a database documentation tool (tbls, SchemaSpy, ...) owns the folder and only its layout must match | `true` |
@@ -44,7 +44,7 @@ merged key by key, so a partial block keeps the other defaults.
 | `kafka.listener_annotation` | consumer annotation (`topics = [...]`, `groupId`) | `KafkaListener` |
 | `kafka.producer_pattern` | regex whose first group is the topic expression of a producer call | `\.send\(\s*([^,)]+)` |
 | `kafka.property_files` | application.yml / .properties files that resolve `${...}` placeholders in topic names and `groupId` | `harbor-core/src/main/resources/application.yml` |
-| `kafka.schema_dirs` | folders (recursive) holding the payload schemas or classes; a file named like the listener parameter type is linked in the Payload column | `kafka-client/src/main/resources` |
+| `kafka.schema_dirs` | folders (recursive) holding the payload schemas or classes; a file named like the listener parameter type is linked in the Payload column; every Avro record (`.avsc`) and JSON Schema (`.json` with `properties` or `$schema`) found there is listed with its fields (name, type, required, doc) in the "Payload schemas" section of `events.md`, and the docs collector copies these files to `generated/asyncapi/schemas/<path relative to the folder>` (re-pointing the paths in `events.md`); the generated payload classes are never read | `kafka-client/src/main/resources` |
 | `jobs.annotation` | scheduling annotation (`cron`, `fixedDelay`, `fixedRate`) | `Scheduled` |
 | `jobs.lock_annotation` | distributed-lock annotation on the same method (ShedLock `@SchedulerLock(name, lockAtMostFor)`), shown in the Lock column; empty = none | `SchedulerLock` |
 | `migrations.dir_pattern` / `migrations.file_patterns` | where the SQL migrations live and how they are named (Flyway) | `/db/migration/`, `V*.sql`, `R*.sql` |

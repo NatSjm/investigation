@@ -6,9 +6,14 @@ with topic names resolved from `const val` constants (the declaring file first -
 `.send(topic, ...)` takes the topic as a parameter is reported as "dynamic", not as a topic.
 Payload column: the type of the listener method's first parameter, linked to its schema file when a file of that
 name (any extension) exists under `kafka.schema_dirs` (Avro `.avsc`, JSON Schema `.json`, Kotlin event classes).
+Payload schemas section: every Avro record (`.avsc`) and JSON Schema (`.json` with `properties` or `$schema`) under
+`kafka.schema_dirs` with its fields (name, type, required, doc) as the file declares them - the payload classes
+generated at build are never read. The docs collector copies these files to `generated/asyncapi/schemas/` and
+re-points the paths of this map there.
 Layout keys read from docs-gen.json: kafka.listener_annotation, kafka.producer_pattern, kafka.property_files,
 kafka.schema_dirs, modules, source_root, test_pattern, exclude_paths."""
 import argparse
+import json
 import os
 import re
 import sys
@@ -22,6 +27,78 @@ DEFAULTS = {
     'modules': [], 'source_root': 'src/main/kotlin', 'test_pattern': '', 'exclude_paths': [],
     'kafka': {'listener_annotation': 'KafkaListener', 'producer_pattern': r'\.send\(\s*([^,)]+)', 'property_files': [], 'schema_dirs': []},
 }
+
+
+def avro_type(t):
+    """One-line rendering of an Avro field type; a union loses its `null` member (optionality is its own column)."""
+    if isinstance(t, str):
+        return t
+    if isinstance(t, list):
+        return ' | '.join(avro_type(x) for x in t if x != 'null') or 'null'
+    if isinstance(t, dict):
+        k = t.get('type', '')
+        if k == 'array':
+            return f"array<{avro_type(t.get('items', ''))}>"
+        if k == 'map':
+            return f"map<{avro_type(t.get('values', ''))}>"
+        if k in ('record', 'enum', 'fixed'):
+            name = t.get('name', k)
+            return f"{k} {name}" + (f" ({', '.join(t.get('symbols', []))})" if k == 'enum' else '')
+        if t.get('logicalType'):
+            return f"{k} ({t['logicalType']})"
+        return str(k)
+    return str(t)
+
+
+def json_type(p):
+    """One-line rendering of a JSON Schema property: type (+ format), `enum (a, b)`, `array<items>`, a `$ref` name."""
+    if not isinstance(p, dict):
+        return ''
+    if '$ref' in p:
+        return p['$ref'].rsplit('/', 1)[-1]
+    t = p.get('type', '')
+    if isinstance(t, list):
+        t = ' | '.join(x for x in t if x != 'null')
+    if p.get('enum'):
+        return f"enum ({', '.join(str(x) for x in p['enum'])})"
+    if t == 'array':
+        return f"array<{json_type(p.get('items', {})) or 'any'}>"
+    return f"{t} ({p['format']})" if t and p.get('format') else (t or 'any')
+
+
+def parse_schema(path):
+    """An Avro record (`.avsc`) or a JSON Schema object (`.json` with `properties` or `$schema`) as
+    {name, kind, doc, fields: [(name, type, required, doc)]}; None for any other file (a Kotlin class, a fixture)."""
+    ext = os.path.splitext(path)[1].lower()
+    if ext not in ('.avsc', '.json'):
+        return None
+    try:
+        data = json.loads(read_text(path))
+    except ValueError:
+        return None
+    if not isinstance(data, dict):
+        return None
+    if data.get('type') == 'record' and isinstance(data.get('fields'), list):
+        fields = []
+        for fd in data['fields']:
+            if not isinstance(fd, dict):
+                continue
+            t = fd.get('type')
+            optional = isinstance(t, list) and 'null' in t
+            fields.append((fd.get('name', ''), avro_type(t), not optional, fd.get('doc', '')))
+        return {'name': data.get('name') or os.path.splitext(os.path.basename(path))[0], 'kind': 'Avro record',
+                'doc': data.get('doc', ''), 'fields': fields}
+    if ext == '.json' and ('properties' in data or '$schema' in data):
+        required = set(data.get('required') or [])
+        fields = [(name, json_type(p), name in required, p.get('description', '') if isinstance(p, dict) else '')
+                  for name, p in (data.get('properties') or {}).items()]
+        return {'name': data.get('title') or os.path.splitext(os.path.basename(path))[0], 'kind': 'JSON Schema',
+                'doc': data.get('description', ''), 'fields': fields}
+    return None
+
+
+def cell(s):
+    return ' '.join(str(s).split()).replace('|', '\\|')
 
 
 def main():
@@ -42,11 +119,15 @@ def main():
 
     # schema files by simple name (MovementsLoaded.avsc, PricesUpdated.json, SessionClosed.kt ...)
     schemas = {}
+    schema_docs = []   # (repo-relative path, parsed schema) of every Avro / JSON Schema file, folder order
     for d in kafka.get('schema_dirs', []):
         full = os.path.join(root, d)
         if os.path.isdir(full):
             for f in source_files(full, ['*']):
                 schemas.setdefault(os.path.splitext(os.path.basename(f))[0], rel_path(root, f))
+                parsed = parse_schema(f)
+                if parsed:
+                    schema_docs.append((rel_path(root, f), parsed))
 
     def resolve_topic(expr, local):
         e = expr.strip()
@@ -118,8 +199,19 @@ def main():
         sb.append(f"| `{k}` | {p} | {c} | {', '.join(seen)} |\n")
     if dynamic:
         sb.append('\nProducer wrappers whose topic is a parameter (the callers above name the topic): ' + ', '.join(sorted(set(dynamic), key=sort_key)) + '\n')
+    if schema_docs:
+        sb.append('\n## Payload schemas\n\n')
+        sb.append(f"{len(schema_docs)} schema file(s) under the schema folders ({', '.join('`' + d + '`' for d in kafka.get('schema_dirs', []))}); "
+                  'fields as the files declare them, the payload classes generated at build are not read.\n')
+        for path, s in schema_docs:
+            sb.append(f"\n### `{s['name']}` - {s['kind']}, {path}\n")
+            if s['doc']:
+                sb.append(' '.join(s['doc'].split()) + '\n')
+            sb.append('\n| Field | Type | Required | Doc |\n|---|---|---|---|\n')
+            for name, typ, required, doc in s['fields']:
+                sb.append(f"| `{name}` | {cell(typ)} | {'yes' if required else 'no'} | {cell(doc)} |\n")
     write_text(resolve_out(root, a.out), ''.join(sb))
-    print(f'events: {len(topics)} topic(s) -> {a.out}')
+    print(f'events: {len(topics)} topic(s), {len(schema_docs)} schema(s) -> {a.out}')
 
 
 if __name__ == '__main__':

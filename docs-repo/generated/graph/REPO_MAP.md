@@ -4,7 +4,7 @@ title: "REPO_MAP"
 description: "Ranked architectural map of BE + FE + docs; read first, then one graph/<community>.md"
 generated:
   by: process:gen-graph
-  at: 2026-10-25
+  at: 2026-10-28
 status: stable
 ---
 # REPO_MAP

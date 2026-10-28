@@ -18,7 +18,7 @@ repo `contexts.yml`): contexts `clients`, `meetings`, `imports`, `product1`, `pr
 
 ## Read in this order (cheapest first) - never walk directories
 1. `docs/_generated/index.md`, then `codebase-map.md` (modules -> layers -> classes, resource folders) or the one map
-   that answers the question: `api-index.md` (endpoints, `Tag` = context), `events.md` (topics), `db-schema.md` (tables),
+   that answers the question: `api-index.md` (endpoints, `Tag` = context), `events.md` (topics, payload fields), `db-schema.md` (tables),
    `jobs.md` (scheduled jobs), `docs-tags.md` (spec ID -> code), `parameters.md` (admin parameter catalogue: key, seeded defaults per scope, readers, validator), `datasets.md` (named synthetic datasets: seeds and test fixtures with tables, row counts, sample rows).
 2. The context's manager `harbor-core/src/main/kotlin/com/acme/harbor/manager/<Ctx>Manager.kt` (KDoc + `@docs <ID>`).
 3. Its dependencies from `components.md` (one row per class: layer, injected deps, tables, `@docs`, `file:line`).

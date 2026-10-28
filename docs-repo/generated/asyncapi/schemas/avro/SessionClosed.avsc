@@ -1,0 +1,13 @@
+{
+  "type": "record",
+  "name": "SessionClosed",
+  "namespace": "com.acme.harbor.kafka.events",
+  "doc": "Topic harbor.meetings.session-closed, key = sessionId: a meeting session was closed. Produced by SessionEventsPublisher; consumed by the report and client-role listeners.",
+  "fields": [
+    {"name": "sessionId", "type": "string", "doc": "session id (UUID)"},
+    {"name": "clientId", "type": "string", "doc": "client id (UUID)"},
+    {"name": "productGroup", "type": "string", "doc": "wire value of the product group (product1 / product2)"},
+    {"name": "kind", "type": "string", "doc": "CLIENT (real meeting) or PREPARATION (dry run)"},
+    {"name": "roleOverride", "type": ["null", "string"], "default": null, "doc": "IMPORTER / EXPORTER / MIXED when a manual override was set in the session"}
+  ]
+}

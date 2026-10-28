@@ -1,0 +1,11 @@
+{
+  "type": "record",
+  "name": "ReportRenderRequested",
+  "namespace": "com.acme.harbor.kafka.events",
+  "doc": "Topic harbor.reports.render-requested, key = sessionId: asks document-service to render the report payload as PDF. Produced by ReportRenderRequester.",
+  "fields": [
+    {"name": "sessionId", "type": "string", "doc": "session id (UUID)"},
+    {"name": "payloadRef", "type": "string", "doc": "URL under which document-service fetches the JSON report payload (getReport)"},
+    {"name": "template", "type": "string", "doc": "HTML template of the meeting report (pdf/meeting-report.html with pdf/report.css inlined)"}
+  ]
+}

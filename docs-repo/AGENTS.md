@@ -42,8 +42,10 @@ what matches no line is new work: add the context it belongs to as a subject, it
    `generated/graph/<context>.md` - architectural graph (`context:`, `class:` nodes, `depends-on` / `persists-to` edges) with `file:line`
 5. `generated/be/*.md`, `generated/fe/*.md` - code maps (admin parameters in `parameters.md`, named datasets in `datasets.md`, BE layers in `codebase-map.md`, one row per class in `components.md`,
    API index with `Tag` = context, events, schema, jobs, routes, types, `@docs` tags)
-6. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` - contracts the
-   code implements; `contracts/proposed/<ID>.*.yaml` - contracts still being designed (proposals, see `contracts/conventions.md`)
+6. `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` and the Kafka
+   payload schemas `generated/asyncapi/schemas/**` (Avro, JSON Schema; `generated/be/events.md` names the file of each
+   topic and lists its fields) - contracts the code implements; `contracts/proposed/<ID>.*.yaml` - contracts still being
+   designed (proposals, see `contracts/conventions.md`)
 7. Only then source code in `../backend` / `../frontend`, smallest possible range, located via the graph, `components.md` or
    `docs-tags.md`. The backend is layered (`harbor-core/src/main/kotlin/com/acme/harbor/<layer>/`): start at the context's `manager/<Ctx>Manager.kt`.
 

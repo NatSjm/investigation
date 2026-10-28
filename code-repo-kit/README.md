@@ -71,7 +71,9 @@ All maps carry OKF-style frontmatter (`type: Document`, `generated.by: process:g
 docs bundle's `generated/<be|fe>/` unchanged. CI also publishes the contracts:
 `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` -> `generated/openapi/backend.yaml`,
 `harbor-core/src/main/resources/openapi/harbor-events.yaml` -> `generated/asyncapi/backend.yaml`,
-`harbor-core/src/main/resources/api/*.yaml` -> `generated/openapi/external/`.
+`harbor-core/src/main/resources/api/*.yaml` -> `generated/openapi/external/`,
+`kafka-client/src/main/resources/{avro,json_<service>}/*.{avsc,json}` (`kafka.schema_dirs`) -> `generated/asyncapi/schemas/`
+(path relative to the schema folder; `events.md` tables the fields of every schema and is re-pointed at the copies).
 
 ## Architectural graph (docs repo joins the maps)
 The docs repo's `scripts/gen-graph.py` turns these maps (+ `@docs` tags, + optional precise exports

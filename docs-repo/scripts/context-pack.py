@@ -537,8 +537,29 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
             where = ('channels in `generated/asyncapi/backend.yaml`; producers/consumers in `generated/be/events.md`'
                      if os.path.isfile(os.path.join(repo, 'generated/asyncapi/backend.yaml'))
                      else 'producers, consumers, payload types and schema file paths in `generated/be/events.md` (no AsyncAPI document)')
+            # the payload of each topic: type and schema file from the events.md row, the field table from its
+            # "Payload schemas" section (the collector copies the schema files to generated/asyncapi/schemas/)
+            ev_text = read_text_or_empty(os.path.join(repo, 'generated/be/events.md'))
+            payloads = []
+            for e in event_refs:
+                row = re.search(r'(?m)^\|\s*`' + re.escape(e) + r'`\s*\|[^\n]*?\|[^\n]*?\|\s*([^\n]*?)\s*\|\s*$', ev_text)
+                pm = re.search(r'`(\w+)`(?:\s*\(([^)\s]+)\))?', row.group(1)) if row else None
+                if not pm:
+                    continue
+                typ, path = pm.group(1), pm.group(2) or ''
+                line = f'- `{e}`: payload `{typ}`' + (f' (`{path}`)' if path else '')
+                block = re.search(r'(?ms)^### `' + re.escape(typ) + r'`[^\n]*\n(.*?)(?=^### |\Z)', ev_text)
+                if block:
+                    table = [l for l in split_lines(block.group(1)) if l.startswith('|')]
+                    line += '\n' + '\n'.join('  ' + l for l in table) if table else ''
+                if path and os.path.isfile(os.path.join(repo, path)) and path not in sources:
+                    sources.append(path)
+                payloads.append(line)
+            if payloads and 'generated/be/events.md' not in sources:
+                sources.append('generated/be/events.md')
             parts.append({'Key': 'kafka', 'Events': list(event_refs), 'Where': where,
-                          'Text': '**Kafka**: ' + ', '.join(f'`{e}`' for e in event_refs) + ' - ' + where})
+                          'Text': '**Kafka**: ' + ', '.join(f'`{e}`' for e in event_refs) + ' - ' + where
+                                  + ('\n\n' + '\n'.join(payloads) if payloads else '')})
         if kind != 'flow' or parts:
             add_section('Contracts', '\n\n'.join(p['Text'] for p in parts), 4, 'generated/openapi/backend.yaml', parts)
 

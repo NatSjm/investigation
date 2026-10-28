@@ -11,6 +11,16 @@
   re-pointed too), no git call. Tested on two Harbor pages and restored. The migrator also puts the page title into
   the `aliases` of every spec it touched. Agents' move steps, Run 2 and Run 3 checklists, import README (layout,
   rule 3, after migration), import instructions, AGENTS commands, CONCEPT scripts table.
+* **The Kafka payload schemas reach the docs repo.** The collector copied the AsyncAPI document but never the Avro
+  and JSON Schema files of `kafka-client/src/main/resources`; `generated/be/events.md` linked them by their backend
+  path, which exists nowhere here, and a backend without an AsyncAPI document had the payload fields nowhere.
+  `gen-events.py` (backend kit) now ends with a "Payload schemas" section: every Avro record and JSON Schema under
+  `kafka.schema_dirs` with its fields (name, type, required, doc) as the file declares them. `collect-evidence.py`
+  copies these files to `generated/asyncapi/schemas/<path relative to the folder>` (`avro/`, `json_<service>/`),
+  rejects a file that is not JSON, re-points the schema paths of `events.md` to the copies; `gen-catalogue.py`
+  reads only the topic table of `events.md` (the field tables counted as topics); the context pack lists each
+  topic of the subject with its payload type, schema file and field table. Agent texts, instructions, skills and
+  the integrations prompt name `generated/asyncapi/schemas/` next to the AsyncAPI document.
 
 ## 2026-10-27
 * **Legacy architecture pages reach the architect.** The triage table and the runbook sent architecture, decision

@@ -4,7 +4,7 @@ title: "Graph: reports (be)"
 description: "entry point ReportManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-25
+  at: 2026-10-28
 status: stable
 ---
 # Graph: reports (be)

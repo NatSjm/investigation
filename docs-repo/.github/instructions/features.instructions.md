@@ -22,8 +22,9 @@ description: Rules for feature specs (structure, numbering, traceability, proven
   carry none. `okf-validate.py --strict` warns on a draft rule without one (`features/conventions.md`, "Provenance per rule").
 - Reference calculations by link to `domain/calculations/<name>.md`; do not duplicate formulas.
 - Reference endpoints as `METHOD /path` with the `operationId` from `generated/openapi/backend.yaml`; reference
-  Kafka topics by exact name from `generated/asyncapi/backend.yaml` (or from `generated/be/events.md`, which also
-  names the schema file of each payload, when there is no AsyncAPI document); reference tables by name from
+  Kafka topics by exact name from `generated/asyncapi/backend.yaml` (or from `generated/be/events.md` when there is
+  no AsyncAPI document; payload fields from the schema file `events.md` names under `generated/asyncapi/schemas/`,
+  listed in its Payload schemas section); reference tables by name from
   `generated/be/db-schema.md`. Session-scoped endpoints (`/session/**`) mention the `X-Harbor-Session` header once.
 - Frontmatter `api[]` lists only the operations whose handler belongs to the spec's context (`api: []` for a
   frontend-only context). An operation the screen calls but another context handles stays in the API / Events

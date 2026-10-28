@@ -17,7 +17,8 @@ One of:
    `python3 scripts/graph-query.py --files <paths> --depth 2` (specs in blast radius). Unmapped paths -> step 6.
 2. For each affected spec build the pack (`python3 scripts/context-pack.py --task <ID>`) and compare its
    **API / Events / Data** sections with the current `generated/openapi/backend.yaml`, `generated/asyncapi/backend.yaml`
-   (or `generated/be/events.md` when the backend has no AsyncAPI document),
+   (or `generated/be/events.md` when the backend has no AsyncAPI document) and the payload schemas under
+   `generated/asyncapi/schemas/` (the file `events.md` names for the topic, fields listed there),
    `generated/be/db-schema.md`, `generated/be/api-index.md`, `generated/fe/routes.md`.
 3. Only if behaviour (not just signatures) changed and is not inferable from the contract diff, open the specific
    `file:line` from the graph node (handler, manager) - a narrow range, never the whole file.

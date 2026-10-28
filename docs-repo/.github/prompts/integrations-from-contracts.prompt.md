@@ -23,8 +23,9 @@ reference text of another product. Everything the evidence cannot show is left a
 2. `generated/openapi/external/*.yaml` or `*.json`: one file per external service the backend calls. Title, version,
    `servers`, every operation (`operationId`, method, path, one-line summary).
 3. `generated/openapi/backend.yaml`: tags and `operationId`s of the own API (inbound table).
-4. `generated/asyncapi/backend.yaml` when present; else `generated/be/events.md` (topic, producer, consumers, payload
-   type and the path of its schema file). A producer or consumer shown as `_external_` is another system.
+4. `generated/asyncapi/backend.yaml` when present, and `generated/be/events.md` always (topic, producer, consumers,
+   payload type, the path of its schema file under `generated/asyncapi/schemas/` and, in the Payload schemas
+   section, the fields of every schema). A producer or consumer shown as `_external_` is another system.
 5. `generated/be/components.md`: the `client/*` rows (which class wraps which external contract: the `Depends on`
    column and the class name) and the `event/*` rows.
 6. `generated/be/jobs.md`: scheduled jobs, cron, lock.
@@ -40,9 +41,10 @@ reference text of another product. Everything the evidence cannot show is left a
 Source code: never.
 
 ## Procedure
-1. **Kafka table** (`## Kafka topics`): one row per topic of `events.md` / the AsyncAPI document: schema file,
-   topic, producer (`event/<Class>` or `external (<system>)`), consumers, payload (type and its fields when the
-   schema file is listed; otherwise the type alone), contract anchor (the AsyncAPI channel, else the schema path),
+1. **Kafka table** (`## Kafka topics`): one row per topic of `events.md` / the AsyncAPI document: schema file
+   (its path relative to `generated/asyncapi/schemas/`, as `events.md` names it), topic, producer (`event/<Class>`
+   or `external (<system>)`), consumers, payload (type and its fields from the Payload schemas section of
+   `events.md`; the type alone when no schema file is listed), contract anchor (the AsyncAPI channel, else the schema path),
    owning feature, `gen`. A topic that is in the page but no longer in the evidence is removed and named in chat.
 2. **Outbound REST table** (`## REST (outbound, external services)`): one row per file under
    `generated/openapi/external/`: system (file name), client class from `components.md` (`client/` layer; `-` and a

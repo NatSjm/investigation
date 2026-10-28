@@ -3,12 +3,13 @@
 Read these before opening source. Each file is a few hundred tokens.
 Contracts: `harbor-core/src/main/resources/openapi/openapi_harbor.yaml` (REST; FE client and BE interfaces are generated from it),
 `harbor-core/src/main/resources/openapi/harbor-events.yaml` (Kafka),
-`harbor-core/src/main/resources/api/*.yaml` (external services).
+`harbor-core/src/main/resources/api/*.yaml` (external services),
+`kafka-client/src/main/resources` (Kafka payload schemas: Avro `.avsc`, JSON Schema `.json`; the docs collector publishes them as `generated/asyncapi/schemas/`).
 
 - [codebase-map.md](codebase-map.md): modules, technical layers with their classes, resource folders
 - [components.md](components.md): one row per class - layer, stereotype, injected dependencies, tables, @docs, file:line
 - [api-index.md](api-index.md): REST operations from the contract (method, path, operationId, handler, file:line)
-- [events.md](events.md): Kafka topics with producers/consumers
+- [events.md](events.md): Kafka topics with producers/consumers; the fields of every payload schema (Avro, JSON Schema)
 - [db-schema.md](db-schema.md): tables and columns from migrations, ER diagram
 - [jobs.md](jobs.md): scheduled jobs with their cron triggers
 - [docs-tags.md](docs-tags.md): spec ID (`@docs`) to code location

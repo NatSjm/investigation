@@ -4,7 +4,7 @@ title: "Graph: meetings (be+fe)"
 description: "entry point MeetingManager (manager)"
 generated:
   by: process:gen-graph
-  at: 2026-10-25
+  at: 2026-10-28
 status: stable
 ---
 # Graph: meetings (be+fe)
