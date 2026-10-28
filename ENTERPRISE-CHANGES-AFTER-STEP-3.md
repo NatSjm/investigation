@@ -1662,7 +1662,9 @@ the payload fields nowhere an agent may read.
 | `README.md` | the `asyncapi` and `kafka.schema_dirs` rows |
 
 Then run `python3 scripts/docs/gen-all.py` in the backend and `python3 scripts/collect-evidence.py --graph` in the
-docs repo; the first run adds `generated/asyncapi/schemas/**` and changes `generated/be/events.md`.
+docs repo; the first run adds `generated/asyncapi/schemas/**` and changes `generated/be/events.md`. Then
+`Follow .github/prompts/integrations-from-contracts.prompt.md with product = <name>, scope = integrations` so the
+Kafka table of `architecture/integrations.md` names the schema files under `generated/asyncapi/schemas/`.
 
 ### 45.3 Docs repository: single rows to merge
 
@@ -1680,7 +1682,7 @@ docs repo; the first run adds `generated/asyncapi/schemas/**` and changes `gener
 | `.github/skills/write-feature-spec/references/source-priority.md` | row 4 | add `asyncapi/schemas/**` (payload fields, also tabled in `generated/be/events.md`) |
 | `CONCEPT.md` | folders table, `generated/` row | "`openapi/` and `asyncapi/` contracts (with the Kafka payload schemas under `asyncapi/schemas/`)" |
 | `scripts/README.md` | `collect-evidence.py` row | "stages maps, contracts and the Kafka payload schemas (`kafka.schema_dirs` of the backend `docs-gen.json` -> `generated/asyncapi/schemas/`, the paths in `events.md` re-pointed there)" |
-| `architecture/integrations.md` | Kafka table header, the paragraph above it, footnote `[^topics]` | the Schema column is relative to `generated/asyncapi/schemas/`; the cells (`avro/X.avsc`, `json_<service>/Y.json`) stay |
+| `architecture/integrations.md` | nothing by hand in the Kafka table | the table is the output of `integrations-from-contracts` (45.1): the run after the collector rewrites it with the Schema column relative to `generated/asyncapi/schemas/`. Only your own prose is yours: a sentence that names the backend schema folder as the place the column points gets `> ⚠️ REVIEW` from the agent, reword it then |
 
 ### 45.4 Playbook and handbook (read only)
 
