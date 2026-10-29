@@ -166,6 +166,16 @@ your triage note is replaced at that moment (the script prints the row). Replace
 `migrated 2026-10-28 into ADM-001, 2 conflicts as open questions`: it stays on later imports. In the "Current pages"
 table you update the cell yourself.
 
+**A page that changes while still in place.** A page not yet under `_done/` (a `not in code` candidate waiting for
+its spec, a context without a skeleton) is rewritten by the next import with the new text and `last_modified`; its
+Known state cell stays. Rerun the step the page is in: `/analyse-request` under the same slug when the page is the
+text of a request (the analyst rewrites the analysis in place, `spec-writer` adjusts the proposed rules, a rule the
+page no longer asks for is withdrawn, never deleted), the migrator when the page waits for a Run 1. A page already
+under `_done/` is never rewritten and never moved back by hand: the importer skips it and prints `EXPORT NEWER than
+the migrated copy`, the inventory shows the two dates. Today that is all - the newer text has no copy an agent may
+read (`raw-html/` is off limits), so a changed migrated page waits for the importer to learn to write the newer
+version beside the old one as a fresh page.
+
 ## Current pages (space `HARBOR`)
 
 | Page | last_modified | Known state |

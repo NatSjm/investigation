@@ -735,7 +735,12 @@ question that still blocks -, then slice stories per the `jira-work-items` skill
 derive subtasks per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when
 blocking, into the spec's Open questions. Each finding from code is recorded as `code-read` evidence and an open
 question (decision and setup: 17.2, 17.10 and section 19). On a finished feature the
-input is a change request and the output is delta stories only (17.1).
+input is a change request and the output is delta stories only (17.1). A request that changes before the code has it
+(a re-imported Confluence page, a changed ask) is the same request rerun under the same slug: the analysis document
+is rewritten in place, the Reading confirmed again, and `spec-writer` adjusts the proposed rules of the same spec - a
+changed rule keeps its ID, a new one continues the numbering, one no longer asked for is **withdrawn** with its text
+kept, never deleted or renumbered; only a request dropped altogether is withdrawn by `doc-sync` or the owner
+(`features/conventions.md`, "Proposed rules").
 
 The everyday sequence:
 

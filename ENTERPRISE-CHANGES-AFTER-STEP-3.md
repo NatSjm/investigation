@@ -1736,6 +1736,43 @@ rule, "a new spec has two origins" rewritten (the request may concern a capabili
 a Confluence page is at most the text of such a request). `MIGRATION-RUNBOOK.md` step 5 migrator item: the same in
 two sentences.
 
+## 47. A request that changes before the code has it (investigation commits after `d1f8d00`, 2026-10-29; written before section 48, committed after it)
+
+Section 46 made a Confluence page the text of a request with proposed rules. Nothing said what happens when that
+page (or any request) changes before the code implements it: the analyst had no rerun step, and the conventions
+named `doc-sync` as the one who withdraws a proposed rule without saying when that is its job.
+
+- `features/conventions.md`, "Proposed rules": a request that changes before the code has it is the same request,
+  rerun under the same slug - analysis document rewritten in place (git keeps the previous reading), Reading confirmed
+  again, `spec-writer` adjusts the proposed rules of the same spec: a changed rule keeps its ID and marker, a new one
+  continues the numbering, one no longer asked for becomes **withdrawn** (request `<slug>`) with its text kept, never
+  deleted or renumbered; the stories that cited them are re-cut. Only a request dropped altogether is withdrawn by
+  `doc-sync` or the owner, with the analysis document set to `status: superseded`.
+- `.github/agents/analyst.agent.md`: new procedure step 4 with that sequence (stop for confirmation as in step 1;
+  a dropped request is not the analyst's to withdraw). `.github/prompts/analyse-request.prompt.md`: step 4, the rerun.
+- `.github/agents/doc-sync.agent.md` step 4: withdraws a proposed rule only for a dropped request (owner in chat, or
+  analysis `status: superseded`); a changed request is the analyst's rerun.
+- `confluence-import/README.md`: "A page that changes while still in place" - a page not yet under `_done/` is
+  rewritten by the next import (Known state kept); rerun the step it is in (`/analyse-request` under the same slug
+  for a `not in code` candidate, the migrator otherwise); a page under `_done/` is only flagged.
+
+### 47.1 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `features/conventions.md` | "Proposed rules", after the sentence on `work-items/<slug>.md` | the paragraph "A request that changes before the code has it ..." (above) |
+| `.github/agents/analyst.agent.md` | Procedure, after the "Produce the work items" step | step 4 "A request that changed before the code has it" (same slug, rewrite in place, confirm again, spec-writer adjusts, withdrawn never deleted, stories re-cut, dropped request -> `status: superseded`, not the analyst's to withdraw) |
+| `.github/prompts/analyse-request.prompt.md` | after the "Print story summaries ..." line | step 4: a request that already has `work-items/<slug>.md` and changed: same slug, steps 1 to 3 again, document rewritten in place, spec-writer adjusts the proposed rules, stories re-cut |
+| `.github/agents/doc-sync.agent.md` | step 4, after the proposal sentence | a proposed rule whose request was dropped becomes withdrawn, text kept; a changed request is the analyst's rerun |
+| `confluence-import/README.md` | before "## Current pages" | the paragraph "A page that changes while still in place" |
+| `log.md` | top | the second 2026-10-29 entry |
+
+### 47.2 Playbook and runbook (read only)
+
+`ENTERPRISE-PLAYBOOK.md` section 12, after the delta-stories sentence: the rerun under the same slug and the
+withdrawal rule. `MIGRATION-RUNBOOK.md` step 5: a page that changes while it waits in place, a page under `_done/`
+flagged as newer, a code change handled by `doc-sync` on the next snapshot.
+
 ## 48. One context procedure in the task-context skill; the pack points instead of copying (investigation commits after `8d8e2dc`, 2026-10-29)
 
 The analyst had two procedures - a budgeted pack read in one section for a question, a full pack read top to bottom

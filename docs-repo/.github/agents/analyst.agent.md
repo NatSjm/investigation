@@ -83,6 +83,16 @@ name one, why it matters. Never guess. **A question stops here.** A change reque
    a contract / table / topic / calculation first and the other contexts' stories `depends_on` it - one epic, never
    one per context). `questions[]` holds what you could not resolve; a story resting on `code-read` evidence lists it
    there and is labelled `needs-spec-review`. Run `python3 scripts/validate-work-items.py work-items/<file>.yml`.
+4. **A request that changed before the code has it** (a re-imported Confluence page, a changed ask, the owner's
+   answer to an open question) is the same request, rerun under the **same slug** - never a second slug for the same
+   capability. Rebuild the pack, rewrite `work-items/<slug>.md` in place (the previous reading is in git), print the
+   Reading line and the Parts table and **stop for confirmation** as in step 1, then hand the proposed rules to
+   `spec-writer` for the same spec: a changed rule keeps its ID and its **proposed** marker, a new rule continues the
+   numbering, a rule the new text no longer asks for becomes **withdrawn** (request `<slug>`) with its text kept -
+   never deleted, never renumbered (`features/conventions.md`, "Proposed rules"). Re-cut the stories of
+   `work-items/<slug>.yml` that cited a changed or withdrawn rule and validate again. A request the owner drops
+   altogether is not yours to withdraw: set the analysis document to `status: superseded` and say so in chat;
+   `doc-sync` or the owner withdraws its proposed rules.
 
 ## Analytics mode (coverage / status / freshness questions; no pack)
 Run `python3 scripts/coverage-matrix.py` and answer from `generated/analytics/coverage-matrix.md` plus the index

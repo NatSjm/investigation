@@ -112,6 +112,13 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
   (label `needs-spec-review`) and by Gherkin like any rule; it is never presented as current behaviour. `doc-sync`
   removes the marker when the code implements it (change-log row) or marks it withdrawn when the request is
   dropped. The analysis document `work-items/<slug>.md` lists every proposed rule it introduced.
+  **A request that changes before the code has it** (a re-imported Confluence page, a changed ask) is the same
+  request, rerun: `/analyse-request` under the **same slug**, the Reading confirmed again, the analysis document
+  rewritten in place (its previous version is in git, never a second file), and `spec-writer` adjusts the proposed
+  rules of the same spec: a changed rule keeps its ID and its marker, a new one continues the numbering, a rule the
+  new text no longer asks for becomes **withdrawn** (request `<slug>`) with its text kept - never deleted, never
+  renumbered - and the stories that cited it are re-cut. Only when the whole request is dropped does `doc-sync`
+  (or the owner) withdraw every proposed rule of the slug and set the analysis document to `status: superseded`.
 
 ## Size caps
 

@@ -25,6 +25,16 @@
   pointers, the documentation and the graph freely, code through the maps, code freely - with a table of how far each
   agent goes; the agents reference the skill and keep their own procedure. `CONCEPT.md` describes the pack as it is
   now and why a pack and not a search.
+* **A request that changes before the code has it.** The analyst had no step for a request whose text changed after
+  the proposed rules were written (a re-imported Confluence page, a changed ask), and the conventions named `doc-sync`
+  as the one who withdraws a proposed rule without saying when. Now: the same request, rerun under the same slug
+  (analyst step 4, `analyse-request` step 4) - pack rebuilt, `work-items/<slug>.md` rewritten in place, Reading
+  confirmed again, `spec-writer` adjusts the proposed rules of the same spec (changed: same ID and marker; new: next
+  number; no longer asked for: **withdrawn** (request `<slug>`), text kept, never deleted or renumbered), the stories
+  that cited them re-cut; a request dropped altogether sets the analysis to `status: superseded` and `doc-sync` (step
+  4) or the owner withdraws its rules. "Proposed rules" in `features/conventions.md`; import README (a page that
+  changes while still in place is rewritten by the next import; rerun the step it is in); runbook step 5 and playbook
+  section 12 (a code change needs nothing by hand: `doc-sync` on the next snapshot).
 * **A candidate spec not yet in code, and no renumbering.** The migrator's candidate path assumed the capability a
   legacy page describes exists in code and will get a Run 1; a page describing a screen still to be built (written in
   Confluence first) had no path, and the board pointed at `/spec-skeleton-from-graph`, which has no graph nodes for

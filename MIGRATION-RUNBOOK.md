@@ -95,6 +95,14 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
   a developer confirm it; `in code`: Run 1 (step 4) writes it from the code; `not in code` (a screen still to be
   built, written in Confluence first): `/analyse-request` with the page as the request text, `spec-writer` drafts the
   spec with every rule **proposed**; then the page is rerun.
+- A page that changes in Confluence while it still waits in place is rewritten by the next import; rerun the step it
+  is in - `/analyse-request` under the same slug for a `not in code` candidate (analysis rewritten in place, proposed
+  rules adjusted, a rule no longer asked for withdrawn, never deleted), the migrator otherwise. A page already under
+  `_done/` is only flagged (`EXPORT NEWER` in the importer output, two dates in the inventory): never move it out of
+  `_done/` by hand, and nothing re-imports it yet. A code change needs nothing from you: the evidence snapshot
+  (`collect-evidence.py --generate --graph`, or the collector's PR) and then `@doc-sync` with the changed code paths or
+  the `generated/` diff (`@doc-sync <ID>` re-verifies one spec); it turns the proposed rules into current ones as the
+  code implements them.
 - Formula pages are handed to `calc-auditor` (`audit-calculation` prompt). It opens exactly two files (calculator and
   its unit test), writes the `## Audit <date>` table with `MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED`, and never
   changes numbers itself. Non-MATCH rows become open questions naming an owner. A page that is screen rules plus a
