@@ -26,3 +26,7 @@ Mode: ${input:mode:question|analysis|work-items} (default `work-items`: analysis
    not); then write `work-items/<slug>.yml` (`request:`, `analysis:`, `specs:`, stories with `depends_on` across
    contexts) and run `python3 scripts/validate-work-items.py work-items/<slug>.yml`.
 Print story summaries, estimates, `depends_on`, open questions and the trust badges only.
+4. A request that already has `work-items/<slug>.md` and changed before the code has it (a re-imported legacy page,
+   a changed ask): the same slug, steps 1 to 3 again with the document rewritten in place and the Reading confirmed
+   again; `spec-writer` adjusts the proposed rules of the same spec (changed: same ID and marker; new: next number;
+   no longer asked for: **withdrawn**, text kept) and the stories that cited them are re-cut (analyst agent step 4).

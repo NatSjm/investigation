@@ -26,6 +26,9 @@ One of:
 4. If an operation of a `contracts/proposed/*.yaml` file now appears in `generated/openapi|asyncapi/**`, switch the spec's
    API / Events row from the proposal link to the `generated/` anchor, drop the **proposed** marker and the `needs-contract`
    label in `work-items/<ID>.yml`, and delete the proposal (or set `x-status: implemented`, `x-implemented-in`).
+   A **proposed** rule whose request was dropped (the owner says so in chat, or the analysis document
+   `work-items/<slug>.md` is `status: superseded`) becomes **withdrawn** (request `<slug>`) with its text kept, never
+   deleted (`features/conventions.md`, "Proposed rules"); a request that merely changed is the analyst's rerun, not yours.
    Update the spec: business rules, API, data, edge cases; append a **Change log** row
    (`YYYY-MM-DD - <what> - <PR/commit>`); set `last_verified`. A rule you add or rewrite ends, after its footnote,
    with `(source: code <sources-id>#<symbol>)` naming the handler or manager method you read in step 3, or
