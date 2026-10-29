@@ -1918,3 +1918,88 @@ of section 48 are unchanged.
 `ENTERPRISE-PLAYBOOK.md` 17.10 gains a "Revised the same day" paragraph; the code-access answer in section 6,
 section 7 item 2 and the analyst paragraph of section 17 say six steps and "code last". `HANDBOOK.md` principle 4,
 section 2.6, the analyst and `task-context` rows. `ANALYST-DOCS-SETUP.md` pack paragraph and the agent's Context section.
+
+## 51. All of today's changes in one checklist (sections 46-50, investigation commits `8d8e2dc` to `e33bf05`, 2026-10-29)
+
+Five sections landed today from two sessions: 46 (a candidate spec not yet in code, no renumbering), 47 (a request that
+changes before the code has it), 48 (one context procedure in the task-context skill, the pack points instead of
+copying), 49 (a changed Confluence page already migrated is re-imported), 50 (six context steps). This section is the
+order to apply them in; the why of each change stays in its own section. Where a file is touched by several sections,
+re-copying it whole once covers all of them, so the single rows of those sections are not repeated here.
+
+### 51.1 First: the analyst agent works with the new context and by the new rules
+
+Do these in order; after step 9 the enterprise analyst runs the six-step procedure on the new pack.
+
+1. **`scripts/context-pack.py`** - re-copy whole (48.1, footer wording 50.2). Run it once on a spec of yours,
+   `python3 scripts/context-pack.py --task <ID>`, and open `.context/<id>.md`: a `## Contents` with line ranges at the
+   top, `## Calculations` / `## Flows` / `## Legacy pages` as one-line pointers, no `## Columns` heading anywhere, and a
+   footer with `files read into the pack`, `pointed at` and the rule naming the skill.
+2. **`.github/skills/task-context/SKILL.md`** and **`.github/skills/task-context/references/pack-anatomy.md`** -
+   re-copy whole (48.1, 50.1). The only Harbor-specific line is the graph-node example in the Build block
+   (`topic:harbor.meetings.session-closed`): put a topic of yours. Step 6 names `../backend` and `../frontend`: put
+   your sibling checkout names if they differ. Nothing else in the skill is Harbor's.
+3. **`.github/agents/analyst.agent.md`** - re-copy whole; it carries 46.2 (the next free number in "Nothing new
+   without a rule"), 47.1 (step 4, a request that changed), 48.1 (the Context section replaces the old steps 1-4, 9
+   and 10) and 50.1 (six steps). Adapt the first sentence (product name and its domains), the Input examples (your
+   IDs, a calculation and a topic of yours) and nothing else; the reference `.github/skills/task-context/SKILL.md`
+   stays as it is, the path does not change between the two repositories.
+4. **`.github/prompts/analyse-request.prompt.md`** - re-copy whole (47.1 step 4, 48.1, 50.1).
+5. **`work-items/_analysis-template.md`** - re-copy whole (48.1, 50.1): the Parts evidence sentence and the Sources
+   list (documents opened after the pack, one "code read" bullet).
+6. **`scripts/coverage-matrix.py`** - the **answered from code** sentence of the matrix footer says
+   `(task-context skill step 6)` (48.2, 50.2); then `python3 scripts/coverage-matrix.py`.
+7. **`AGENTS.md`** - the "Work task-scoped: build the context pack first" paragraph after the command and the "Task
+   context pack" row of the Commands table (48.2, 50.2). **`.github/copilot-instructions.md`** - the `analyst`,
+   `/analyse-request` and `test-designer` rows (48.2, 50.2). These are what every Copilot session reads first; without
+   them the old "budget 200 / top to bottom" sentence still sends the analyst the old way.
+8. Delete the old packs under `.context/` (they carry copied bodies and leaked headings) and rebuild the ones you keep.
+9. Check it works: one question and one change request through `/analyse-request`. The chat answer names the
+   subjects it read and what it opened after the pack; a change request stops at the Reading line and the Parts
+   table; an unknown settled from code appears in the spec's Open questions with `code-read <file:line>` and the
+   matrix's **answered from code** column counts it. `python3 scripts/okf-validate.py --strict` and
+   `python3 scripts/build-index.py --check` clean.
+
+### 51.2 Then the rest of sections 46-50
+
+Files to re-copy whole (one copy covers every section named):
+
+| File | Sections |
+|---|---|
+| `features/conventions.md` | 46.1 ("Shaping specs" point 9), 47.1 ("Proposed rules" paragraph) |
+| `.github/agents/confluence-migrator.agent.md` | 46.1 (step 2 candidate bullet, Never list), 48.2 (step 2 pack sentence), 49.2 (Input header list) |
+| `.github/agents/doc-sync.agent.md` | 47.1 (step 4 withdrawal), 48.2 (step 2 context sentence) |
+| `.github/agents/test-designer.agent.md` | 48.2 (steps 1 and 3) |
+| `.github/skills/gherkin-test-design/SKILL.md` | 48.1 (step 1) |
+| `.github/skills/spec-lifecycle/references/run-checklist.md` | 46.1 (Run 2 item) |
+| `scripts/migration-status.py` | 46.1 (marker parsing, run lines, "Order of work") |
+| `scripts/confluence-import.py`, `scripts/legacy-done.py` | 49.1 (re-import of a changed migrated page; the move over the copy it supersedes) |
+| `confluence-import/README.md` | 46.2 (rule 3 sentences), 47.1 ("A page that changes while still in place"), 49.1 (layout line, import paragraph, "A page that changes after its migration", rule 3) |
+
+Single rows to merge:
+
+| File | Where | What (section) |
+|---|---|---|
+| `.github/agents/spec-writer.agent.md` | step 1 | "Context: the skill, steps 1-6 (code: the one manager file the graph names)", read by the Contents (48.2) |
+| `.github/agents/calc-auditor.agent.md` | step 1 | "Context: the skill, steps 1-6 (code: exactly the two files of step 2)"; legacy pages are pointers to open (48.2) |
+| `.github/agents/architect.agent.md` | Sources, first line | "Context procedure for a request or spec given by ID: the skill, steps 1-5; no code" (48.2) |
+| `.github/agents/impact-analyst.agent.md` | step 1 | "You work the graph only - no pack" (48.2) |
+| `.github/instructions/confluence-import.instructions.md` | after the "Processed pages move" bullet | a page with `supersedes_done` is handled as any page, the script replaces the copy (49.2) |
+| `scripts/README.md` | `context-pack.py` row; `confluence-import.py` row; new `legacy-done.py` row | the pack as it is now, `--budget` unused (48.2); the re-import rule and the move over the copy (49.2) |
+| `README.md` | the `context-pack.py` bullet | the pack as it is now, "six steps" and the skill path (48.2, 50.2) |
+| `CONCEPT.md` | lifecycle row 2 "Legacy merge" | the candidate carries `in code` / `not in code`, next free number (46.2) |
+| `CONCEPT.md` | scripts table: `context-pack.py`, `legacy-done.py`, `confluence-import.py` rows | the pack as it is now (48.2, 50.2); the replace and the fresh page (49.2) |
+| `CONCEPT.md` | the paragraph "The **context pack** is the centre of the design" | replaced by the subsection "The context pack" - what it holds, the six steps, "Why a pack and not just search" (48.2, 50.2) |
+| `CONCEPT.md` | "How the analyst works" moves 2 and 3; principles table "An agent starts from the pack" row; glossary "Context pack" row | six steps, the same for a question and a change; code last (48.2, 50.2) |
+| `log.md` | top | the five 2026-10-29 entries: candidate spec (46), request that changes (47), one context procedure (48), re-imported page (49), six context steps (50) |
+
+Regenerate instead of merging: `python3 scripts/migration-status.py --scope all` (and the per-context boards you
+keep), `python3 scripts/coverage-matrix.py`, `python3 scripts/build-index.py`, then `python3 scripts/okf-validate.py --strict`.
+
+### 51.3 Playbook, handbook, runbook and setup guide (read only)
+
+`ENTERPRISE-PLAYBOOK.md`: section 6 code-access answer, section 7 item 2, section 11 legacy-page paragraph (46),
+section 12 rerun sentence (47), the lifecycle "Confluence changes" bullet (49), the section 17 analyst paragraph,
+17.10 with its "Revised the same day" paragraph (48, 50). `HANDBOOK.md`: principle 4, section 2.6, the analyst and
+`task-context` rows, "Why packs", the glossary line (48, 50), section C sentence (49). `MIGRATION-RUNBOOK.md`: step 3
+and step 5 (46, 47, 49). `ANALYST-DOCS-SETUP.md`: the "Work task-scoped" paragraph and the analyst agent text (48, 50).
