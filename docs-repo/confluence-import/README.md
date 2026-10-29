@@ -171,10 +171,11 @@ its spec, a context without a skeleton) is rewritten by the next import with the
 Known state cell stays. Rerun the step the page is in: `/analyse-request` under the same slug when the page is the
 text of a request (the analyst rewrites the analysis in place, `spec-writer` adjusts the proposed rules, a rule the
 page no longer asks for is withdrawn, never deleted), the migrator when the page waits for a Run 1. A page already
-under `_done/` is never rewritten and never moved back by hand: the importer skips it and prints `EXPORT NEWER than
-the migrated copy`, the inventory shows the two dates. Today that is all - the newer text has no copy an agent may
-read (`raw-html/` is off limits), so a changed migrated page waits for the importer to learn to write the newer
-version beside the old one as a fresh page.
+under `_done/` is never rewritten in place and never moved back by hand: when the export is newer than the migrated
+copy the importer writes the newer version as a fresh page in its section folder with `supersedes_done` naming the
+copy ("A page that changes after its migration" above; inventory state `re-imported, migrated copy <path>`), the
+agent reruns on that fresh page, and `scripts/legacy-done.py` replaces the copy, carrying its `superseded_by`
+forward. When the export is not newer the importer skips the page and the inventory keeps the `_done/` row.
 
 ## Current pages (space `HARBOR`)
 

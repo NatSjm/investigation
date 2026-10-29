@@ -1858,7 +1858,7 @@ copy); the quarantine tree was restored afterwards.
 |---|---|
 | `scripts/confluence-import.py` | `export_newer` (both dates ISO days, the export's later), `Page.done`, the `supersedes_done` / `supersedes_done_modified` header lines, the re-imported page generated instead of skipped, inventory row and count line, console line and summary, `dates not comparable` flag for an unparsed date, docstring |
 | `scripts/legacy-done.py` | `supersedes_done` handling: the copy it names (must sit under `confluence-import/<SPACE>/_done/`), carried `superseded_by` entries merged with `--into`, `earlier_migration`, replace instead of the `already exists` refusal, removal of the old copy when the path changed, re-pointing of `_done/` pages that linked it, console and inventory row, docstring; `HEADER_KEYS` extended |
-| `confluence-import/README.md` | layout line of `_done/`, the import paragraph (skip rule with the date condition), the new paragraph "A page that changes after its migration", rule 3 (what the move does with `supersedes_done`, one copy per page) |
+| `confluence-import/README.md` | layout line of `_done/`, the import paragraph (skip rule with the date condition), the new paragraph "A page that changes after its migration", rule 3 (what the move does with `supersedes_done`, one copy per page); the last sentences of "A page that changes while still in place" (section 47) no longer say the newer text has no readable copy: they point at the fresh page and the replace |
 
 ### 49.2 Docs repository: single rows to merge
 
@@ -1875,4 +1875,5 @@ copy); the quarantine tree was restored afterwards.
 
 `ENTERPRISE-PLAYBOOK.md`, the "Confluence changes" bullet of the lifecycle list: the fresh page with
 `supersedes_done`, Run 2 again on it, the copy replaced. `HANDBOOK.md` section C, one sentence. `MIGRATION-RUNBOOK.md`
-step 3 (the later-export sentence) and step 5 (new bullet: the rerun on a re-imported page, the replace).
+step 3 (the later-export sentence), step 5 (new bullet: the rerun on a re-imported page, the replace) and the step 5
+paragraph of section 47 on a page that changes: "only flagged ... nothing re-imports it yet" becomes the new rule.

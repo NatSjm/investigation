@@ -98,8 +98,10 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
 - A page that changes in Confluence while it still waits in place is rewritten by the next import; rerun the step it
   is in - `/analyse-request` under the same slug for a `not in code` candidate (analysis rewritten in place, proposed
   rules adjusted, a rule no longer asked for withdrawn, never deleted), the migrator otherwise. A page already under
-  `_done/` is only flagged (`EXPORT NEWER` in the importer output, two dates in the inventory): never move it out of
-  `_done/` by hand, and nothing re-imports it yet. A code change needs nothing from you: the evidence snapshot
+  `_done/` whose export is newer than the migrated copy comes back as a fresh page in its section folder (header
+  `supersedes_done` naming the copy, inventory state `re-imported, migrated copy <path>`): rerun the migrator on it
+  as on any page and let `legacy-done.py` replace the copy; never move a page out of `_done/` by hand. A code change
+  needs nothing from you: the evidence snapshot
   (`collect-evidence.py --generate --graph`, or the collector's PR) and then `@doc-sync` with the changed code paths or
   the `generated/` diff (`@doc-sync <ID>` re-verifies one spec); it turns the proposed rules into current ones as the
   code implements them.
