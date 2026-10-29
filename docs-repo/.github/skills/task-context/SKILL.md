@@ -119,8 +119,10 @@ sibling checkouts) -> record the question and stop.
 as an Open question in the spec, hand off to `spec-writer` / `doc-sync` or the owner, label your output
 `needs-spec-review`. Never fill a gap from memory. Then answer: every statement cites a `BR-<ID>-<n>`, a calculation,
 a flow step or a contract operation, facts (stable, human-reviewed), unverified (draft, legacy, `code-read`) and
-unknown kept apart, one line on how you read the request (which subjects). **A question stops here. A change request
-continues** into the agent's own procedure with the same pack.
+unknown kept apart, one line on how you read the request (which subjects) and one on what you opened after the pack.
+For an unknown that matters, append an evidence request to the spec's **Open questions**: the question, the documents
+checked, the missing fact, the likely source location if the pack or the maps name one, why it matters. Never guess.
+**A question stops here. A change request continues** into the agent's own procedure with the same pack.
 
 ## How far each agent goes
 
@@ -134,8 +136,11 @@ continues** into the agent's own procedure with the same pack.
 | `confluence-migrator`, `architect` | 5 | none |
 | `impact-analyst` | the graph only (`generated/graph/`, `graph-query.py`), no pack | none |
 
-An agent file says *Context: `.github/skills/task-context/SKILL.md`, steps 1-N* and nothing more about packs,
-budgets or ranges. A new role is one row in this table.
+An agent file carries a `## Context` section of three sentences and nothing more about packs, budgets or ranges: follow
+this skill, steps 1-N, for every input (the same steps for a question and a change request; open the skill before the
+first tool call); code is evidence, never a rule (`code-read <file:line>` with the commit of `generated/manifest.yml`,
+unverified, `needs-spec-review`, an Open question of the spec); a question stops at the exit, a change request
+continues with the same pack. The analyst agent is the model text. A new role is one row in this table.
 
 ## Reading a pack
 

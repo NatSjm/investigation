@@ -1,6 +1,11 @@
 # Update Log
 
 ## 2026-10-29
+* **The analyst's Context section is three sentences.** The paragraph that summarised the six steps was a second copy
+  of the task-context skill; the agent now says: follow the skill, steps 1-6, for every input (open it before the first
+  tool call), code is evidence never a rule, a question stops at the exit. The evidence-request format and the line on
+  what was opened after the pack moved into the skill's Exit; the skill's "How far each agent goes" paragraph gives the
+  three sentences as the model for every agent file.
 * **Six context steps.** The two code steps of the task-context skill (through the maps, then freely) merged into one
   step 6 "Read code, last" with the maps-first order and the free search as its sub-rules; same evidence rules, same
   Open question, same coverage-matrix column. Analyst, prompt, template, AGENTS, CONCEPT, instructions and the guides

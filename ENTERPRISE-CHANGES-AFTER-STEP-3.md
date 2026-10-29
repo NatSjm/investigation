@@ -1939,7 +1939,7 @@ Do these in order; after step 9 the enterprise analyst runs the six-step procedu
    re-copy whole (48.1, 50.1). The only Harbor-specific line is the graph-node example in the Build block
    (`topic:harbor.meetings.session-closed`): put a topic of yours. Step 6 names `../backend` and `../frontend`: put
    your sibling checkout names if they differ. Nothing else in the skill is Harbor's.
-3. **`.github/agents/analyst.agent.md`** - re-copy whole; it carries 46.2 (the next free number in "Nothing new
+3. **`.github/agents/analyst.agent.md`** - re-copy whole (its Context section is the three-sentence text of section 52); it carries 46.2 (the next free number in "Nothing new
    without a rule"), 47.1 (step 4, a request that changed), 48.1 (the Context section replaces the old steps 1-4, 9
    and 10) and 50.1 (six steps). Adapt the first sentence (product name and its domains), the Input examples (your
    IDs, a calculation and a topic of yours) and nothing else; the reference `.github/skills/task-context/SKILL.md`
@@ -2003,3 +2003,36 @@ section 12 rerun sentence (47), the lifecycle "Confluence changes" bullet (49), 
 17.10 with its "Revised the same day" paragraph (48, 50). `HANDBOOK.md`: principle 4, section 2.6, the analyst and
 `task-context` rows, "Why packs", the glossary line (48, 50), section C sentence (49). `MIGRATION-RUNBOOK.md`: step 3
 and step 5 (46, 47, 49). `ANALYST-DOCS-SETUP.md`: the "Work task-scoped" paragraph and the analyst agent text (48, 50).
+
+## 52. The agent's Context section is three sentences; the procedure lives in the skill only (investigation commits after `bad459e`, 2026-10-29)
+
+The analyst's Context section of section 48 summarised the six steps in a paragraph - a second copy of the skill that
+had to follow every change to it (section 50 touched both). The skill's own rule, "an agent file says *Context: the
+skill, steps 1-N* and nothing more", now holds for the analyst too: the section is the reference, the one decision the
+agent makes before opening the skill, and the one rule worth repeating next to the role. The evidence-request format
+(question, documents checked, missing fact, likely source, why it matters) moved into the skill's Exit, which also asks
+for one line on what was opened after the pack. For a colleague's analyst agent that produces its tickets its own way
+but should work with context this way, this section is what to paste in place of its reading rules; the agent's own
+procedure starts after it. It needs `scripts/context-pack.py`, `generated/catalogue.md` and the skill file in that repository.
+
+The text (`.github/agents/analyst.agent.md`, replacing the two paragraphs under the Context heading of section 48):
+
+```markdown
+## Context
+Follow `.github/skills/task-context/SKILL.md`, steps 1-6, for every input except an analytics question - the same six
+steps for a question and a change request; open the skill before the first tool call. Code is evidence, never a rule:
+every finding is cited as `code-read <file:line>` with the commit of `generated/manifest.yml`, counted as unverified,
+labelled `needs-spec-review` and recorded as an Open question of the spec. A question stops at the skill's exit; a
+change request continues below with the same pack.
+```
+
+### 52.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/analyst.agent.md` | the Context section is the text above (if you re-copy the file for section 51.1 step 3, this is already in it) |
+| `.github/skills/task-context/SKILL.md` | Exit: the evidence-request format and the line on what was opened after the pack; "How far each agent goes": the paragraph on what an agent file carries |
+
+### 52.2 Setup guide (read only)
+
+`ANALYST-DOCS-SETUP.md`, the analyst agent text: the same three-sentence Context section.

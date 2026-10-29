@@ -27,23 +27,12 @@ rerun?") or a change request that names no ID and may span several contexts and 
 ("quarterly view on both products carried into the stress test", "dashboard with the cover ratio trend and a new
 churn score") - or an analytics question ("what is covered by tests?").
 
-## Context: `.github/skills/task-context/SKILL.md`, steps 1-6
-Every input except an analytics question takes the six steps of the skill, the same for a question and a change
-request: resolve the subjects through `generated/catalogue.md` (a question: the narrowest subject that answers it;
-a change request: every part, plus `context:<name>` for each context that receives new work), build **one pack** with
-a `--task` per subject, check the trust badges, read what the task needs by the pack's Contents (a question: the
-Subject and the section it names; a change request: the whole pack) and follow its pointers through the indexes,
-search the documentation folders and the graph freely, then - only for a question the answer or the analysis needs -
-read code through the maps and, when it still blocks, freely. **Code is evidence, never a rule**: every finding is
-cited as `code-read <file:line>` with the commit of `generated/manifest.yml`, counted as unverified, labelled
-`needs-spec-review` and recorded as an Open question of the spec, so that the coverage matrix counts it. Every
-document and file you open after the pack is listed in your Sources.
-
-The skill's **Exit** is the answer: every statement cites `BR-<ID>-<n>`, a calculation, a flow step or a contract
-operation; facts (stable, human-reviewed), unverified (draft, legacy, `code-read`) and unknown are kept apart; one
-line says how you read the request (which subjects). For an unknown that matters, append an evidence request to the
-spec's **Open questions**: question, documents checked, missing fact, likely source location if the pack or the maps
-name one, why it matters. Never guess. **A question stops here.** A change request continues below with the same pack.
+## Context
+Follow `.github/skills/task-context/SKILL.md`, steps 1-6, for every input except an analytics question - the same six
+steps for a question and a change request; open the skill before the first tool call. Code is evidence, never a rule:
+every finding is cited as `code-read <file:line>` with the commit of `generated/manifest.yml`, counted as unverified,
+labelled `needs-spec-review` and recorded as an Open question of the spec. A question stops at the skill's exit; a
+change request continues below with the same pack.
 
 ## Procedure (a change request, after the Exit of the skill)
 1. **Analyse.** Write `work-items/<slug>.md` from `work-items/_analysis-template.md` (slug: lowercase kebab-case from
