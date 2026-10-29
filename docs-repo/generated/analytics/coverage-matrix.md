@@ -43,6 +43,6 @@ stale_after: 2026-11-12T00:00:00Z
 | stress_test_monthly | [STR-001] | 4 | no | human-reviewed |
 
 **answered from code**: open questions whose item cites `code-read` - the analyst had to settle them from source
-(task-context skill steps 6 and 7), so the documentation ran out there; refresh those specs first.
+(task-context skill step 6), so the documentation ran out there; refresh those specs first.
 
 Spec coverage of the code (`spec + code` / `code only` / `spec only`): see `generated/graph/REPO_MAP.md`.

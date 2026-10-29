@@ -1,13 +1,13 @@
 ---
 name: analyse-request
-description: Take a request in free text (a question, or a change that may span several contexts and mix existing and new behaviour), walk the seven context steps of the task-context skill (catalogue, one pack, documentation, graph, code last), answer it, and for a change request write the analysis document, confirm the reading with the analyst, then produce the request epic.
+description: Take a request in free text (a question, or a change that may span several contexts and mix existing and new behaviour), walk the six context steps of the task-context skill (catalogue, one pack, documentation, graph, code last), answer it, and for a change request write the analysis document, confirm the reading with the analyst, then produce the request epic.
 argument-hint: "the request in free text [question|analysis|work-items]"
 agent: analyst
 ---
 Request: ${input:request}
 Mode: ${input:mode:question|analysis|work-items} (default `work-items`: analysis, confirmation, then the epic)
 
-1. **Context, steps 1-7 of `.github/skills/task-context/SKILL.md`** - the same for every mode. Read
+1. **Context, steps 1-6 of `.github/skills/task-context/SKILL.md`** - the same for every mode. Read
    `generated/catalogue.md`; name the subjects (a `question`: the narrowest subject that answers it - calculation for
    "how is it computed / classified", spec for "what does the screen show / allow", flow for "in which order across
    contexts", never `context:<name>`; a change: every part, plus `context:<name>` for every context that receives new

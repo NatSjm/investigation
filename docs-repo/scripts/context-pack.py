@@ -9,7 +9,7 @@ The pack is the recorded slice a task starts from: what the agent read first, wh
 which generated-at dates. A `## Contents` section at the top gives the line range of every section and part so the
 reader opens the part the task needs and, after a rebuild, only what came back. Every `## ` heading is a pack section
 (embedded documents are demoted). Section order / ranks: .github/skills/task-context/references/pack-anatomy.md;
-procedure: .github/skills/task-context/SKILL.md (seven steps, the same for a question and a change request).
+procedure: .github/skills/task-context/SKILL.md (six steps, the same for a question and a change request).
 
 Subject (--task, repeatable; several subjects give ONE pack with the shared sections merged and deduplicated):
   spec ID (P1-001), calculation name (stress_test_monthly), flow (flows/<name>.md, flow:<name> or FLOW-<name>: the
@@ -835,7 +835,7 @@ def main():
     out.append('- files read into the pack: ' + ', '.join(f'`{s}`' for s in dict.fromkeys(sources)) + '\n')
     out.append('- pointed at (open through the indexes when the task needs them): ' + (', '.join(f'`{s}`' for s in dict.fromkeys(pointed)) or 'none') + '\n')
     out.append(f"- truncated sections: {', '.join(truncated) if truncated else 'none'} ({f'budget {budget} lines' if budget else 'no budget: every section complete'})\n")
-    out.append('- rule: this pack is the recorded slice of the task - what was read first and what it points at. Procedure: `.github/skills/task-context/SKILL.md`, seven steps, the same for a question and a change request: the documentation folders of this repository are open after the pack (never `raw-html/` or `_attachments/`; what you open is listed in your Sources), code last - at the `file:line` named above for most agents, through the generated maps and then freely for the analyst - and whatever code says is evidence and an Open question, never a rule.\n')
+    out.append('- rule: this pack is the recorded slice of the task - what was read first and what it points at. Procedure: `.github/skills/task-context/SKILL.md`, six steps, the same for a question and a change request: the documentation folders of this repository are open after the pack (never `raw-html/` or `_attachments/`; what you open is listed in your Sources), code last - at the `file:line` named above for most agents, through the generated maps and then freely for the analyst - and whatever code says is evidence and an Open question, never a rule.\n')
     result = ''.join(out)
 
     slug = re.sub(r'[^a-z0-9]+', '-', '+'.join(tasks).lower()).strip('-')[:60]

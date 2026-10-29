@@ -22,12 +22,12 @@ calculation, flow or context overview), the computed sections no file shows (the
 `file:line`, the contract operations and Kafka payloads, the table pages with their datasets, work items and tests,
 the merged slice of several subjects) and **pointers** - one line with path and badge - for the calculations the spec
 uses, the flows it takes part in and the legacy pages that mention it. **The pack is the recorded slice the task
-starts from; the procedure around it is the same for a question and a change request** - seven steps in
+starts from; the procedure around it is the same for a question and a change request** - six steps in
 `.github/skills/task-context/SKILL.md`: resolve the subjects through the catalogue, build one pack, check the badges,
 read what the task needs by the Contents (a question: the Subject and the section it names; a change: the whole pack)
 and follow the pointers through the indexes, search the documentation folders and the graph freely (never `raw-html/`
-or `_attachments/`), then code - at the `file:line` the pack names for most agents, through the generated maps and
-then freely for the analyst, every finding evidence and an Open question, never a rule. How far each agent goes is
+or `_attachments/`), then code last - at the `file:line` the pack names for most agents, through the generated maps
+and then freely for the analyst, every finding evidence and an Open question, never a rule. How far each agent goes is
 one table in the skill.
 
 A request in free text ("when imports change, do the stress numbers refresh?", "dashboard with the cover ratio trend

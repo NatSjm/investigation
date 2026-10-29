@@ -1,13 +1,13 @@
 ---
 name: task-context
-description: The context procedure of every documentation agent - seven steps from the catalogue through one context pack (scripts/context-pack.py), the documentation folders and the graph to the code, the same for a question and a change request; how far each agent goes, what the pack contains and how it is read. Use at the start of every feature, calculation, change, question or ticket task.
+description: The context procedure of every documentation agent - six steps from the catalogue through one context pack (scripts/context-pack.py), the documentation folders and the graph to the code, the same for a question and a change request; how far each agent goes, what the pack contains and how it is read. Use at the start of every feature, calculation, change, question or ticket task.
 ---
 
-# Working with context: seven steps
+# Working with context: six steps
 
-The bundle is bigger than any task. Every task walks the same seven steps outward from the cheapest source and
+The bundle is bigger than any task. Every task walks the same six steps outward from the cheapest source and
 stops at the first step that answers: resolve the subjects, build one pack, check its trust, read what the task
-needs, search the documentation, read code through the maps, search code. **A question and a change request take
+needs, search the documentation, read code last. **A question and a change request take
 the same steps**; they differ in what step 4 reads and in what follows the answer (a question stops, a change request
 continues into the agent's own procedure: analysis document, confirmation, rules, work items). The bundle discloses
 progressively - index to index, one line per concept, open only what you need - and the steps keep that principle:
@@ -55,7 +55,7 @@ the catalogue** (step 1), never through the matcher. `--budget N` still exists f
 
 Section markers, ranks and how `--task` is resolved: `references/pack-anatomy.md`.
 
-## The seven steps
+## The six steps
 
 1. **Resolve the subjects.** A spec ID, a calculation name, a flow or a graph node is the subject. Free text: read
    `generated/catalogue.md` (`python3 scripts/gen-catalogue.py`; one line per context - also the ones with code but
@@ -90,22 +90,23 @@ Section markers, ranks and how `--task` is resolved: `references/pack-anatomy.md
    or the epic will cite it - add it as a subject and rebuild **once** (`--task <ID> --task <neighbour>`); the
    Contents of the new pack tells you which lines are new, and only those are read. Opening the neighbour directly
    is always allowed; the rebuild is for the record, not a precondition.
-6. **Read code through the maps.** Only when steps 1-5 leave a question open that the answer or the analysis needs.
-   Locate the range through the maps, never by searching code or walking folders: a `file:line` the pack names,
-   `python3 scripts/graph-query.py --find <text>`, the rows of `generated/be/components.md`,
-   `generated/fe/codebase-map.md` and `generated/fe/components.md`, the `@docs` tags in `generated/be/docs-tags.md` /
-   `generated/fe/docs-tags.md`. Read 40-120 lines per range in `../backend` or `../frontend` (sibling checkouts),
-   chosen by `.github/skills/write-feature-spec/references/source-priority.md`: the unit test for edge cases, the
-   manager for intent, the validator for error codes. A handful of ranges, not a layer, not a whole file.
-7. **Search code freely.** Only for a question that still blocks the answer or the analysis after step 6 (the state
-   of a part, the owner of a behaviour, what the code does at an edge): search both repositories by text, open
-   whole files, follow the chain from the controller through the service and validator to the test. Three
-   disciplines: **only for a blocking question** (curiosity, a check of what the pack already says and "is this
-   intended" never earn it - code says what the system does, not whether it is wanted; those stay Open questions for
-   the owner); **list what you read** (the files and the question each answered, in the analysis document's Sources
-   or one chat line); **still evidence, never a rule** (below).
+6. **Read code, last.** Only when steps 1-5 leave a question open that the answer or the analysis needs - the state
+   of a part, the owner of a behaviour, what the code does at an edge. In this order:
+   - **Through the maps first.** Locate the range through a `file:line` the pack names, `python3
+     scripts/graph-query.py --find <text>`, the rows of `generated/be/components.md`, `generated/fe/codebase-map.md`
+     and `generated/fe/components.md`, or the `@docs` tags in `generated/be/docs-tags.md` / `generated/fe/docs-tags.md`
+     - never by searching code or walking folders. Read 40-120 lines per range in `../backend` or `../frontend`
+     (sibling checkouts), chosen by `.github/skills/write-feature-spec/references/source-priority.md`: the unit test
+     for edge cases, the manager for intent, the validator for error codes. A handful of ranges, not a layer, not a
+     whole file.
+   - **Freely only when a located range does not answer and the question still blocks.** Search both repositories
+     by text, open whole files, follow the chain from the controller through the service and validator to the test.
+   Three disciplines for the whole step: **only for a blocking question** (curiosity, a check of what the pack already
+   says and "is this intended" never earn it - code says what the system does, not whether it is wanted; those stay
+   Open questions for the owner); **list what you read** (each range or file, how it was located, the question it
+   answered - in the analysis document's Sources or one chat line); **still evidence, never a rule** (below).
 
-**What code gives is evidence, never a rule** (steps 6 and 7). Cite it as `code-read <file:line>` with the backend or
+**What code gives is evidence, never a rule** (step 6). Cite it as `code-read <file:line>` with the backend or
 frontend commit of `generated/manifest.yml`; it is **unverified** and the output that rests on it is labelled
 `needs-spec-review`. Append the question to the spec's **Open questions** as an evidence request answered from code,
 its item naming `code-read`, so that `spec-writer` or the owner turns it into a rule and `coverage-matrix.py` counts
@@ -125,7 +126,7 @@ continues** into the agent's own procedure with the same pack.
 
 | Agent | Last step | Code |
 |---|---|---|
-| `analyst` | 7 | through the maps (6), then freely for a question that still blocks (7) |
+| `analyst` | 6 | through the maps, then freely for a question that still blocks |
 | `spec-writer` | 6 | the one manager file the graph names, at its `file:line` |
 | `doc-sync` | 6 | the handler or manager `file:line` of the graph node, a narrow range, only when behaviour and not just a signature changed |
 | `calc-auditor` | 6 | exactly two files: the calculator class and its unit test, located through `docs-tags.md` |

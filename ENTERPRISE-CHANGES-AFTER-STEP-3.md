@@ -1877,3 +1877,44 @@ copy); the quarantine tree was restored afterwards.
 `supersedes_done`, Run 2 again on it, the copy replaced. `HANDBOOK.md` section C, one sentence. `MIGRATION-RUNBOOK.md`
 step 3 (the later-export sentence), step 5 (new bullet: the rerun on a re-imported page, the replace) and the step 5
 paragraph of section 47 on a page that changes: "only flagged ... nothing re-imports it yet" becomes the new rule.
+
+## 50. Six context steps: the two code steps merged (investigation commits after `936ae1d`, 2026-10-29)
+
+Steps 6 and 7 of the task-context skill (code through the maps, then code freely) shared every rule that matters -
+evidence never a rule, `code-read` with the commit, an Open question, the coverage-matrix column - and the matrix never
+told them apart; only the gate between them (maps first, bounded before free, free search for a blocking question
+only) was a real rule, and it fits inside one step as its order of work. They are now **one step 6, "Read code,
+last"**, with "Through the maps first" and "Freely only when a located range does not answer and the question still
+blocks" as its two sub-rules and the three disciplines for the whole step. The procedure has six steps; the table of
+how far each agent goes is one column (the analyst: through the maps, then freely; spec-writer, doc-sync,
+calc-auditor: the one named file their procedure fixes; the others: none). The agents' "steps 1-5 / 1-6" references
+of section 48 are unchanged.
+
+### 50.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/skills/task-context/SKILL.md` | description, title and intro say six steps; step 6 "Read code, last" replaces steps 6 and 7; "What code gives is evidence" names step 6; the analyst row of the table |
+| `.github/agents/analyst.agent.md` | description, Context heading and sentence (steps 1-6, six steps), the two "step 6" mentions (Parts evidence, analytics mode) - re-copy together with section 47's step 4 if you have not applied it |
+| `.github/prompts/analyse-request.prompt.md` | description and step 1 (six steps, steps 1-6) |
+| `work-items/_analysis-template.md` | Parts evidence sentence (step 6); Sources: one "code read" bullet replaces the two (how located: a pack `file:line`, the maps, or a free search) |
+
+### 50.2 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `AGENTS.md` | "Work task-scoped" paragraph | "six steps"; "then code last - at the `file:line` ... through the generated maps and then freely" |
+| `.github/copilot-instructions.md` | analyst and `/analyse-request` rows | "the six context steps ... then code last - through the maps, freely for a question that still blocks"; "the same six steps" |
+| `CONCEPT.md` | "The context pack" subsection, paragraph "Around the pack" | six steps; "read code last - through the generated maps, then freely for a question that still blocks"; "the analyst all six steps" |
+| `CONCEPT.md` | "Why a pack" items 6 and 7 | "the sixth step reaches code through the generated maps and searches it freely for a blocking question only"; "the six steps" |
+| `CONCEPT.md` | "How the analyst works" move 2; principles row | "six context steps"; "then code last" |
+| `README.md` | `context-pack.py` bullet | "six steps" |
+| `scripts/context-pack.py` | docstring and the footer rule | "six steps" |
+| `scripts/coverage-matrix.py` | the **answered from code** sentence | "(task-context skill step 6)" |
+| `log.md` | top | the "Six context steps" entry |
+
+### 50.3 Playbook, handbook and setup guide (read only)
+
+`ENTERPRISE-PLAYBOOK.md` 17.10 gains a "Revised the same day" paragraph; the code-access answer in section 6,
+section 7 item 2 and the analyst paragraph of section 17 say six steps and "code last". `HANDBOOK.md` principle 4,
+section 2.6, the analyst and `task-context` rows. `ANALYST-DOCS-SETUP.md` pack paragraph and the agent's Context section.

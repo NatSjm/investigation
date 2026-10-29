@@ -22,7 +22,7 @@ End with the line the analyst confirms: **I read this as: <subject 1> + <subject
 One row per distinct piece of the request. `State`: `unchanged` (already behaves so - cite the rule), `changed`
 (an existing rule or screen changes), `new` (nothing in the bundle does it). Evidence from the pack: rule IDs,
 calculation names, flow steps, graph node ids with `file:line`; or `code-read <file:line>` for a range read under
-steps 6 and 7 of the task-context skill (unverified: it is also an Open question in the spec until a rule says the
+step 6 of the task-context skill (unverified: it is also an Open question in the spec until a rule says the
 same).
 
 | # | Part of the request | State | Context | Owner (spec / calculation / flow) | Evidence |
@@ -65,5 +65,4 @@ the YAML is the source, this list is the summary the analyst reads first.
 - pack: `python3 scripts/context-pack.py --task <subject> --task <subject> ...` (built <ISO>)
 - catalogue: `generated/catalogue.md` (generated <date>)
 - documents opened after the pack (task-context steps 4 and 5): the calculations, flows, legacy pages and other files the pack pointed at or a search found, each with the fact it gave
-- code ranges read through the maps (task-context step 6): each `file:line`, how it was located (pack, `graph-query.py --find`, `components.md`, `codebase-map.md`, `docs-tags.md`), the commit from `generated/manifest.yml`, and the question it answered
-- free code search (task-context step 7, only for a question that still blocked): the files read, the question each answered, the commit from `generated/manifest.yml`
+- code read (task-context step 6): each range or file, how it was located (a `file:line` of the pack, `graph-query.py --find`, `components.md`, `codebase-map.md`, `docs-tags.md`, or a free search for a question that still blocked), the commit from `generated/manifest.yml`, and the question it answered

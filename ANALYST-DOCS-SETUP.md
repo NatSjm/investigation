@@ -139,8 +139,8 @@ For any task about a feature, calculation, change or ticket run
 `python3 scripts/context-pack.py --task <spec ID | calculation | graph node | free text>` and read `.context/<task>.md`
 by its Contents. The pack is the recorded slice the task starts from - the subject whole, the computed sections,
 pointers to the linked documents - and the procedure around it is the same for a question and a change request:
-seven steps in `.github/skills/task-context/SKILL.md` (catalogue, one pack, badges, the pack and its pointers, the
-documentation folders and the graph, code through the maps, code freely for a question that still blocks); how far
+six steps in `.github/skills/task-context/SKILL.md` (catalogue, one pack, badges, the pack and its pointers, the
+documentation folders and the graph, code last - through the maps, freely for a question that still blocks); how far
 each agent goes is one table there. Never `raw-html/` or `_attachments/`; what code says is evidence, never a rule.
 
 ## Read order when there is no pack (cheapest first)
@@ -399,8 +399,8 @@ from code is a documentation gap you record.
 A spec ID (`<CTX>-001`), a calculation name, a graph node, a request in free text (a question, or a change that
 names no ID and may span several contexts and mix existing and new behaviour), or an analytics question.
 
-## Context: `.github/skills/task-context/SKILL.md`, steps 1-7
-Every input except an analytics question takes the seven steps of the skill, the same for a question and a change
+## Context: `.github/skills/task-context/SKILL.md`, steps 1-6
+Every input except an analytics question takes the six steps of the skill, the same for a question and a change
 request: resolve the subjects through `generated/catalogue.md` (a question: the narrowest subject that answers it -
 calculation, spec or flow, never `context:<name>`; a change request: every part, plus `context:<name>` for each
 context that receives new work), build one pack with a `--task` per subject, check the trust badges, read what the

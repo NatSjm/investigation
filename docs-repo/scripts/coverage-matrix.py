@@ -140,7 +140,7 @@ stale_after: {(now + timedelta(days=14)).strftime('%Y-%m-%d')}T00:00:00Z
 {chr(10).join(calc_rows)}
 
 **answered from code**: open questions whose item cites `code-read` - the analyst had to settle them from source
-(task-context skill steps 6 and 7), so the documentation ran out there; refresh those specs first.
+(task-context skill step 6), so the documentation ran out there; refresh those specs first.
 
 Spec coverage of the code (`spec + code` / `code only` / `spec only`): see `generated/graph/REPO_MAP.md`.
 """

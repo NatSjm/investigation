@@ -117,7 +117,7 @@ keep the `preToolUse` guard on, and never auto-merge an agent's PR. Interactive 
 rules; the hooks apply to both.
 
 **Is it safe to let Copilot read the code at all?** The documentation agents read maps and contracts first and open a
-named source range only when a procedure says so; the analyst reaches code at the last two of its seven context steps,
+named source range only when a procedure says so; the analyst reaches code at the last of its six context steps,
 through the generated maps and then freely for a question that still blocks its answer (17.10). That is less exposure than a developer's
 normal Copilot session. The real controls are the same as for any Copilot use: content exclusion, repository
 permissions, and review of what gets committed.
@@ -213,9 +213,9 @@ Write these sections, in this order, adapted from `docs-repo/AGENTS.md`:
 2. **Work task-scoped: build the context pack first.** The command `python3 scripts/context-pack.py --task <ID|name|text>`,
    what the pack contains (Contents, subject whole, computed sections, pointers), and the sentence "The pack is the
    recorded slice the task starts from; the procedure around it is the same for a question and a change request -
-   seven steps in `.github/skills/task-context/SKILL.md`: catalogue, one pack, badges, the pack and its pointers, the
-   documentation folders and the graph, then code - at the `file:line` the pack names for most agents, through the
-   maps and then freely for the analyst, every finding evidence and an Open question, never a rule."
+   six steps in `.github/skills/task-context/SKILL.md`: catalogue, one pack, badges, the pack and its pointers, the
+   documentation folders and the graph, then code last - at the `file:line` the pack names for most agents, through
+   the maps and then freely for the analyst, every finding evidence and an Open question, never a rule."
 3. **Read order when there is no pack**, cheapest first: `index.md` of the area, the spec, the calculation, `contexts.yml`
    and `generated/graph/REPO_MAP.md`, the maps under `generated/be|fe`, the contracts under `generated/openapi|asyncapi`,
    and only then source code in the sibling checkouts, smallest range, located through the graph or `docs-tags.md`.
@@ -728,10 +728,10 @@ Phase 2 of the plan (section 16): run the analyst on real tasks only after the "
 for the contexts those tasks touch (the scope of section 1). A task that crosses into an out-of-scope context is
 the signal to bring that context through Runs 1 to 4 next, not to let the analyst guess.
 
-What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: walk the seven context steps of the
+What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: walk the six context steps of the
 `task-context` skill (17.10) - catalogue, one pack, badges, the pack and its pointers (a question: the section it
-names; a change: the whole pack), the documentation folders and the graph, code through the maps, code freely for a
-question that still blocks -, then slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs,
+names; a change: the whole pack), the documentation folders and the graph, code last through the maps and freely for
+a question that still blocks -, then slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs,
 derive subtasks per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when
 blocking, into the spec's Open questions. Each finding from code is recorded as `code-read` evidence and an open
 question (decision and setup: 17.2, 17.10 and section 19). On a finished feature the
@@ -1037,6 +1037,13 @@ agent the reference is the skill's path, `.github/skills/task-context/SKILL.md`,
 Harbor and the enterprise repository; a new role is one row in the table. The disciplines of 17.2 are unchanged: code
 last, located through the maps before any free search, free search only for a blocking question, every finding
 `code-read` evidence and an Open question the coverage matrix counts.
+
+Revised the same day: the two code steps - through the maps, then freely - became **one step 6, "Read code, last"**,
+with the maps-first order and the free search as its sub-rules, so the procedure has **six steps**. They shared every
+rule that matters (evidence never a rule, `code-read` with the commit, an Open question, the coverage matrix column) and
+the coverage matrix never told them apart; the gate between them is the step's order of work, not a step of its own.
+The table of how far each agent goes is now one column: the analyst reads code through the maps and then freely,
+spec-writer / doc-sync / calc-auditor at the one named file their procedure fixes, the others none.
 
 ---
 

@@ -29,7 +29,7 @@ The idea has four parts:
    the business contexts. "What is affected", "where is it", "what talks to what" are answered without opening code.
 4. **Agents start from a pack, not from a search.** For each task a script assembles a context pack: the subject
    whole, the graph neighbourhood, the contracts, the tables, related work, and pointers to its calculations, flows
-   and legacy pages. Every agent then walks the same seven steps (2.6): the pack and its pointers, the documentation
+   and legacy pages. Every agent then walks the same six steps (2.6): the pack and its pointers, the documentation
    folders and the graph freely, code last - through the maps and then freely for the analyst, at a named line for
    the others - and whatever code says is evidence, never a rule.
 
@@ -99,12 +99,12 @@ cites, or the overview of a context); the computed sections no file shows (graph
 contract operations and payloads, table pages with their datasets, work items and tests, the merged slice of several
 subjects); and pointers - one line with path and badge - to the calculations the spec uses, the flows it takes part in
 and the legacy pages that mention it. Nothing is truncated (`--budget N` exists for a tool with a hard limit and no
-procedure uses it). Around the pack every agent walks the same **seven steps**, for a question and a change request
+procedure uses it). Around the pack every agent walks the same **six steps**, for a question and a change request
 alike (`.github/skills/task-context/SKILL.md`): resolve the subjects through the catalogue; build one pack; check the
 badges; read what the task needs by the Contents and follow the pointers through the indexes; search the
 documentation folders and the graph freely, rebuilding once with a neighbour when the record should carry it; read
-code through the generated maps; search code freely. How far each agent goes is one table in the skill: the analyst
-all seven, the spec-writer, doc-sync and calc-auditor to a named file, the others no code. Code gives evidence, never
+code last - through the generated maps, then freely for a question that still blocks. How far each agent goes is one
+table in the skill: the analyst all six, the spec-writer, doc-sync and calc-auditor to a named file, the others no code. Code gives evidence, never
 a rule: `code-read <file:line>`, unverified, an Open question in the spec that the coverage matrix counts.
 
 ### 2.7 The architectural graph
@@ -210,7 +210,7 @@ Each file is YAML frontmatter (`name`, `description`, `tools`, optional `handoff
 
 | Agent | Role | Reads | Writes | Hands off to |
 |---|---|---|---|---|
-| `analyst` | business/system analyst: epic, stories, subtasks with Gherkin criteria; analytics mode for coverage/freshness questions | the seven context steps of `task-context`, all of them: the pack and its pointers, the documentation folders and the graph, then code through the maps and freely for a question that still blocks; everything read from code is recorded as evidence and open questions | `work-items/<ID>.yml`, open questions in the spec | `test-designer`, `spec-writer` |
+| `analyst` | business/system analyst: epic, stories, subtasks with Gherkin criteria; analytics mode for coverage/freshness questions | the six context steps of `task-context`, all of them: the pack and its pointers, the documentation folders and the graph, then code last - through the maps, freely for a question that still blocks; everything read from code is recorded as evidence and open questions | `work-items/<ID>.yml`, open questions in the spec | `test-designer`, `spec-writer` |
 | `spec-writer` | writes or refreshes a feature spec from the graph and one manager file; marks everything unsourced as unverified | pack, `generated/graph/<ctx>.md`, contracts, `manager/<Ctx>Manager.kt` | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | `analyst`, `calc-auditor` |
 | `doc-sync` | keeps specs in sync with code changes from the generated diffs with minimal source reading | `map-paths`, `graph-query --files`, contracts, maps | change-log rows, `last_verified`, stubs for unmapped contexts | `calc-auditor` for utils changes |
 | `calc-auditor` | verifies a calculation concept or a legacy formula page against the calculator and its unit test; never changes numbers | two source files only | `## Audit <date>` table, status, open questions | `spec-writer`, `confluence-migrator` for the screen rules of a mixed legacy page |
@@ -233,7 +233,7 @@ beside it under `references/`.
 
 | Skill | Teaches | Used by |
 |---|---|---|
-| `task-context` | the seven context steps every agent walks - catalogue, one pack, badges, pointers, documentation, maps, code - with the table of how far each agent goes; pack anatomy | everyone |
+| `task-context` | the six context steps every agent walks - catalogue, one pack, badges, pointers, documentation, code last - with the table of how far each agent goes; pack anatomy | everyone |
 | `spec-lifecycle` | the four runs of one spec, owner, inputs, outputs, exit state; per-run review checklist | writers, lead, reviewers |
 | `write-feature-spec` | spec structure, numbering, `source-priority.md` (cheapest source first) | spec-writer, doc-sync |
 | `calculation-spec` | Attested Computation: formula, parameters, worked examples from the test, conventions | calc-auditor, spec-writer |

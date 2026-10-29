@@ -1,6 +1,10 @@
 # Update Log
 
 ## 2026-10-29
+* **Six context steps.** The two code steps of the task-context skill (through the maps, then freely) merged into one
+  step 6 "Read code, last" with the maps-first order and the free search as its sub-rules; same evidence rules, same
+  Open question, same coverage-matrix column. Analyst, prompt, template, AGENTS, CONCEPT, instructions and the guides
+  say six steps; the other agents' "steps 1-5 / 1-6" references are unchanged.
 * **A changed Confluence page that is already migrated is re-imported.** The importer only flagged a page whose
   export was newer than its copy under `_done/` (`EXPORT NEWER`), so the new text had no readable copy and the
   migrator could not rerun on it. `confluence-import.py` now writes such a page again as a fresh page in its section
