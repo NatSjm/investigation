@@ -17,7 +17,9 @@ You are migrating legacy documentation into this docs-as-code repository.
 Path(s) under `confluence-import/<space>/<page>.md` (REST export, `scripts/confluence-export.py`) or
 `confluence-import/<space>/<section>/<page>.md` (HTML export, `scripts/confluence-import.py`; `section:` and `path:`
 headers say where the page sat in the Confluence tree, `attachments:` lists the images it shows under
-`<space>/_attachments/<slug>/`, `attachments_not_imported:` the files that were not copied).
+`<space>/_attachments/<slug>/`, `attachments_not_imported:` the files that were not copied; `supersedes_done:` names
+the migrated copy under `_done/` when the page is a newer export of a page already migrated - the specs citing that
+copy in `sources[]` are the targets, the diff against the copy is the work, and step 6 replaces the copy).
 
 ## Procedure
 1. Read the page. Classify from its content, not from the triage note (the note is a hint you confirm or correct

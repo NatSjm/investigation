@@ -26,7 +26,7 @@ confluence-import/
   raw-html/<section>/            the HTML export as received (one folder per section = page tree)
   <SPACE>/<section>/<slug>.md    imported pages (header `imported_from` = regenerated, do not edit in place)
   <SPACE>/_attachments/<slug>/   images the pages show (binary, see .gitattributes)
-  <SPACE>/_done/<section>/       migrated or obsolete pages, mirrored by section (`scripts/legacy-done.py` moves them and re-points their links)
+  <SPACE>/_done/<section>/       migrated or obsolete pages, mirrored by section (`scripts/legacy-done.py` moves them and re-points their links; one copy per page, replaced when a newer export is migrated again)
 ```
 
 Import or re-import (idempotent; `--check` writes nothing and exits 1 when the quarantine is out of date):
@@ -38,9 +38,20 @@ python3 scripts/confluence-import.py --src confluence-import/raw-html --space HA
 
 `--section business` imports one tree (links to the other tree still resolve), `--no-images` links the images where they
 are in the export instead of copying them, `--body html` keeps the body as HTML under the header (the runbook's minimal
-form). A page whose `confluence_id` already sits under `_done/` is never rewritten; when the export is newer than the
-migrated copy the inventory says so (Run 2 again). A page that disappeared from the export loses its generated file
-and images (never anything under `_done/`, never a page without `imported_from`).
+form). A page whose `confluence_id` already sits under `_done/` is skipped while the export is not newer than the
+migrated copy (both `last_modified` dates must parse; an unparsed date never counts as newer). A page that disappeared
+from the export loses its generated file and images (never anything under `_done/`, never a page without
+`imported_from`).
+
+**A page that changes after its migration.** When the export's `last_modified` is later than the migrated copy's, the
+importer writes the page again as a fresh page in its section folder (`<SPACE>/<section>/<slug>.md`, `status:
+imported`) with `supersedes_done:` naming the copy under `_done/` and `supersedes_done_modified:` the copy's date (its
+own `last_modified` is the export's). The copy is not touched; the inventory row is the fresh page's with the state
+`re-imported, migrated copy <path>` (the date cell says `re-imported` too), the console says the same, and a second run
+changes nothing. The agent reruns on the fresh page as on any page (Run 2 again: the specs that cite the copy in
+`sources[]` are the targets, the diff against the copy is the work), and `scripts/legacy-done.py` then **replaces** the
+copy (rule 3). The `_attachments/<slug>/` folder of a re-imported page follows the newest export; the copy shares it
+until it is replaced.
 
 ## Quarantine rules
 
@@ -56,6 +67,12 @@ and images (never anything under `_done/`, never a page without `imported_from`)
    re-points the image and page links. `superseded_by` is the backward link (concept `sources[]` is the forward
    one): it answers "where did this page go", and a later rendering or the Confluence publisher builds the old page
    tree with redirects from these headers and `path:`.
+   A page carrying `supersedes_done` (the newer export of a page already migrated, see above) **replaces** the copy
+   it names: the old file is removed and the new one takes its place under `_done/<section>/` (a changed title or
+   section changes the path; pages under `_done/` that linked the old copy are re-pointed), the old `superseded_by`
+   entries are carried forward and merged with `--into` (so `--into` may be omitted when the rerun merged nothing
+   new), and `earlier_migration:` keeps the copy's migration date and export date. The tree holds one copy per page;
+   git history keeps the replaced one, no `<slug>.v<date>.md` is left beside it.
 4. Terminology is translated only through `domain/glossary.md` (`Aliases` column); unknown terms are added to the
    glossary first.
 5. After a space is fully migrated, the Confluence pages are replaced by a banner plus a link to the published copy

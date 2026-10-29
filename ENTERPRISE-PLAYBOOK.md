@@ -767,8 +767,10 @@ questions per spec, Copilot premium requests per run.
   context. A person reviews and merges. The freshness gate in the code repos (`check-freshness.py`,
   `ci-examples/code-repo-freshness-gate.yml`) requires a PR touching a mapped path to bump `last_verified` or carry
   the label `docs-not-affected`.
-- **Confluence changes.** Re-export, run `confluence-import.py` again; it skips pages already under `_done/` and the
-  inventory flags those whose export is newer than the migrated copy; Run 2 again.
+- **Confluence changes.** Re-export, run `confluence-import.py` again; it skips pages already under `_done/` whose
+  export is not newer, and writes a page that changed after its migration again as a fresh page with
+  `supersedes_done` naming the migrated copy (untouched; inventory `re-imported, migrated copy <path>`); Run 2 again
+  on the fresh page, `legacy-done.py` replaces the copy and carries its `superseded_by` forward.
 - **Drift found by a reader.** Open question in the spec, status back to draft, owner decides; never a silent edit.
 - **The board.** `migration-status.py --scope all` weekly; the `migration-lead` agent annotates order and blockers.
 

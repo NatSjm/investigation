@@ -330,7 +330,8 @@ Space export to HTML under `confluence-import/raw-html/<section>/`, imported by 
 `confluence-import/<SPACE>/<section>/<slug>.md` with a header block, the images a page shows under
 `<SPACE>/_attachments/<slug>/` (spec in [MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md)), triaged in the generated
 inventory table (the **Known state** column), then flow B. Pages are evidence, never copied; numbers always go through
-Run 3.
+Run 3. A page that changes after its migration comes back from the next export as a fresh page (`supersedes_done`
+naming the migrated copy) and goes through flow B again; `legacy-done.py` replaces the copy.
 
 ### D. An analyst task
 `/context-pack <task>` resolves the task to a spec, builds the pack. `@analyst /jira-from-spec <ID>` reads it, checks

@@ -1,6 +1,18 @@
 # Update Log
 
 ## 2026-10-29
+* **A changed Confluence page that is already migrated is re-imported.** The importer only flagged a page whose
+  export was newer than its copy under `_done/` (`EXPORT NEWER`), so the new text had no readable copy and the
+  migrator could not rerun on it. `confluence-import.py` now writes such a page again as a fresh page in its section
+  folder (`status: imported`, `supersedes_done:` naming the migrated copy, `supersedes_done_modified:` its date; the
+  copy untouched; inventory state and console `re-imported, migrated copy <path>`; a second run changes nothing; an
+  unparsed date never counts as newer). `legacy-done.py` moves the fresh page over the copy it supersedes: the old
+  file removed, the new one in its place under `_done/<section>/` (a changed title changes the path and the pages
+  under `_done/` that linked the old copy are re-pointed), the copy's `superseded_by` entries carried forward and
+  merged with `--into` (optional then), `earlier_migration:` with the copy's dates; one copy per page, git keeps the
+  replaced one. Tested on the admin parameters page (migrated, re-exported with a later date, re-imported, moved
+  with and without `--into`, re-exported with a new title, moved again; tree restored). Import README, scripts
+  README (a `legacy-done.py` row added), runbook steps 3 and 5, import instructions, migrator input, CONCEPT rows.
 * **One context procedure in the task-context skill; the pack points instead of copying.** The analyst had two
   procedures (a budgeted pack for a question, a full pack for a change request) and the code-reading rules as its
   steps 9 and 10; the pack copied every linked calculation and flow, so a request over several subjects ran to 1900

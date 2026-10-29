@@ -1797,3 +1797,45 @@ reference; the code-access answer in section 6, section 7 item 2 (the AGENTS.md 
 of section 17 rewritten to the seven steps. `HANDBOOK.md` principle 4, section 2.6, the analyst and `task-context`
 rows, "Why packs", the glossary line. `ANALYST-DOCS-SETUP.md` "Work task-scoped" paragraph and the analyst agent
 text (the Context section replaces steps 1-4, 9 and 10; the procedure is steps 1-3 plus analytics mode).
+
+## 49. A changed Confluence page that is already migrated is re-imported (investigation commits after `d1f8d00`, 2026-10-29)
+
+A page whose `confluence_id` already sat under `_done/` was only flagged by the importer when the export was newer
+than the migrated copy (`EXPORT NEWER` on the console, bold date in the inventory): the new text was written nowhere,
+so no agent could rerun on it, and `legacy-done.py` refused to move anything onto an existing file under `_done/`.
+Now `confluence-import.py` writes such a page again as a **fresh page in its section folder** (`status: imported`,
+`supersedes_done:` naming the migrated copy, `supersedes_done_modified:` the copy's `last_modified`; its own
+`last_modified` is the export's), never touches the copy, puts `re-imported, migrated copy <path>` in the inventory
+state and on the console, and changes nothing on a second run; a date that does not parse never counts as newer.
+`legacy-done.py` moves the fresh page **over the copy it supersedes**: the old file is removed, the new one takes its
+place under `_done/<section>/` (a changed title or section changes the path; pages under `_done/` that linked the old
+copy are re-pointed), the copy's `superseded_by` entries are carried forward and merged with `--into` (so `--into` may
+be omitted when the rerun merged nothing new), and `earlier_migration:` records the copy's migration date and export
+date. One copy per page stays in the tree; git history keeps the replaced one (no `<slug>.v<date>.md`). Tested on the
+admin parameters page through both cycles (same title, then a changed title with a `_done/` page linking the old
+copy); the quarantine tree was restored afterwards.
+
+### 49.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/confluence-import.py` | `export_newer` (both dates ISO days, the export's later), `Page.done`, the `supersedes_done` / `supersedes_done_modified` header lines, the re-imported page generated instead of skipped, inventory row and count line, console line and summary, `dates not comparable` flag for an unparsed date, docstring |
+| `scripts/legacy-done.py` | `supersedes_done` handling: the copy it names (must sit under `confluence-import/<SPACE>/_done/`), carried `superseded_by` entries merged with `--into`, `earlier_migration`, replace instead of the `already exists` refusal, removal of the old copy when the path changed, re-pointing of `_done/` pages that linked it, console and inventory row, docstring; `HEADER_KEYS` extended |
+| `confluence-import/README.md` | layout line of `_done/`, the import paragraph (skip rule with the date condition), the new paragraph "A page that changes after its migration", rule 3 (what the move does with `supersedes_done`, one copy per page) |
+
+### 49.2 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `scripts/README.md` | `confluence-import.py` row | "skipped unless the export is newer than the migrated copy, which is then written as a fresh page with `supersedes_done` ... `re-imported, migrated copy <path>`" |
+| `scripts/README.md` | after the `confluence-import.py` row | new `legacy-done.py` row (the enterprise table had none): form, what it writes, the replace of a superseded copy, no git command |
+| `.github/instructions/confluence-import.instructions.md` | after the "Processed pages move" bullet | new bullet: a page with `supersedes_done` is handled as any page, the copy is there to diff against, the script replaces it |
+| `.github/agents/confluence-migrator.agent.md` | Input section, the header list | `supersedes_done:` names the migrated copy; targets, diff, step 6 replaces the copy |
+| `CONCEPT.md` | scripts table, `legacy-done.py` and `confluence-import.py` rows | the replace and the fresh page |
+| `log.md` | top | the 2026-10-29 entry "A changed Confluence page that is already migrated is re-imported" |
+
+### 49.3 Playbook, handbook and runbook (read only)
+
+`ENTERPRISE-PLAYBOOK.md`, the "Confluence changes" bullet of the lifecycle list: the fresh page with
+`supersedes_done`, Run 2 again on it, the copy replaced. `HANDBOOK.md` section C, one sentence. `MIGRATION-RUNBOOK.md`
+step 3 (the later-export sentence) and step 5 (new bullet: the rerun on a re-imported page, the replace).

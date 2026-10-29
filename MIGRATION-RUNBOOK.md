@@ -66,8 +66,10 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
    the **Known state** column: guessed class (`feature-spec | calculation | architecture | decision | glossary |
    process | obsolete`), condition and target concept (vocabulary and examples: the "Triage" section of
    `confluence-import/README.md`). Sort the work by business value and age; pages older than the last major
-   release are suspects by default. A later export is imported the same way: pages already under `_done/` are not
-   rewritten, and the inventory flags those whose export is newer than their migrated copy (Run 2 again).
+   release are suspects by default. A later export is imported the same way: a page already under `_done/` is
+   skipped unless the export is newer than its migrated copy; then the importer writes it again as a fresh page in
+   its section folder with `supersedes_done` naming the copy (the copy untouched, inventory state `re-imported,
+   migrated copy <path>`), the page is rerun as any page (step 5) and `legacy-done.py` replaces the copy.
 
 ### Step 4: skeletons from the code (one agent run per context)
 
@@ -83,6 +85,10 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
   every spec the page touches from `generated/catalogue.md`, merges only new facts, marks conflicts and unverifiable
   claims, extracts terms into the glossary, adds the `sources[]` entry and the page title to the specs' `aliases`,
   moves the page with `scripts/legacy-done.py` (to `_done/<section>/`, with `superseded_by`), validates, logs.
+- A re-imported page (header `supersedes_done`: the export is newer than the migrated copy under `_done/`) is rerun
+  the same way; the specs that cite the copy in `sources[]` are the targets and the diff against the copy is the
+  work. `legacy-done.py` then replaces the copy, carries its `superseded_by` entries forward (`--into` may be omitted
+  when nothing new was merged) and records `earlier_migration`; one copy per page stays in the tree.
 - The migrator never creates a spec and never renumbers one. A page about a capability no spec covers leaves a
   `candidate spec:` open question in the primary spec, marked `in code` or `not in code`; the board lists it as a
   shaping decision with the next free number (the existing specs keep theirs) and the run that follows; the lead and

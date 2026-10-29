@@ -17,6 +17,9 @@ description: Quarantine rules for imported legacy pages - evidence to be verifie
 - Do not edit a page in place except to add the header block (`source`, `last_modified`, `author`, `status: imported|migrated|obsolete`).
 - Processed pages move to `confluence-import/<SPACE>/_done/<section>/` through `scripts/legacy-done.py` (status,
   date, `superseded_by`, links re-pointed), never by a hand move; obsolete pages get `--status obsolete --reason`.
+- A page with a `supersedes_done` header is the newer export of a page already migrated: handle it as any page (the
+  specs citing the copy in `sources[]` are the targets, the copy under `_done/` is there to diff against); the
+  script replaces the copy and carries its `superseded_by` forward.
 - Numbers, formulas, thresholds and field names in legacy pages are the most likely to be stale - a formula page
   is handled by `calc-auditor` (compare with the unit test), not copied by `confluence-migrator`.
 - An architecture, decision or still-relevant process page is handled by `architect` (task "Legacy page", into
