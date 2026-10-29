@@ -1,5 +1,19 @@
 # Update Log
 
+## 2026-10-29
+* **A candidate spec not yet in code, and no renumbering.** The migrator's candidate path assumed the capability a
+  legacy page describes exists in code and will get a Run 1; a page describing a screen still to be built (written in
+  Confluence first) had no path, and the board pointed at `/spec-skeleton-from-graph`, which has no graph nodes for
+  it. The candidate line now says `in code | not in code` (from the catalogue and the generated maps); `in code`
+  keeps Run 1, `not in code` is a request: `/analyse-request` with the page as the request text, `spec-writer`
+  drafts the spec with every rule **proposed** and the legacy citation, then the page is rerun. Either way the spec
+  takes the **next free number**: the existing specs of the context are never renumbered (IDs never reused, rule IDs
+  cited by flows, calculations, stories and Gherkin outside the repo); a main screen that arrives late is marked by
+  `aliases`, `tags` and the manual block of `index.md`, not by `-001`. Written as "Shaping specs" point 9 in
+  `features/conventions.md`; migrator step 2 and Never list, analyst step 6, Run 2 checklist, import README,
+  CONCEPT; `migration-status.py` reads the marker and prints the matching run (tested on two temporary candidate
+  lines in `P1-001`, restored), board regenerated.
+
 ## 2026-10-28
 * **A processed legacy page is moved by a script.** `confluence-migrator`, `architect` and `calc-auditor` each moved
   a page to a flat `_done/` by hand, set `status` themselves, wrote `superseded_by` only for a contradicting page

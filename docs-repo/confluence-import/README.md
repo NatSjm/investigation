@@ -116,8 +116,11 @@ for a page, quote its note in the request, for example
 3. **Target**, when you know it: a spec ID (`ADM-001`), a calculation name (`cover_ratio`), a flow (`flows/<name>.md`)
    or a concept path. Otherwise write `target unknown`: the migrator then finds the target from the page and reports
    it, while a wrong guess sends facts into the less suitable spec. A page about a screen or modal that no spec
-   covers yet gets no target and no new spec from the migrator: it leaves a `candidate spec:` open question, the
-   board lists it as a shaping decision, and the spec is written from the code (Run 1) before the page is rerun.
+   covers yet gets no target and no new spec from the migrator: it leaves a `candidate spec:` open question marked
+   `in code` or `not in code`, the board lists it as a shaping decision, and the spec is written before the page is
+   rerun: from the code (Run 1) when the code has the capability, by the analyst with proposed rules
+   (`/analyse-request`, the page as the request text) when the page describes behaviour still to be built. The
+   candidate takes the next free number; the existing specs of the context keep theirs either way.
 
 **Examples of finished cells**
 

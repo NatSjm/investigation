@@ -81,6 +81,10 @@ churn score") - or an analytics question ("what is covered by tests?").
 6. **Nothing new without a rule.** Before any story on a `new` or `changed` part: a new or changed behaviour of an
    existing spec gets its rule drafted there (hand off to `spec-writer`, `status: draft`); a new behaviour in a
    context without a spec gets its first draft spec (`<PREFIX>-001`, prompt `spec-skeleton-from-graph`); a new
+   capability (a screen, a modal) in a context that has specs gets a new draft spec with the **next free number**,
+   never a renumbering of the existing ones (`features/conventions.md`, "Shaping specs" point 9), every rule
+   **proposed** - a `candidate spec: ... not in code` Open question left by `confluence-migrator` is such a request,
+   the legacy page is its text and is cited `[^conf-<slug>]`; a new
    operation or topic gets `contracts/proposed/<ID>.openapi.yaml` (or `.asyncapi.yaml`) from `_template.openapi.yaml`,
    cited by `operationId` as **proposed** with the row added to the spec's API / Events table (label `needs-contract`,
    `contracts/conventions.md`); a new calculation gets a draft concept under `domain/calculations/` from `_template.md`

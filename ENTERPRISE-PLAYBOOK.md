@@ -647,10 +647,17 @@ exists; a context the page describes that has no skeleton yet keeps the page out
 board keeps listing it). New facts are merged into the skeleton, contradictions become `> ⚠️ CONFLICT (legacy: <page>)` callouts, unverifiable claims
 `> ❓ UNVERIFIED`, domain terms go to the glossary, the page is cited in `sources[]` and moved to `_done/`. No number,
 threshold or formula is copied from a page. The migrator never creates a spec: a page about a modal or screen that no
-spec of the context covers leaves a `candidate spec:` line under the primary spec's Open questions, the board lists
-it as a shaping decision with the next free number, the lead and a developer confirm it (or fold it into an existing
-spec), Run 1 writes it from the code, and the page is rerun. A new spec has two origins only: the code (Run 1) and a
-request the analyst takes to a context without a spec (section 12); a Confluence page is never one.
+spec of the context covers leaves a `candidate spec:` line under the primary spec's Open questions, marked `in code`
+(the catalogue or the generated maps have a route, page or endpoint for it) or `not in code` (behaviour still to be
+built); the board lists it as a shaping decision with the next free number and the run that follows; the lead and a
+developer confirm it (or fold it into an existing spec); `in code`: Run 1 writes it from the code; `not in code`: the
+analyst takes the page as a request (`/analyse-request`, section 12) and `spec-writer` drafts the spec with every rule
+**proposed**; then the page is rerun. The spec takes the next free number either way: the existing specs of the
+context are never renumbered (IDs are never reused, rule IDs are cited by flows, calculations, stories and Gherkin in
+Jira), and a main screen that arrives late is marked by `aliases`, `tags` and the manual block of `index.md`, not by
+`-001` (`features/conventions.md`, "Shaping specs" point 9). A new spec has two origins only: the code (Run 1) and a
+request the analyst takes (a context without a spec, or a capability the context's specs do not cover); a Confluence
+page is never one by itself - at most it is the text of such a request, and its rules are proposed until the code has them.
 
 **Architecture pages.** `@architect confluence-import/<SPACE>/<page>.md` (task "Legacy page"), one page per run, for
 a page about what the application is, its parts, integrations or deployment, a decision, or a procedure that still

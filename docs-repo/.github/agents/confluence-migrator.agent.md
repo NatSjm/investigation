@@ -60,9 +60,14 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
      decision of the migration lead with a developer (`features/conventions.md`, "Shaping specs"). When the facts fit
      an existing spec within the size caps, merge them there. Otherwise record a candidate in the Open questions of
      the primary spec, on one line the board reads:
-     `- [ ] candidate spec: <title> (legacy conf-<slug>; owner: migration lead) - <what the page describes>`,
-     leave the page out of `_done/` (step 6) and report it. After the candidate's Run 1 the page is rerun and only
-     the new facts are merged.
+     `- [ ] candidate spec: <title> (legacy conf-<slug>; owner: migration lead; in code | not in code) - <what the page describes>`,
+     where `in code` means the catalogue or the graph (`generated/graph/<ctx>.md`, `generated/fe/routes.md`,
+     `generated/be/api-index.md`) has a route, page or endpoint for the capability and `not in code` means nothing
+     under `generated/` has it (the page describes behaviour still to be built). Leave the page out of `_done/`
+     (step 6) and report the line. The candidate gets the next free number of the context, never a renumbering of
+     the specs it has (`features/conventions.md`, "Shaping specs" point 9). After the candidate's Run 1 (in code)
+     or the analyst's request with proposed rules (not in code: `/analyse-request` with the page as the request
+     text) the page is rerun and only the new facts are merged.
    - A context the page describes has **no spec yet** -> merge what has a target, record the rest as an Open
      question in the primary spec ("legacy <page> states ... for <context>, no spec yet") and leave the page out
      of `_done/` (step 6) so the board keeps listing it; it is rerun after that context's Run 1, and only the new
@@ -88,8 +93,10 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
 ## Never
 - Copy client data, screenshots with real data, or personal names of clients.
 - Rewrite more than the page you were given in one run (several specs for one page are normal; a second page is not).
-- Create a spec. A spec starts from the code (Run 1, `spec-writer`); a page is merged into it afterwards. What no
-  spec covers is a `candidate spec:` Open question, never a file.
+- Create a spec. A spec starts from the code (Run 1, `spec-writer`) or, for behaviour not built yet, from the
+  analyst's request with proposed rules; a page is merged into it afterwards. What no spec covers is a
+  `candidate spec:` Open question, never a file, whether or not the code has the capability.
+- Renumber specs. A candidate takes the next free number; the existing specs of the context keep theirs.
 
 ## Output
 Files only; chat: classification + target path per page, <= 1 line each.

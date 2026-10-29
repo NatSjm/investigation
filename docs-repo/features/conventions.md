@@ -71,6 +71,22 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
 8. **Screenshots are optional illustrations.** If used: under the Mermaid diagram of the UI flow, file in
    `/assets/<ID>/`, synthetic data only, caption with dataset and capture date, refreshed by the human
    reviewer at Run 4. Agents do not read them; the rules stay authoritative.
+9. **A capability found later keeps the numbering.** A `candidate spec:` a legacy page left behind, or a screen
+   the business asks for after the context has specs, gets the **next free number**, never a renumbering of the
+   existing specs: IDs are never reused (ID scheme above) and the rule IDs `BR-<ID>-<n>` are cited by flows,
+   calculations, stories and Gherkin that live outside the repo. Point 2 shapes a fresh context; a context that
+   has specs keeps them, and a main screen that arrives as `<CTX>-004` is marked as the main screen by its
+   `aliases` ("main screen", the Confluence title), its `tags` and its place in the manual block of `index.md`
+   (point 1), not by its number. The candidate line says where the capability stands, and that decides who
+   writes the spec:
+   - **in code** (the catalogue or the graph has a route, page or endpoint for it): Run 1,
+     `/spec-skeleton-from-graph <ctx> <next free ID>`, then the page is rerun and only the new facts are merged.
+   - **not in code** (the page describes behaviour still to be built): a request, not a legacy merge.
+     `/analyse-request` with the page as the request text; `spec-writer` drafts the spec with every rule
+     **proposed** (request `<slug>`, "Proposed rules" below) and the legacy footnote `conf-<slug>`, a new
+     operation under `contracts/proposed/`, the stories labelled `needs-spec-review`; then the page is rerun so
+     the migrator ticks the candidate, merges what is left and moves the page; `doc-sync` drops the markers as
+     the code lands.
 
 ## Business rules
 

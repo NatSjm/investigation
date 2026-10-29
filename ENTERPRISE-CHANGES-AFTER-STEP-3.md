@@ -1690,3 +1690,48 @@ Section 5 contracts table: a new "Kafka: payload schemas" row, the schemas-only 
 copied even without an AsyncAPI document); the collector step of section 6 names the schemas. `HANDBOOK.md`
 `collect-evidence.py` row; `code-repo-kit/README.md` CI line; backend `AGENTS.md` item 1 (`events.md`: topics,
 payload fields).
+
+## 46. A candidate spec not yet in code, and no renumbering (investigation commits after `4b7eb63`, 2026-10-29)
+
+The migrator's candidate path assumed that the capability a legacy page describes exists in code and will get a
+Run 1: the board pointed at `/spec-skeleton-from-graph`, which has no graph nodes for a screen still to be built,
+and nothing said what happens to the numbering when the late capability is the context's main screen. A real run
+hit both: "partial feature merge saved; source retained pending candidate shaping" on a page about a screen that is
+written in Confluence first and developed next.
+
+- `features/conventions.md`, "Shaping specs" point 9: a capability found later takes the next free number, never a
+  renumbering (IDs never reused; `BR-<ID>-<n>` cited by flows, calculations, stories and Gherkin outside the repo); a
+  late main screen is marked by `aliases`, `tags` and the manual block of `index.md`, not by `-001`. The candidate
+  line says `in code` (Run 1, then the page rerun) or `not in code` (a request: `/analyse-request` with the page as
+  the request text, `spec-writer` drafts the spec with every rule **proposed** and the legacy footnote, then the
+  page rerun; `doc-sync` drops the markers as the code lands).
+- `scripts/migration-status.py`: reads the marker from the parenthesis of the candidate line and prints the matching
+  run (`/spec-skeleton-from-graph <ctx> <next ID>` or `/analyse-request "<the legacy page as the request>" work-items`
+  with the next ID named); a line without a marker keeps the Run 1 command. "Order of work" names both paths and the
+  no-renumbering rule. Tested on two temporary candidate lines (one of each) under `P1-001`, restored.
+
+### 46.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `features/conventions.md` | "Shaping specs" point 9 (next free number, `in code` / `not in code` paths) |
+| `.github/agents/confluence-migrator.agent.md` | step 2 candidate bullet (marker, how to decide it, both paths), Never list (no renumbering, no spec even for behaviour not built yet) |
+| `scripts/migration-status.py` | marker parsing, the two run lines, "Order of work" sentence |
+| `.github/skills/spec-lifecycle/references/run-checklist.md` | Run 2 "no spec created, no spec renumbered" item with the marker and the run that follows |
+
+### 46.2 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `.github/agents/analyst.agent.md` | step 6, after the `<PREFIX>-001` clause | "a new capability (a screen, a modal) in a context that has specs gets a new draft spec with the **next free number**, never a renumbering of the existing ones (`features/conventions.md`, "Shaping specs" point 9), every rule **proposed** - a `candidate spec: ... not in code` Open question left by `confluence-migrator` is such a request, the legacy page is its text and is cited `[^conf-<slug>]`" |
+| `confluence-import/README.md` | finished-cells rule 3, last two sentences | the candidate is marked `in code` or `not in code`; the spec is written before the rerun from the code (Run 1) or by the analyst with proposed rules (`/analyse-request`); next free number, existing specs keep theirs |
+| `CONCEPT.md` | lifecycle row 2 "Legacy merge" | the candidate carries `in code` / `not in code`; Run 1 from the code or the analyst's request with proposed rules; next free number, never a renumbering |
+| `log.md` | top | the 2026-10-29 entry |
+| `migration/*.md` | - | regenerate with `scripts/migration-status.py --scope all` (and the per-context boards you keep) rather than merging |
+
+### 46.3 Playbook and runbook (read only)
+
+`ENTERPRISE-PLAYBOOK.md` section 11 legacy-page paragraph: the candidate marker, both paths, the no-renumbering
+rule, "a new spec has two origins" rewritten (the request may concern a capability the context's specs do not cover,
+a Confluence page is at most the text of such a request). `MIGRATION-RUNBOOK.md` step 5 migrator item: the same in
+two sentences.

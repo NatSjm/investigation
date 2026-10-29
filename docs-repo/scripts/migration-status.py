@@ -10,7 +10,9 @@ code location), generated/graph/REPO_MAP.md (spec coverage), confluence-import/<
 ID of the context; otherwise it is listed as unassigned). A page whose title reads as architecture
 (integrations, deployment, decisions) is routed to the `architect` agent instead of the migrator and listed once, outside
 the contexts' runs. A `candidate spec:` line under a spec's Open questions (left by the migrator when a page describes a
-capability no spec covers) is listed as a shaping decision of the context, with the next free spec number.
+capability no spec covers) is listed as a shaping decision of the context, with the next free spec number (never a
+renumbering) and the run that follows: Run 1 when the line says `in code`, the analyst's request with proposed rules
+(`/analyse-request`) when it says `not in code`.
 Examples:
   python3 scripts/migration-status.py --scope all
   python3 scripts/migration-status.py --scope product2 --print"""
@@ -88,7 +90,9 @@ def main():
         om = re.search(r'(?s)## Open questions\r?\n(.*?)(\r?\n## |\Z)', t, re.I)
         if om:
             open_q = len(re.findall(r'(?m)^\s*- \[ \]', om.group(1)))
-            candidates = [c.strip() for c in re.findall(r'(?im)^\s*- \[ \] candidate spec:\s*([^(\r\n]+)', om.group(1))]
+            # (title, not_in_code): the parenthesis after the title may say "not in code" (behaviour still to be built)
+            candidates = [(c.strip(), 'not in code' in p.lower())
+                          for c, p in re.findall(r'(?im)^\s*- \[ \] candidate spec:\s*([^(\r\n]+)(\([^)\r\n]*\))?', om.group(1))]
         specs.setdefault(ctx, []).append({'Id': sid, 'Status': get_val(fm, 'status'), 'Verified': bool(get_val(fm, 'verified')),
                                           'Open': open_q, 'Candidates': candidates, 'File': rel(repo, f)})
 
@@ -211,11 +215,16 @@ def main():
             totals['run1'] += 1
             runs.append('- [ ] **Run 1 - skeleton** ' + code(first_id) + ': ' + code(f'/spec-skeleton-from-graph {ctx_name} {first_id}') + ' (agent ' + code('spec-writer') + f"; REPO_MAP: {'code only' if first_id in code_only else 'not listed'})")
         for s in ctx_specs:
-            for cand in s['Candidates']:
+            for cand, not_in_code in s['Candidates']:
                 # a shaping decision, not an agent run: the lead and a developer confirm the spec, then Run 1 writes it
-                # from the code and the page is rerun; the next free number is a proposal, the ID is theirs to choose
+                # from the code (or the analyst drafts it with proposed rules when the code does not have it yet) and
+                # the page is rerun; the next free number is the ID (conventions "Shaping specs" point 9: no renumbering)
                 totals['shaping'] += 1
-                runs.append('- [ ] **Shaping - candidate spec** ' + cand + f" (Open question of {code(s['Id'])}): confirm with a developer (" + code('features/conventions.md') + ', "Shaping specs"), add the row to the board, then ' + code(f'/spec-skeleton-from-graph {ctx_name} {next_id}') + ' (next free number) and rerun the page it came from')
+                head = '- [ ] **Shaping - candidate spec** ' + cand + f" (Open question of {code(s['Id'])}): confirm with a developer (" + code('features/conventions.md') + ', "Shaping specs" point 9), add the row to the board, then '
+                if not_in_code:
+                    runs.append(head + code('/analyse-request "<the legacy page as the request>" work-items') + f" (agent analyst; spec {code(next_id)}, next free number, drafted by spec-writer with proposed rules) and rerun the page it came from")
+                else:
+                    runs.append(head + code(f'/spec-skeleton-from-graph {ctx_name} {next_id}') + ' (next free number) and rerun the page it came from')
         for p in ctx_pages:
             totals['run2'] += 1
             who = route(p)
@@ -281,7 +290,7 @@ def main():
         for p in unassigned:
             sb.append('- ' + code(p['File']) + f" (last_modified {p['Modified']}, {p['Kind']})\n")
         sb.append('\n')
-    sb.append('Order of work: Run 1 for every context without a spec first (code is the truth, pages are merged into a skeleton), then Run 2 page by page, Run 3 as the handoff after each spec, Run 4 by the owner. A candidate spec a page left behind is a shaping decision before its Run 1, never a spec written from the page. Architecture pages wait only for the integration map refresh, not for the specs. One run, one review, one commit.\n\n')
+    sb.append('Order of work: Run 1 for every context without a spec first (code is the truth, pages are merged into a skeleton), then Run 2 page by page, Run 3 as the handoff after each spec, Run 4 by the owner. A candidate spec a page left behind is a shaping decision before its Run 1 (in code) or its request to the analyst (not in code), never a spec written from the page and never a renumbering of the context\'s specs. Architecture pages wait only for the integration map refresh, not for the specs. One run, one review, one commit.\n\n')
     sb.extend(detail)
 
     text = ''.join(sb)
