@@ -27,9 +27,11 @@ The idea has four parts:
    it, when it was verified, and when it goes stale.
 3. **A graph joins both**: generated maps plus documentation tags become an architectural graph whose communities are
    the business contexts. "What is affected", "where is it", "what talks to what" are answered without opening code.
-4. **Agents start from a pack, not from a search.** For each task a script assembles a budgeted context pack: the spec,
-   its calculations, the graph neighbourhood, the contracts, the tables, related work. The analyst reads that first,
-   then the documentation folders freely; code only through its steps 9 and 10.
+4. **Agents start from a pack, not from a search.** For each task a script assembles a context pack: the subject
+   whole, the graph neighbourhood, the contracts, the tables, related work, and pointers to its calculations, flows
+   and legacy pages. Every agent then walks the same seven steps (2.6): the pack and its pointers, the documentation
+   folders and the graph freely, code last - through the maps and then freely for the analyst, at a named line for
+   the others - and whatever code says is evidence, never a rule.
 
 Everything else in the workspace serves one of those four parts.
 
@@ -91,15 +93,19 @@ which agents never see (the pack strips it) and people can fold. Our repository-
 `code_refs`, `api`, `events`, `tables`, `calculations`, `jira`, `tests`) are allowed extensions.
 
 ### 2.6 Context packs
-`scripts/context-pack.py --task <x>` writes `.context/<task>.md`: a ranked selection for one task, sized by its
-subjects and capped only when `--budget N` is given. Sections in priority order: subject and badge, spec body,
-calculations, flows, graph neighbourhood, contracts, tables, related work items and tests, legacy pages, and a footer
-naming what was truncated. Lower sections are cut first. The pack is deterministic, attachable to a PR, and cheap:
-one read instead of twenty tool calls. A change request takes the full pack and reads it top to bottom; a question
-takes the narrowest subject (calculation, spec or flow) with `--budget 200` and reads the Subject and the section it
-names, the truncated sections being pointers. When it is not enough, the escalation order is fixed (a question
-searches the documentation folders first; then drop the budget, follow the pointer, deeper graph, a second pack,
-one named line range, then it is a documentation gap).
+`scripts/context-pack.py --task <x>` writes `.context/<task>.md`, the recorded slice of one task: a Contents with the
+line range of every section; the subject whole with its badge (spec body, calculation concept, flow with the rules it
+cites, or the overview of a context); the computed sections no file shows (graph neighbourhood with `file:line`,
+contract operations and payloads, table pages with their datasets, work items and tests, the merged slice of several
+subjects); and pointers - one line with path and badge - to the calculations the spec uses, the flows it takes part in
+and the legacy pages that mention it. Nothing is truncated (`--budget N` exists for a tool with a hard limit and no
+procedure uses it). Around the pack every agent walks the same **seven steps**, for a question and a change request
+alike (`.github/skills/task-context/SKILL.md`): resolve the subjects through the catalogue; build one pack; check the
+badges; read what the task needs by the Contents and follow the pointers through the indexes; search the
+documentation folders and the graph freely, rebuilding once with a neighbour when the record should carry it; read
+code through the generated maps; search code freely. How far each agent goes is one table in the skill: the analyst
+all seven, the spec-writer, doc-sync and calc-auditor to a named file, the others no code. Code gives evidence, never
+a rule: `code-read <file:line>`, unverified, an Open question in the spec that the coverage matrix counts.
 
 ### 2.7 The architectural graph
 `gen-graph.py` turns the maps into nodes (`context:`, `class:`, `endpoint:`, `topic:`, `table:`, `feature:`,
@@ -204,7 +210,7 @@ Each file is YAML frontmatter (`name`, `description`, `tools`, optional `handoff
 
 | Agent | Role | Reads | Writes | Hands off to |
 |---|---|---|---|---|
-| `analyst` | business/system analyst: epic, stories, subtasks with Gherkin criteria; analytics mode for coverage/freshness questions | the pack; source only when the pack leaves a question open: at most five ranges, located through the generated maps, then a free reading pass for a question that still blocks; everything read is recorded as evidence and open questions | `work-items/<ID>.yml`, open questions in the spec | `test-designer`, `spec-writer` |
+| `analyst` | business/system analyst: epic, stories, subtasks with Gherkin criteria; analytics mode for coverage/freshness questions | the seven context steps of `task-context`, all of them: the pack and its pointers, the documentation folders and the graph, then code through the maps and freely for a question that still blocks; everything read from code is recorded as evidence and open questions | `work-items/<ID>.yml`, open questions in the spec | `test-designer`, `spec-writer` |
 | `spec-writer` | writes or refreshes a feature spec from the graph and one manager file; marks everything unsourced as unverified | pack, `generated/graph/<ctx>.md`, contracts, `manager/<Ctx>Manager.kt` | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | `analyst`, `calc-auditor` |
 | `doc-sync` | keeps specs in sync with code changes from the generated diffs with minimal source reading | `map-paths`, `graph-query --files`, contracts, maps | change-log rows, `last_verified`, stubs for unmapped contexts | `calc-auditor` for utils changes |
 | `calc-auditor` | verifies a calculation concept or a legacy formula page against the calculator and its unit test; never changes numbers | two source files only | `## Audit <date>` table, status, open questions | `spec-writer`, `confluence-migrator` for the screen rules of a mixed legacy page |
@@ -227,7 +233,7 @@ beside it under `references/`.
 
 | Skill | Teaches | Used by |
 |---|---|---|
-| `task-context` | build and consume a pack; section anatomy; the escalation when it is not enough | everyone |
+| `task-context` | the seven context steps every agent walks - catalogue, one pack, badges, pointers, documentation, maps, code - with the table of how far each agent goes; pack anatomy | everyone |
 | `spec-lifecycle` | the four runs of one spec, owner, inputs, outputs, exit state; per-run review checklist | writers, lead, reviewers |
 | `write-feature-spec` | spec structure, numbering, `source-priority.md` (cheapest source first) | spec-writer, doc-sync |
 | `calculation-spec` | Attested Computation: formula, parameters, worked examples from the test, conventions | calc-auditor, spec-writer |
@@ -365,8 +371,11 @@ restructure it. One file, `contexts.yml`, turns the layered code into contexts f
 packs, badges, the freshness gate and the matrix possible. Agents never see them (the pack strips them); people fold
 them; Confluence readers never see them. They can be script-generated from the graph later.
 
-**Why packs instead of letting the agent search?** Deterministic, budgeted, reviewable, cheap, and they carry
-provenance. A searching agent reads whatever matched, in whatever order, and spends its context on the wrong files.
+**Why packs instead of letting the agent search?** The folders are open from step 4 on; the pack is for what search
+cannot give: a recorded starting point (two runs start from the same slice, the PR carries it), the computed sections
+(graph neighbourhood, merged slice, contracts and tables resolved from the frontmatter), trust in view before anything
+is read, and one read instead of twenty tool calls for the part every task needs. A searching agent reads whatever
+matched, in whatever order, and leaves no record of where it started.
 
 **Why one Confluence page per run?** Reviewable diffs and a per-page audit trail in `sources[]` and `log.md`. A
 page is evidence; a person has to judge every conflict.
@@ -395,7 +404,7 @@ read token, instead of every code repo needing write access to it.
 - **Concept**: one Markdown file with OKF frontmatter; the unit of documentation.
 - **Bundle**: the whole docs repository as one OKF unit, with a root `index.md`.
 - **Trust badge**: human-reviewed / machine-confirmed / unverified / STALE, derived from `verified`, `generated`, `stale_after`.
-- **Context pack**: the budgeted per-task selection in `.context/<task>.md`.
+- **Context pack**: the recorded per-task slice in `.context/<task>.md` - subject whole, computed sections, pointers.
 - **Bounded context**: a business area; in code a set of class-name prefixes plus one FE feature; in docs one spec folder and one spec prefix.
 - **Map**: a generated table about the code (`generated/be|fe/*.md`).
 - **Graph**: nodes and edges joined from the maps; `REPO_MAP.md`, `<context>.md`, `graph.json`.

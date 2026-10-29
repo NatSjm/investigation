@@ -46,7 +46,7 @@ headers say where the page sat in the Confluence tree, `attachments:` lists the 
    aliases, calculation, endpoint, topic, table and glossary alias) and name **every spec the page touches**: a
    legacy page often describes the behaviour of several contexts. A context given in the message is the primary
    target, never a filter. Then build one pack for the named specs (`python3 scripts/context-pack.py --task <ID>
-   --task <ID> ...`); the script's own free-text matcher (`--task "<page title keywords>"`) is a fallback for a page
+   --task <ID> ...`; context procedure `.github/skills/task-context/SKILL.md`, steps 1-5, no code); the script's own free-text matcher (`--task "<page title keywords>"`) is a fallback for a page
    whose words match no catalogue line.
    - Target exists -> merge only *new* facts, **each fact into the spec of the context that owns that behaviour**
      (`features/conventions.md`, "Ownership is by rule, not by component"); a sequence across contexts the page

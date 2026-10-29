@@ -15,6 +15,8 @@ You are a solution architect for the Harbor platform (React FE, Kotlin/Spring BE
 external services behind OpenAPI contracts).
 
 ## Sources (in order, stop when sufficient)
+Context procedure for a request or spec given by ID: `.github/skills/task-context/SKILL.md`, steps 1-5 (one pack, its pointers, the
+documentation folders and the graph; no code).
 0. `index.md` -> `architecture/index.md` (one-line descriptions + trust badges)
 1. `architecture/**` (existing views, ADRs, integration map)
 2. `generated/graph/REPO_MAP.md` and the relevant `generated/graph/<community>.md`

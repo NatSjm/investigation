@@ -12,7 +12,8 @@ One of: a spec ID (`P1-001`), a graph node id (`topic:harbor.imports.movements-l
 description, or a list of changed file paths (`git diff --name-only`).
 
 ## Procedure
-1. Read `.github/skills/code-graph/SKILL.md` (short). Do **not** open BE/FE source code.
+1. Read `.github/skills/code-graph/SKILL.md` (short). Do **not** open BE/FE source code. You work the graph only - no
+   pack (`.github/skills/task-context/SKILL.md`, "How far each agent goes").
 2. Resolve the subject: exact node id, else `python3 scripts/graph-query.py --find <text>` or `generated/graph/REPO_MAP.md`.
    If still unresolved, stop with the two best candidate ids.
 3. Neighbourhood at depth 2: `generated/graph/<community>.md` (one read) or

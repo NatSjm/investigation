@@ -19,8 +19,9 @@ A spec ID to create or refresh (`P2-001`) and the community it belongs to (bound
 or a free-text feature description.
 
 ## Procedure
-1. `python3 scripts/context-pack.py --task <ID or community>`; read the pack. For a new spec the pack contains the
-   graph neighbourhood of `context:<community>` / `feature:<community>` instead of a spec.
+1. Context: `.github/skills/task-context/SKILL.md`, steps 1-6 (code: the one manager file the graph names, at its
+   `file:line`). `python3 scripts/context-pack.py --task <ID or community>`; read the pack by its Contents. For a new
+   spec the pack contains the graph neighbourhood of `context:<community>` / `feature:<community>` instead of a spec.
 2. Build the skeleton from `features/_template.md` with the graph (`generated/graph/<community>.md`):
    - **API / Events** <- `endpoint:*` nodes (method, path, `operationId`, handler `file:line`) and `topic:*` nodes with direction;
      frontmatter `api` holds only the operations whose handler node is in this community (owned); an operation the

@@ -117,8 +117,8 @@ keep the `preToolUse` guard on, and never auto-merge an agent's PR. Interactive 
 rules; the hooks apply to both.
 
 **Is it safe to let Copilot read the code at all?** The documentation agents read maps and contracts first and open a
-named source range only when a procedure says so; the analyst at most five ranges per task, plus a free reading pass for a
-question that still blocks its answer. That is less exposure than a developer's
+named source range only when a procedure says so; the analyst reaches code at the last two of its seven context steps,
+through the generated maps and then freely for a question that still blocks its answer (17.10). That is less exposure than a developer's
 normal Copilot session. The real controls are the same as for any Copilot use: content exclusion, repository
 permissions, and review of what gets committed.
 
@@ -211,10 +211,11 @@ Write these sections, in this order, adapted from `docs-repo/AGENTS.md`:
    `<product>`; Confluence is a publish target; the code repositories are inputs; Jira and the tests repository are
    outputs. One OKF v0.2 bundle: every document has frontmatter with `type`, every folder a generated `index.md`.
 2. **Work task-scoped: build the context pack first.** The command `python3 scripts/context-pack.py --task <ID|name|text>`,
-   what the pack contains, and the sentence "Read the pack first. A change request takes the full pack top to bottom;
-   a question takes the narrowest subject with `--budget 200` and reads the Subject and the section it names. After
-   it the analyst opens or searches the documentation folders freely; other agents open the documentation files
-   their procedure names; code only at the `file:line` the pack names."
+   what the pack contains (Contents, subject whole, computed sections, pointers), and the sentence "The pack is the
+   recorded slice the task starts from; the procedure around it is the same for a question and a change request -
+   seven steps in `.github/skills/task-context/SKILL.md`: catalogue, one pack, badges, the pack and its pointers, the
+   documentation folders and the graph, then code - at the `file:line` the pack names for most agents, through the
+   maps and then freely for the analyst, every finding evidence and an Open question, never a rule."
 3. **Read order when there is no pack**, cheapest first: `index.md` of the area, the spec, the calculation, `contexts.yml`
    and `generated/graph/REPO_MAP.md`, the maps under `generated/be|fe`, the contracts under `generated/openapi|asyncapi`,
    and only then source code in the sibling checkouts, smallest range, located through the graph or `docs-tags.md`.
@@ -727,12 +728,13 @@ Phase 2 of the plan (section 16): run the analyst on real tasks only after the "
 for the contexts those tasks touch (the scope of section 1). A task that crosses into an out-of-scope context is
 the signal to bring that context through Runs 1 to 4 next, not to let the analyst guess.
 
-What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: build the pack and, for a change request, read it top to bottom (spec, calculations, flows,
-graph, contracts, tables, related work) - a question takes the narrowest subject with `--budget 200` and reads only the section it names (17.9) -, check the badge, slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs, derive subtasks
-per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when blocking, into the
-spec's Open questions. Read source only when the pack leaves a question open: at most five ranges, located through
-the maps, then a free reading pass for a question that still blocks, each finding recorded as `code-read` evidence and
-an open question (decision and setup: 17.2 and section 19). On a finished feature the
+What the analyst agent is told (`.github/agents/analyst.agent.md`), in short: walk the seven context steps of the
+`task-context` skill (17.10) - catalogue, one pack, badges, the pack and its pointers (a question: the section it
+names; a change: the whole pack), the documentation folders and the graph, code through the maps, code freely for a
+question that still blocks -, then slice stories per the `jira-work-items` skill with Gherkin criteria citing rule IDs,
+derive subtasks per graph node kind, write `work-items/<ID>.yml`, validate it, put gaps into `questions[]` and, when
+blocking, into the spec's Open questions. Each finding from code is recorded as `code-read` evidence and an open
+question (decision and setup: 17.2, 17.10 and section 19). On a finished feature the
 input is a change request and the output is delta stories only (17.1).
 
 The everyday sequence:
@@ -1003,6 +1005,31 @@ at budget 200, the calculation pack is 131 lines with nothing truncated. When th
 question's first escalation is a search of the documentation folders and one opened document, cited; the pack is
 rebuilt only when the question turns out structural (the graph section) or spans several subjects. The free search was
 permitted since 17.2's third revision but was not a numbered step, and an agent takes the numbered steps.
+
+**17.10 One context procedure, seven steps, in a skill (2026-10-29).** 17.9 left the analyst with two procedures - a
+budgeted pack read in one section for a question, a full pack read top to bottom for a change request - and the
+rules for reaching code as steps 9 and 10 of the analyst agent, repeated in the prompt, the template and four guides.
+Two problems came with the growth of the bundle. The pack copied the body of every linked document (each calculation a
+spec uses, each flow it takes part in), so a request over four or five subjects produced 1900 lines of which the
+subject bodies were a third; and "nothing read twice" after a rebuild had no mechanism, the pack being one flat file
+without a map of its sections (the table pages even leaked their own `## Columns` headings into it as fake sections).
+Now the pack keeps the subject whole and the computed sections (graph, contracts, tables, merged slice) and turns the
+linked documents into **pointers** - one line with path, badge and description, a flow's pointer followed by the steps
+that name the subject - opened through the indexes when the task needs them; a `## Contents` at the top gives the line
+range of every section and part, so one section can be read for a question and only the new lines after a rebuild;
+embedded headings are demoted so `## ` always means a pack section; the footer records what the pack read and what
+it pointed at. A single-spec pack halves (P1-001: 979 to 531 lines; STR-001: 871 to 483; the five-subject request
+pack 1935 to 1466), and the budget flag has no user left. The procedure around the pack moved from the analyst agent
+into the `task-context` skill as **seven numbered steps, the same for a question and a change request**: resolve the
+subjects through the catalogue, build one pack, check the badges, read by the Contents and follow the pointers,
+search the documentation and the graph freely, read code through the maps, search code freely - with one table saying
+how far each agent goes (the analyst all seven, spec-writer / doc-sync / calc-auditor to a named file, the others no
+code). An agent file now says "Context: the skill, steps 1-N" and keeps only its own procedure; the analyst's is the
+analysis document, the confirmation, the rule gate and the work items, after the skill's exit. For the enterprise
+agent the reference is the skill's path, `.github/skills/task-context/SKILL.md`, which does not change between the
+Harbor and the enterprise repository; a new role is one row in the table. The disciplines of 17.2 are unchanged: code
+last, located through the maps before any free search, free search only for a blocking question, every finding
+`code-read` evidence and an Open question the coverage matrix counts.
 
 ---
 

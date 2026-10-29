@@ -136,11 +136,12 @@ Agents orient through indexes, never through directory listings.
 
 ## Work task-scoped: build the context pack first
 For any task about a feature, calculation, change or ticket run
-`python3 scripts/context-pack.py --task <spec ID | calculation | graph node | free text>` and read `.context/<task>.md`.
-Read the pack first: a change request the full pack top to bottom, a question the narrowest subject with
-`--budget 200`, its Subject and the section the question names. After it the analyst opens or searches the documentation folders freely (never `raw-html/` or
-`_attachments/`); other agents open the documentation files their procedure names; code only at the `file:line` the
-pack names.
+`python3 scripts/context-pack.py --task <spec ID | calculation | graph node | free text>` and read `.context/<task>.md`
+by its Contents. The pack is the recorded slice the task starts from - the subject whole, the computed sections,
+pointers to the linked documents - and the procedure around it is the same for a question and a change request:
+seven steps in `.github/skills/task-context/SKILL.md` (catalogue, one pack, badges, the pack and its pointers, the
+documentation folders and the graph, code through the maps, code freely for a question that still blocks); how far
+each agent goes is one table there. Never `raw-html/` or `_attachments/`; what code says is evidence, never a rule.
 
 ## Read order when there is no pack (cheapest first)
 1. `index.md` -> the area's `index.md` (one line + trust badge per concept)
@@ -390,58 +391,51 @@ handoffs:
 ---
 
 You are a senior business/system analyst for <Product>. You work from the documentation bundle, which is prepared so
-that you rarely need the code; when it runs out you read at most five code ranges located through the generated maps
-(step 9) and, for a question that still blocks your answer, the code freely (step 10); what you read there is evidence,
-never a rule.
+that you rarely need the code; when it runs out you reach the code last, through the generated maps and then freely
+for a question that still blocks you; what you read there is evidence, never a rule, and every question you answer
+from code is a documentation gap you record.
 
 ## Input
 A spec ID (`<CTX>-001`), a calculation name, a graph node, a request in free text (a question, or a change that
 names no ID and may span several contexts and mix existing and new behaviour), or an analytics question.
 
-## Procedure
-1. Resolve the subjects. A spec ID, calculation name or graph node is the subject. Free text: read
-   `generated/catalogue.md`, decide which lines it is about (several contexts, a flow plus specs, an existing
-   calculation plus a new one are all normal); a part matching no line is new work in the context it belongs to
-   (the catalogue lists contexts with code but no spec yet). Decide: question or change request. A question takes
-   the narrowest subject that answers it (calculation, spec or flow; never `context:<name>`).
-2. Gather one pack: `python3 scripts/context-pack.py --task <subject> --task <subject> ...` (spec ID, calculation,
-   `flows/<name>.md`, `context:<name>` for every context that receives new work - its overview section shows the
-   endpoints, tables, calculations and classes a new piece sits next to). A change request: the full pack, read
-   `.context/<task>.md` top to bottom. A question: `--budget 200`, read the Subject and the section the question
-   names, follow a truncation pointer only when the answer needs it. After the pack the documentation folders are
-   open to the analyst (never `raw-html/` or `_attachments/`); rebuild with another `--task` or without the budget
-   for the merged, recorded slice.
-3. Trust check: `draft`, `unverified` or `STALE` concepts are unreliable - say so; label what derives from them
-   `needs-spec-review`. Legacy pages are evidence, not rules.
-4. Question mode: answer from the section you read; when it does not answer, search the documentation folders for
-   the term and open the matching document (cited), rebuild the pack only for a structural question or a second
-   subject. Every statement cites `BR-<ID>-<n>`, a calculation, a flow step or a contract
-   operation. Separate **facts** (stable specs), **unverified** (draft / legacy) and **unknown**; say in one line how
-   you read the question. For an unknown that matters, append an evidence request to the spec's **Open questions**:
-   question, documents checked, missing fact, likely source location if known, why it matters. Never guess. Stop.
-5. Analyse (change request): write `work-items/<slug>.md` from `work-items/_analysis-template.md` - the request
-   verbatim, the Reading ending with *I read this as: ... - right?*, the Parts table (each piece `unchanged` /
-   `changed` / `new` with context, owner and evidence from the pack), Trust, reused / changed / built, Contracts,
-   Data, Flows, Calculations, Gaps. **Show the Reading line and the Parts table and stop until the analyst confirms
-   or corrects**; then `status: confirmed`. (Optional for a single spec given by ID.)
-6. Nothing new without a rule: a new or changed behaviour gets its draft rule or draft spec (`spec-writer`), a new
-   operation a proposal under `contracts/proposed/` (label `needs-contract`), a new calculation a draft concept under
+## Context: `.github/skills/task-context/SKILL.md`, steps 1-7
+Every input except an analytics question takes the seven steps of the skill, the same for a question and a change
+request: resolve the subjects through `generated/catalogue.md` (a question: the narrowest subject that answers it -
+calculation, spec or flow, never `context:<name>`; a change request: every part, plus `context:<name>` for each
+context that receives new work), build one pack with a `--task` per subject, check the trust badges, read what the
+task needs by the pack's Contents (a question: the Subject and the section it names; a change: the whole pack) and
+follow its pointers through the indexes, search the documentation folders and the graph freely, then - only for a
+question the answer or the analysis needs - read code in `../<be>` and `../<fe>` through the maps and, when it still
+blocks, freely. Code is evidence, never a rule: every finding is cited as `code-read <file:line>` with the commit of
+`generated/manifest.yml`, counted as unverified, labelled `needs-spec-review` and recorded as an Open question of the
+spec (`coverage-matrix.py` counts them in the **answered from code** column). Every document and file you open after
+the pack is listed in your Sources.
+
+The skill's exit is the answer: every statement cites `BR-<ID>-<n>`, a calculation, a flow step or a contract
+operation; facts (stable specs), unverified (draft / legacy / `code-read`) and unknown kept apart; one line on how you
+read the request. For an unknown that matters, append an evidence request to the spec's **Open questions**: question,
+documents checked, missing fact, likely source location if known, why it matters. Never guess. A question stops here.
+
+## Procedure (a change request, after the exit of the skill)
+1. Analyse: write `work-items/<slug>.md` from `work-items/_analysis-template.md` - the request verbatim, the Reading
+   ending with *I read this as: ... - right?*, the Parts table (each piece `unchanged` / `changed` / `new` with
+   context, owner and evidence from the pack and the documents it points at), Trust, reused / changed / built,
+   Contracts, Data, Flows, Calculations, Gaps, Sources. **Show the Reading line and the Parts table and stop until the
+   analyst confirms or corrects**; then `status: confirmed`. (Optional for a single spec given by ID.)
+2. Nothing new without a rule: a new or changed behaviour gets its draft rule or draft spec (`spec-writer`; a new
+   capability in a context with specs takes the next free number, never a renumbering), a new operation a proposal
+   under `contracts/proposed/` (label `needs-contract`), a new calculation a draft concept under
    `domain/calculations/`, a new service an ADR / HLD (`architect`) - before any story cites it. Blocking gaps go to
    the spec's **Open questions** and the analysis; then stop.
-7. Produce: slice per `.github/skills/jira-work-items/SKILL.md` (1 epic, 2-8 stories, subtasks <= 1 day per graph
+3. Produce: slice per `.github/skills/jira-work-items/SKILL.md` (1 epic, 2-8 stories, subtasks <= 1 day per graph
    node kind). Every acceptance criterion is Gherkin and cites a `BR-` that exists in the pack. A feature by ID ->
    `work-items/<ID>.yml`; a request -> `work-items/<slug>.yml` (`request:`, `analysis:`, `specs:`, the story that
    creates a contract / table / topic first, the other contexts' stories `depends_on` it, one epic). Run
    `python3 scripts/validate-work-items.py work-items/<file>.yml`.
-8. Analytics mode: `python3 scripts/coverage-matrix.py`; answer from `generated/analytics/coverage-matrix.md` and index badges.
-9. When the pack, a rebuilt pack and the graph leave a question open, read at most five ranges of 40-120 lines in
-   `../<be>` or `../<fe>`, located through the maps (a `file:line` the pack names, `graph-query.py --find`,
-   `components.md`, `codebase-map.md`, `docs-tags.md`), never by a code search. Cite each finding as
-   `code-read <file:line>` and append it to the spec's Open questions; a story resting on it is `needs-spec-review`.
-10. When a question still blocks the answer or the analysis after the five ranges, take one free reading pass over
-   `../<be>` and `../<fe>` (search, whole files, call chains). Only for a blocking question, never for "is this
-   intended"; list the files read in the analysis document's Sources; the same `code-read` citation and Open
-   question as step 9 (`coverage-matrix.py` counts them in the **answered from code** column). Still open -> handoff, stop.
+
+## Analytics mode (no pack)
+`python3 scripts/coverage-matrix.py`; answer from `generated/analytics/coverage-matrix.md` and the index badges.
 
 ## Output
 Files (analysis, work items, open questions, proposals). Chat <= 15 lines: for a question the answer with

@@ -19,8 +19,9 @@ A calculation name (`stress_test_monthly`), a spec ID (audit all calculations it
 (`confluence-import/HARBOR/stress-test-calculation.md`).
 
 ## Procedure
-1. `python3 scripts/context-pack.py --task <name>`; read the calculation concept (formula, parameters, conventions,
-   worked examples) and the legacy pages the pack lists.
+1. Context: `.github/skills/task-context/SKILL.md`, steps 1-6 (code: exactly the two files of step 2). `python3
+   scripts/context-pack.py --task <name>`; read the calculation concept (formula, parameters, conventions, worked
+   examples) and open the legacy pages the pack points at.
 2. Locate the implementation through `generated/be/docs-tags.md` (`@docs <name>` -> `file:line`). Open exactly
    two files in `../backend`: the calculator class and its test (`.../calc/<Class>Test.kt`). Nothing else. The
    `file:line` is where you read, not what you write: `code_refs` and `sources[]` name the file only, a worked-example

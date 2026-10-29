@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
-"""Builds a task-scoped, budgeted context pack for an agent (analyst, spec-writer, test-designer, calc-auditor):
-spec + trust badge, linked calculations (formula + worked examples), the flows the spec takes part in, depth-2 graph
-neighbourhood, contract operations, tables, related work items / tests and legacy pages that mention the subject. No libraries.
+"""Builds a task-scoped context pack for an agent (analyst, spec-writer, test-designer, calc-auditor): the subject
+whole (spec, calculation, flow or context overview with its trust badge), the computed sections no file shows (depth-2
+graph neighbourhood with file:line, contract operations, table pages, datasets, the merged slice of several subjects)
+and the linked documents as POINTERS (one line each with path and badge: the calculations the spec uses, the flows it
+takes part in, legacy pages that mention it) to open through the indexes when the task needs them. No libraries.
 
-The pack is the only thing an agent should read for a task; everything else is reachable through the
-file:line references it contains. Section order / truncation ranks: .github/skills/task-context/references/pack-anatomy.md
+The pack is the recorded slice a task starts from: what the agent read first, what it was pointed at, which files at
+which generated-at dates. A `## Contents` section at the top gives the line range of every section and part so the
+reader opens the part the task needs and, after a rebuild, only what came back. Every `## ` heading is a pack section
+(embedded documents are demoted). Section order / ranks: .github/skills/task-context/references/pack-anatomy.md;
+procedure: .github/skills/task-context/SKILL.md (seven steps, the same for a question and a change request).
 
 Subject (--task, repeatable; several subjects give ONE pack with the shared sections merged and deduplicated):
   spec ID (P1-001), calculation name (stress_test_monthly), flow (flows/<name>.md, flow:<name> or FLOW-<name>: the
@@ -15,8 +20,9 @@ Subject (--task, repeatable; several subjects give ONE pack with the shared sect
   specs, calculations and flows with glossary aliases applied; a fallback - for a request in free text read
   generated/catalogue.md first and name the subjects yourself).
 Budget: by default none - the pack holds everything its subjects need (each item is bounded on its own: a table page
-60 lines, a legacy page 5, a graph neighbourhood 80 per subject). --budget N caps the pack for a tool with a context
-limit; lower-ranked sections are truncated first and the footer names them.
+60 lines, a legacy page 2, a graph neighbourhood 80 per subject, a linked document one pointer line plus the flow
+steps that name the subject). --budget N caps the pack for a tool with a context limit; lower-ranked sections are
+truncated first and the footer names them. No agent procedure needs it any more.
 Examples:
   python3 scripts/context-pack.py --task P1-001
   python3 scripts/context-pack.py --task P1-002 --task STR-001 --task flows/session-inputs-recalculation.md
@@ -51,6 +57,35 @@ def get_section(text, heading):
 
 def body_of(text):
     return re.sub(r'(?s)\A﻿?---\r?\n.*?\r?\n---\r?\n', '', text).strip()
+
+
+def demote(text, levels):
+    """Push every heading of an embedded document down `levels`, so that `## ` in the pack always means a pack section."""
+    return re.sub(r'(?m)^(#{1,})\s', lambda m: '#' * (len(m.group(1)) + levels) + ' ', text)
+
+
+def one_line(text, limit=160):
+    """A frontmatter description squeezed to one line for a pointer."""
+    t = re.sub(r'\s+', ' ', text or '').strip().strip('"\'')
+    return t if len(t) <= limit else t[:limit - 1].rstrip() + '…'
+
+
+def step_items(text):
+    """The numbered or bulleted items of a flow's Steps section, each with its continuation lines, fenced blocks
+    (sequence diagrams) skipped - the unit a pointer quotes when it names the subject."""
+    items = []
+    fence = False
+    for line in split_lines(text):
+        if line.strip().startswith('```'):
+            fence = not fence
+            continue
+        if fence or line.startswith('#'):
+            continue
+        if re.match(r'^\s*(\d+\.|[-*])\s', line):
+            items.append(line.strip())
+        elif line.strip() and items:
+            items[-1] += ' ' + line.strip()
+    return items
 
 
 def select_lines(path, pattern, strip_right=True):
@@ -124,6 +159,7 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
     """One subject -> its sections (title, content, rank, see-also, parts for merging), sources and header bits."""
     sections = []
     sources = []
+    pointed = []   # documents the pack points at (one line each) instead of copying: the agent opens them through the indexes
 
     def add_section(title, content, rank, see_also='', parts=None):
         if not content:
@@ -232,8 +268,10 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
 
     # Spec / calculation / flow body
     if file:
-        body = body_of(text)
+        body = re.sub(r'(?m)\A# [^\n]*\n', '', body_of(text), count=1).strip()   # the title line: the Subject already carries it
         lines = split_lines(body)
+        # The document's own headings sit one level under the pack section (`### Business rules` under `## Spec`);
+        # merge() pushes them one more level under the `### <task>` block of a multi-subject pack.
         if kind == 'spec' and (len(lines) > 200 or (budget and len(lines) > budget * 0.6)):
             keep = []
             # UI flow stays in: it is the section a "what does the screen show or allow" question reads
@@ -241,14 +279,14 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
                 m = re.search(r'(?ms)^(##\s+' + re.escape(h) + r'[^\r\n]*)\r?\n(.*?)(?=^##\s|\Z)', body)
                 if m:
                     keep.append(m.group(1) + '\n' + m.group(2).rstrip())
-            add_section('Spec', '\n\n'.join(keep) + f'\n\n... (reduced to key sections: see `{rel(repo, file)}`)', 1, rel(repo, file))
+            add_section('Spec', demote('\n\n'.join(keep), 1) + f'\n\n... (reduced to key sections: see `{rel(repo, file)}`)', 1, rel(repo, file))
         elif kind == 'calculation':
-            # The `# Computation` block (sanctioned code shape, a level-1 heading in the concept) is kept, demoted to `##`
+            # The `# Computation` block (sanctioned code shape, a level-1 heading in the concept) is kept at the same level
             keep = []
             for h in ('Purpose', 'Inputs', 'Outputs', 'Formula', 'Computation', 'Conventions', 'Worked examples', 'Audit', 'Open questions'):
                 m = re.search(r'(?ms)^#{1,2}\s+(' + re.escape(h) + r'[^\r\n]*)\r?\n(.*?)(?=^#{1,2}\s|\Z)', body)
                 if m:
-                    keep.append('## ' + m.group(1) + '\n' + m.group(2).rstrip())
+                    keep.append('### ' + m.group(1) + '\n' + demote(m.group(2).rstrip(), 1))
             add_section('Calculation', '\n\n'.join(keep), 1, rel(repo, file))
         elif kind == 'flow':
             if len(lines) > 200 or (budget and len(lines) > budget * 0.6):
@@ -258,11 +296,11 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
                     m = re.search(r'(?ms)^(##\s+' + re.escape(h) + r'[^\r\n]*)\r?\n(.*?)(?=^##\s|\Z)', body)
                     if m:
                         keep.append(m.group(1) + '\n' + m.group(2).rstrip())
-                add_section('Flow', '\n\n'.join(keep) + f'\n\n... (reduced to key sections: see `{rel(repo, file)}`)', 1, rel(repo, file))
+                add_section('Flow', demote('\n\n'.join(keep), 1) + f'\n\n... (reduced to key sections: see `{rel(repo, file)}`)', 1, rel(repo, file))
             else:
-                add_section('Flow', body, 1, rel(repo, file))
+                add_section('Flow', demote(body, 1), 1, rel(repo, file))
         else:
-            add_section('Spec', body, 1, rel(repo, file))
+            add_section('Spec', demote(body, 1), 1, rel(repo, file))
 
     # Flow: the specs it composes - Summary and the rules the flow cites ("P1-001 BR-8", "BR-STR-001-3")
     if kind == 'flow':
@@ -307,22 +345,23 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
             parts.append({'Key': sid, 'Text': '\n\n'.join(block)})
         add_section('Specs in the flow', '\n\n'.join(p['Text'] for p in parts), 2, 'features/', parts)
 
-    # Calculations linked from the spec
-    if kind == 'spec' and file:
-        parts = []
+    # Calculations linked from the spec: pointers. The concept (formula, worked examples, audit) is one hop away
+    # through domain/calculations/index.md; a calculation that is a subject itself is whole under `## Calculation`.
+    if kind == 'spec' and file and get_list(fm, 'calculations'):
+        parts = [{'Key': 'intro:Calculations',
+                  'Text': '_Pointers: open the concept for Formula, Conventions, Worked examples and Audit (task-context step 4); '
+                          'a calculation named as `--task` is whole under `## Calculation`._'}]
         for c in (re.sub(r'^/', '', x) for x in get_list(fm, 'calculations')):
             cp = os.path.join(repo, c)
             if not os.path.isfile(cp):
-                parts.append({'Key': c, 'Text': f'### {c}\n_(missing file)_'})
+                parts.append({'Key': c, 'Text': f'- `{c}` - _(missing file)_'})
                 continue
-            ct = read_text_or_empty(cp)
-            cfm = get_fm(ct)
-            sources.append(c)
-            # Formula runs up to the next `##`, so it carries the `# Computation` block (sanctioned code shape); demote its heading
-            pieces = [f'**{h}**\n' + re.sub(r'(?m)^#\s+Computation\s*$', '**Computation**', s)
-                      for h in ('Purpose', 'Formula', 'Conventions', 'Worked examples', 'Audit') if (s := get_section(ct, h))]
-            parts.append({'Key': c, 'Text': f"### {get_val(cfm, 'title')} (`{c}`) - badge: {badge(cfm, now)}\n" + '\n\n'.join(pieces)})
-        add_section('Calculations', '\n\n'.join(p['Text'] for p in parts), 2, 'domain/calculations/', parts)
+            cfm = get_fm(read_text_or_empty(cp))
+            pointed.append(c)
+            name = os.path.splitext(os.path.basename(c))[0]
+            desc = one_line(get_val(cfm, 'description'))
+            parts.append({'Key': c, 'Text': f"- `{name}` — {get_val(cfm, 'title')} (`{c}`) - badge: {badge(cfm, now)}" + (f' - {desc}' if desc else '')})
+        add_section('Calculations', '\n'.join(p['Text'] for p in parts), 2, 'domain/calculations/index.md', parts)
 
     # Flows this spec takes part in: listed in the spec (`flows:`) or naming the spec in their own `specs:` (both directions)
     if kind == 'spec' and file:
@@ -336,18 +375,25 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
                     flow_refs.append(rel(repo, os.path.join(flow_dir, ff)))
         flow_refs = list(dict.fromkeys(flow_refs))
         if flow_refs:
-            parts = []
+            # pointers, each with the steps of the flow that name this spec (the cross-context behaviour the spec does
+            # not show); the whole flow - trigger, participants, invariants - is one hop away through flows/index.md
+            parts = [{'Key': 'intro:Flows',
+                      'Text': '_Pointers with the steps that name the subject: open the flow for Trigger, Participants, Data and state '
+                              'changes, Failure behaviour and Invariants (task-context step 4); a flow named as `--task` is whole under `## Flow`._'}]
             for f in flow_refs:
                 fp = os.path.join(repo, f)
                 if not os.path.isfile(fp):
-                    parts.append({'Key': f, 'Text': f'### {f}\n_(missing file)_'})
+                    parts.append({'Key': f, 'Text': f'- `{f}` - _(missing file)_'})
                     continue
                 ft = read_text_or_empty(fp)
                 ffm = get_fm(ft)
-                sources.append(f)
-                pieces = [f'**{h}**\n{s}' for h in ('Purpose', 'Trigger', 'Participants', 'Steps', 'Invariants and assumptions') if (s := get_section(ft, h))]
-                parts.append({'Key': f, 'Text': f"### {get_val(ffm, 'title')} (`{f}`) - badge: {badge(ffm, now)} - specs: {', '.join(get_list(ffm, 'specs'))}\n" + '\n\n'.join(pieces)})
-            add_section('Flows', '\n\n'.join(p['Text'] for p in parts), 3, 'flows/', parts)
+                pointed.append(f)
+                steps = [s for s in step_items(get_section(ft, 'Steps')) if re.search(r'(?<![\w-])' + re.escape(spec_id) + r'(?![\w-])', s)][:6]
+                line = f"- {get_val(ffm, 'title')} (`{f}`) - badge: {badge(ffm, now)} - specs: {', '.join(get_list(ffm, 'specs'))}"
+                if steps:
+                    line += '\n' + '\n'.join('  ' + one_line(s, 220) for s in steps)
+                parts.append({'Key': f, 'Text': line})
+            add_section('Flows', '\n'.join(p['Text'] for p in parts), 3, 'flows/index.md', parts)
 
     # Context overview: what the context already has, for placing new work in it
     graph_json = os.path.join(repo, 'generated/graph/graph.json')
@@ -580,6 +626,7 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
                     body = re.sub(r'(?m)^# .*\r?\n', '', body, count=1).strip()
                     body = re.sub(r'\]\(([\w-]+)\.md\)', r'](generated/be/db/schema/tables/\1.md)', body)
                     body = body.replace('(../erd/overview.mmd)', '(generated/be/db/schema/erd/overview.mmd)')
+                    body = demote(body, 2)   # the page's `## Columns` / `## Relations` / `## Constraints` go under the table's `###`
                     lines = split_lines(body)
                     if len(lines) > 60:
                         body = '\n'.join(lines[:60]) + f'\n_... {len(lines) - 60} more line(s) in generated/be/db/schema/tables/{t}.md_'
@@ -643,13 +690,16 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
             low = pt.lower()
             hits = [n for n in needle if n and n.lower() in low]
             if len(hits) >= min(2, len(needle)):
-                head = [l for l in split_lines(pt) if l.strip()][:5]
-                parts.append({'Key': rel(repo, p), 'Text': f"### `{rel(repo, p)}` (matches: {', '.join(hits)}) - legacy, UNVERIFIED\n" + '\n'.join(f'> {l}' for l in head)})
-        add_section('Legacy pages', '\n\n'.join(p['Text'] for p in parts), 5, 'confluence-import/', parts)
+                # a pointer: path, what matched, the page title; the page itself is evidence to open, never a rule
+                pfm = get_fm(pt)
+                title = one_line(get_val(pfm, 'title')) or next((l.strip().lstrip('#').strip() for l in split_lines(body_of(pt)) if l.strip()), '')
+                pointed.append(rel(repo, p))
+                parts.append({'Key': rel(repo, p), 'Text': f"- `{rel(repo, p)}` (matches: {', '.join(hits)}) - legacy, UNVERIFIED" + (f' - {title}' if title else '')})
+        add_section('Legacy pages', '\n'.join(p['Text'] for p in parts), 5, 'confluence-import/', parts)
 
     label = rel(repo, file) if file else node
     return {'task': task, 'kind': kind, 'file': file, 'label': label, 'badge': badge(fm, now) if fm else 'n/a',
-            'sections': sections, 'sources': sources}
+            'sections': sections, 'sources': sources, 'pointed': pointed}
 
 
 def truncate(sections, budget, fixed=12):
@@ -686,11 +736,8 @@ def merge(subjects):
         kafka, datasets = [], []
         for s, x in secs:
             if title in PER_SUBJECT:
-                body = x['Content']
-                if title in ('Spec', 'Flow', 'Calculation'):
-                    body = re.sub(r'(?m)^(#{2,})\s', lambda m: '#' * (len(m.group(1)) + 2) + ' ', body)
-                elif title in ('Context overview', 'Specs in the flow'):
-                    body = re.sub(r'(?m)^(#{2,})\s', lambda m: '#' * (len(m.group(1)) + 1) + ' ', body)
+                # the subject's own headings (already `###` under the section) go one level under the `### <task>` block
+                body = demote(x['Content'], 1) if title in ('Spec', 'Flow', 'Calculation', 'Context overview', 'Specs in the flow') else x['Content']
                 texts.append(f"### {s['task']} ({s['kind']}: `{s['label']}`)\n{body}")
                 continue
             parts = x['Parts'] or ([{'Key': s['task'], 'Text': x['Content']}] if x['Content'] != '_(none)_' else [])
@@ -711,8 +758,37 @@ def merge(subjects):
         if kafka:
             events = list(dict.fromkeys(e for p in kafka for e in p['Events']))
             texts.append('**Kafka**: ' + ', '.join(f'`{e}`' for e in events) + ' - ' + kafka[0]['Where'])
-        merged.append({'Title': title, 'Content': '\n\n'.join(texts) if texts else '_(none)_', 'Rank': rank, 'See': see, 'Parts': []})
+        sep = '\n' if title in ('Calculations', 'Flows', 'Legacy pages') else '\n\n'   # pointer lists stay compact
+        merged.append({'Title': title, 'Content': sep.join(texts) if texts else '_(none)_', 'Rank': rank, 'See': see, 'Parts': []})
     return merged
+
+
+def contents(header_lines, sections, footer_title='Sources and limits'):
+    """The `## Contents` section: line range of every section and the start line of every `### ` part in it, so a
+    reader opens the part the task needs and, after a rebuild, only what came back. Line numbers count the finished file."""
+    entries = []
+    for s in sections:
+        parts = []
+        for i, l in enumerate(split_lines(s['Content'])):
+            if not l.startswith('### '):
+                continue
+            label = re.sub(r'\s+', ' ', l[4:].replace('`', '').replace('**', '')).strip()
+            m = re.match(r'^(\S+) \((?:spec|calculation|flow|context|node): ', label)   # a `### <task> (<kind>: <path>)` block
+            label = m.group(1) if m else label
+            parts.append((i, label if len(label) <= 60 else label[:59].rstrip() + '…'))
+        entries.append((s['Title'], len(split_lines(s['Content'])), parts))
+    entries.append((footer_title, 0, []))
+    toc_len = 1 + len(entries) + 1                      # heading, one line per section, blank line
+    out = ['## Contents']
+    line = header_lines + toc_len + 1                   # first line of the first section heading
+    for title, n, parts in entries:
+        start, end = line, line + n                     # `## title` on `start`, the last content line on `end`
+        row = f'- {title}: lines {start}-{end}' if n else f'- {title}: line {start}'
+        if parts:
+            row += ' - ' + '; '.join(f'{p} {start + 1 + i}' for i, p in parts)
+        out.append(row)
+        line = end + 2                                  # blank line after the section
+    return '\n'.join(out), toc_len
 
 
 def main():
@@ -740,24 +816,26 @@ def main():
     # ---------- 3. budget ----------
     if len(subjects) == 1:
         s = subjects[0]
-        sections, sources = s['sections'], s['sources']
+        sections, sources, pointed = s['sections'], s['sources'], s['pointed']
         header = f"# Context pack: {s['task']} - {s['label']} - {s['badge']} - built {now.strftime('%Y-%m-%dT%H:%M:%SZ')}\n"
     else:
         sections = merge(subjects)
         sections[0]['Content'] = (f"- subjects: {len(subjects)} - one pack; shared sections merged and deduplicated, "
                                   f"per-subject blocks headed `### <task>`\n\n" + sections[0]['Content'])
         sources = [x for s in subjects for x in s['sources']]
+        pointed = [x for s in subjects for x in s['pointed'] if x not in {s2['label'] for s2 in subjects}]
         header = f"# Context pack: {' + '.join(s['task'] for s in subjects)} - {len(subjects)} subjects - built {now.strftime('%Y-%m-%dT%H:%M:%SZ')}\n"
     truncated = truncate(sections, budget)
-    out = [header + '\n']
-    for t in ORDER:
-        s = next((x for x in sections if x['Title'] == t), None)
-        if s:
-            out.append(f'## {t}\n' + s['Content'] + '\n\n')
+    ordered = [next(x for x in sections if x['Title'] == t) for t in ORDER if any(x['Title'] == t for x in sections)]
+    toc, _ = contents(2, ordered)                       # header line + blank line precede the Contents section
+    out = [header + '\n', toc + '\n\n']
+    for s in ordered:
+        out.append(f"## {s['Title']}\n" + s['Content'] + '\n\n')
     out.append('## Sources and limits\n')
-    out.append('- files: ' + ', '.join(f'`{s}`' for s in dict.fromkeys(sources)) + '\n')
+    out.append('- files read into the pack: ' + ', '.join(f'`{s}`' for s in dict.fromkeys(sources)) + '\n')
+    out.append('- pointed at (open through the indexes when the task needs them): ' + (', '.join(f'`{s}`' for s in dict.fromkeys(pointed)) or 'none') + '\n')
     out.append(f"- truncated sections: {', '.join(truncated) if truncated else 'none'} ({f'budget {budget} lines' if budget else 'no budget: every section complete'})\n")
-    out.append('- rule: this pack is the recorded slice of the task. The documentation folders of this repository may be opened after it (the analyst freely, other agents the files their procedure names; never `raw-html/` or `_attachments/`). Code only at the `file:line` named above in `../backend` or `../frontend` (the analyst may also locate up to five ranges through the generated maps, and read freely for a question that still blocks its answer, analyst agent steps 9 and 10). Record new facts as Open questions / Change log, never as silent assumptions.\n')
+    out.append('- rule: this pack is the recorded slice of the task - what was read first and what it points at. Procedure: `.github/skills/task-context/SKILL.md`, seven steps, the same for a question and a change request: the documentation folders of this repository are open after the pack (never `raw-html/` or `_attachments/`; what you open is listed in your Sources), code last - at the `file:line` named above for most agents, through the generated maps and then freely for the analyst - and whatever code says is evidence and an Open question, never a rule.\n')
     result = ''.join(out)
 
     slug = re.sub(r'[^a-z0-9]+', '-', '+'.join(tasks).lower()).strip('-')[:60]

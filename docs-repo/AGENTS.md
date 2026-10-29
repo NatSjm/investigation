@@ -16,16 +16,19 @@ For any task about a feature, calculation, change or ticket:
 python3 scripts/context-pack.py --task P1-001          # spec ID, calculation name, graph node or free text
 ```
 
-It writes `.context/<task>.md` (git-ignored; sized by its subjects, roughly 1000 lines for one spec with its
-calculations and neighbourhood, more with several subjects, `--budget N` to cap it): the spec with its trust badge, linked calculations
-(formula + worked examples), the flows it takes part in, the depth-2 graph neighbourhood (endpoints, classes, tables, topics, FE routes with
-`file:line`), the OpenAPI operations and tables involved, existing work items / tests, and legacy pages that mention
-the subject. **Read the pack first.** It is the recorded slice the task starts from: a change request takes the full
-pack top to bottom; a question takes the narrowest subject (calculation, spec or flow, never a context) with
-`--budget 200` and reads the Subject and the section it names, the rest stays a pointer. After it the analyst opens or
-searches the documentation folders freely (never `raw-html/` or `_attachments/`); other agents open the documentation
-files their procedure names; code only at the `file:line` the pack names, the analyst also under its steps 9 and 10.
-Skill: `.github/skills/task-context/SKILL.md`.
+It writes `.context/<task>.md` (git-ignored; sized by its subjects, roughly 400-500 lines for one spec, more with
+several subjects): a `## Contents` with the line range of every section, the subject whole with its trust badge (spec,
+calculation, flow or context overview), the computed sections no file shows (the depth-2 graph neighbourhood with
+`file:line`, the contract operations and Kafka payloads, the table pages with their datasets, work items and tests,
+the merged slice of several subjects) and **pointers** - one line with path and badge - for the calculations the spec
+uses, the flows it takes part in and the legacy pages that mention it. **The pack is the recorded slice the task
+starts from; the procedure around it is the same for a question and a change request** - seven steps in
+`.github/skills/task-context/SKILL.md`: resolve the subjects through the catalogue, build one pack, check the badges,
+read what the task needs by the Contents (a question: the Subject and the section it names; a change: the whole pack)
+and follow the pointers through the indexes, search the documentation folders and the graph freely (never `raw-html/`
+or `_attachments/`), then code - at the `file:line` the pack names for most agents, through the generated maps and
+then freely for the analyst, every finding evidence and an Open question, never a rule. How far each agent goes is
+one table in the skill.
 
 A request in free text ("when imports change, do the stress numbers refresh?", "dashboard with the cover ratio trend
 and a new churn score") names no ID and often spans several contexts: read `generated/catalogue.md` first (one line
@@ -72,7 +75,7 @@ what matches no line is new work: add the context it belongs to as a subject, it
 
 | Purpose | Command |
 |---|---|
-| Task context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...] [--budget N]` (several `--task` = one merged pack; no cap unless `--budget`) |
+| Task context pack | `python3 scripts/context-pack.py --task <ID|calculation|flows/<name>.md|context:<name>|node|text> [--task ...]` (several `--task` = one merged pack; `--budget N` exists for a tool with a hard context limit, no procedure uses it) |
 | Catalogue (free-text requests start here) | `python3 scripts/gen-catalogue.py` -> `generated/catalogue.md` (`--check` in CI) |
 | Validate (see Checks) | `python3 scripts/okf-validate.py --strict` (the whole bundle; `--path <folder or file>` lets only that part fail); `python3 scripts/validate-frontmatter.py [<file>]`; `python3 scripts/validate-work-items.py [<file>]` |
 | Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |

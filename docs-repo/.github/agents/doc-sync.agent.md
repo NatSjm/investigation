@@ -15,7 +15,8 @@ One of:
 ## Procedure
 1. Map changed paths to specs: `<paths> | python3 scripts/map-paths.py` and
    `python3 scripts/graph-query.py --files <paths> --depth 2` (specs in blast radius). Unmapped paths -> step 6.
-2. For each affected spec build the pack (`python3 scripts/context-pack.py --task <ID>`) and compare its
+2. For each affected spec build the pack (`python3 scripts/context-pack.py --task <ID>`; context procedure
+   `.github/skills/task-context/SKILL.md`, steps 1-6, code only as step 3 below says) and compare its
    **API / Events / Data** sections with the current `generated/openapi/backend.yaml`, `generated/asyncapi/backend.yaml`
    (or `generated/be/events.md` when the backend has no AsyncAPI document) and the payload schemas under
    `generated/asyncapi/schemas/` (the file `events.md` names for the topic, fields listed there),

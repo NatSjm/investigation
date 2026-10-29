@@ -1,23 +1,26 @@
 # Context pack - section markers
 
-`scripts/context-pack.py` writes these H2 headings in this order. Agents and prompts refer to them by name.
+`scripts/context-pack.py` writes these H2 headings in this order. Agents and prompts refer to them by name. Every
+`## ` heading is a pack section: the headings of an embedded document (a spec's `## Business rules`, a table page's
+`## Columns`) are demoted under the section (`###`, one more level under a `### <task>` block of a multi-subject pack).
 
 | Heading | Source | Truncation rank (1 = never) |
 |---|---|---|
+| `## Contents` | computed last: one line per section with its line range in the finished file and the start line of every `### ` part in it (`- Spec: lines 22-110 - Summary 23; Actors 30; ...`; in a multi-subject pack the `### <task>` blocks) - the reader opens the part the task needs and, after a rebuild, only the lines that are new | 1 |
 | `## Subject` | resolution of `--task`; frontmatter of the spec / calculation / flow, or the `contexts.yml` entry of a context; `index.md` badge logic | 1 |
 | `## Spec` | `features/<ctx>/<ID>.md` body | 1 (reduced to key sections if > 200 lines or > 60 % of `--budget`: Summary, Actors, Business rules, UI flow, API / Events, Data, Calculations, Edge cases, Open questions) |
 | `## Calculation` | `domain/calculations/<name>.md` (Purpose, Inputs, Outputs, Formula, Computation - the sanctioned code shape, demoted to `##` -, Conventions, Worked examples, Audit, Open questions) when the subject is a calculation | 1 |
 | `## Flow` | `flows/<name>.md` body when the subject is a flow | 1 (reduced to key sections if > 200 lines) |
 | `## Context overview` | when the subject is `context:<name>`: its specs (or "none yet" with the ID the first one gets), the flows it takes part in, endpoints with operationId and summary, tables owned, calculations implemented by its classes, Kafka topics produced / consumed, classes by layer, FE pages with routes, its rows of `architecture/integrations.md`, the lines of `architecture/overview.md` that mention it, proposed contracts tagged with it - the overview for placing new work in the context | 1 |
 | `## Specs in the flow` | for a flow subject: every spec of its `specs[]` with Summary and the business rules the flow text cites (`P1-001 BR-8`, `BR-STR-001-3`) | 2 |
-| `## Calculations` | `domain/calculations/<name>.md` for every `calculations[]` entry | 2 |
-| `## Flows` | `flows/<name>.md` for every `flows[]` entry of the spec plus every flow whose `specs[]` names the ID (Purpose, Trigger, Participants, Steps, Invariants) | 3 |
+| `## Calculations` | **pointers**: one line per `calculations[]` entry of the spec - name, title, path, badge, description; the concept (Formula, Worked examples, Audit) is opened through the path at step 4 of the skill; a calculation that is itself a `--task` is whole under `## Calculation` and not repeated here | 2 |
+| `## Flows` | **pointers**: one line per flow of the spec's `flows[]` plus every flow whose `specs[]` names the ID - title, path, badge, specs - followed by the items of its Steps section that name the spec (up to six, one line each, sequence diagrams skipped); the whole flow is opened through the path when the task needs Trigger, Participants or Invariants; a flow that is itself a `--task` is whole under `## Flow` | 3 |
 | `## Graph neighbourhood` | `scripts/graph-query.py --node spec:<ID> --depth 2` (or `context:`/`feature:` for a community); for a flow `--files <its code_refs> --depth 1`; class detail from `generated/be/components.md` | 2 |
 | `## Contracts` | `generated/openapi/backend.yaml` path blocks for `api[]`; `generated/asyncapi/backend.yaml` channel names for `events[]` (a flow's `channels[]`; when the backend has no AsyncAPI document, the line points at `generated/be/events.md` instead), then one line per topic with its payload type, its schema file under `generated/asyncapi/schemas/` and the field table from `events.md` | 4 |
 | `## Data` | the page of every `tables[]` entry from `generated/be/db/schema/tables/<table>.md` (table comment, columns with comments, relations, constraints; first 60 lines), else the `generated/be/db-schema.md` section | 4 |
 | `## Related work items and tests` | `work-items/<ID>.yml` (`summary:` lines), `test-design/features/<ID>.feature` (`Scenario` lines) | 3 |
-| `## Legacy pages` | `confluence-import/**/*.md` containing the ID or 2+ title keywords; first 5 lines each | 5 |
-| `## Sources and limits` | list of files read with `generated.at` where present; truncated sections; the reading rule | 1 |
+| `## Legacy pages` | **pointers**: one line per `confluence-import/**/*.md` page (outside `_done/`) containing the ID or 2+ title keywords - path, matched words, UNVERIFIED, page title | 5 |
+| `## Sources and limits` | `files read into the pack` (what the sections were built from), `pointed at` (the documents the pointer sections name - the recorded slice extends to them once opened), truncated sections (none without `--budget`), the reading rule naming the skill | 1 |
 
 Header line format: `# Context pack: <task> - <resolved subject> - <badge> - built <ISO>`.
 
@@ -31,9 +34,11 @@ demoted under it. Shared sections (`Calculations`, `Flows`, `Graph neighbourhood
 brought it; a calculation or flow that is itself a subject is not repeated as a linked one; the Kafka line and the
 dataset list are unions. Header: `# Context pack: <task 1> + <task 2> - <n> subjects - built <ISO>`; the first line of
 `## Subject` says how many. There is no budget unless `--budget N` is given: the pack holds everything its subjects
-need, each item bounded on its own (a spec reduced to key sections above 200 lines, a table page 60 lines, a legacy
-page 5, a graph neighbourhood 80 per subject). With `--budget`, the lower-ranked sections go first and the footer
-names them; add a subject rather than splitting a task into several packs.
+need, each item bounded on its own (a spec reduced to key sections above 200 lines, a table page 60 lines, a graph
+neighbourhood 80 per subject, a linked calculation or legacy page one pointer line, a linked flow one line plus up to
+six steps). With `--budget`, the lower-ranked sections go first and the footer names them; no agent procedure uses it
+any more. Add a subject rather than splitting a task into several packs; the Contents of the rebuilt pack says which
+lines are new.
 
 ## Subject resolution
 

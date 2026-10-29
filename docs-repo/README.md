@@ -36,8 +36,9 @@ flowchart LR
 ## Quick start (Copilot in IDE / CLI)
 - Open this repo (optionally add `harbor-backend` / `harbor-frontend` as extra workspace folders, read-only).
 - Agents always start at `index.md` → folder `index.md` → concept (see `.github/skills/okf/SKILL.md`).
-- `scripts/context-pack.py --task <ID>` — assemble a **task-scoped context** for an analyst: the spec, its
-  calculations, glossary terms, graph neighbourhood and contract anchors for one feature ID (e.g. `P1-001`).
+- `scripts/context-pack.py --task <ID>` — assemble a **task-scoped context** for an agent: the spec whole, the graph
+  neighbourhood, contracts and tables, and pointers to its calculations, flows and legacy pages (e.g. `P1-001`); the
+  seven steps around it are `.github/skills/task-context/SKILL.md`.
 - `@doc-sync` / `/spec-from-code featureId=P1-001` — create or refresh a spec from `generated/`.
 - `@analyst` / `/jira-from-spec` — stories & subtasks → `work-items/`; `/analyse-request "<free text>"` — a question
   or a change request that names no ID and spans contexts → `generated/catalogue.md`, one merged pack, the analysis

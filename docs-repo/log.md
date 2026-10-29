@@ -1,6 +1,18 @@
 # Update Log
 
 ## 2026-10-29
+* **One context procedure in the task-context skill; the pack points instead of copying.** The analyst had two
+  procedures (a budgeted pack for a question, a full pack for a change request) and the code-reading rules as its
+  steps 9 and 10; the pack copied every linked calculation and flow, so a request over several subjects ran to 1900
+  lines, and a rebuilt pack had no map of what was new. `context-pack.py` now writes a `## Contents` with the line
+  range of every section and part, keeps the subject whole and the computed sections (graph, contracts, tables,
+  merged slice), turns linked calculations, flows and legacy pages into pointers (path, badge, description; a flow's
+  steps that name the subject), demotes embedded headings so `## ` is always a pack section, and records what it
+  pointed at in the footer (P1-001: 979 to 531 lines). The procedure moved into `.github/skills/task-context/SKILL.md`
+  as seven steps, the same for a question and a change request - catalogue, one pack, badges, the pack and its
+  pointers, the documentation and the graph freely, code through the maps, code freely - with a table of how far each
+  agent goes; the agents reference the skill and keep their own procedure. `CONCEPT.md` describes the pack as it is
+  now and why a pack and not a search.
 * **A candidate spec not yet in code, and no renumbering.** The migrator's candidate path assumed the capability a
   legacy page describes exists in code and will get a Run 1; a page describing a screen still to be built (written in
   Confluence first) had no path, and the board pointed at `/spec-skeleton-from-graph`, which has no graph nodes for

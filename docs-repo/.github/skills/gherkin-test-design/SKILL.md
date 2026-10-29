@@ -5,8 +5,9 @@ description: Write Gherkin test cases and synthetic fixtures from a feature spec
 
 # Gherkin test design
 
-1. Work from the context pack: the spec's BRs, the **Worked examples** tables of linked calculations, and the
-   graph neighbourhood (test scope). Nothing else unless blocked.
+1. Work from the context pack (`task-context` skill, steps 1-5): the spec's BRs, the **Worked examples** tables of
+   the calculation concepts the pack points at (open each), and the graph neighbourhood (test scope). Nothing else
+   unless blocked; never code.
 2. One `.feature` per feature ID. Tags: `@<ID>` on Feature; `@BR-<ID>-<n>` and one layer tag
    (`@api @ui @calc @kafka`) per scenario; `@needs-review` when the spec or calculation is `draft` / `unverified` / `STALE`.
 3. Use only steps from `test-design/README.md`; if a new step is required, add it there first.

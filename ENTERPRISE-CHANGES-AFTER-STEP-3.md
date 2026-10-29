@@ -1735,3 +1735,65 @@ written in Confluence first and developed next.
 rule, "a new spec has two origins" rewritten (the request may concern a capability the context's specs do not cover,
 a Confluence page is at most the text of such a request). `MIGRATION-RUNBOOK.md` step 5 migrator item: the same in
 two sentences.
+
+## 48. One context procedure in the task-context skill; the pack points instead of copying (investigation commits after `8d8e2dc`, 2026-10-29)
+
+The analyst had two procedures - a budgeted pack read in one section for a question, a full pack read top to bottom
+for a change request - and the rules for reaching code as its steps 9 and 10, repeated in the prompt, the analysis
+template and the guides. The pack copied the body of every linked calculation and flow, so a request over four or five
+subjects ran to 1900 lines, a rebuilt pack had no map of what was new, and table pages leaked their own `## Columns`
+headings into the pack as fake sections. Now the pack keeps the subject whole and the computed sections (graph,
+contracts, tables, merged slice), turns linked calculations, flows and legacy pages into **pointers** (path, badge,
+description; a flow's steps that name the subject), opens with a `## Contents` giving the line range of every section
+and part, demotes embedded headings and records what it pointed at in the footer (P1-001: 979 to 531 lines; the
+five-subject request pack 1935 to 1466). The procedure around it moved into `.github/skills/task-context/SKILL.md` as
+**seven steps, the same for a question and a change request** - catalogue, one pack, badges, the pack and its
+pointers, the documentation folders and the graph freely, code through the maps, code freely - with a table of how
+far each agent goes; every agent file references the skill (`Context: ..., steps 1-N`) and keeps only its own
+procedure. The enterprise agent references the skill by that path; `--budget` stays a script option no procedure uses.
+
+### 48.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/context-pack.py` | Contents section with line ranges, pointer sections (Calculations, Flows with the steps naming the subject, Legacy pages), heading demotion of embedded documents, `pointed at` line and the new rule in the footer, docstring |
+| `.github/skills/task-context/SKILL.md` | rewritten: the pack (what it holds), the seven steps, "What code gives is evidence", the exit, the table of how far each agent goes, reading a pack, why a pack |
+| `.github/skills/task-context/references/pack-anatomy.md` | heading rule, `## Contents` row, the pointer rows (Calculations, Flows, Legacy pages), Sources row, the bounds paragraph |
+| `.github/agents/analyst.agent.md` | description; the "Context: steps 1-7" section replaces steps 1-4, 9 and 10; the change-request procedure is steps 1-3 (analyse, nothing new without a rule, produce) plus analytics mode; Checks row names step 3; Output names what was opened after the pack |
+| `.github/prompts/analyse-request.prompt.md` | step 1 is the seven context steps for every mode, no `--budget`; question and analysis steps name what was opened after the pack |
+| `.github/prompts/context-pack.prompt.md` | no budget input; read by the Contents; the reply names line ranges and the pointed documents |
+| `.github/skills/gherkin-test-design/SKILL.md` | step 1: worked examples from the calculation concepts the pack points at, never code |
+| `work-items/_analysis-template.md` | Parts evidence sentence (steps 6 and 7 of the skill); Sources: documents opened after the pack, code ranges through the maps, free code search |
+
+### 48.2 Docs repository: single rows to merge
+
+| File | Where | What |
+|---|---|---|
+| `AGENTS.md` | "Work task-scoped" paragraph after the command | replaced: what the pack holds (Contents, subject whole, computed sections, pointers), the seven steps of the skill, the same for a question and a change request, how far each agent goes is one table in the skill |
+| `AGENTS.md` | Commands table, "Task context pack" row | `[--budget N]` dropped from the form; "`--budget N` exists for a tool with a hard context limit, no procedure uses it" |
+| `.github/copilot-instructions.md` | agent table | analyst row (Reads): the seven context steps; `/analyse-request` row: the same seven steps for a question and a change; test-designer row: worked examples of the concepts the pack points at |
+| `.github/agents/test-designer.agent.md` | steps 1 and 3 | "Context: the skill, steps 1-5 (no code)", read by the Contents; worked examples from the calculation concepts the pack points at (open each) |
+| `.github/agents/spec-writer.agent.md` | step 1 | "Context: the skill, steps 1-6 (code: the one manager file the graph names)", read by the Contents |
+| `.github/agents/calc-auditor.agent.md` | step 1 | "Context: the skill, steps 1-6 (code: exactly the two files of step 2)"; legacy pages are pointers to open |
+| `.github/agents/doc-sync.agent.md` | step 2 | "context procedure: the skill, steps 1-6, code only as step 3 below says" |
+| `.github/agents/confluence-migrator.agent.md` | step 2, the pack sentence | "context procedure: the skill, steps 1-5, no code" |
+| `.github/agents/architect.agent.md` | Sources, first line | "Context procedure for a request or spec given by ID: the skill, steps 1-5; no code" |
+| `.github/agents/impact-analyst.agent.md` | step 1 | "You work the graph only - no pack (the skill, How far each agent goes)" |
+| `scripts/coverage-matrix.py` | the **answered from code** sentence of the matrix footer | "(task-context skill steps 6 and 7)" instead of the analyst's steps 9 and 10 |
+| `scripts/README.md` | `context-pack.py` row | what the pack holds now; `--budget N` unused by the procedures |
+| `README.md` | the `context-pack.py` bullet | the pack as it is now and the skill path |
+| `CONCEPT.md` | scripts table, `context-pack.py` row | the pack as it is now; "every agent, step 2 of the task-context skill" |
+| `CONCEPT.md` | the paragraph "The **context pack** is the centre of the design" | replaced by the subsection "The context pack": what it holds, the seven steps, and "Why a pack and not just search" (seven advantages) |
+| `CONCEPT.md` | "How the analyst works", moves 2 and 3 | the seven steps, the same for a question and a change request; the answer at the skill's exit |
+| `CONCEPT.md` | principles table, the "An agent starts from the pack" row | every agent walks the seven steps; the skill's table of how far each goes |
+| `CONCEPT.md` | glossary, "Context pack" row | "the deterministic, recorded slice ... subject whole, computed sections, pointers" |
+| `log.md` | top | the 2026-10-29 entry "One context procedure in the task-context skill" |
+| `.context/*.md` | - | rebuild the packs you keep (`scripts/context-pack.py --task ...`); old packs still carry copied bodies and leaked headings |
+
+### 48.3 Playbook, handbook and setup guide (read only)
+
+`ENTERPRISE-PLAYBOOK.md` 17.10 (new): the two problems, the pack shape, the seven steps, the enterprise agent's
+reference; the code-access answer in section 6, section 7 item 2 (the AGENTS.md sentence) and the analyst paragraph
+of section 17 rewritten to the seven steps. `HANDBOOK.md` principle 4, section 2.6, the analyst and `task-context`
+rows, "Why packs", the glossary line. `ANALYST-DOCS-SETUP.md` "Work task-scoped" paragraph and the analyst agent
+text (the Context section replaces steps 1-4, 9 and 10; the procedure is steps 1-3 plus analytics mode).

@@ -6,13 +6,14 @@ agent: agent
 tools: ['read', 'execute']
 ---
 Task: ${input:task:P1-001}
-Budget (lines): ${input:budget:500}
 
-1. Run `python3 scripts/context-pack.py --task "${input:task}" --budget ${input:budget}`. When the task names several
+1. Run `python3 scripts/context-pack.py --task "${input:task}"` (no budget: the subjects whole, the computed sections, pointers for
+   the linked documents). When the task names several
    subjects separated by ` + ` (`P1-002 + STR-001 + flows/session-inputs-recalculation.md`), pass each as its own
    `--task` (one merged pack); when it is free text that spans several contexts, read `generated/catalogue.md`, name the
    subjects yourself and run with those instead of the text.
-2. Read the produced `.context/*.md` file.
-3. Reply in <= 12 lines: the subject resolved (spec / calculation / node / candidates), its trust badge, sections
-   present, sections truncated or empty, open questions carried from the spec, and the legacy pages that mention it.
+2. Read the produced `.context/*.md` file, starting with its `## Contents`.
+3. Reply in <= 12 lines: the subject resolved (spec / calculation / node / candidates), its trust badge, the sections
+   present with their line ranges, the documents the pack points at (calculations, flows, legacy pages) with their
+   badges, open questions carried from the spec. Procedure after the pack: `.github/skills/task-context/SKILL.md`, steps 3-7.
 Do not open any other file.
