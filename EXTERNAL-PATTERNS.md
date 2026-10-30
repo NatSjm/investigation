@@ -87,7 +87,7 @@ Question asked: does anywhere exist something like our documentation project? An
 neighbour, nobody has put the slices together for the analyst, and nobody works under our constraints (Copilot
 only, no MCP, Python standard library, nothing an agent writes trusted until a person verified it).
 
-Sources: Reversa (arXiv 2605.18684, "reverse documentation engineering" of legacy software into operational
+Sources: Reversa (arXiv 2605.18684, "reverse documentation engineering" of imported software into operational
 specifications for AI agents); CoreStory (corestory.ai, commercial "Code Intelligence Model"); business-rule
 recovery research - Kalohia, ACL 2026 industry track (COBOL / PL/I requirements extraction), AgentModernize
 (arXiv 2605.17535, Behavioral Specification Graphs), COBRAIN (ACM 2025, LLM vs rule-based extraction); generated
@@ -132,10 +132,10 @@ overview at ceaksan.com; OpenAI "Harness engineering" (AGENTS.md as a map, docs/
 ### F. Provenance per business rule (from Reversa, AgentModernize, CoreStory)
 Today the whole concept carries `status` and `verified`; a single rule does not say where it came from. Every rule
 that `spec-writer`, `doc-sync` or `confluence-migrator` writes from evidence gets a source marker at the end of the
-line until a person verifies the spec: `(source: code <file:line>)` from the graph, `(source: legacy <page path>)`
+line until a person verifies the spec: `(source: code <file:line>)` from the graph, `(source: imported <page path>)`
 from quarantine, `(source: contract <operationId>)`, `(source: person <id>)`. A rule without a marker in a draft
 spec is an `okf-validate --strict` warning. Verification removes nothing: the marker is what the verifier checks.
-Cheap: a convention in `write-feature-spec` and `legacy-page-audit`, one check in the validator.
+Cheap: a convention in `write-feature-spec` and `imported-page-audit`, one check in the validator.
 
 *Applied 2026-10-23* (`features/conventions.md`, "Provenance per rule"): the code form names the `sources[]` entry
 and a symbol, `(source: code <sources-id>#<method>)`, not a `file:line` - lines rot on the next commit and nothing

@@ -18,7 +18,7 @@ naming contract every file follows.
 |---|---|---|
 | [`backend/`](backend/) | `harbor-backend` (Kotlin / Spring Boot / Maven / PostgreSQL / Kafka) | layered `core` (package-by-layer `harbor/<layer>/`: api, manager, service, dao, event, job, utils, ...; business context = class-name prefix per `docs-repo/contexts.yml`) + `kafka-client` (topics, payloads) + `init_docker_compose/` (local env); OpenAPI-first contract (`harbor-core/src/main/resources/openapi/openapi_harbor.yaml`), AsyncAPI (`openapi/harbor-events.yaml`), Flyway migrations, calculations in `utils/` with unit tests, external-service contracts in `harbor-core/src/main/resources/api/`; the applied kit (`AGENTS.md`, `.github/`, `scripts/docs/`, `docs/_generated/`) |
 | [`frontend/`](frontend/) | `harbor-frontend` (React / TypeScript) | feature folders mirroring the bounded contexts, generated `openapi-fetch` client with the session header, routes; the applied kit |
-| [`docs-repo/`](docs-repo/) | `harbor-docs` (OKF v0.2 bundle) | specs, calculations, glossary, architecture, generated maps + graph + contracts, work items, test design, legacy pages; **Copilot customisation** (`AGENTS.md`, agents, prompts, skills, hooks) and Python scripts (context packs, validators, graph, analytics) |
+| [`docs-repo/`](docs-repo/) | `harbor-docs` (OKF v0.2 bundle) | specs, calculations, glossary, architecture, generated maps + graph + contracts, work items, test design, imported pages; **Copilot customisation** (`AGENTS.md`, agents, prompts, skills, hooks) and Python scripts (context packs, validators, graph, analytics) |
 | [`code-repo-kit/`](code-repo-kit/) | reusable kit | what gets copied into each code repo (`apply-kit.py`), CI, VS Code retrieval extension (MCP substitute), shared hygiene files |
 | [`harbor.code-workspace`](harbor.code-workspace) | the workspace | opens all of the above side by side with the extension settings |
 
@@ -36,7 +36,7 @@ flowchart LR
   PACK --> ANALYST[@analyst] --> WI[work-items -> Jira]
   PACK --> TD[@test-designer] --> TESTS[test-design -> tests repo]
   PACK --> SW[@spec-writer / @calc-auditor / @doc-sync] --> SPEC
-  LEGACY[confluence-import] -. verified, never copied .-> SW
+  IMP[confluence-import] -. verified, never copied .-> SW
 ```
 
 ## Try it (Python 3.11+, nothing else to install)
@@ -60,10 +60,10 @@ python3 docs-repo/scripts/coverage-matrix.py
 
 Then open `harbor.code-workspace` in VS Code with Copilot and, in the `harbor-docs` folder, try
 `/context-pack P1-001`, `@analyst /jira-from-spec STR-001`, `/spec-skeleton-from-graph product2 P2-001`,
-`/audit-calculation stress_test_monthly` (the legacy page is deliberately outdated), `/coverage-report`.
+`/audit-calculation stress_test_monthly` (the imported page is deliberately outdated), `/coverage-report`.
 
 ## Deliberate gaps (the backlog the agents work on)
 
 Specs `P2-001`, `COV-001`, `IMP-001`, `ADM-001` and the calculation `peer_benchmark_simulation` do not exist yet
 (they show as `code only` in `docs-repo/generated/graph/REPO_MAP.md`); `MKT-001` and `RPT-001` are skeletons;
-`STR-001` is a draft whose legacy page contradicts the code. Those are the exercises.
+`STR-001` is a draft whose imported page contradicts the code. Those are the exercises.

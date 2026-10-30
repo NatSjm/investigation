@@ -16,7 +16,7 @@ description: How to write or update a functional feature spec in this repo (stru
 4. Fill **Summary / Actors / Business rules** from the manager file named on the `context:` node (layer
    `manager/`, `<Ctx>Manager.kt`) - the only source file you open. Rules: `BR-<ID>-<n>: <MUST / MUST NOT statement>`, one testable assertion each,
    ending after the footnote with `(source: code manager#<method>)`, the method whose code or KDoc states the rule
-   (a symbol, never a line range; `(source: legacy conf-<slug>)` for a rule only a legacy page states;
+   (a symbol, never a line range; `(source: imported conf-<slug>)` for a rule only an imported page states;
    `features/conventions.md`, "Provenance per rule").
 5. Link calculations, never inline formulas; thresholds and defaults are quoted from the calculation concept.
 6. Frontmatter: `type: Feature Spec`, one-sentence `description`, `tags`, `status: draft`, `stale_after`,

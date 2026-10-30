@@ -14,7 +14,7 @@ search/replace (`harbor-*` -> your repo names, `Harbor` -> your platform name):
 
 Constraints honoured: no third-party libraries or frameworks in the code repos (only standard-library Python, the existing Spring test
 classpath, the existing `typescript` devDependency), no MCP, GitHub Copilot only (VS Code + JetBrains), confidentiality in a
-regulated enterprise (synthetic data, content exclusion, read-only tooling). Confluence stays the legacy source and the
+regulated enterprise (synthetic data, content exclusion, read-only tooling). Confluence stays the imported source and the
 publish target; Jira and the tests repo are outputs.
 
 ---
@@ -36,7 +36,7 @@ publish target; Jira and the tests repo are outputs.
 | 0.10 | Security review slot for the VS Code extension (~250 lines, read-only, no network) and for the vendored OKF Python | security team | JetBrains-only path still works via `graph-query.py` + prompts; `okf-validate.py` is the gate without Python |
 | 0.11 | Language policy agreed: English bundle, source language at the edges (INVESTIGATION §3.14); a native-speaking reviewer per context | owners | without a reviewer, migrated specs stay `draft` |
 
-Decide and record: owners per bounded context (frontmatter `owners`), pilot context (one with calculations **and** a legacy
+Decide and record: owners per bounded context (frontmatter `owners`), pilot context (one with calculations **and** an imported
 page to audit), repo names.
 
 ---
@@ -72,7 +72,7 @@ page to audit), repo names.
    header name (`X-Harbor-Session` -> yours), JDK / Node versions in `copilot-setup-steps.yml`.
 3. **Content exclusion**: apply `code-repo-kit/shared/copilot-content-exclusion.yml` in repo settings (`target/` incl.
    `generated-sources`, `build/`, `node_modules/`, lockfiles, generated clients and `schema.d.ts`, snapshots, fixtures, env configs).
-4. Legacy baseline once: `python3 scripts/check-file-size.py --root . --max-lines 400 --write-baseline .filesize-baseline.txt` (FE: 300).
+4. Imported baseline once: `python3 scripts/check-file-size.py --root . --max-lines 400 --write-baseline .filesize-baseline.txt` (FE: 300).
 5. Distribute `code-repo-kit/shared/ide-setup.md` and one `*.code-workspace` per bounded context from
    `shared/workspaces/product1.code-workspace` (BE `core` sources + resources + FE feature + docs repo; IntelliJ scopes by
    class-name prefix, e.g. `file:harbor-core/src/main/kotlin/com/acme/harbor//Product1*.kt||file:harbor-core/src/main/kotlin/com/acme/harbor//Projection*.kt`).
@@ -149,8 +149,8 @@ tables, topics, FE hooks/routes with `file:line`; `REPO_MAP.md` shows the pilot 
 |---|---|---|---|
 | 6.1 | Context pack | `/context-pack <ID>` or `scripts/context-pack.py --task <ID>` (skill `task-context`) | `.context/<ID>.md`; every later step starts from it |
 | 6.2 | Skeleton spec from graph | `/spec-skeleton-from-graph <context> <ID>` (agent `spec-writer`) | `features/<ctx>/<ID>.md` draft with Interfaces (from `openapi_harbor.yaml`), Events, Data prefilled |
-| 6.3 | Fill business rules | `spec-writer` reads graph neighbourhood + one manager file (`context:` node); legacy pages via `confluence-migrator` (translates via glossary `Aliases`, sets `source_lang`, `aliases`) | spec `status: draft`, open questions listed |
-| 6.4 | Calculations + audit | skill `calculation-spec` (worked examples copied from the unit test); `/audit-calculation <name>` (agent `calc-auditor`, skill `legacy-page-audit`) against the calculator + its test | `domain/calculations/<name>.md` with `## Audit <date>` table; legacy page `migrated | obsolete` |
+| 6.3 | Fill business rules | `spec-writer` reads graph neighbourhood + one manager file (`context:` node); imported pages via `confluence-migrator` (translates via glossary `Aliases`, sets `source_lang`, `aliases`) | spec `status: draft`, open questions listed |
+| 6.4 | Calculations + audit | skill `calculation-spec` (worked examples copied from the unit test); `/audit-calculation <name>` (agent `calc-auditor`, skill `imported-page-audit`) against the calculator + its test | `domain/calculations/<name>.md` with `## Audit <date>` table; imported page `migrated | obsolete` |
 | 6.5 | Human review | owner adds `verified[].by: human:<id>` | index badge `human-reviewed` |
 | 6.6 | Jira | `@analyst /jira-from-spec <ID>` (pack only; subtasks per graph node kind) -> `work-items/<ID>.yml` -> `validate-work-items.py` -> `jira-push.py` (or CSV) | epic/stories/subtasks |
 | 6.7 | Tests | `@test-designer /tests-from-spec <ID>` -> `test-design/features/<ID>.feature` + fixtures -> `push-to-tests-repo.py` | PR in the tests repo |
@@ -164,7 +164,7 @@ Measure during the pilot (Step 8) and adjust `AGENTS.md`, the pack budget and th
 
 ## Step 7 - Scale out and harden (weeks 3-8)
 
-1. One bounded context per sprint: tag code (`@docs`), pack, skeleton from graph, migrate + audit legacy pages, review, Jira, tests.
+1. One bounded context per sprint: tag code (`@docs`), pack, skeleton from graph, migrate + audit imported pages, review, Jira, tests.
 2. Flip gates to blocking: `gen-all.py --check`, `check-file-size.py`, `gen-graph.py --check`, `coverage-matrix.py --check`,
    `okf-validate.py --strict`; keep the IDE hooks identical to CI.
 3. `stale_after` discipline: specs older than 90 days without re-verification get the `STALE` badge; packs show it; agents mark
@@ -204,14 +204,14 @@ Jira subtasks produced in < 10 minutes per story with no source files read, ever
 | instructions | `.github/instructions/{features,calculations,generated,test-design,work-items,confluence-import}.instructions.md` | path-scoped rules (`applyTo`, `description`) |
 | agent | `agents/analyst.agent.md` | pack -> Jira YAML + analytics mode; handoffs to `test-designer`, `spec-writer` |
 | agent | `agents/spec-writer.agent.md` | spec from graph + contracts + one manager file; handoffs to `analyst`, `calc-auditor` |
-| agent | `agents/calc-auditor.agent.md` | formula doc / legacy page vs. calculator + unit test (two files) |
+| agent | `agents/calc-auditor.agent.md` | formula doc / imported page vs. calculator + unit test (two files) |
 | agent | `agents/doc-sync.agent.md` | review `generated/` PRs, propose spec updates |
 | agent | `agents/test-designer.agent.md` | spec -> Gherkin + fixtures (graph-driven scope) |
 | agent | `agents/architect.agent.md` | HLD / ADR from contracts and graph |
 | agent | `agents/impact-analyst.agent.md` | blast radius from the graph, checklist output |
-| agent | `agents/confluence-migrator.agent.md` | classify/merge legacy pages; formula pages -> `calc-auditor` |
+| agent | `agents/confluence-migrator.agent.md` | classify/merge imported pages; formula pages -> `calc-auditor` |
 | skill | `skills/task-context` (+ `references/pack-anatomy.md`) | build and consume context packs |
-| skill | `skills/write-feature-spec` (+ `source-priority.md`), `calculation-spec` (+ `conventions.md`), `legacy-page-audit` | authoring; claims list, two-file comparison, audit table, status rules |
+| skill | `skills/write-feature-spec` (+ `source-priority.md`), `calculation-spec` (+ `conventions.md`), `imported-page-audit` | authoring; claims list, two-file comparison, audit table, status rules |
 | skill | `skills/jira-work-items` (+ `slicing-heuristics.md`), `gherkin-test-design` (+ `coverage-checklist.md`) | downstream outputs |
 | skill | `skills/code-graph` (+ `subtask-mapping.md`, `graph-schema.md`) | reading/querying the graph; node -> subtask / test layer |
 | skill | `skills/docs-analytics` | coverage / trust / staleness answers from generated files |
@@ -245,7 +245,7 @@ Jira subtasks produced in < 10 minutes per story with no source files read, ever
 ### Fixtures to test against before touching the real repos
 The simulated repos `backend/` and `frontend/` (naming contract `BLUEPRINT.md`): layered BE (`core` + `kafka-client` in `pom.xml`, 10 contexts by class-name prefix in `contexts.yml`),
 34 operations in `harbor-core/src/main/resources/openapi/openapi_harbor.yaml`, 5 topics, 5 external contracts, 9 FE feature folders; specs `CLI-001` / `SES-001` / `P1-001`
-stable, `STR-001` draft with a deliberately outdated legacy page, `MKT-001` / `RPT-001` skeletons, `P2-001` / `COV-001` /
+stable, `STR-001` draft with a deliberately outdated imported page, `MKT-001` / `RPT-001` skeletons, `P2-001` / `COV-001` /
 `IMP-001` / `ADM-001` deliberately missing. Run every generator, the publish, the graph joiner, the packs and the coverage
 matrix here (`README.md` "Try it"); counts and spec coverage: see `docs-repo/generated/graph/REPO_MAP.md`. Then exercise the agents on
 the gaps: `/spec-skeleton-from-graph product2 P2-001`, `/audit-calculation stress_test_monthly`, `@analyst /jira-from-spec STR-001`, `/coverage-report`.

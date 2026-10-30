@@ -59,7 +59,7 @@ Deferred until the trigger named:
   not a shortcut around the gate.
 
 **A knowledge base another team already generated** (a tester's "RAG knowledge base" for the frontend and backend,
-an onboarding page written by an agent from the code) is an imported legacy page, not a source of truth: it is a
+an onboarding page written by an agent from the code) is an imported page, not a source of truth: it is a
 snapshot of one day without `file:line`, and nothing regenerates it. Put it under `confluence-import/<SPACE>/` as
 `<name>.md` (for example `confluence-import/<SPACE>/rag.md`) with the header block of that folder's README (`source`,
 `last_modified`, `author`, `status: imported`) and a row in its "Current pages" table - **never under
@@ -186,7 +186,7 @@ third-party/                   the vendored OKF skills and licences
 ```
 
 Delete the Harbor specs, calculations, flows, ADRs, work items, test fixtures (`test-design/fixtures/*.json`) and the
-legacy pages under `confluence-import/HARBOR/`; they are examples, not content. Rewrite `architecture/overview.md`,
+imported pages under `confluence-import/HARBOR/`; they are examples, not content. Rewrite `architecture/overview.md`,
 `architecture/integrations.md` and `domain/context-map.md` before validating: their links point at the deleted examples
 and `--strict` turns broken links into failures. Run once:
 
@@ -229,7 +229,7 @@ Write these sections, in this order, adapted from `docs-repo/AGENTS.md`:
    last edit of a task, for what it changed (`okf-validate.py --strict`), never after each edit, and a
    task that changed no file runs none. Copy both from `docs-repo/AGENTS.md`.
 6. **Agents, prompts, skills.** The list of agent names with one line each, the lifecycle sentence (skeleton,
-   legacy merge, calculation audit, owner decision), and the pointer to `migration-status.py`.
+   page merge, calculation audit, owner decision), and the pointer to `migration-status.py`.
 
 Then copy `.github/` as it is and adapt only names:
 
@@ -571,7 +571,7 @@ Export the space to HTML (the standard space export, no API needed), put each pa
 `confluence-import/README.md` (the analysts write only its **Known state** column). It is idempotent and has `--check`.
 Rules, all enforced by `confluence-import.instructions.md` and the quarantine README: nothing in that folder is
 authoritative; `raw-html/` and the generated pages are never edited by hand; pages are migrated one per run; processed
-pages move to `_done/<section>/` through `scripts/legacy-done.py`, which writes `status: migrated|obsolete`, the date
+pages move to `_done/<section>/` through `scripts/import-done.py`, which writes `status: migrated|obsolete`, the date
 and `superseded_by` (every concept the page went into) and re-points the links; only the images a page shows are imported, and anything with
 customer data is deleted before the import; the folder is excluded from the validators.
 
@@ -583,7 +583,7 @@ column, so quote a page's note in the request that starts its run.
 **With an agent.** The export and the import script are not agent work. The triage is: 1. `/migration-plan <SPACE>`
 (agent `migration-lead`) lists the imported pages per target context and the unassigned ones, and proposes a target from
 the title, the context map and the glossary; the analyst confirms or corrects in the inventory table. 2. A page the lead
-marks as a formula page goes to `/audit-calculation <path of the page>` (agent `calc-auditor` accepts a legacy page as
+marks as a formula page goes to `/audit-calculation <path of the page>` (agent `calc-auditor` accepts an imported page as
 input) instead of Run 2. 3. An architecture, decision or process page goes to `@architect <path of the page>`
 (section 10, "Architecture pages"); the board lists it under "Architecture pages". 4. Everything else waits for Run 2
 (`@confluence-migrator`, section 10), one page per run.
@@ -640,12 +640,12 @@ file and the second would read the first screen's. Pass the file of this screen'
 still exactly one source file. Nothing after the skeleton needs it: the spec's own `code_refs` and markers name the
 right class from then on.
 
-**Run 2, legacy pages.** `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run. The migrator
-names every spec the page touches from `generated/catalogue.md` - a legacy page often describes several contexts,
+**Run 2, imported pages.** `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run. The migrator
+names every spec the page touches from `generated/catalogue.md` - an imported page often describes several contexts,
 and a context you name in the message is the primary target, not a filter - and merges each fact into the spec of
 the context that owns that behaviour; a sequence across contexts goes to a flow, or to an Open question when none
 exists; a context the page describes that has no skeleton yet keeps the page out of `_done/` until its Run 1 (the
-board keeps listing it). New facts are merged into the skeleton, contradictions become `> ⚠️ CONFLICT (legacy: <page>)` callouts, unverifiable claims
+board keeps listing it). New facts are merged into the skeleton, contradictions become `> ⚠️ CONFLICT (imported: <page>)` callouts, unverifiable claims
 `> ❓ UNVERIFIED`, domain terms go to the glossary, the page is cited in `sources[]` and moved to `_done/`. No number,
 threshold or formula is copied from a page. The migrator never creates a spec: a page about a modal or screen that no
 spec of the context covers leaves a `candidate spec:` line under the primary spec's Open questions, marked `in code`
@@ -660,7 +660,7 @@ Jira), and a main screen that arrives late is marked by `aliases`, `tags` and th
 request the analyst takes (a context without a spec, or a capability the context's specs do not cover); a Confluence
 page is never one by itself - at most it is the text of such a request, and its rules are proposed until the code has them.
 
-**Architecture pages.** `@architect confluence-import/<SPACE>/<page>.md` (task "Legacy page"), one page per run, for
+**Architecture pages.** `@architect confluence-import/<SPACE>/<page>.md` (task "Imported page"), one page per run, for
 a page about what the application is, its parts, integrations or deployment, a decision, or a procedure that still
 matters. They are not part of a spec's runs and wait for one thing only: `/integrations-from-contracts` (section 5)
 must have refreshed `architecture/integrations.md`, and `scope = overview-draft` rewritten the overview while it
@@ -697,7 +697,7 @@ freshness, not conformance, and never fails a run: the owner re-verifies, nobody
 **Calculations** are `type: Attested Computation` documents: inputs with units, parameters with defaults and where
 they are read from, outputs with rounding, the formula, a step list with footnotes to the source, the sanctioned code
 shape, conventions, worked examples copied from the test with the test method named, an audit table, open questions.
-Agents bind parameters; they never re-derive a formula. `calculation-spec` and `legacy-page-audit` are the skills.
+Agents bind parameters; they never re-derive a formula. `calculation-spec` and `imported-page-audit` are the skills.
 The `## Parameters` table names keys exactly as in `generated/be/parameters.md`; the admin spec maps each key to the
 calculation that owns its meaning, and `validate-frontmatter.py` checks both directions (17.7). Worked examples come
 from unit tests; scenario setups cite named datasets from `generated/be/datasets.md` (17.7).
@@ -707,7 +707,7 @@ participants, steps with `file:line`, invariants, source map. The spec-writer cr
 neighbourhood crosses communities; the architect writes larger ones on request. They follow the lifecycle of the spec
 that spawned them.
 
-**Glossary** rows are added by the migrator (Run 2) and the spec-writer; the Aliases column keeps legacy and
+**Glossary** rows are added by the migrator (Run 2) and the spec-writer; the Aliases column keeps imported and
 source-language wording so searches still find the concept.
 
 **With an agent.** Calculations: `/audit-calculation <name>` per calculation named by a spec (Run 3); the auditor reports
@@ -715,7 +715,7 @@ a calculator without a unit test as a finding and stops, a developer writes the 
 `@architect` (or `@spec-writer` during Run 1 when the graph neighbourhood crosses communities): "Write `flows/<name>.md`
 (`type: Flow`) for <behaviour> from `generated/graph/*.md` and the specs <IDs>: trigger, participants per community, steps
 with `file:line`, invariants, source map; cite rules by ID, restate none." Glossary: `@spec-writer` adds a row or an alias
-when a search term misses; `@confluence-migrator` adds the legacy wording during Run 2. Every result goes through
+when a search term misses; `@confluence-migrator` adds the imported-page wording during Run 2. Every result goes through
 `validate-frontmatter.py` (parameter cross-check) before the review.
 
 ---
@@ -775,7 +775,7 @@ questions per spec, Copilot premium requests per run.
 - **Confluence changes.** Re-export, run `confluence-import.py` again; it skips pages already under `_done/` whose
   export is not newer, and writes a page that changed after its migration again as a fresh page with
   `supersedes_done` naming the migrated copy (untouched; inventory `re-imported, migrated copy <path>`); Run 2 again
-  on the fresh page, `legacy-done.py` replaces the copy and carries its `superseded_by` forward.
+  on the fresh page, `import-done.py` replaces the copy and carries its `superseded_by` forward.
 - **Drift found by a reader.** Open question in the spec, status back to draft, owner decides; never a silent edit.
 - **The board.** `migration-status.py --scope all` weekly; the `migration-lead` agent annotates order and blockers.
 
@@ -1004,7 +1004,7 @@ calculation the glossary alias pointed at; and question mode reused the change-r
 the narrowest subject that answers it (calculation for "how is it computed or classified", spec for "what does the
 screen show or allow", flow for "in which order across contexts", never `context:<name>`), is built with
 `--budget 200` (the ranked truncation keeps the Subject, the spec or calculation body and the linked calculations
-whole and turns the graph, contracts, tables, related items and legacy pages into pointers) and the analyst reads
+whole and turns the graph, contracts, tables, related items and imported pages into pointers) and the analyst reads
 the Subject and the section the question names; a pointer is followed only when the answer needs it, and dropping
 the budget is escalation step 1 as before. A change request keeps the full pack read top to bottom: the epic uses
 every section and the analysis document cites the pack. Measured: the CLI-001 pack goes from 521 to about 215 lines

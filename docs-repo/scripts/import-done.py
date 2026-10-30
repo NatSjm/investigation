@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Move a processed legacy page into confluence-import/<SPACE>/_done/<section>/ and record where it went.
+"""Move a processed imported page into confluence-import/<SPACE>/_done/<section>/ and record where it went.
 
 The last agent that takes a page (confluence-migrator, architect or calc-auditor) runs this instead of moving the
 file by hand. Deterministic: the folder comes from the page's `section:` header (`_done/` itself when the page has
@@ -20,10 +20,10 @@ section header decides, as for any page), the old `superseded_by` entries are ca
 export date, and pages under `_done/` that linked the old copy are re-pointed when its path changed. Git history keeps
 the replaced copy; the tree holds one copy per page.
 Examples:
-  python3 scripts/legacy-done.py confluence-import/HARBOR/business/admin-parameters-page.md --into ADM-001
-  python3 scripts/legacy-done.py confluence-import/HARBOR/technical/kafka-topics.md --into architecture/integrations.md --into architecture/adr/0005-topic-naming.md
-  python3 scripts/legacy-done.py confluence-import/HARBOR/business/old-export.md --status obsolete --reason "export module removed in 2024"
-  python3 scripts/legacy-done.py <page> --into ADM-001 --dry-run"""
+  python3 scripts/import-done.py confluence-import/HARBOR/business/admin-parameters-page.md --into ADM-001
+  python3 scripts/import-done.py confluence-import/HARBOR/technical/kafka-topics.md --into architecture/integrations.md --into architecture/adr/0005-topic-naming.md
+  python3 scripts/import-done.py confluence-import/HARBOR/business/old-export.md --status obsolete --reason "export module removed in 2024"
+  python3 scripts/import-done.py <page> --into ADM-001 --dry-run"""
 import argparse
 import os
 import re
@@ -222,7 +222,7 @@ def main():
 
     row = f"| `{new_rel}` | {get_val(fm, 'last_modified') or '-'} | {a.status} {today}" + (' into ' + ', '.join(os.path.splitext(os.path.basename(p))[0] for p in into) if into else '') + (f' - {a.reason.strip()}' if a.reason.strip() else '') + (f", replaces the migrated copy of {get_val(fm, 'supersedes_done_modified') or '?'}" if old_page else '') + ' |'
     verb = 'would move' if a.dry_run else 'moved'
-    print(f'legacy-done: {verb} {page_rel} -> {new_rel}; status {a.status}; superseded_by: {", ".join(into) or "-"}; '
+    print(f'import-done: {verb} {page_rel} -> {new_rel}; status {a.status}; superseded_by: {", ".join(into) or "-"}; '
           f'{n_links} link(s) re-pointed in the page, {len(repointed)} page(s) under _done/ re-pointed to it')
     if old_page:
         print(f'  replaces the migrated copy {old_rel} (earlier_migration: {earlier}); {len(carried)} superseded_by entr{"y" if len(carried) == 1 else "ies"} carried forward')

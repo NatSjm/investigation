@@ -19,7 +19,7 @@
 | `## Contracts` | `generated/openapi/backend.yaml` path blocks for `api[]`; `generated/asyncapi/backend.yaml` channel names for `events[]` (a flow's `channels[]`; when the backend has no AsyncAPI document, the line points at `generated/be/events.md` instead), then one line per topic with its payload type, its schema file under `generated/asyncapi/schemas/` and the field table from `events.md` | 4 |
 | `## Data` | the page of every `tables[]` entry from `generated/be/db/schema/tables/<table>.md` (table comment, columns with comments, relations, constraints; first 60 lines), else the `generated/be/db-schema.md` section | 4 |
 | `## Related work items and tests` | `work-items/<ID>.yml` (`summary:` lines), `test-design/features/<ID>.feature` (`Scenario` lines) | 3 |
-| `## Legacy pages` | **pointers**: one line per `confluence-import/**/*.md` page (outside `_done/`) containing the ID or 2+ title keywords - path, matched words, UNVERIFIED, page title | 5 |
+| `## Imported pages` | **pointers**: one line per `confluence-import/**/*.md` page (outside `_done/`) containing the ID or 2+ title keywords - path, matched words, UNVERIFIED, page title | 5 |
 | `## Sources and limits` | `files read into the pack` (what the sections were built from), `pointed at` (the documents the pointer sections name - the recorded slice extends to them once opened), truncated sections (none without `--budget`), the reading rule naming the skill | 1 |
 
 Header line format: `# Context pack: <task> - <resolved subject> - <badge> - built <ISO>`.
@@ -30,12 +30,12 @@ Header line format: `# Context pack: <task> - <resolved subject> - <badge> - bui
 keeps the headings above; inside a per-subject section (`Subject`, `Spec`, `Calculation`, `Flow`, `Context overview`,
 `Specs in the flow`) every subject gets a block headed `### <task> (<kind>: <path>)` with the body's own headings
 demoted under it. Shared sections (`Calculations`, `Flows`, `Graph neighbourhood`, `Contracts`, `Data`, `Related`,
-`Legacy pages`) list each calculation, flow, contract operation, table, work item or page once, whichever subject
+`Imported pages`) list each calculation, flow, contract operation, table, work item or page once, whichever subject
 brought it; a calculation or flow that is itself a subject is not repeated as a linked one; the Kafka line and the
 dataset list are unions. Header: `# Context pack: <task 1> + <task 2> - <n> subjects - built <ISO>`; the first line of
 `## Subject` says how many. There is no budget unless `--budget N` is given: the pack holds everything its subjects
 need, each item bounded on its own (a spec reduced to key sections above 200 lines, a table page 60 lines, a graph
-neighbourhood 80 per subject, a linked calculation or legacy page one pointer line, a linked flow one line plus up to
+neighbourhood 80 per subject, a linked calculation or imported page one pointer line, a linked flow one line plus up to
 six steps). With `--budget`, the lower-ranked sections go first and the footer names them; no agent procedure uses it
 any more. Add a subject rather than splitting a task into several packs; the Contents of the rebuilt pack says which
 lines are new.

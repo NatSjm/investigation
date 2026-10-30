@@ -64,5 +64,5 @@ the YAML is the source, this list is the summary the analyst reads first.
 ## Sources
 - pack: `python3 scripts/context-pack.py --task <subject> --task <subject> ...` (built <ISO>)
 - catalogue: `generated/catalogue.md` (generated <date>)
-- documents opened after the pack (task-context steps 4 and 5): the calculations, flows, legacy pages and other files the pack pointed at or a search found, each with the fact it gave
+- documents opened after the pack (task-context steps 4 and 5): the calculations, flows, imported pages and other files the pack pointed at or a search found, each with the fact it gave
 - code read (task-context step 6): each range or file, how it was located (a `file:line` of the pack, `graph-query.py --find`, `components.md`, `codebase-map.md`, `docs-tags.md`, or a free search for a question that still blocked), the commit from `generated/manifest.yml`, and the question it answered

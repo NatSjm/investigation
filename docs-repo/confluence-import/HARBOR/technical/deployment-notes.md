@@ -17,7 +17,7 @@ imported_from: confluence-import/raw-html/technical/Deployment-notes_48103801.ht
 
 # Deployment notes
 
-> Exported legacy page. Quarantined — see `confluence-import/README.md`. Not authoritative.
+> Imported Confluence page. Quarantined — see `confluence-import/README.md`. Not authoritative.
 
 Standard export layout: the page file sits in the section folder and its attachments under `attachments/<pageId>/`.
 

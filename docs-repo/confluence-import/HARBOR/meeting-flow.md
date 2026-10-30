@@ -1,14 +1,14 @@
 ---
 source: Confluence HARBOR/Meeting flow
 last_modified: 2025-09-02
-author: legacy
+author: unknown
 confluence_id: 48103610
 url: https://confluence.example.com/display/HARBOR/Meeting+flow
 ---
 
 # Meeting flow
 
-> Exported legacy page. Quarantined — see `confluence-import/README.md`. Not authoritative.
+> Imported Confluence page. Quarantined — see `confluence-import/README.md`. Not authoritative.
 
 This page describes how a representative runs a client meeting in Harbor, from finding the client to handing over
 the report.

@@ -21,9 +21,9 @@ description: Rules for calculation concepts (OKF Attested Computation) - formula
 - **Provenance per step.** Until a person verifies the document, every numbered step of the Formula step list and the
   Conventions paragraph end, after their footnotes, with one source marker: `(source: code <sources-id>#<symbol>)`
   names the `sources[]` entry of the file and the function, property or constant that implements the step (`impl#build`,
-  `rounding#divideAsRatio`), never a line; `(source: legacy <sources-id>)`, `(source: person human:<id>)` and
+  `rounding#divideAsRatio`), never a line; `(source: imported <sources-id>)`, `(source: person human:<id>)` and
   `(source: spec BR-<ID>-<n>)` as in `features/conventions.md`. The marker is what `calc-auditor` checks at Run 3 and the
   owner at Run 4 (open the symbol, not the file) and it stays after verification. `okf-validate.py --strict` warns on a
   draft step or paragraph without one; a calculation tagged `proposed` (no implementation yet) is exempt.
-- Legacy descriptions (Confluence) are evidence, not truth: cite them in `sources[]` and mark any difference
-  with `> ⚠️ CONFLICT (legacy: <page>)` until `calc-auditor` resolves it.
+- Imported descriptions (Confluence) are evidence, not truth: cite them in `sources[]` and mark any difference
+  with `> ⚠️ CONFLICT (imported: <page>)` until `calc-auditor` resolves it.

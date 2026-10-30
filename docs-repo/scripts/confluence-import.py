@@ -11,7 +11,7 @@ Source layout (--src is the export root; one folder per page tree = section, or 
 Pages already migrated (a file under <SPACE>/_done/ with the same confluence_id) are skipped while the export is not
 newer than the migrated copy; a newer export (last_modified of both parseable, the export's later) is written as a fresh
 page in its section folder with `supersedes_done` naming the migrated copy and `supersedes_done_modified` its date, so
-an agent reruns on it and scripts/legacy-done.py replaces the copy; nothing under _done/ is ever written or deleted.
+an agent reruns on it and scripts/import-done.py replaces the copy; nothing under _done/ is ever written or deleted.
 Files the script wrote earlier for a page that disappeared from the export are deleted (only files carrying the
 `imported_from` header, never _done/).
 
@@ -35,7 +35,7 @@ from _common import (repo_root, read_text_or_empty, write_text, rel, posix, get_
 
 PAGE_RX = re.compile(r'^(.*?)_(\d+)$')
 IMAGE_EXT = ('.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.bmp')
-BANNER = '> Exported legacy page. Quarantined — see `confluence-import/README.md`. Not authoritative.'
+BANNER = '> Imported Confluence page. Quarantined — see `confluence-import/README.md`. Not authoritative.'
 VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'}
 SKIP_TAGS = {'script', 'style', 'noscript', 'head', 'title', 'meta', 'link', 'input', 'button', 'select', 'textarea'}
 RAW_TAGS = {'iframe', 'object', 'embed', 'svg', 'video', 'audio', 'canvas', 'map', 'form', 'math'}
@@ -728,7 +728,7 @@ def build_page(page, by_path, by_id_, out_dir, args, md):
         fm.append(f'confluence_id: {page.id}')
         if args.base_url:
             fm.append(f'url: {args.base_url.rstrip("/")}/pages/viewpage.action?pageId={page.id}')
-    fm.append(f'author: {page.author or "legacy"}')
+    fm.append(f'author: {page.author or "unknown"}')
     if page.last_modified:
         fm.append(f'last_modified: {page.last_modified}')
     elif page.raw_date:
@@ -794,7 +794,7 @@ def inventory_block(space, pages_by_section, done_pages, existing_readme, contex
             else:
                 state = known.get(path) or 'to triage'
             ctx = guess_context(contexts, p.title, p.body_text) or '-'
-            lines.append(f'| `{path}` | {p.id or "-"} | {lm} | {p.author or "legacy"} | {p.images} | {ctx} | {state} |')
+            lines.append(f'| `{path}` | {p.id or "-"} | {lm} | {p.author or "unknown"} | {p.images} | {ctx} | {state} |')
         lines.append('')
     lines.append(end)
     block = '\n'.join(lines)
@@ -948,7 +948,7 @@ def main():
     for p in reimported:
         d = p.done
         print(f"  re-imported {p.section + '/' if p.section else ''}{p.slug}, migrated copy {d['path']} ({d['last_modified']} -> {p.last_modified}): "
-              f"rerun the agent on the fresh page; scripts/legacy-done.py replaces the copy")
+              f"rerun the agent on the fresh page; scripts/import-done.py replaces the copy")
     for p in [p for ps in wanted.values() for p in ps if p.notes]:
         print(f"  note {p.section + '/' if p.section else ''}{p.slug}: {'; '.join(p.notes)}")
 

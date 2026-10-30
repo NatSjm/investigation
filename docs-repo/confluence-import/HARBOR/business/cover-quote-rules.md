@@ -15,7 +15,7 @@ imported_from: confluence-import/raw-html/business/Cover-quote-rules_48103701/48
 
 # Cover quote rules
 
-> Exported legacy page. Quarantined — see `confluence-import/README.md`. Not authoritative.
+> Imported Confluence page. Quarantined — see `confluence-import/README.md`. Not authoritative.
 
 ## Purpose
 

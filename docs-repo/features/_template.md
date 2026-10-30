@@ -7,11 +7,11 @@ status: draft                   # draft | stable | deprecated
 generated: { by: copilot/doc-sync, at: 2026-01-01T00:00:00Z }
 # verified: { by: human:<id>, at: <ISO> }     # added by a human reviewer only
 # stale_after: <ISO>                          # verified + 90 days
-sources: []                     # legacy pages / code URLs actually read; cite claims with [^id]
+sources: []                     # imported pages / code URLs actually read; cite claims with [^id]
 # --- repo extensions ---
 id: CTX-000
 lang: en                       # repo language is always English
-source_lang: en                # language of the legacy/original source, if different
+source_lang: en                # language of the imported/original source, if different
 aliases: []                    # synonyms or source-language terms people search for
 context: clients | meetings | imports | product1 | product2 | cover | market | stress | reports | admin
 owners: [harbor-platform-team]

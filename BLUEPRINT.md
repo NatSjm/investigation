@@ -243,8 +243,8 @@ Deliberate state of the sample content (so the agents have real work to do):
 | `domain/calculations/client_role_classification.md`, `monthly_projection.md`, `stress_test_monthly.md` | complete with worked examples from the unit tests |
 | `domain/calculations/cover_ratio.md`, `scenario_price_path.md` | draft |
 | `peer_benchmark_simulation` | missing on purpose |
-| `confluence-import/HARBOR/stress-test-calculation.md` | legacy page, **deliberately outdated** (threshold 0.5, no transport delta) - the migrator/calc audit must detect the conflict |
-| `confluence-import/HARBOR/meeting-flow.md`, `product1-overview-tables.md` | legacy pages, partly correct |
+| `confluence-import/HARBOR/stress-test-calculation.md` | imported page, **deliberately outdated** (threshold 0.5, no transport delta) - the migrator/calc audit must detect the conflict |
+| `confluence-import/HARBOR/meeting-flow.md`, `product1-overview-tables.md` | imported pages, partly correct |
 | `work-items/P1-001.yml`, `test-design/features/STR-001.feature` + fixture | worked examples |
 | `generated/be`, `generated/fe` | copies of `backend/docs/_generated`, `frontend/docs/_generated` (what CI publishes) |
 | `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` | copies of the contracts |

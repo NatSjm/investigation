@@ -1,7 +1,7 @@
 ---
 name: audit-calculation
-description: Verify a calculation concept or a legacy formula page against the implementation and its unit test; record findings, never silently change numbers.
-argument-hint: "calculation name | spec ID | legacy page path"
+description: Verify a calculation concept or an imported formula page against the implementation and its unit test; record findings, never silently change numbers.
+argument-hint: "calculation name | spec ID | imported page path"
 agent: calc-auditor
 ---
 Subject: ${input:subject:stress_test_monthly}

@@ -14,6 +14,6 @@ Task: ${input:task:P1-001}
    subjects yourself and run with those instead of the text.
 2. Read the produced `.context/*.md` file, starting with its `## Contents`.
 3. Reply in <= 12 lines: the subject resolved (spec / calculation / node / candidates), its trust badge, the sections
-   present with their line ranges, the documents the pack points at (calculations, flows, legacy pages) with their
+   present with their line ranges, the documents the pack points at (calculations, flows, imported pages) with their
    badges, open questions carried from the spec. Procedure after the pack: `.github/skills/task-context/SKILL.md`, steps 3-7.
 Do not open any other file.

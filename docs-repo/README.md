@@ -20,7 +20,7 @@ The repository is an **Open Knowledge Format v0.2 bundle**: every doc is a conce
 flowchart LR
   BE[harbor-backend<br/>Kotlin/Spring, layered core] -- CI: OpenAPI, AsyncAPI, schema,<br/>API index, codebase map, components --> GEN[generated/]
   FE[harbor-frontend<br/>React] -- CI: types index, routes --> GEN
-  CONF[Confluence legacy] -- export --> IMP[confluence-import/]
+  CONF[Confluence] -- export --> IMP[confluence-import/]
   GEN --> SPEC[features/ · domain/ · flows/ · architecture/]
   CTX[contexts.yml<br/>class-name prefixes] --> GRAPH
   GEN -- gen-graph.py --> GRAPH[generated/graph/<br/>REPO_MAP · context.md · graph.json]
@@ -37,7 +37,7 @@ flowchart LR
 - Open this repo (optionally add `harbor-backend` / `harbor-frontend` as extra workspace folders, read-only).
 - Agents always start at `index.md` → folder `index.md` → concept (see `.github/skills/okf/SKILL.md`).
 - `scripts/context-pack.py --task <ID>` — assemble a **task-scoped context** for an agent: the spec whole, the graph
-  neighbourhood, contracts and tables, and pointers to its calculations, flows and legacy pages (e.g. `P1-001`); the
+  neighbourhood, contracts and tables, and pointers to its calculations, flows and imported pages (e.g. `P1-001`); the
   six steps around it are `.github/skills/task-context/SKILL.md`.
 - `@doc-sync` / `/spec-from-code featureId=P1-001` — create or refresh a spec from `generated/`.
 - `@analyst` / `/jira-from-spec` — stories & subtasks → `work-items/`; `/analyse-request "<free text>"` — a question
@@ -48,8 +48,8 @@ flowchart LR
 - `@impact-analyst` / `/impact-from-graph` — blast radius from `generated/graph/` (no source reading);
   `/spec-skeleton-from-graph` — spec skeleton prefilled from a context neighbourhood (skill `code-graph`).
   CLI: `scripts/graph-query.py --node spec:P1-001 --depth 2` or `--files (git diff --name-only)`.
-- `@confluence-migrator confluence-import/HARBOR/<page>.md` — migrate a legacy page.
-- `@migration-lead` / `/migration-plan all` — which lifecycle runs (skeleton, legacy merge, calculation audit, owner
+- `@confluence-migrator confluence-import/HARBOR/<page>.md` — migrate an imported page.
+- `@migration-lead` / `/migration-plan all` — which lifecycle runs (skeleton, page merge, calculation audit, owner
   decision) are still due per context, with the command for each → `migration/<scope>.md`
   (skill `spec-lifecycle`, script `scripts/migration-status.py`).
 - `/okf-validate`, `/okf-produce` — OKF conformance and knowledge capture

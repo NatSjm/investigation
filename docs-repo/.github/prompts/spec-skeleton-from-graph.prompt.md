@@ -14,4 +14,4 @@ API / Events / Data / UI flow / Calculations and frontmatter from `generated/gra
 Summary, Actors and Business rules from the manager file named on the `context:` node (layer `manager/`) only, or
 from the entry file when one is given (it replaces that file; still exactly one source file). Mark unsourced rules
 `❓ UNVERIFIED`; collect gaps under Open questions; `status: draft`. Add the `docs-map.yml` mapping, validate, rebuild
-indexes, log. Report which sections came from the graph, the manager, legacy pages, and what is open (<= 10 lines).
+indexes, log. Report which sections came from the graph, the manager, imported pages, and what is open (<= 10 lines).

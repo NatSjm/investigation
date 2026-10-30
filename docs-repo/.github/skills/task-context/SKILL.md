@@ -29,7 +29,7 @@ attach it with `#file` in VS Code, paste it in JetBrains or the CLI). It holds:
   subjects - the merged slice: shared sections deduplicated, per-subject blocks headed `### <task>`.
 - **Pointers** for everything one hop away: the calculations the spec uses (one line each: name, title, path, badge,
   description), the flows it takes part in (one line each plus the steps of the flow that name the subject), the
-  legacy pages that mention it (path, matched words, title; UNVERIFIED). A pointer is an invitation to open the
+  imported pages that mention it (path, matched words, title; UNVERIFIED). A pointer is an invitation to open the
   document through the indexes at step 4, not a gap.
 - **`## Contents`** at the top: the line range of every section and the start line of every `### ` part, so you open
   the part the task needs and, after a rebuild, only what came back. Every `## ` heading is a pack section;
@@ -71,13 +71,13 @@ Section markers, ranks and how `--task` is resolved: `references/pack-anatomy.md
 2. **Build one pack.** One `--task` per subject, no budget. The pack is the recorded slice: the subjects whole, the
    computed sections, the pointers. Never several packs for one task; add a subject instead.
 3. **Trust check.** `draft`, `unverified` or `STALE` specs, calculations and flows are unreliable: say so in the
-   output and label everything derived from them `needs-spec-review`. Legacy pages (pointers at the end of the
+   output and label everything derived from them `needs-spec-review`. Imported pages (pointers at the end of the
    pack) are evidence, not rules. `candidates:` in the Subject -> back to step 1, name the subjects.
 4. **Read what the task needs**, by the Contents. A question: the Subject with its badge and the section the question
    names (Business rules, Calculations, Flows, Contracts, Data); the rest is disclosed, not read. A change request or
    a writing task: the whole pack, every section feeds the output (graph for subtasks, tables for datasets, contracts
    for proposals). **Follow the pointers** the task needs: a linked calculation for its formula and worked examples,
-   a linked flow for its trigger and invariants, a legacy page for the fact it carries - one file each, opened through
+   a linked flow for its trigger and invariants, an imported page for the fact it carries - one file each, opened through
    the path the pointer gives (the folder's `index.md` lists the rest with badges). Quote `BR-<ID>-<n>`, calculation
    names, flow steps, node ids and `file:line` from what you read. Every document you open after the pack goes into
    your Sources (the analysis document's Sources; one chat line for a question).
@@ -118,7 +118,7 @@ sibling checkouts) -> record the question and stop.
 **Exit.** Still open after the last step you may take -> it is a documentation gap, not a context problem: write it
 as an Open question in the spec, hand off to `spec-writer` / `doc-sync` or the owner, label your output
 `needs-spec-review`. Never fill a gap from memory. Then answer: every statement cites a `BR-<ID>-<n>`, a calculation,
-a flow step or a contract operation, facts (stable, human-reviewed), unverified (draft, legacy, `code-read`) and
+a flow step or a contract operation, facts (stable, human-reviewed), unverified (draft, imported, `code-read`) and
 unknown kept apart, one line on how you read the request (which subjects) and one on what you opened after the pack.
 For an unknown that matters, append an evidence request to the spec's **Open questions**: the question, the documents
 checked, the missing fact, the likely source location if the pack or the maps name one, why it matters. Never guess.

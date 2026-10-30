@@ -71,7 +71,7 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
 8. **Screenshots are optional illustrations.** If used: under the Mermaid diagram of the UI flow, file in
    `/assets/<ID>/`, synthetic data only, caption with dataset and capture date, refreshed by the human
    reviewer at Run 4. Agents do not read them; the rules stay authoritative.
-9. **A capability found later keeps the numbering.** A `candidate spec:` a legacy page left behind, or a screen
+9. **A capability found later keeps the numbering.** A `candidate spec:` an imported page left behind, or a screen
    the business asks for after the context has specs, gets the **next free number**, never a renumbering of the
    existing specs: IDs are never reused (ID scheme above) and the rule IDs `BR-<ID>-<n>` are cited by flows,
    calculations, stories and Gherkin that live outside the repo. Point 2 shapes a fresh context; a context that
@@ -81,9 +81,9 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
    writes the spec:
    - **in code** (the catalogue or the graph has a route, page or endpoint for it): Run 1,
      `/spec-skeleton-from-graph <ctx> <next free ID>`, then the page is rerun and only the new facts are merged.
-   - **not in code** (the page describes behaviour still to be built): a request, not a legacy merge.
+   - **not in code** (the page describes behaviour still to be built): a request, not an imported merge.
      `/analyse-request` with the page as the request text; `spec-writer` drafts the spec with every rule
-     **proposed** (request `<slug>`, "Proposed rules" below) and the legacy footnote `conf-<slug>`, a new
+     **proposed** (request `<slug>`, "Proposed rules" below) and the imported-page footnote `conf-<slug>`, a new
      operation under `contracts/proposed/`, the stories labelled `needs-spec-review`; then the page is rerun so
      the migrator ticks the candidate, merges what is left and moves the page; `doc-sync` drops the markers as
      the code lands.
@@ -95,14 +95,14 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
 - Each rule is **one testable MUST / MUST NOT statement**; work items (`acceptance_criteria[].rule`) and Gherkin
   tags (`@BR-<ID>-<n>`) cite the rule, so a rule must not contain two independent assertions.
 - Claims are backed by `sources[]` entries and footnotes whose label equals a `sources[].id` (manager file,
-  controller, legacy page).
+  controller, imported page).
 - **Provenance per rule.** Until a person verifies the spec, every rule written from evidence ends with a source
   marker after its footnotes, one per rule: `(source: code <sources-id>#<symbol>)` names the `sources[]` entry of
   the file and the method, function or component inside it whose code or KDoc states the rule (never a line range:
   lines rot on the next commit and nothing refreshes them, a symbol survives edits inside the file);
-  `(source: legacy <sources-id>)` for a rule only a Confluence page states; `(source: contract <operationId>)` for a
+  `(source: imported <sources-id>)` for a rule only a Confluence page states; `(source: contract <operationId>)` for a
   rule that restates the contract; `(source: person human:<id>)` for a rule a person dictated;
-  `(source: spec BR-<ID>-<n>)` for a mirrored rule that defers to another rule. A rule with a code and a legacy
+  `(source: spec BR-<ID>-<n>)` for a mirrored rule that defers to another rule. A rule with a code and an imported
   footnote takes the code form. The marker is what the verifier checks at Run 4 (open the symbol, not the file)
   and it stays after verification. `okf-validate.py --strict` warns on a draft rule without one; proposed and
   withdrawn rules are exempt, their own marker carries the origin.
@@ -172,7 +172,7 @@ one commit per run. Runs are chained by the handoff buttons of the agents, not b
 | Run | Who / how | Reads | Writes | Spec state after |
 |---|---|---|---|---|
 | 1 Skeleton | `/spec-skeleton-from-graph <context> <ID>` (agent `spec-writer`) | context pack: `generated/graph/<context>.md`, contracts, the manager KDoc only | `features/<ctx>/<ID>.md` (API / Events / Data / UI flow / Calculations from the graph; Summary / Actors / BRs from the manager), `docs-map.yml`, `log.md` | `status: draft`, open questions listed, badge *draft* |
-| 2 Legacy merge | `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run | the page, the pack | new facts merged, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]` entry, glossary terms, page moved to `_done/` | still `draft`; legacy claims traceable |
+| 2 Page merge | `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run | the page, the pack | new facts merged, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]` entry, glossary terms, page moved to `_done/` | still `draft`; imported claims traceable |
 | 3 Calculations | handoff "Audit the linked calculations" (agent `calc-auditor`) | calculator class + its unit test, nothing else | `## Audit <date>` table in `domain/calculations/<name>.md`, open questions with an owner | calculation `draft` until all rows `MATCH` |
 | 4 Owner decision | human | open questions | the answer on each question's item, a `features/<ctx>/log.md` line, `verified: { by: human:<id>, at }`, `stale_after` | `status: stable`, badge *human-reviewed* |
 | ongoing | `doc-sync` on each generated-diff PR; `analyst` consumes via `context-pack.py` | generated diff, pack | `features/<ctx>/log.md` line, `last_verified` | stays `stable` or back to `draft` if a BR changed |
@@ -181,7 +181,7 @@ Skill: `.github/skills/spec-lifecycle/SKILL.md` (with a per-run review checklist
 context: `python3 scripts/migration-status.py --scope all` -> `migration/all.md` (agent `migration-lead`).
 
 Run 1 may be done in batch for all "code only" contexts (`generated/graph/REPO_MAP.md`) by assigning one issue per
-context to the Copilot coding agent, which opens one PR each. Runs 2 to 4 stay interactive: every legacy page needs
+context to the Copilot coding agent, which opens one PR each. Runs 2 to 4 stay interactive: every imported page needs
 a human judgement on conflicts. The agentStop hook validates the bundle after every run
 (`build-index`, `okf-validate --strict`, `validate-frontmatter`, `validate-work-items`).
 

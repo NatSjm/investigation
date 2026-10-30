@@ -15,7 +15,7 @@ imported_from: confluence-import/raw-html/technical/Kafka-topics_48103800/481038
 
 # Kafka topics
 
-> Exported legacy page. Quarantined — see `confluence-import/README.md`. Not authoritative.
+> Imported Confluence page. Quarantined — see `confluence-import/README.md`. Not authoritative.
 
 Topics the backend produces. Consumers are listed in [Deployment notes](deployment-notes.md); the parameter topic feeds the [admin parameters page](../business/admin-parameters-page.md).
 

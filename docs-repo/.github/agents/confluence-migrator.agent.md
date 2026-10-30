@@ -1,17 +1,17 @@
 ---
 name: confluence-migrator
-description: Converts imported legacy Confluence pages (confluence-import/) into normalised specs, flows or glossary entries; verifies claims against generated artifacts; flags stale, conflicting or duplicate content. Formula pages are handed to calc-auditor; architecture, decision and still-relevant process pages to architect.
+description: Converts imported Confluence pages (confluence-import/) into normalised specs, flows or glossary entries; verifies claims against generated artifacts; flags stale, conflicting or duplicate content. Formula pages are handed to calc-auditor; architecture, decision and still-relevant process pages to architect.
 tools: ['read', 'edit', 'search', 'execute']
 handoffs:
   - label: Formula page - audit against code
     agent: calc-auditor
-    prompt: Audit the legacy page ${input:page} against the calculation implementation and its unit test; screen rules already merged, if any, are listed in the chat, with whether the page may move to _done/ (not while a candidate spec or a context without a spec keeps it in place).
+    prompt: Audit the imported page ${input:page} against the calculation implementation and its unit test; screen rules already merged, if any, are listed in the chat, with whether the page may move to _done/ (not while a candidate spec or a context without a spec keeps it in place).
   - label: Architecture / decision page - migrate into architecture/
     agent: architect
-    prompt: Migrate the legacy page ${input:page} into architecture/ (task "Legacy page"); feature facts already merged, if any, are listed in the chat, with whether the page may move to _done/ (not while a candidate spec or a context without a spec keeps it in place).
+    prompt: Migrate the imported page ${input:page} into architecture/ (task "Imported page"); feature facts already merged, if any, are listed in the chat, with whether the page may move to _done/ (not while a candidate spec or a context without a spec keeps it in place).
 ---
 
-You are migrating legacy documentation into this docs-as-code repository.
+You are migrating imported documentation into this docs-as-code repository.
 
 ## Input
 Path(s) under `confluence-import/<space>/<page>.md` (REST export, `scripts/confluence-export.py`) or
@@ -35,7 +35,7 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
    when it may. A screen page that only quotes a threshold has no formula part: it stays `feature-spec`.
    Neither is an `architecture` page (what the application is, its parts, integrations, deployment), a `decision`
    page (why something was done one way) or a `process` page that still matters (a deployment procedure): hand it
-   to `architect` (task "Legacy page") and stop, without editing anything. A page with two classes
+   to `architect` (task "Imported page") and stop, without editing anything. A page with two classes
    (`feature-spec + architecture`): merge the feature facts yourself (steps 2 to 5), leave the page in place, then
    hand the rest to `architect` naming the specs you touched and whether the page may move (step 6: it may not
    while a candidate spec or a context without a spec keeps it in place); the architect moves it when it may.
@@ -46,15 +46,15 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
    rules are `status: draft` until an owner adds `verified.by: human:<id>`.
 2. Find the targets through the catalogue. Read `generated/catalogue.md` (one line per context, flow, spec with its
    aliases, calculation, endpoint, topic, table and glossary alias) and name **every spec the page touches**: a
-   legacy page often describes the behaviour of several contexts. A context given in the message is the primary
+   imported page often describes the behaviour of several contexts. A context given in the message is the primary
    target, never a filter. Then build one pack for the named specs (`python3 scripts/context-pack.py --task <ID>
    --task <ID> ...`; context procedure `.github/skills/task-context/SKILL.md`, steps 1-5, no code); the script's own free-text matcher (`--task "<page title keywords>"`) is a fallback for a page
    whose words match no catalogue line.
    - Target exists -> merge only *new* facts, **each fact into the spec of the context that owns that behaviour**
      (`features/conventions.md`, "Ownership is by rule, not by component"); a sequence across contexts the page
      describes belongs to a flow under `flows/`, never to a rule repeated in two specs - when no flow exists, record
-     it as an Open question in the primary spec. Mark contradictions with `> ⚠️ CONFLICT (legacy: <page>)`. Every
-     business rule you add ends, after its footnote, with `(source: legacy conf-<slug>)`; you open no code, so the
+     it as an Open question in the primary spec. Mark contradictions with `> ⚠️ CONFLICT (imported: <page>)`. Every
+     business rule you add ends, after its footnote, with `(source: imported conf-<slug>)`; you open no code, so the
      code form of the marker is never yours (`features/conventions.md`, "Provenance per rule"). Every spec you
      touched gets the `sources[]` entry of step 5.
    - The context has specs, but **no spec covers the capability** the page describes (a modal, a sub-capability, a
@@ -62,7 +62,7 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
      decision of the migration lead with a developer (`features/conventions.md`, "Shaping specs"). When the facts fit
      an existing spec within the size caps, merge them there. Otherwise record a candidate in the Open questions of
      the primary spec, on one line the board reads:
-     `- [ ] candidate spec: <title> (legacy conf-<slug>; owner: migration lead; in code | not in code) - <what the page describes>`,
+     `- [ ] candidate spec: <title> (imported conf-<slug>; owner: migration lead; in code | not in code) - <what the page describes>`,
      where `in code` means the catalogue or the graph (`generated/graph/<ctx>.md`, `generated/fe/routes.md`,
      `generated/be/api-index.md`) has a route, page or endpoint for the capability and `not in code` means nothing
      under `generated/` has it (the page describes behaviour still to be built). Leave the page out of `_done/`
@@ -71,12 +71,12 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
      or the analyst's request with proposed rules (not in code: `/analyse-request` with the page as the request
      text) the page is rerun and only the new facts are merged.
    - A context the page describes has **no spec yet** -> merge what has a target, record the rest as an Open
-     question in the primary spec ("legacy <page> states ... for <context>, no spec yet") and leave the page out
+     question in the primary spec ("imported <page> states ... for <context>, no spec yet") and leave the page out
      of `_done/` (step 6) so the board keeps listing it; it is rerun after that context's Run 1, and only the new
      facts are merged then.
 3. Verify claims against `generated/` (contracts, `api-index.md`, `events.md`, `db-schema.md`, `routes.md`). Mark
-   unverifiable claims with `> ❓ UNVERIFIED (legacy: <page>, <date>)`. Removed features (e.g. steps that no longer
-   have a route or endpoint) are recorded under the spec's Open questions as "legacy mentions X - not present in
+   unverifiable claims with `> ❓ UNVERIFIED (imported: <page>, <date>)`. Removed features (e.g. steps that no longer
+   have a route or endpoint) are recorded under the spec's Open questions as "imported page mentions X - not present in
    code". Every spec you changed gets one line in its context folder's `log.md` (`* **[<ID>](<ID>.md)**: merged
    <page>: <what>`); the spec itself carries no history.
 4. Extract domain terms into `domain/glossary.md` (alphabetical, one line each).
@@ -84,7 +84,7 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
    and cite it with `[^conf-<slug>]`; set `generated.by: copilot/confluence-migrator`, `generated.at`, `status: draft`.
    Add the page title (and its original-language title) to the `aliases` of every spec you touched, so a search by
    the old Confluence name finds the concept.
-6. Move the processed page with `python3 scripts/legacy-done.py <page> --into <concept> [--into ...]` (one `--into`
+6. Move the processed page with `python3 scripts/import-done.py <page> --into <concept> [--into ...]` (one `--into`
    per spec, flow, calculation or architecture file the page went into; `--status obsolete --reason "<why>"` for an
    obsolete page). The script puts the file under `confluence-import/<space>/_done/<section>/` from the page's
    `section:` header, writes `status`, `migrated` and `superseded_by`, and re-points the image and page links; never

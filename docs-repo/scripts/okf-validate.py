@@ -169,18 +169,18 @@ def main():
 
         # repo rule "Provenance per rule" (features/conventions.md): in a draft Feature Spec no person has verified,
         # every business rule that is neither proposed nor withdrawn ends with a source marker
-        # (source: code <sources-id>#<symbol> | legacy <sources-id> | contract <operationId> | person human:<id> | spec BR-..)
+        # (source: code <sources-id>#<symbol> | imported <sources-id> | contract <operationId> | person human:<id> | spec BR-..)
         if typ.lower() == 'feature spec' and (status or '').lower() == 'draft' and not re.search(r'(?m)^verified:', fm):
             for m in re.finditer(r'(?ms)^- \*\*(BR-[A-Z0-9]+-\d+-\d+)\*\*(.*?)(?=^- |^[ \t]*$|^#|\Z)', text):
                 rid, body = m.group(1), m.group(2)
                 if re.search(r'\*\*proposed\*\*|withdrawn', body, re.I):
                     continue
-                sm = re.search(r'\(source: (code|legacy|contract|person|spec) ([^\s)]+)\)', body)
+                sm = re.search(r'\(source: (code|imported|contract|person|spec) ([^\s)]+)\)', body)
                 if not sm:
                     findings.append(('warn', r, f'{rid} has no (source: ...) marker (repo rule: provenance per rule)'))
                     continue
                 kind, ref = sm.group(1), sm.group(2)
-                if kind in ('code', 'legacy') and ref.split('#')[0].lower() not in source_ids:
+                if kind in ('code', 'imported') and ref.split('#')[0].lower() not in source_ids:
                     findings.append(('warn', r, f'{rid} source marker names no sources[].id: {ref}'))
                 if kind == 'code' and '#' not in ref:
                     findings.append(('warn', r, f'{rid} code marker names no symbol (<sources-id>#<symbol>): {ref}'))
@@ -191,12 +191,12 @@ def main():
         if typ.lower() == 'attested computation' and (status or '').lower() == 'draft' \
                 and not re.search(r'(?m)^verified:', fm) and not re.search(r'(?m)^tags:.*\bproposed\b', fm):
             def check_marker(where, body):
-                sm = re.search(r'\(source: (code|legacy|contract|person|spec) ([^\s)]+)\)', body)
+                sm = re.search(r'\(source: (code|imported|contract|person|spec) ([^\s)]+)\)', body)
                 if not sm:
                     findings.append(('warn', r, f'{where} has no (source: ...) marker (repo rule: provenance per step)'))
                     return
                 kind, ref = sm.group(1), sm.group(2)
-                if kind in ('code', 'legacy') and ref.split('#')[0].lower() not in source_ids:
+                if kind in ('code', 'imported') and ref.split('#')[0].lower() not in source_ids:
                     findings.append(('warn', r, f'{where} source marker names no sources[].id: {ref}'))
                 if kind == 'code' and '#' not in ref:
                     findings.append(('warn', r, f'{where} code marker names no symbol (<sources-id>#<symbol>): {ref}'))

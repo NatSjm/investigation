@@ -18,12 +18,12 @@ contain the relevant `file:line` references.
 | A request in free text: a question, or a change spanning contexts with existing and new behaviour -> analysis document, confirmed reading, request epic | `analyst` | `/analyse-request` | `generated/catalogue.md` + one merged context pack, the same six steps for a question (the narrowest subject, one section read) and a change (the whole pack) |
 | New or refreshed feature spec | `spec-writer` | `/spec-skeleton-from-graph`, `/spec-from-code` | graph neighbourhood + one manager file |
 | Keep specs in sync with a code change / generated PR | `doc-sync` | - | `map-paths.py` output, generated maps, contracts |
-| Check a formula doc or legacy page against the code | `calc-auditor` | `/audit-calculation` | calculation doc, `docs-tags.md`, one class + its test |
+| Check a formula doc or imported page against the code | `calc-auditor` | `/audit-calculation` | calculation doc, `docs-tags.md`, one class + its test |
 | Gherkin + fixtures for the tests repo | `test-designer` | `/tests-from-spec` | spec BRs + the worked examples of the calculation concepts the pack points at |
 | HLD / ADR / integration map | `architect` | `/hld-from-spec` | architecture/, contracts |
-| Legacy architecture / decision / process page -> `architecture/` | `architect` (task "Legacy page") | - | the page, architecture/, generated maps and contracts |
+| Imported architecture / decision / process page -> `architecture/` | `architect` (task "Imported page") | - | the page, architecture/, generated maps and contracts |
 | Blast radius of a change | `impact-analyst` | `/impact-from-graph` | `generated/graph/` only |
-| Legacy Confluence page -> concept | `confluence-migrator` | - | the page, `generated/catalogue.md` (every spec the page touches), the pack, generated maps |
+| Imported Confluence page -> concept | `confluence-migrator` | - | the page, `generated/catalogue.md` (every spec the page touches), the pack, generated maps |
 | OKF conformance | - | `/okf-validate`, `/okf-produce` | validators |
 
 Agents hand off in the natural order: `spec-writer` -> `analyst` -> `test-designer`; `calc-auditor` findings go

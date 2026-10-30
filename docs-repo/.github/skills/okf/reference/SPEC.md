@@ -809,11 +809,11 @@ the fallbacks noted here.
 
 - **`timestamp` is superseded by `generated.at`.** A concept's last
   content change is now recorded as `generated: { by, at }` (§5.2).
-  Consumers MAY fall back to a legacy `timestamp` when `generated` is
+  Consumers MAY fall back to an imported `timestamp` when `generated` is
   absent.
 - **The body `# Citations` list is superseded by `sources`.** Provenance
   moves to frontmatter (§5.1). Consumers SHOULD read `sources` and MAY
-  still parse a legacy `# Citations` body list for v0.1 documents.
+  still parse an imported `# Citations` body list for v0.1 documents.
 
 ### 13.2 Additive changes
 

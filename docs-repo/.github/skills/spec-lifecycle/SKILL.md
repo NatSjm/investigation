@@ -1,6 +1,6 @@
 ---
 name: spec-lifecycle
-description: The run-by-run lifecycle of one feature spec in this repo (Run 1 skeleton from the graph, Run 2 legacy page merge, Run 3 calculation audit, Run 4 owner decision, ongoing doc-sync) - which agent owns which run, what each run may read and write, how to tell which run you are in, and how the migration-lead plans them. Use when planning or executing documentation migration work, or when unsure whether a spec is ready for the analyst.
+description: The run-by-run lifecycle of one feature spec in this repo (Run 1 skeleton from the graph, Run 2 imported page merge, Run 3 calculation audit, Run 4 owner decision, ongoing doc-sync) - which agent owns which run, what each run may read and write, how to tell which run you are in, and how the migration-lead plans them. Use when planning or executing documentation migration work, or when unsure whether a spec is ready for the analyst.
 ---
 
 # Spec lifecycle
@@ -12,27 +12,27 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 | Run | Owner | May read | Writes | Exit state |
 |---|---|---|---|---|
 | 1 Skeleton | `spec-writer` via `/spec-skeleton-from-graph <ctx> <ID> [entry file]` | context pack: `generated/graph/<ctx>.md`, contracts, `generated/be/components.md`; one source file: `manager/<Ctx>Manager.kt`, or the entry file the call names when the context has one entry class per screen | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | `status: draft`, open questions listed |
-| 2 Legacy merge | `confluence-migrator <page>` (one page per run; the page may touch several specs, each fact goes to the context that owns it) | the page, the catalogue, the pack | merged facts, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]`, glossary terms, page -> `_done/` | `draft`; every legacy claim cited |
+| 2 Page merge | `confluence-migrator <page>` (one page per run; the page may touch several specs, each fact goes to the context that owns it) | the page, the catalogue, the pack | merged facts, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]`, glossary terms, page -> `_done/` | `draft`; every imported-page claim cited |
 | 3 Calculation | `calc-auditor` via handoff or `/audit-calculation <name>` | calculator class + its unit test only | `domain/calculations/<name>.md` (`## Audit <date>` table, open questions) | calculation `stable` only when all rows `MATCH` |
 | 4 Owner decision | human | open questions | the answer on each question's item, a `features/<ctx>/log.md` line, `verified: { by: human:<id>, at }`, `stale_after` | `status: stable`, badge *human-reviewed* |
 | ongoing | `doc-sync` per generated-diff PR | generated diff, pack | `features/<ctx>/log.md` line, `last_verified` | stays `stable`, or back to `draft` if a BR changed |
 
 ## Which run am I in?
-- No `features/<ctx>/<ID>.md` exists -> Run 1. Never start from a legacy page.
+- No `features/<ctx>/<ID>.md` exists -> Run 1. Never start from an imported page.
 - Spec exists and a page under `confluence-import/` is not in `_done/` -> Run 2 for that page.
 - A page describes a capability no spec of its context covers -> not a run: Run 2 leaves a `candidate spec:` Open
   question in the primary spec; the lead and a developer confirm the spec (`features/conventions.md`, "Shaping
   specs"), Run 1 writes it from the code, Run 2 reruns the page. New specs come from the code or from the analyst
   (a request in a context without a spec), never from a page.
 - The page is about the application, an integration, a deployment or a decision -> not a spec's run: `architect`,
-  task "Legacy page", after `/integrations-from-contracts`.
+  task "Imported page", after `/integrations-from-contracts`.
 - A `@docs <calculation>` tag in `generated/be/docs-tags.md` has no concept, or the concept has no `## Audit` -> Run 3.
 - Spec is `draft` with open questions and no `verified` -> Run 4 (a person, not an agent).
 - `scripts/migration-status.py --scope <ctx> --print` answers this deterministically.
 
 ## Rules shared by every run
 - Build the context pack first (`scripts/context-pack.py --task <ID|name|page>`); read the pack, not the repo.
-- Never copy numbers from a legacy page; link the calculation and let Run 3 verify.
+- Never copy numbers from an imported page; link the calculation and let Run 3 verify.
 - Never write `verified.by: human:*`; never edit `generated/**`.
 - Finish with `okf-validate.py --strict`, `build-index.py`, one line per changed concept in its folder's `log.md`
   (never a history section in the concept) and a root `log.md` line for a lifecycle event. The `agentStop` hook
@@ -40,7 +40,7 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 
 ## Planning (migration-lead)
 `scripts/migration-status.py --scope all` writes `migration/all.md`: per context the runs still due with the exact
-command, pending legacy pages, candidate specs (shaping decisions), calculations without concept or audit, specs
+command, pending imported pages, candidate specs (shaping decisions), calculations without concept or audit, specs
 waiting for an owner, and the architecture pages once, outside the contexts. Order of work: all Run 1 first (may be
 batched through the Copilot coding agent, one issue per context), then Run 2 page by page interactively, Run 3 as
 the handoff after each spec, Run 4 by the owner. See `references/run-checklist.md`.

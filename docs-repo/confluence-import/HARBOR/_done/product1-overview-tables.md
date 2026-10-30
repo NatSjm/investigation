@@ -1,7 +1,7 @@
 ---
 source: Confluence HARBOR/Product 1 overview tables
 last_modified: 2025-07-21
-author: legacy
+author: unknown
 confluence_id: 48103588
 url: https://confluence.example.com/display/HARBOR/Product+1+overview+tables
 status: migrated
@@ -11,7 +11,7 @@ superseded_by: /features/product1/P1-001.md
 
 # Product 1 overview tables
 
-> Exported legacy page. Quarantined — see `confluence-import/README.md`. Not authoritative.
+> Imported Confluence page. Quarantined — see `confluence-import/README.md`. Not authoritative.
 
 The Product 1 page of a session shows the monthly projection for the corridor Veldora - Norland as three tables.
 All tables cover the planning horizon of the session (default 24 months) and every column is cumulative, i.e. the

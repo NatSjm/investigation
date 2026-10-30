@@ -15,7 +15,7 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
 - **Related**: [ADR-0002](/architecture/adr/0002-openapi-first-contracts.md), `features/conventions.md`
 
 ## Context
-Documentation of Harbor lives in Confluence and drifts from the code: the legacy pages under
+Documentation of Harbor lives in Confluence and drifts from the code: the imported pages under
 `confluence-import/HARBOR/` describe thresholds and flows that the code no longer implements. We need docs that
 (a) stay in sync with `harbor-backend` and `harbor-frontend`, (b) feed analysis, Jira work items and automated
 tests, (c) are consumable by GitHub Copilot with low token cost. MCP servers and third-party agent frameworks are

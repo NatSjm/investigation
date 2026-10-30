@@ -10,8 +10,8 @@ generated: { by: human:platform-team, at: 2026-10-09T08:00:00Z }
 # Glossary
 
 Single source of terminology. One line per term, alphabetical. Agents MUST use these terms.
-The repo is written in **English**. The `Aliases` column holds synonyms and source-language terms found in legacy
-pages or searched for by people; they are never used in specs. When migrating a legacy page or publishing back to
+The repo is written in **English**. The `Aliases` column holds synonyms and source-language terms found in imported
+pages or searched for by people; they are never used in specs. When migrating an imported page or publishing back to
 its source language, agents translate terms only via this table; anything not listed here is added first, never
 translated ad hoc. Identifiers in code (`ClientRole.IMPORTER`, `ProductGroup.product1`, ...) follow the blueprint
 and are quoted verbatim.

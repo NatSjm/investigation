@@ -11,7 +11,7 @@
 | FE and BE are generated from one OpenAPI contract; external services have their own contracts | The contracts are the cheapest truth about FE<->BE and BE<->external; agents must be pointed at them, not at generated code |
 | Heavy domain: meeting sessions, monthly projections over a planning horizon (four cumulative result tables), cover ratios, market scenarios, stress tests, PDF reports, admin parameters; large monthly calculations live in Kotlin utilities, not SQL | Business rules and formulas are the most valuable and most drift-prone knowledge; they are testable but buried |
 | Client data arrives as XLS files parsed by scheduled jobs; a meeting is a session in the DB created when a product is selected, and every request then carries a session header | Behaviour depends on jobs and request context that no controller shows; agents guess unless maps say so |
-| Legacy docs in Confluence, drifting; several pages contradict the code | Must be validated against the real state before anything is derived from them; no review, no CI, not machine-consumable |
+| Imported docs in Confluence, drifting; several pages contradict the code | Must be validated against the real state before anything is derived from them; no review, no CI, not machine-consumable |
 | Downstream needs: analytics, Jira epics/stories/subtasks, test cases + data for an existing tests repo, HLD | Docs must be structured enough to be *inputs* for automation |
 | Constraints: GitHub Copilot only (VS Code + JetBrains); **no MCP, no third-party agent frameworks or libraries in the code repos**; confidentiality | Everything lives in the docs repo as Copilot-native customisation (AGENTS.md / instructions / agents / skills / prompts / hooks) + plain Python (standard library); synthetic data only |
 
@@ -31,7 +31,7 @@
 flowchart LR
   BE[BE repo<br/>gen-all.py + contracts] -- CI publishes --> GEN[generated/be, fe, openapi, asyncapi]
   FE[FE repo<br/>gen-all.py] -- CI publishes --> GEN
-  CONF[Confluence legacy] -- export --> IMP[confluence-import/]
+  CONF[Confluence] -- export --> IMP[confluence-import/]
   GEN -- gen-graph.py --> GRAPH[generated/graph]
   GRAPH & SPEC[features · domain · architecture] -- context-pack.py --> PACK[.context/task.md]
   PACK --> AN[@analyst] --> WI[work-items -> Jira]
@@ -56,7 +56,7 @@ flowchart LR
   contracts - the analyst sees FE<->BE and BE<->external without any client code), `graph/` (§3.13), `analytics/` (§3.8).
 - **`work-items/*.yml`** - epic/stories/subtasks with Gherkin acceptance criteria -> Jira via REST or CSV.
 - **`test-design/`** - Gherkin `.feature` + synthetic fixtures + shared **step vocabulary** (contract with the tests repo).
-- **`confluence-import/`** - legacy pages as evidence, never as rules; each ends `migrated` or `obsolete`.
+- **`confluence-import/`** - imported pages as evidence, never as rules; each ends `migrated` or `obsolete`.
 - **`docs-map.yml`** - code path globs -> specs; drives PR-to-spec mapping and the freshness gate.
 
 ### 3.2 Keeping docs and code in sync
@@ -79,7 +79,7 @@ All files are native Copilot customisation, in the docs repo and (a smaller set)
 |---|---|---|---|
 | Canonical rules | `AGENTS.md` (<= 60 lines) | purpose, read order, hard rules, commands | VS Code, JetBrains (since 2026-03), Copilot CLI, coding agent, other agent CLIs |
 | Copilot supplement | `.github/copilot-instructions.md` (short) | what is Copilot-specific: which agent for which job, tools, hooks | all Copilot surfaces |
-| Scoped instructions | `.github/instructions/*.instructions.md` with `applyTo` + `description` | rules load only when editing specs / calculations / work items / tests / generated / legacy pages | all |
+| Scoped instructions | `.github/instructions/*.instructions.md` with `applyTo` + `description` | rules load only when editing specs / calculations / work items / tests / generated / imported pages | all |
 | Custom agents | `.github/agents/*.agent.md` with `tools` aliases and `handoffs` | one persona per downstream artefact, strict "what to read" lists | all (`handoffs` VS Code) |
 | Agent Skills | `.github/skills/<name>/SKILL.md` + `references/` (agentskills.io layout) | reusable procedures with progressive disclosure | VS Code, CLI, coding agent, JetBrains (preview) |
 | Prompt files | `.github/prompts/*.prompt.md` with `agent` + `argument-hint` | one-shot parametrised tasks (`/jira-from-spec`, `/coverage-report`, ...) | VS Code, JetBrains, CLI |
@@ -111,7 +111,7 @@ pattern and the file discipline but do not adopt its CLI (no third-party tooling
 badge (`human-reviewed | machine-confirmed | unverified`, `STALE`), spec body or its key sections, linked calculations
 (formula + sanctioned code shape + worked examples), depth-2 graph neighbourhood with `file:line`, the OpenAPI `paths` of the
 spec's `api[]` and the AsyncAPI channels of its `events[]`, `db-schema.md` sections for `tables[]`, existing work items and
-scenarios, legacy pages mentioning the subject (marked unverified), footer with sources and truncations. Skill `task-context`:
+scenarios, imported pages mentioning the subject (marked unverified), footer with sources and truncations. Skill `task-context`:
 read once, quote `BR-*` and `file:line`, treat the badge as part of the answer, open nothing else unless an open question names
 a `file:line`; free text matching several specs yields `candidates:`. Why a script: deterministic, budgeted, reviewable, carries provenance.
 
@@ -125,12 +125,12 @@ jobs are visible to analysts. `events.md` resolves the `TOPIC` constant of the l
 four cumulative projection tables and the `parameter_set` table appear with columns. CI copies `openapi/openapi_harbor.yaml`,
 `openapi/harbor-events.yaml` and `harbor-core/src/main/resources/api/*.yaml` next to the maps.
 
-### 3.7 Calculation and legacy-page audit (lever c)
-Agent `calc-auditor` + skill `legacy-page-audit`: given a calculation name, a spec ID or a legacy page, build the pack,
+### 3.7 Calculation and imported-page audit (lever c)
+Agent `calc-auditor` + skill `imported-page-audit`: given a calculation name, a spec ID or an imported page, build the pack,
 extract every checkable claim (terms, thresholds, defaults, rounding, sign conventions, flow steps), locate the code
 through `docs-tags.md`, open **exactly two files** (the calculator class and its unit test), classify each claim
 `MATCH | DOC-STALE | CODE-SUSPECT | UNDOCUMENTED`, record an `## Audit <date>` table in the concept, downgrade to `draft`
-when anything differs, mark the legacy page `obsolete | migrated`. Worked examples may only be replaced by values copied
+when anything differs, mark the imported page `obsolete | migrated`. Worked examples may only be replaced by values copied
 from the test. `confluence-migrator` hands every formula page to this agent instead of migrating it.
 
 ### 3.8 Docs analytics (lever d)
@@ -165,7 +165,7 @@ published contracts · freshness gate (in the code repos). The `agentStop` hook 
 | Agents must find the right doc cheaply | reserved `index.md` per folder, one line + description per concept (§8) | progressive disclosure: root -> area -> concept; ~2-3k tokens to orient |
 | Trust: which docs can an analyst rely on? | `generated.by`, `verified[].by` with actors `human:<id>` / `copilot/<agent>` / `process:<ci>` | index badges `unverified · machine-confirmed · human-reviewed · STALE`; packs carry the badge |
 | Formulas that must match code | `Attested Computation` (`runtime`, `parameters`, `# Computation`, attester) | `domain/calculations/*.md` are executable-by-contract specs, auditable against the unit test |
-| Provenance for migrated legacy content | `sources[]` + `[^id]` footnotes | each claim traceable to page/author/date |
+| Provenance for migrated imported-page content | `sources[]` + `[^id]` footnotes | each claim traceable to page/author/date |
 | Ageing | `stale_after`, `status` enum | validator flags STALE; freshness becomes machine-checkable |
 | Interop | Apache-2.0 spec, plain Markdown+YAML, deterministic checker | no lock-in |
 
@@ -222,7 +222,7 @@ hybrid, port none of the tools.** Revisit tree-sitter (WASM) only if the Spring 
 
 ### 3.14 Language: source language at the edges, English in the repository
 
-Legacy pages are written in the organisation's source language; the repository is English (cheaper tokens, English-centric
+Imported pages are written in the organisation's source language; the repository is English (cheaper tokens, English-centric
 Gherkin/YAML/Jira tooling, one glossary). The source language lives only at the edges:
 
 | Edge | Mechanism | Asset |
@@ -260,7 +260,7 @@ allowed term source; regulators wanting the source language as the record -> pub
 | Teams don't update docs | freshness gate + `agentStop` hooks + `doc-sync` agent does most of the work from generated diffs |
 | Agents read the whole repo anyway | context pack is the mandated entry point; `AGENTS.md` forbids `@workspace`; measure files opened per task |
 | Generated artifacts too large for context | per-context graph files, one row per class in `components.md`; packs budgeted; `REPO_MAP --budget`; `okf-validate` warns on size |
-| Formula docs wrong, legacy pages trusted | worked examples copied from BE unit tests; `calc-auditor` audit table per concept; legacy pages marked unverified in packs |
+| Formula docs wrong, imported pages trusted | worked examples copied from BE unit tests; `calc-auditor` audit table per concept; imported pages marked unverified in packs |
 | Confidential data leaks into docs/fixtures | synthetic-data rule in `AGENTS.md`; content exclusion; secret/PII scanning in CI |
 | Jira/Confluence API access blocked | CSV fallback for Jira; Confluence publish optional (Git renders Markdown+Mermaid) |
 | Copilot customisation formats change | plain Markdown/JSON files; `AGENTS.md` is cross-tool; hooks/skills are preview in JetBrains - CI enforces the same gates |
@@ -272,7 +272,7 @@ allowed term source; regulators wanting the source language as the record -> pub
 
 ## 7. Decisions requested
 1. Approve Option C and the pilot on one bounded context (recommended: the context with the richest calculations and a
-   contradicting legacy page, as in the prototype's `stress` / `product1`).
+   contradicting imported page, as in the prototype's `stress` / `product1`).
 2. Confirm Git platform (GitHub / GitLab / Azure DevOps) to finalise CI YAML, hooks support and PR-creation scripts.
 3. Confirm Jira & Confluence REST access from CI (or CSV/manual fallback).
 4. Nominate owners per bounded context (frontmatter `owners`) and a native-speaking reviewer for migrated rules.
@@ -290,7 +290,7 @@ See `IMPLEMENTATION-PLAN.md` for the step-by-step rollout and the list of reusab
 ## 8. Prototype contents
 The business case is synthetic (`BLUEPRINT.md`: a goods-trading company, two product groups, meetings, cover, scenarios,
 stress tests, reports); it mirrors the real application's *shape* (contract-generated FE/BE, XLS imports by jobs, session
-header, Kotlin calculations, four cumulative tables, admin parameters, PDF via Kafka, outdated legacy pages) with no real
+header, Kotlin calculations, four cumulative tables, admin parameters, PDF via Kafka, outdated imported pages) with no real
 names, values or identifiers. Everything is standard-library Python 3.11+; nothing to install beyond Python.
 
 ### 8.1 Simulated code repositories (`backend/`, `frontend/`)
@@ -306,11 +306,11 @@ names, values or identifiers. Everything is standard-library Python 3.11+; nothi
 ### 8.2 Docs repo (`docs-repo/`)
 | Item | State |
 |---|---|
-| Specs | `CLI-001`, `SES-001`, `P1-001` stable (human-reviewed); `STR-001` draft whose legacy page contradicts the code; `MKT-001`, `RPT-001` skeletons; `P2-001`, `COV-001`, `IMP-001`, `ADM-001` **deliberately missing** (`code only` in `REPO_MAP.md`) |
+| Specs | `CLI-001`, `SES-001`, `P1-001` stable (human-reviewed); `STR-001` draft whose imported page contradicts the code; `MKT-001`, `RPT-001` skeletons; `P2-001`, `COV-001`, `IMP-001`, `ADM-001` **deliberately missing** (`code only` in `REPO_MAP.md`) |
 | Calculations | `client_role_classification`, `monthly_projection`, `stress_test_monthly` with worked examples; `cover_ratio`, `scenario_price_path` draft; `peer_benchmark_simulation` missing on purpose |
-| Legacy pages | `confluence-import/HARBOR/stress-test-calculation.md` **deliberately outdated** (threshold, missing transport delta); two partly correct pages |
+| Imported pages | `confluence-import/HARBOR/stress-test-calculation.md` **deliberately outdated** (threshold, missing transport delta); two partly correct pages |
 | Worked examples | `work-items/P1-001.yml`, `test-design/features/STR-001.feature` + fixture; `generated/analytics/coverage-matrix.md` |
-| Customisation | `AGENTS.md`, short `copilot-instructions.md`, 6 scoped instructions, 8 agents (`analyst`, `spec-writer`, `doc-sync`, `calc-auditor`, `test-designer`, `architect`, `impact-analyst`, `confluence-migrator`), 12 prompts, 11 skills (`write-feature-spec`, `calculation-spec`, `jira-work-items`, `gherkin-test-design`, `code-graph`, `task-context`, `legacy-page-audit`, `docs-analytics`, `okf`, `okf-validate`, `okf-visualize`), hooks `docs-quality.json`, `copilot-setup-steps.yml`, CI `docs-quality.yml` |
+| Customisation | `AGENTS.md`, short `copilot-instructions.md`, 6 scoped instructions, 8 agents (`analyst`, `spec-writer`, `doc-sync`, `calc-auditor`, `test-designer`, `architect`, `impact-analyst`, `confluence-migrator`), 12 prompts, 11 skills (`write-feature-spec`, `calculation-spec`, `jira-work-items`, `gherkin-test-design`, `code-graph`, `task-context`, `imported-page-audit`, `docs-analytics`, `okf`, `okf-validate`, `okf-visualize`), hooks `docs-quality.json`, `copilot-setup-steps.yml`, CI `docs-quality.yml` |
 | Scripts | `context-pack`, `graph-query`, `gen-graph`, `coverage-matrix`, `build-index`, `okf-validate`, `validate-frontmatter`, `validate-work-items`, `map-paths`, `check-freshness`, `collect-evidence` (`publish-local` deprecated), `hooks/guard-generated`; stubs `jira-push`, `confluence-export`, `confluence-publish`, `push-to-tests-repo` |
 
 ### 8.3 How to verify locally (nothing here is claimed as run)

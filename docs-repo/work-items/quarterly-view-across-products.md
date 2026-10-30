@@ -42,7 +42,7 @@ Confirmed by the analyst on 2026-10-20 (acceptance run).
 ## Trust
 P1-001, P2-001, STR-001, PRS-001: `draft · unverified`; flows client-presentation and meeting-journey:
 `draft · unverified`; `horizon_totals`, `monthly_projection`: `draft · unverified` (audited, formulas MATCH);
-`stress_test_monthly`: `human-reviewed`. STR-001 carries an open conflict with its legacy page (importer threshold,
+`stress_test_monthly`: `human-reviewed`. STR-001 carries an open conflict with its imported page (importer threshold,
 transport cost delta) that the quarterly view does not touch. Every story derived here is `needs-spec-review`.
 
 ## What is reused, what changes, what is built

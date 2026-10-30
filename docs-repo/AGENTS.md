@@ -21,7 +21,7 @@ several subjects): a `## Contents` with the line range of every section, the sub
 calculation, flow or context overview), the computed sections no file shows (the depth-2 graph neighbourhood with
 `file:line`, the contract operations and Kafka payloads, the table pages with their datasets, work items and tests,
 the merged slice of several subjects) and **pointers** - one line with path and badge - for the calculations the spec
-uses, the flows it takes part in and the legacy pages that mention it. **The pack is the recorded slice the task
+uses, the flows it takes part in and the imported pages that mention it. **The pack is the recorded slice the task
 starts from; the procedure around it is the same for a question and a change request** - six steps in
 `.github/skills/task-context/SKILL.md`: resolve the subjects through the catalogue, build one pack, check the badges,
 read what the task needs by the Contents (a question: the Subject and the section it names; a change: the whole pack)
@@ -59,7 +59,7 @@ what matches no line is new work: add the context it belongs to as a subject, it
   `index.md` (built by `scripts/build-index.py`), never `README.md`.
 - Provenance: set `generated: { by: copilot/<agent>, at: <ISO> }` on anything you write; cite `sources[]` with
   `[^id]`; never write `verified.by: human:<id>` yourself; `status: draft` until a person verifies. A business rule
-  you write ends with its source marker, `(source: code <sources-id>#<symbol>)` or the legacy / contract / person /
+  you write ends with its source marker, `(source: code <sources-id>#<symbol>)` or the imported / contract / person /
   spec form (`features/conventions.md`, "Provenance per rule"); so does every Formula step and the Conventions
   paragraph of a calculation (`calculations.instructions.md`, "Provenance per step"); a spec's `api[]` lists only the
   operations its own context handles ("Owned versus called operations").
@@ -81,7 +81,7 @@ what matches no line is new work: add the context it belongs to as a subject, it
 | Rebuild indexes | `python3 scripts/build-index.py` (`--check` in CI) |
 | Graph | `python3 scripts/gen-graph.py [--check]`; `python3 scripts/graph-query.py --node spec:P1-001 --depth 2` / `--files <paths>` / `--find <text>` |
 | Changed code -> specs | `git -C ../backend diff --name-only main | sed 's#^#be/#' | python3 scripts/map-paths.py` |
-| Processed legacy page -> `_done/` | `python3 scripts/legacy-done.py <page> --into <concept> [--into ...]` (or `--status obsolete --reason "<why>"`); never move the file by hand |
+| Processed imported page -> `_done/` | `python3 scripts/import-done.py <page> --into <concept> [--into ...]` (or `--status obsolete --reason "<why>"`); never move the file by hand |
 | Analytics | `python3 scripts/coverage-matrix.py` (BR <-> story <-> scenario matrix into `generated/analytics/`) |
 
 ## Checks: once, at the end of a task, for what it changed
@@ -105,7 +105,7 @@ Never after each edit; the `agentStop` hook runs the full set again when you sto
 
 Custom agents live in `.github/agents/` (`analyst`, `spec-writer`, `doc-sync`, `calc-auditor`, `test-designer`,
 `architect`, `impact-analyst`, `confluence-migrator`, `migration-lead`), one-shot prompts in `.github/prompts/`,
-procedures in `.github/skills/`. A spec is written run by run (skeleton -> legacy merge -> calculation audit ->
+procedures in `.github/skills/`. A spec is written run by run (skeleton -> page merge -> calculation audit ->
 owner decision; skill `spec-lifecycle`); `python3 scripts/migration-status.py --scope all` lists the runs still due per
 context in `migration/all.md` (agent `migration-lead` / prompt `migration-plan`). A request in free text goes through
 `analyst` / prompt `analyse-request`: catalogue -> one pack -> analysis document (`work-items/<slug>.md`, reading

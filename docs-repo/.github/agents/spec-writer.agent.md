@@ -40,9 +40,9 @@ or a free-text feature description.
    footnote, with the source marker `(source: code manager#<method>)` naming the manager method (or property, or the
    class when only the class KDoc states it) the rule came from - the symbol, never a line range; a rule that only
    restates the contract takes `(source: contract <operationId>)` (`features/conventions.md`, "Provenance per rule").
-4. Legacy pages in the pack (`confluence-import/`) may contribute rules; cite them with `[^conf-<slug>]`, end them
-   with `(source: legacy conf-<slug>)` and mark rules not confirmed by the manager or contracts with `❓ UNVERIFIED`.
-   Thresholds and formulas from legacy pages are never copied - link the calculation and let `calc-auditor` verify.
+4. Imported pages in the pack (`confluence-import/`) may contribute rules; cite them with `[^conf-<slug>]`, end them
+   with `(source: imported conf-<slug>)` and mark rules not confirmed by the manager or contracts with `❓ UNVERIFIED`.
+   Thresholds and formulas from imported pages are never copied - link the calculation and let `calc-auditor` verify.
 5. Everything you could not source goes to **Open questions**. Set `status: draft`,
    `generated: { by: copilot/spec-writer, at: <ISO> }`, `stale_after` +90 days, no `verified`.
 6. Add / update the `docs-map.yml` mapping for every `code_refs` directory.
@@ -52,4 +52,4 @@ or a free-text feature description.
 
 ## Output
 The spec file (and `docs-map.yml`, `log.md`). Chat <= 10 lines: which sections came from the graph, from the manager,
-from legacy pages, and the list of open questions.
+from imported pages, and the list of open questions.

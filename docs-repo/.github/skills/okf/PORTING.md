@@ -8,7 +8,7 @@ Source: https://github.com/scaccogatto/okf-skills (MIT) · Spec: GoogleCloudPlat
 | `skills/validate`, `skills/visualize` | `.github/skills/okf-validate/`, `okf-visualize/`; Python scripts vendored unchanged for CI; **standard-library port** of the validator core in `scripts/okf-validate.py` for machines without pip packages (no pyyaml) |
 | `${CLAUDE_SKILL_DIR}`, `$ARGUMENTS`, `/okf:<skill>` | Fixed repo paths; prompt files `.github/prompts/okf-*.prompt.md` with `${input:…}` |
 | `user-invocable`, `argument-hint`, `allowed-tools` frontmatter | Dropped (Copilot only reads `name`, `description`) |
-| `agents/event-analyzer`, `agents/bundle-weaver` (backfill map/reduce) | Not ported — git-history/transcript backfill is low value here; `confluence-migrator` agent covers legacy import |
+| `agents/event-analyzer`, `agents/bundle-weaver` (backfill map/reduce) | Not ported — git-history/transcript backfill is low value here; `confluence-migrator` agent covers imported import |
 | `hooks/` Stop hook (`upkeep: enforced`) | No IDE hook in Copilot → enforced in CI: `docs-quality.yml` runs the validator; code repos run `check-freshness.py` |
 | `servers/okf_mcp.py`, `.mcp.json` | Not ported (MCP not permitted; Copilot reads files directly) |
 | `templates/CLAUDE-okf.md` | Merged into `.github/copilot-instructions.md` ("OKF bundle" section) |

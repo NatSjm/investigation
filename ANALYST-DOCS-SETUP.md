@@ -107,7 +107,7 @@ Everything named "Harbor", `harbor`, `HARBOR`, `P1`, `CLI`, ... is sample vocabu
 | `.github/agents/analyst.agent.md` | Replace with the version in Step 14 (adds a question-answering mode). |
 | `.github/agents/spec-writer.agent.md`, `confluence-migrator.agent.md`, `calc-auditor.agent.md`, `doc-sync.agent.md`, `migration-lead.agent.md` | Replace `harbor` paths with `<project>`. In `calc-auditor` replace `V9__parameters.sql` / `parameter_set` / `.../calc/<Class>Test.kt` with where your parameters and calculator tests really live. In `doc-sync` step 5 replace `harbor-core/src/main/kotlin/com/acme/harbor/utils/**` with your calculation package. |
 | `.github/prompts/*.prompt.md` | Replace sample defaults in `${input:...:default}` (e.g. `product2 P2-001`). |
-| `.github/skills/spec-lifecycle`, `task-context`, `write-feature-spec`, `calculation-spec`, `legacy-page-audit`, `jira-work-items`, `gherkin-test-design`, `docs-analytics`, `code-graph` | Replace sample names and paths. |
+| `.github/skills/spec-lifecycle`, `task-context`, `write-feature-spec`, `calculation-spec`, `imported-page-audit`, `jira-work-items`, `gherkin-test-design`, `docs-analytics`, `code-graph` | Replace sample names and paths. |
 | `.github/instructions/*.instructions.md` | Keep `applyTo` globs; replace sample names. |
 | `.github/hooks/docs-quality.json` | None (runs local scripts only). |
 | `features/_template.md`, `features/conventions.md`, `domain/calculations/_template.md`, `flows/_template.md`, `architecture/adr/template.md`, `work-items/_schema.yml` | `context:` list and `owners:` in the templates; spec prefixes in `conventions.md`. |
@@ -130,7 +130,7 @@ is paid for in tokens on every request. Paste and fill in:
 # AGENTS.md - <Product> documentation repository
 
 Single source of truth for functional and technical documentation of <Product>. Code repositories `<be>`
-(Kotlin/Spring) and `<fe>` are *inputs*; Confluence is a *legacy source* (`confluence-import/`); Jira and the tests
+(Kotlin/Spring) and `<fe>` are *inputs*; Confluence is a *imported source* (`confluence-import/`); Jira and the tests
 repository are *outputs*. Every document is a concept with YAML frontmatter; every folder has a generated `index.md`.
 Agents orient through indexes, never through directory listings.
 
@@ -186,7 +186,7 @@ a run: never move `stale_after` or write `verified` to clear it.
 
 ## Agents
 `.github/agents/`: `analyst`, `spec-writer`, `confluence-migrator`, `calc-auditor`, `doc-sync`, `migration-lead`.
-A spec is written run by run (skeleton -> legacy merge -> calculation audit -> owner decision); see
+A spec is written run by run (skeleton -> page merge -> calculation audit -> owner decision); see
 `.github/skills/spec-lifecycle/SKILL.md`.
 ````
 
@@ -306,7 +306,7 @@ You export the pages yourself (no script needed). For each page create
 source: Confluence <SPACE>/<page title>
 confluence_id: <page id>
 url: <page url>
-author: <author id or "legacy">
+author: <author id or "unknown">
 last_modified: <YYYY-MM-DD>
 status: imported
 ---
@@ -339,7 +339,7 @@ unassigned pages and blockers. It never edits specs.
 | Run | In Copilot Chat | Reads | Writes | Your review (10-15 min) |
 |---|---|---|---|---|
 | 1 Skeleton | agent `spec-writer`, prompt `/spec-skeleton-from-graph <context> <CTX>-001` | graph neighbourhood, contracts, **one** manager file | `features/<ctx>/<CTX>-001.md` (`draft`), `docs-map.yml`, `log.md` | API/Events/Data match the contracts; rules are single MUST statements; gaps are in Open questions |
-| 2 Legacy merge | agent `confluence-migrator`, message `confluence-import/<SPACE>/<page>.md` | the page + context pack | merged new facts, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]`, glossary terms; page moved to `_done/` | every legacy claim is cited; no numbers copied; conflicts are visible |
+| 2 Page merge | agent `confluence-migrator`, message `confluence-import/<SPACE>/<page>.md` | the page + context pack | merged new facts, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]`, glossary terms; page moved to `_done/` | every imported-page claim is cited; no numbers copied; conflicts are visible |
 | 3 Calculation | agent `calc-auditor`, prompt `/audit-calculation <name>` (or the handoff button) | the calculator class + its unit test only | `domain/calculations/<name>.md` with `## Audit <date>` (`MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED`) | worked examples come from the test, with test method names |
 | 4 Owner decision | a person, no agent | open questions | the answer on each question's item and one line in `features/<ctx>/log.md`, `verified: { by: human:<id>, at }`, `stale_after` (+90 days), `status: stable` | - |
 
@@ -480,7 +480,7 @@ None of the copied scripts makes a network call or needs credentials. All are pl
 | `collect-evidence.py` | `<be>`, `<fe>` checkouts (runs `git rev-parse/status`; with `--generate` runs their `gen-all.py`) | **deletes and rewrites** all files in `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi`; writes `generated/manifest.yml` | The only destructive script. By design it removes files the sources no longer produce. Never keep hand-made files in those four folders; start from a clean git tree; run `--dry-run` first; a failed validation publishes nothing |
 | `gen-graph.py` | `generated/be|fe`, `contexts.yml`, `docs-map.yml` | `generated/graph/**` | Safe; overwrites its own output |
 | `build-index.py` | frontmatter of all concepts | **every `index.md`** outside excluded folders; root `index.md` keeps the `manual:start/end` block | Do not keep hand-written content in `index.md` files (put it in `README.md` or a concept) |
-| `context-pack.py` | specs, calculations, flows, `contexts.yml`, graph, contracts, `architecture/`, `contracts/proposed/`, `confluence-import/` | `.context/<task>.md` (git-ignored) | Safe. Packs may quote legacy pages - keep `.context/` ignored |
+| `context-pack.py` | specs, calculations, flows, `contexts.yml`, graph, contracts, `architecture/`, `contracts/proposed/`, `confluence-import/` | `.context/<task>.md` (git-ignored) | Safe. Packs may quote imported pages - keep `.context/` ignored |
 | `gen-catalogue.py` | `contexts.yml`, specs, calculations, flows, graph, contracts, `generated/be/events.md`, glossary, work items, test design | `generated/catalogue.md` | Safe; overwrites its own output; `--check` in CI |
 | `graph-query.py`, `map-paths.py` | `graph.json`, `docs-map.yml` | nothing (stdout) | Safe, read-only |
 | `okf-validate.py`, `validate-frontmatter.py`, `validate-work-items.py` | the bundle | nothing | Safe, read-only; exit code 1 on errors |

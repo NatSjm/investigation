@@ -29,7 +29,7 @@ The idea has four parts:
    the business contexts. "What is affected", "where is it", "what talks to what" are answered without opening code.
 4. **Agents start from a pack, not from a search.** For each task a script assembles a context pack: the subject
    whole, the graph neighbourhood, the contracts, the tables, related work, and pointers to its calculations, flows
-   and legacy pages. Every agent then walks the same six steps (2.6): the pack and its pointers, the documentation
+   and imported pages. Every agent then walks the same six steps (2.6): the pack and its pointers, the documentation
    folders and the graph freely, code last - through the maps and then freely for the analyst, at a named line for
    the others - and whatever code says is evidence, never a rule.
 
@@ -87,7 +87,7 @@ inventing our own metadata because it already defines the things we would have h
   and the sanctioned code shape. Agents bind parameters; they never re-derive a formula.
 
 What we would lose without it: no machine-readable trust, so the analyst could not tell a verified rule from a draft;
-no provenance, so legacy claims and verified facts would look the same; no indexes, so agents would list and grep
+no provenance, so imported claims and verified facts would look the same; no indexes, so agents would list and grep
 directories; no standard validator, so every rule would be a code review comment. The cost is the frontmatter block,
 which agents never see (the pack strips it) and people can fold. Our repository-specific keys (`id`, `context`,
 `code_refs`, `api`, `events`, `tables`, `calculations`, `jira`, `tests`) are allowed extensions.
@@ -98,7 +98,7 @@ line range of every section; the subject whole with its badge (spec body, calcul
 cites, or the overview of a context); the computed sections no file shows (graph neighbourhood with `file:line`,
 contract operations and payloads, table pages with their datasets, work items and tests, the merged slice of several
 subjects); and pointers - one line with path and badge - to the calculations the spec uses, the flows it takes part in
-and the legacy pages that mention it. Nothing is truncated (`--budget N` exists for a tool with a hard limit and no
+and the imported pages that mention it. Nothing is truncated (`--budget N` exists for a tool with a hard limit and no
 procedure uses it). Around the pack every agent walks the same **six steps**, for a question and a change request
 alike (`.github/skills/task-context/SKILL.md`): resolve the subjects through the catalogue; build one pack; check the
 badges; read what the task needs by the Contents and follow the pointers through the indexes; search the
@@ -151,7 +151,7 @@ docs-repo/
     conventions.md            ID scheme, BR numbering, size caps, section order, lifecycle of one spec
     <ctx>/<CTX>-NNN.md        the specs; <ctx>/index.md generated
   domain/
-    glossary.md               canonical terms; Aliases column for legacy / source-language wording
+    glossary.md               canonical terms; Aliases column for imported / source-language wording
     context-map.md            the contexts, prefixes, entry points, relationships
     calculations/             one Attested Computation per calculation: formula, parameters, worked examples, audit
       _template.md
@@ -159,7 +159,7 @@ docs-repo/
     overview.md, integrations.md, adr/NNNN-*.md, adr/template.md, (hld/<ID>.md)
   flows/                      cross-context behaviour (`type: Flow`): trigger, participants, steps with file:line, invariants, source map
     _template.md, client-presentation.md
-  confluence-import/          quarantine for exported legacy pages; README with rules + inventory; raw-html/<section>/ the HTML export as received,
+  confluence-import/          quarantine for exported imported pages; README with rules + inventory; raw-html/<section>/ the HTML export as received,
                               <SPACE>/<section>/<slug>.md the imported pages (scripts/confluence-import.py), <SPACE>/_attachments/<slug>/ their images, <SPACE>/_done/
   generated/                  collected from the code repos by scripts/collect-evidence.py (manifest.yml names the source commits); never edited by hand
     be/, fe/                  the maps; openapi/, asyncapi/ the contracts; graph/ the graph; analytics/ the coverage matrix
@@ -197,7 +197,7 @@ Key files worth reading once: `AGENTS.md` (the contract between people and agent
 | `publish-local.py` | deprecated name of `collect-evidence.py`, forwards to it | - | - | - |
 | `migration-status.py --scope <ctx|all>` | which lifecycle runs are still due per context, with commands | `contexts.yml`, specs, calculations, docs-tags, REPO_MAP, pending pages | `migration/<scope>.md` | planning; migration-lead |
 | `hooks/guard-generated.py` | Copilot `preToolUse` hook: denies edits under `generated/**` and of `index.md` | hook payload | permission decision | every agent edit |
-| `confluence-export.py`, `confluence-publish.py`, `jira-push.py`, `push-to-tests-repo.py` | **stubs** describing the intended integrations (export/import of legacy pages, publish back, Jira REST, tests repo PR) | - | - | to be implemented per environment |
+| `confluence-export.py`, `confluence-publish.py`, `jira-push.py`, `push-to-tests-repo.py` | **stubs** describing the intended integrations (export/import of imported pages, publish back, Jira REST, tests repo PR) | - | - | to be implemented per environment |
 
 All validators return a non-zero exit code on failure so the same commands run in hooks and CI.
 
@@ -213,10 +213,10 @@ Each file is YAML frontmatter (`name`, `description`, `tools`, optional `handoff
 | `analyst` | business/system analyst: epic, stories, subtasks with Gherkin criteria; analytics mode for coverage/freshness questions | the six context steps of `task-context`, all of them: the pack and its pointers, the documentation folders and the graph, then code last - through the maps, freely for a question that still blocks; everything read from code is recorded as evidence and open questions | `work-items/<ID>.yml`, open questions in the spec | `test-designer`, `spec-writer` |
 | `spec-writer` | writes or refreshes a feature spec from the graph and one manager file; marks everything unsourced as unverified | pack, `generated/graph/<ctx>.md`, contracts, `manager/<Ctx>Manager.kt` | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | `analyst`, `calc-auditor` |
 | `doc-sync` | keeps specs in sync with code changes from the generated diffs with minimal source reading | `map-paths`, `graph-query --files`, contracts, maps | folder `log.md` lines, `last_verified`, stubs for unmapped contexts | `calc-auditor` for utils changes |
-| `calc-auditor` | verifies a calculation concept or a legacy formula page against the calculator and its unit test; never changes numbers | two source files only | `## Audit <date>` table, status, open questions | `spec-writer`, `confluence-migrator` for the screen rules of a mixed legacy page |
-| `confluence-migrator` | converts one legacy page into the right concept: merge new facts, mark conflicts, extract glossary terms, cite the page | the page, the pack, `generated/` | merged concept, glossary, page moved to `_done/` | `calc-auditor` for formula pages, `architect` for architecture, decision and process pages |
+| `calc-auditor` | verifies a calculation concept or an imported formula page against the calculator and its unit test; never changes numbers | two source files only | `## Audit <date>` table, status, open questions | `spec-writer`, `confluence-migrator` for the screen rules of a mixed imported page |
+| `confluence-migrator` | converts one imported page into the right concept: merge new facts, mark conflicts, extract glossary terms, cite the page | the page, the pack, `generated/` | merged concept, glossary, page moved to `_done/` | `calc-auditor` for formula pages, `architect` for architecture, decision and process pages |
 | `test-designer` | Gherkin scenarios and synthetic fixtures from the spec's BRs and worked examples | pack | `test-design/features/<ID>.feature`, fixtures | - |
-| `architect` | HLD (C4/arc42 Mermaid), ADRs, integration map refresh; migrates legacy architecture, decision and process pages | `architecture/`, graph, contracts, spec frontmatter only, the legacy page | `architecture/hld/<ID>.md`, `adr/NNNN-*.md`, `overview.md` / `integrations.md` prose, page moved to `_done/` | `confluence-migrator`, `calc-auditor` for a page's feature or formula part |
+| `architect` | HLD (C4/arc42 Mermaid), ADRs, integration map refresh; migrates imported architecture, decision and process pages | `architecture/`, graph, contracts, spec frontmatter only, the imported page | `architecture/hld/<ID>.md`, `adr/NNNN-*.md`, `overview.md` / `integrations.md` prose, page moved to `_done/` | `confluence-migrator`, `calc-auditor` for a page's feature or formula part |
 | `impact-analyst` | blast radius of a change from the graph, as a checklist | `generated/graph/` | checklist in chat/file | - |
 | `migration-lead` | plans and tracks the migration: runs due per context, order, blockers; proposes, never edits concepts | `migration-status` output, REPO_MAP, index badges | `migration/<scope>.md` lead notes | `spec-writer`, `confluence-migrator`, `calc-auditor` |
 
@@ -237,7 +237,7 @@ beside it under `references/`.
 | `spec-lifecycle` | the four runs of one spec, owner, inputs, outputs, exit state; per-run review checklist | writers, lead, reviewers |
 | `write-feature-spec` | spec structure, numbering, `source-priority.md` (cheapest source first) | spec-writer, doc-sync |
 | `calculation-spec` | Attested Computation: formula, parameters, worked examples from the test, conventions | calc-auditor, spec-writer |
-| `legacy-page-audit` | claims table with MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED; two files only | calc-auditor, migrator |
+| `imported-page-audit` | claims table with MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED; two files only | calc-auditor, migrator |
 | `code-graph` | answer where/what-talks-to-what from the graph; `graph-schema.md`; `subtask-mapping.md` (node kind -> subtask type) | analyst, impact-analyst, test-designer |
 | `jira-work-items` | slicing heuristics, estimates, acceptance-criteria conventions | analyst |
 | `gherkin-test-design` | step vocabulary, coverage checklist | test-designer |
@@ -321,7 +321,7 @@ truth; existing files are overwritten.
    context that has no spec. Hooks validate; a person reviews and merges.
 
 ### B. A spec is written (the four runs, see `spec-lifecycle`)
-Run 1 skeleton from the graph and the manager (`spec-writer`), Run 2 legacy pages merged one per run
+Run 1 skeleton from the graph and the manager (`spec-writer`), Run 2 imported pages merged one per run
 (`confluence-migrator`), Run 3 calculation audit (`calc-auditor`), Run 4 owner decision (a person adds
 `verified.by`). One run, one review, one commit. `migration-status.py` says what is still due.
 
@@ -331,7 +331,7 @@ Space export to HTML under `confluence-import/raw-html/<section>/`, imported by 
 `<SPACE>/_attachments/<slug>/` (spec in [MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md)), triaged in the generated
 inventory table (the **Known state** column), then flow B. Pages are evidence, never copied; numbers always go through
 Run 3. A page that changes after its migration comes back from the next export as a fresh page (`supersedes_done`
-naming the migrated copy) and goes through flow B again; `legacy-done.py` replaces the copy.
+naming the migrated copy) and goes through flow B again; `import-done.py` replaces the copy.
 
 ### D. An analyst task
 `/context-pack <task>` resolves the task to a spec, builds the pack. `@analyst /jira-from-spec <ID>` reads it, checks
@@ -413,4 +413,4 @@ read token, instead of every code repo needing write access to it.
 - **Attested Computation**: the OKF type for a calculation with parameters, executor, worked examples.
 - **Code only**: a context or calculation present in the code but without a concept; the backlog list in REPO_MAP.
 - **Freshness gate**: the CI check that a PR touching a mapped path must bump `last_verified` or declare `docs-not-affected`.
-- **Quarantine**: `confluence-import/`, where legacy pages wait as evidence until migrated.
+- **Quarantine**: `confluence-import/`, where imported pages wait as evidence until migrated.

@@ -160,6 +160,6 @@ stories:
       - summary: "[TEST] API scenarios S6 + calculation scenario outline from the horizon_totals worked examples"
         estimate_hours: 3
 questions:
-  - "City filter scope (P1-001 open question): the legacy page says only the city table is filtered, the code filters all four tables and the totals; BR-P1-001-2 is silent on the other three. S2 acceptance criteria assume the code behaviour until decided."
+  - "City filter scope (P1-001 open question): the imported page says only the city table is filtered, the code filters all four tables and the totals; BR-P1-001-2 is silent on the other three. S2 acceptance criteria assume the code behaviour until decided."
   - "Replacement granularity and grid start (monthly_projection audit Q1/Q2): BR-P1-001-3 says per key, the code replaces the whole month and starts the grid the month after today. S1 criteria follow BR-3 as written and will need re-checking."
   - "Stories S3, S4 and S7 of the earlier version moved to work-items/P1-002.yml (S1, S2) and work-items/P1-003.yml (S1) with the spec split of 2026-10-15; story ids here are kept so Jira references stay valid."

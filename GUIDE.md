@@ -103,7 +103,7 @@ python3 docs-repo/scripts/context-pack.py --task P1-001
 code ./docs-repo/.context/p1-001.md
 ```
 Up to 500 lines: subject and badge, the spec body, its calculations with worked examples, the flows it takes part in, the graph neighbourhood with
-`file:line`, the contract operations, the tables, related work items and tests, legacy pages. Try a free-text task:
+`file:line`, the contract operations, the tables, related work items and tests, imported pages. Try a free-text task:
 `--task "transport mode toggle on the stress table"`.
 
 **Step 7 - Ask the graph a question**:
@@ -131,7 +131,7 @@ root. Try, in this order:
 | `/context-pack P1-001` | builds the pack and summarises it |
 | `@analyst /jira-from-spec STR-001` | analyst reads the pack, writes `work-items/STR-001.yml` (epic, stories, subtasks, Gherkin criteria citing BR-IDs), warns that STR-001 is a draft |
 | `/spec-skeleton-from-graph product2 P2-001` | spec-writer creates `features/product2/P2-001.md` from the graph and the manager file, status draft |
-| `/audit-calculation stress_test_monthly` | calc-auditor compares the concept and the legacy Confluence page with the calculator and its unit test; the legacy page is deliberately outdated |
+| `/audit-calculation stress_test_monthly` | calc-auditor compares the concept and the imported Confluence page with the calculator and its unit test; the imported page is deliberately outdated |
 | `/coverage-report` | analyst answers from the coverage matrix and index badges |
 | `/migration-plan all` | migration-lead refreshes the board and adds order and blockers |
 
@@ -147,11 +147,11 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 |---|---|---|---|---|
 | `analyst` | Jira-ready epic / stories / subtasks with Gherkin criteria; documentation analytics | spec ID, calculation, graph node, free text, analytics question | `work-items/<ID>.yml`, answers from the coverage matrix | only a `file:line` the pack names, when blocked |
 | `spec-writer` | create or refresh a feature spec | spec ID + context | `features/<ctx>/<ID>.md`, `docs-map.yml` | the context's manager file only |
-| `confluence-migrator` | merge one legacy page into the right concept | `confluence-import/<SPACE>/<page>.md` | merged spec, glossary terms, page moved to `_done/` | no |
+| `confluence-migrator` | merge one imported page into the right concept | `confluence-import/<SPACE>/<page>.md` | merged spec, glossary terms, page moved to `_done/` | no |
 | `calc-auditor` | verify a calculation concept or formula page against code | calculation name, spec ID or page | `## Audit <date>` table, open questions | calculator class + its unit test, nothing else |
 | `doc-sync` | keep specs in sync with code changes | changed paths or a generated diff | folder `log.md` lines, `last_verified` | narrow ranges only when the contract diff cannot explain behaviour |
 | `test-designer` | Gherkin scenarios and synthetic fixtures | spec ID or work items | `test-design/features/<ID>.feature`, fixtures | no |
-| `architect` | HLD, ADRs, integration map; legacy architecture, decision and process pages | spec ID, decision or `confluence-import/<SPACE>/<page>.md` | `architecture/hld/<ID>.md`, `adr/NNNN-*.md`, merged `overview.md` / `integrations.md` prose, page moved to `_done/` | never |
+| `architect` | HLD, ADRs, integration map; imported architecture, decision and process pages | spec ID, decision or `confluence-import/<SPACE>/<page>.md` | `architecture/hld/<ID>.md`, `adr/NNNN-*.md`, merged `overview.md` / `integrations.md` prose, page moved to `_done/` | never |
 | `impact-analyst` | blast radius of a change | file paths or a node | checklist across BE / FE / docs | no (graph only) |
 | `migration-lead` | plan and track the documentation migration | context, space key or `all` | `migration/<scope>.md` | no |
 
@@ -163,7 +163,7 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 | `spec-lifecycle` | the four runs of writing one spec, who owns which, review checklist |
 | `write-feature-spec` | structure, numbering, source priority (cheapest source first) |
 | `calculation-spec` | formula + parameters + worked examples + sanctioned code shape |
-| `legacy-page-audit` | claims table: MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED |
+| `imported-page-audit` | claims table: MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED |
 | `code-graph` | answer "what is affected / where is it" from the graph; subtask mapping per node kind |
 | `jira-work-items` | slicing heuristics, estimates, acceptance criteria conventions |
 | `gherkin-test-design` | step vocabulary, coverage checklist |
@@ -213,7 +213,7 @@ only; publication is the docs repo's collector), `copilot-setup-steps.yml` for t
 | Run | Who | Command | Result |
 |---|---|---|---|
 | 1 Skeleton | `spec-writer` | `/spec-skeleton-from-graph <ctx> <ID>` | draft spec from graph + manager, open questions listed |
-| 2 Legacy merge | `confluence-migrator` | `@confluence-migrator confluence-import/<SPACE>/<page>.md` | new facts merged, conflicts marked, page moved to `_done/` |
+| 2 Page merge | `confluence-migrator` | `@confluence-migrator confluence-import/<SPACE>/<page>.md` | new facts merged, conflicts marked, page moved to `_done/` |
 | 3 Calculation | `calc-auditor` | handoff or `/audit-calculation <name>` | audit table, open questions |
 | 4 Owner decision | a person | edit | `verified.by`, `stale_after`, status stable |
 | ongoing | `doc-sync` | on generated-diff PRs | folder `log.md` lines, `last_verified` |
@@ -326,5 +326,5 @@ fits its budget; the high-value specs are human-verified.
 conventions, `code-repo-kit/**`. These are domain-neutral apart from names and paths.
 
 ### What is simulation only
-The three repositories' content, the Harbor names, the external service contracts, the legacy pages, the work items and
+The three repositories' content, the Harbor names, the external service contracts, the imported pages, the work items and
 test designs, and the stubs for Jira, Confluence and the tests repository.

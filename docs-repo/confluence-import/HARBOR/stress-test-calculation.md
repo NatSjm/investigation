@@ -1,14 +1,14 @@
 ---
 source: Confluence HARBOR/Stress test calculation
 last_modified: 2025-06-14
-author: legacy
+author: unknown
 confluence_id: 48103522
 url: https://confluence.example.com/display/HARBOR/Stress+test+calculation
 ---
 
 # Stress test calculation
 
-> Exported legacy page. Quarantined — see `confluence-import/README.md`. Not authoritative.
+> Imported Confluence page. Quarantined — see `confluence-import/README.md`. Not authoritative.
 
 ## What the stress test shows
 

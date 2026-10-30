@@ -1,6 +1,6 @@
 # Confluence import (quarantine)
 
-Raw legacy pages, one Markdown file per Confluence page with a header block (`source`, `title`, `confluence_id`,
+Raw imported pages, one Markdown file per Confluence page with a header block (`source`, `title`, `confluence_id`,
 `url`, `author`, `last_modified`, `status`). Two ways in:
 
 - **HTML export** (the standard "Export space to HTML", or the same pages re-arranged one folder per page): the export
@@ -26,7 +26,7 @@ confluence-import/
   raw-html/<section>/            the HTML export as received (one folder per section = page tree)
   <SPACE>/<section>/<slug>.md    imported pages (header `imported_from` = regenerated, do not edit in place)
   <SPACE>/_attachments/<slug>/   images the pages show (binary, see .gitattributes)
-  <SPACE>/_done/<section>/       migrated or obsolete pages, mirrored by section (`scripts/legacy-done.py` moves them and re-points their links; one copy per page, replaced when a newer export is migrated again)
+  <SPACE>/_done/<section>/       migrated or obsolete pages, mirrored by section (`scripts/import-done.py` moves them and re-points their links; one copy per page, replaced when a newer export is migrated again)
 ```
 
 Import or re-import (idempotent; `--check` writes nothing and exits 1 when the quarantine is out of date):
@@ -49,7 +49,7 @@ imported`) with `supersedes_done:` naming the copy under `_done/` and `supersede
 own `last_modified` is the export's). The copy is not touched; the inventory row is the fresh page's with the state
 `re-imported, migrated copy <path>` (the date cell says `re-imported` too), the console says the same, and a second run
 changes nothing. The agent reruns on the fresh page as on any page (Run 2 again: the specs that cite the copy in
-`sources[]` are the targets, the diff against the copy is the work), and `scripts/legacy-done.py` then **replaces** the
+`sources[]` are the targets, the diff against the copy is the work), and `scripts/import-done.py` then **replaces** the
 copy (rule 3). The `_attachments/<slug>/` folder of a re-imported page follows the newest export; the copy shares it
 until it is replaced.
 
@@ -61,7 +61,7 @@ until it is replaced.
 2. Pages are migrated **one at a time** by the agent `confluence-migrator` (`@confluence-migrator
    confluence-import/HARBOR/<page>.md`) into typed concepts under `features/`, `domain/` or `architecture/`;
    the page is cited in the concept's `sources[]` with its `last_modified` date.
-3. Processed pages move to `<SPACE>/_done/<section>/` through `python3 scripts/legacy-done.py <page> --into
+3. Processed pages move to `<SPACE>/_done/<section>/` through `python3 scripts/import-done.py <page> --into
    <concept> [--into ...]`, never by hand: the script keeps the section from the page header, writes `status`,
    `migrated` (or `obsolete` with `reason`) and `superseded_by` naming every concept the page went into, and
    re-points the image and page links. `superseded_by` is the backward link (concept `sources[]` is the forward
@@ -107,7 +107,7 @@ for a page, quote its note in the request, for example
    |---|---|---|
    | `feature-spec` | a screen, a modal, business rules, or product behaviour across contexts | `confluence-migrator`, into `features/<context>/<ID>.md`; behaviour across contexts ends up in a flow (`flows/<name>.md`), which `architect` writes from the specs |
    | `calculation` | how a number is computed: a formula, thresholds, rounding, worked examples | `calc-auditor` (`/audit-calculation <page>`), into `domain/calculations/<name>.md`; never merged by hand |
-   | `architecture` | what the application is, its parts, integrations, deployment | `architect` (`@architect <page>`, task "Legacy page", after `/integrations-from-contracts`), into `architecture/`; a page on what the application is and who uses it goes to `architecture/overview.md` |
+   | `architecture` | what the application is, its parts, integrations, deployment | `architect` (`@architect <page>`, task "Imported page", after `/integrations-from-contracts`), into `architecture/`; a page on what the application is and who uses it goes to `architecture/overview.md` |
    | `decision` | why something was done one way | `architect` (`@architect <page>`), as an ADR under `architecture/adr/` |
    | `glossary` | term definitions | `confluence-migrator`, into `domain/glossary.md` |
    | `process` | how the team works (releases, reviews, onboarding), not what the product does | usually `obsolete`; a procedure that still matters, such as deployment, goes to `architect` as a document under `architecture/` |
@@ -160,7 +160,7 @@ labelled `feature-spec` still goes to the calc-auditor), checks every claim agai
 target it chose; the diff of every run is reviewed. The costly mistake is `obsolete` on a page that is not: nobody
 migrates it until someone looks again.
 
-**After migration.** When a page moves to `<KEY>/_done/<section>/` (`scripts/legacy-done.py`), its row takes the
+**After migration.** When a page moves to `<KEY>/_done/<section>/` (`scripts/import-done.py`), its row takes the
 `_done/` path and the importer fills the cell from the page header, for example `migrated 2026-10-28` or `obsolete`;
 your triage note is replaced at that moment (the script prints the row). Replace it with a fuller sentence if you like, for example
 `migrated 2026-10-28 into ADM-001, 2 conflicts as open questions`: it stays on later imports. In the "Current pages"
@@ -174,7 +174,7 @@ page no longer asks for is withdrawn, never deleted), the migrator when the page
 under `_done/` is never rewritten in place and never moved back by hand: when the export is newer than the migrated
 copy the importer writes the newer version as a fresh page in its section folder with `supersedes_done` naming the
 copy ("A page that changes after its migration" above; inventory state `re-imported, migrated copy <path>`), the
-agent reruns on that fresh page, and `scripts/legacy-done.py` replaces the copy, carrying its `superseded_by`
+agent reruns on that fresh page, and `scripts/import-done.py` replaces the copy, carrying its `superseded_by`
 forward. When the export is not newer the importer skips the page and the inventory keeps the `_done/` row.
 
 ## Current pages (space `HARBOR`)

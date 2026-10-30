@@ -2115,3 +2115,53 @@ for folder, items in groups.items():
 `GUIDE.md` (agent table, lifecycle table), `MIGRATION-RUNBOOK.md` (owner decision paragraph), `ANALYST-DOCS-SETUP.md`
 (lifecycle row 4), `EXTERNAL-PATTERNS.md` (ADDED / MODIFIED / REMOVED paragraph): "change-log row" reads "folder
 `log.md` line" everywhere.
+
+## 54. "Legacy" is "imported" (investigation commits after `d841f02`, 2026-10-30)
+
+The kit called a Confluence page "legacy" to mean a role: exported, quarantined, not yet verified against the code,
+superseded by the spec once merged. Where Confluence stays the surface business readers use, the word reads as
+"retired" and as a judgement on the pages' authors. The kit's header vocabulary (`status: imported | migrated |
+obsolete`) was already neutral; the prose now uses it. The meaning is unchanged: an imported page is evidence, never
+a rule; every claim is verified against `generated/` before it enters a concept; the page moves to `_done/` through
+the script once merged.
+
+What changed in words: "imported page(s)" for "legacy page(s)"; Run 2 is the "page merge"; the rule marker is
+`(source: imported <sources-id>)`; callouts are `> ⚠️ CONFLICT (imported: <page>)` and `> ❓ UNVERIFIED (imported:
+<page>, <date>)`; the Open question reads "imported page mentions X - not present in code"; the pack section is
+`## Imported pages`; the page banner is "Imported Confluence page. Quarantined ..."; a page without an author gets
+`author: unknown`. Two names changed: `scripts/legacy-done.py` is `scripts/import-done.py` (same options), the skill
+`legacy-page-audit` is `imported-page-audit`. Left as they were, different meanings: the OKF validator's "legacy
+v0.1" fields, the API index collector's "legacy routes", and history (root and folder `log.md`, this file).
+
+### 54.1 Docs repository
+
+1. Rename: `git mv scripts/legacy-done.py scripts/import-done.py` and `git mv .github/skills/legacy-page-audit
+   .github/skills/imported-page-audit`.
+2. Replace the word in every `.md`, `.py`, `.yml` and `.json` under the repository except `log.md` files, `.context/`,
+   `raw-html/`, `_attachments/` and the two OKF scripts named above. The replacements in order, phrase-specific first
+   (a search and replace per line, or the script of the investigation repository, `rename-legacy.py`, which carries
+   this list): `legacy-done.py` -> `import-done.py`; `legacy-page-audit` -> `imported-page-audit`; `(source: legacy `
+   -> `(source: imported `; `(legacy: ` -> `(imported: `; `author: legacy` -> `author: unknown`, in the importer
+   `or "legacy"` -> `or "unknown"` and the inventory cell `| legacy |` -> `| unknown |`; `legacy_dir` -> `import_dir`;
+   `Exported legacy page.` -> `Imported Confluence page.`; `imported legacy page(s)` -> `imported page(s)`;
+   `Confluence legacy` -> `Confluence`; `a legacy` -> `an imported`; `Legacy pages` -> `Imported pages`; `Legacy
+   merge` -> `Page merge`; `Legacy page` -> `Imported page`; `legacy mentions` -> `imported page mentions`; `legacy
+   space` -> `Confluence space`; `legacy claim | wording | footnote | citation | numbers | intent | content | fact(s)`
+   -> `imported-page <same>`; `legacy formula | architecture | decision | process | flow | table(s) | calc |
+   calculation | threshold` -> `imported <same>`; then the bare word -> `imported`. Afterwards look for doubled words
+   ("imported imported", "Imported imported pages") and the Mermaid node id `LEGACY` in a README diagram.
+3. The specs' `sources[]` ids and footnotes that contained the word (`legacy-tables`, `legacy-flow`, `legacy-calc`)
+   are renamed by the same pass, definition and use together; `okf-validate.py --strict` confirms every
+   `(source: imported <id>)` still names a `sources[]` entry.
+4. `okf-validate.py --strict`, `build-index.py --check`, `migration-status.py --scope all` (and the per-context
+   boards you keep), `confluence-import.py ... --check`.
+
+Files to re-copy whole instead of replacing by hand, if you prefer: everything under `.github/` (agents, skills,
+prompts, instructions, `copilot-instructions.md`), `scripts/context-pack.py`, `scripts/migration-status.py`,
+`scripts/confluence-import.py`, `scripts/import-done.py`, `scripts/okf-validate.py`, `AGENTS.md`, `CONCEPT.md`,
+`README.md`, `features/conventions.md`, `contracts/conventions.md`, `confluence-import/README.md`, the three
+templates. Your own specs and imported pages take the replace pass of step 2.
+
+### 54.2 Playbook, handbook, guide, runbook, setup guide, patterns, blueprint, plan, investigation (read only)
+
+The same words in every root guide; `.claude/commands/audit-calculation.md` description.

@@ -1,6 +1,15 @@
 # Update Log
 
 ## 2026-10-30
+* **"Legacy" is "imported".** The word named a pipeline role (a page exported from Confluence and not yet verified
+  against the code), but Confluence stays the surface business readers use, so it read as a judgement. The kit now
+  uses its own header vocabulary everywhere: imported pages, Run 2 "page merge", `(source: imported <id>)` markers
+  (`okf-validate.py` accepts only the new spelling; the old one is gone from every rule), `CONFLICT (imported: ...)`
+  callouts, the pack section "Imported pages", the skill `imported-page-audit`, the script `scripts/import-done.py`,
+  the page banner "Imported Confluence page", the importer's author fallback `unknown`. Agents, skills, prompts,
+  instructions, conventions, CONCEPT, README, the guides and the `.claude/commands` wrapper follow; history in this
+  log, the folder logs and the change list keeps the old word. Different meanings untouched: OKF v0.1 "legacy"
+  fields in the validator, "legacy routes" in the API index collector.
 * **Change history out of the concepts, into one `log.md` per folder.** The `## Change log` table of every spec,
   calculation and flow (and of the three templates) is gone; its rows moved, one line per change under the date,
   into `features/<ctx>/log.md`, `domain/calculations/log.md` and `flows/log.md` (OKF §9 format, newest first, the

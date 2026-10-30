@@ -1,11 +1,11 @@
 ---
-name: legacy-page-audit
-description: Compare a legacy (Confluence) page or an existing calculation concept with the current implementation using the generated maps and at most two source files (calculator + unit test); classify each claim as MATCH, DOC-STALE, CODE-SUSPECT or UNDOCUMENTED and record the result in the concept. Use when documentation may be outdated and must be validated against the real state of the project.
+name: imported-page-audit
+description: Compare an imported (Confluence) page or an existing calculation concept with the current implementation using the generated maps and at most two source files (calculator + unit test); classify each claim as MATCH, DOC-STALE, CODE-SUSPECT or UNDOCUMENTED and record the result in the concept. Use when documentation may be outdated and must be validated against the real state of the project.
 ---
 
-# Legacy page / calculation audit
+# Imported page / calculation audit
 
-Legacy pages describe how things *were meant* to work; the unit test next to the calculator describes how they
+Imported pages describe how things *were meant* to work; the unit test next to the calculator describes how they
 *do* work today. Auditing means putting the two side by side without rewriting either from memory.
 
 ## Procedure
@@ -23,7 +23,7 @@ Legacy pages describe how things *were meant* to work; the unit test next to the
    |---|---|---|---|---|---|
 
    Severities: `MATCH` · `DOC-STALE` · `CODE-SUSPECT` · `UNDOCUMENTED`.
-6. **Status**: any non-`MATCH` -> concept `status: draft`, open question naming who decides; legacy page header
+6. **Status**: any non-`MATCH` -> concept `status: draft`, open question naming who decides; imported page header
    `status: obsolete | migrated`. Worked examples may only be replaced by values copied from the test (cite the
    test method).
 7. Validate, rebuild indexes, `log.md`.

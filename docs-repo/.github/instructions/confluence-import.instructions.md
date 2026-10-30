@@ -1,9 +1,9 @@
 ---
 applyTo: "confluence-import/**"
-description: Quarantine rules for imported legacy pages - evidence to be verified, never a source of truth.
+description: Quarantine rules for imported pages - evidence to be verified, never a source of truth.
 ---
 
-# Imported legacy pages
+# Imported pages
 
 - Files here are raw exports (`scripts/confluence-import.py` from the HTML export, `scripts/confluence-export.py`
   from the REST API). They may be outdated, duplicated or wrong.
@@ -15,13 +15,13 @@ description: Quarantine rules for imported legacy pages - evidence to be verifie
 - Images under `<SPACE>/_attachments/<slug>/` are evidence of a screen, not content: link one from a spec only when it
   shows synthetic data; a screenshot with client data is deleted, never committed.
 - Do not edit a page in place except to add the header block (`source`, `last_modified`, `author`, `status: imported|migrated|obsolete`).
-- Processed pages move to `confluence-import/<SPACE>/_done/<section>/` through `scripts/legacy-done.py` (status,
+- Processed pages move to `confluence-import/<SPACE>/_done/<section>/` through `scripts/import-done.py` (status,
   date, `superseded_by`, links re-pointed), never by a hand move; obsolete pages get `--status obsolete --reason`.
 - A page with a `supersedes_done` header is the newer export of a page already migrated: handle it as any page (the
   specs citing the copy in `sources[]` are the targets, the copy under `_done/` is there to diff against); the
   script replaces the copy and carries its `superseded_by` forward.
-- Numbers, formulas, thresholds and field names in legacy pages are the most likely to be stale - a formula page
+- Numbers, formulas, thresholds and field names in imported pages are the most likely to be stale - a formula page
   is handled by `calc-auditor` (compare with the unit test), not copied by `confluence-migrator`.
-- An architecture, decision or still-relevant process page is handled by `architect` (task "Legacy page", into
+- An architecture, decision or still-relevant process page is handled by `architect` (task "Imported page", into
   `architecture/`), not by `confluence-migrator`.
 - Never copy client data, screenshots with real data or personal names into concepts.

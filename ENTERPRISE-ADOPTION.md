@@ -408,7 +408,7 @@ Expand one feature or business context at a time. Move advisory gates to blockin
 | `docs-repo/domain/calculations/_template.md` | Reuse units/formulas/examples; remove unsupported attestation claims |
 | `docs-repo/.github/agents/analyst.agent.md` | Rewrite for docs-first retrieval, explicit trust and escalation; remove graph dependence |
 | `docs-repo/.github/agents/doc-sync.agent.md` | Adapt into docs maintainer; do not automatically renew verification dates |
-| `docs-repo/.github/skills/legacy-page-audit/SKILL.md` | Reuse conflict classification; remove arbitrary source-file limits |
+| `docs-repo/.github/skills/imported-page-audit/SKILL.md` | Reuse conflict classification; remove arbitrary source-file limits |
 | `docs-repo/docs-map.yml` | Reuse explicit mapping idea; add shared dependencies and unmapped-change handling |
 | Code-map generators | Adopt selectively after representative enterprise-source checks |
 | `context-pack.py` | Optional later; fix contract selection, reference completeness and total budget first |

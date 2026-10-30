@@ -18,7 +18,7 @@ imported_from: confluence-import/raw-html/business/Admin-parameters-page_4810370
 
 # Admin parameters page
 
-> Exported legacy page. Quarantined — see `confluence-import/README.md`. Not authoritative.
+> Imported Confluence page. Quarantined — see `confluence-import/README.md`. Not authoritative.
 
 The **Parameters** page lets an administrator change the *cover factor* and the `stress.threshold` value without a deployment. Values are read by the calculations at the start of every session \<session id>.
 

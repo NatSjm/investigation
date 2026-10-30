@@ -3,7 +3,7 @@
 whole (spec, calculation, flow or context overview with its trust badge), the computed sections no file shows (depth-2
 graph neighbourhood with file:line, contract operations, table pages, datasets, the merged slice of several subjects)
 and the linked documents as POINTERS (one line each with path and badge: the calculations the spec uses, the flows it
-takes part in, legacy pages that mention it) to open through the indexes when the task needs them. No libraries.
+takes part in, imported pages that mention it) to open through the indexes when the task needs them. No libraries.
 
 The pack is the recorded slice a task starts from: what the agent read first, what it was pointed at, which files at
 which generated-at dates. A `## Contents` section at the top gives the line range of every section and part so the
@@ -20,7 +20,7 @@ Subject (--task, repeatable; several subjects give ONE pack with the shared sect
   specs, calculations and flows with glossary aliases applied; a fallback - for a request in free text read
   generated/catalogue.md first and name the subjects yourself).
 Budget: by default none - the pack holds everything its subjects need (each item is bounded on its own: a table page
-60 lines, a legacy page 2, a graph neighbourhood 80 per subject, a linked document one pointer line plus the flow
+60 lines, an imported page 2, a graph neighbourhood 80 per subject, a linked document one pointer line plus the flow
 steps that name the subject). --budget N caps the pack for a tool with a context limit; lower-ranked sections are
 truncated first and the footer names them. No agent procedure needs it any more.
 Examples:
@@ -47,7 +47,7 @@ very want wanted wants what when where whether which while will with within with
 
 PER_SUBJECT = ('Subject', 'Spec', 'Calculation', 'Flow', 'Context overview', 'Specs in the flow')
 ORDER = ('Subject', 'Spec', 'Calculation', 'Flow', 'Context overview', 'Specs in the flow', 'Calculations', 'Flows',
-         'Graph neighbourhood', 'Contracts', 'Data', 'Related work items and tests', 'Legacy pages')
+         'Graph neighbourhood', 'Contracts', 'Data', 'Related work items and tests', 'Imported pages')
 
 
 def get_section(text, heading):
@@ -673,9 +673,9 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
             parts.append({'Key': ft, 'Text': f'**test-design/features/{sid}.feature**\n' + '\n'.join(select_lines(ft, r'^\s*(@|Scenario)', strip_right=False))})
         add_section('Related work items and tests', '\n\n'.join(p['Text'] for p in parts), 3, '', parts)
 
-    # Legacy pages
-    legacy_dir = os.path.join(repo, 'confluence-import')
-    if os.path.isdir(legacy_dir):
+    # Imported pages
+    import_dir = os.path.join(repo, 'confluence-import')
+    if os.path.isdir(import_dir):
         needle = []
         if file:
             needle.append(os.path.splitext(os.path.basename(file))[0])
@@ -683,7 +683,7 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
         else:
             needle.append(re.sub(r'^\w+:', '', task))
         parts = []
-        for p in walk_files(legacy_dir, '*.md'):
+        for p in walk_files(import_dir, '*.md'):
             if os.path.basename(p).lower() == 'readme.md' or re.search(r'(^|/)_done/', rel(repo, p), re.I):
                 continue
             pt = read_text_or_empty(p)
@@ -694,8 +694,8 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
                 pfm = get_fm(pt)
                 title = one_line(get_val(pfm, 'title')) or next((l.strip().lstrip('#').strip() for l in split_lines(body_of(pt)) if l.strip()), '')
                 pointed.append(rel(repo, p))
-                parts.append({'Key': rel(repo, p), 'Text': f"- `{rel(repo, p)}` (matches: {', '.join(hits)}) - legacy, UNVERIFIED" + (f' - {title}' if title else '')})
-        add_section('Legacy pages', '\n'.join(p['Text'] for p in parts), 5, 'confluence-import/', parts)
+                parts.append({'Key': rel(repo, p), 'Text': f"- `{rel(repo, p)}` (matches: {', '.join(hits)}) - imported, UNVERIFIED" + (f' - {title}' if title else '')})
+        add_section('Imported pages', '\n'.join(p['Text'] for p in parts), 5, 'confluence-import/', parts)
 
     label = rel(repo, file) if file else node
     return {'task': task, 'kind': kind, 'file': file, 'label': label, 'badge': badge(fm, now) if fm else 'n/a',
@@ -758,7 +758,7 @@ def merge(subjects):
         if kafka:
             events = list(dict.fromkeys(e for p in kafka for e in p['Events']))
             texts.append('**Kafka**: ' + ', '.join(f'`{e}`' for e in events) + ' - ' + kafka[0]['Where'])
-        sep = '\n' if title in ('Calculations', 'Flows', 'Legacy pages') else '\n\n'   # pointer lists stay compact
+        sep = '\n' if title in ('Calculations', 'Flows', 'Imported pages') else '\n\n'   # pointer lists stay compact
         merged.append({'Title': title, 'Content': sep.join(texts) if texts else '_(none)_', 'Rank': rank, 'See': see, 'Parts': []})
     return merged
 

@@ -1,5 +1,5 @@
 ---
-description: "Verify a calculation concept or a legacy formula page against the implementation and its unit test; record findings, never silently change numbers."
+description: "Verify a calculation concept or an imported formula page against the implementation and its unit test; record findings, never silently change numbers."
 ---
 Run the GitHub Copilot prompt `docs-repo/.github/prompts/audit-calculation.prompt.md` in this repository as the agent `docs-repo/.github/agents/calc-auditor.agent.md`, with this argument: $ARGUMENTS
 

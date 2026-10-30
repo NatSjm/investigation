@@ -1,7 +1,7 @@
 # Migration runbook: from Confluence pages to agent-ready documentation
 
 Audience: the team that will prepare the documentation bundle before the analyst agent is allowed to work from it.
-Everything below is already set up and rehearsed in `docs-repo/` (three sample legacy pages under
+Everything below is already set up and rehearsed in `docs-repo/` (three sample imported pages under
 `confluence-import/HARBOR/`). Paths are relative to `docs-repo/` unless stated otherwise.
 
 ## 0. Principle
@@ -17,7 +17,7 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
 |---|---|---|
 | `features/<context>/<CTX>-<NNN>.md` | functional specs (OKF Feature Spec), business rules `BR-<ID>-<n>` | `spec-writer`, `confluence-migrator`, humans verify |
 | `domain/calculations/<name>.md` | one concept per calculation: formula, parameters, worked examples, audit table | `calc-auditor`, `spec-writer` |
-| `domain/glossary.md`, `domain/context-map.md` | terminology (with `Aliases` for legacy / source-language terms), bounded contexts | humans + `confluence-migrator` |
+| `domain/glossary.md`, `domain/context-map.md` | terminology (with `Aliases` for imported / source-language terms), bounded contexts | humans + `confluence-migrator` |
 | `architecture/` | overview, integration map, ADRs, HLDs | `architect` |
 | `confluence-import/<SPACE>/` | raw exported pages (quarantine): `<section>/<slug>.md` per page tree, `_attachments/<slug>/` images, `_done/` after migration; `raw-html/` the HTML export as received | `scripts/confluence-import.py` (HTML export), `scripts/confluence-export.py` (REST, stub) |
 | `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi` | code maps and contracts collected from the code repos as one validated snapshot (`generated/manifest.yml` names the source commits); never edited by hand | the docs repo's collector `scripts/collect-evidence.py` (CI: `ci-examples/collect-evidence.yml`, one PR per snapshot) |
@@ -69,7 +69,7 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
    release are suspects by default. A later export is imported the same way: a page already under `_done/` is
    skipped unless the export is newer than its migrated copy; then the importer writes it again as a fresh page in
    its section folder with `supersedes_done` naming the copy (the copy untouched, inventory state `re-imported,
-   migrated copy <path>`), the page is rerun as any page (step 5) and `legacy-done.py` replaces the copy.
+   migrated copy <path>`), the page is rerun as any page (step 5) and `import-done.py` replaces the copy.
 
 ### Step 4: skeletons from the code (one agent run per context)
 
@@ -84,10 +84,10 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
 - `@confluence-migrator confluence-import/<SPACE>/<page>.md` for feature, glossary and obsolete pages. It names
   every spec the page touches from `generated/catalogue.md`, merges only new facts, marks conflicts and unverifiable
   claims, extracts terms into the glossary, adds the `sources[]` entry and the page title to the specs' `aliases`,
-  moves the page with `scripts/legacy-done.py` (to `_done/<section>/`, with `superseded_by`), validates, logs.
+  moves the page with `scripts/import-done.py` (to `_done/<section>/`, with `superseded_by`), validates, logs.
 - A re-imported page (header `supersedes_done`: the export is newer than the migrated copy under `_done/`) is rerun
   the same way; the specs that cite the copy in `sources[]` are the targets and the diff against the copy is the
-  work. `legacy-done.py` then replaces the copy, carries its `superseded_by` entries forward (`--into` may be omitted
+  work. `import-done.py` then replaces the copy, carries its `superseded_by` entries forward (`--into` may be omitted
   when nothing new was merged) and records `earlier_migration`; one copy per page stays in the tree.
 - The migrator never creates a spec and never renumbers one. A page about a capability no spec covers leaves a
   `candidate spec:` open question in the primary spec, marked `in code` or `not in code`; the board lists it as a
@@ -100,7 +100,7 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
   rules adjusted, a rule no longer asked for withdrawn, never deleted), the migrator otherwise. A page already under
   `_done/` whose export is newer than the migrated copy comes back as a fresh page in its section folder (header
   `supersedes_done` naming the copy, inventory state `re-imported, migrated copy <path>`): rerun the migrator on it
-  as on any page and let `legacy-done.py` replace the copy; never move a page out of `_done/` by hand. A code change
+  as on any page and let `import-done.py` replace the copy; never move a page out of `_done/` by hand. A code change
   needs nothing from you: the evidence snapshot
   (`collect-evidence.py --generate --graph`, or the collector's PR) and then `@doc-sync` with the changed code paths or
   the `generated/` diff (`@doc-sync <ID>` re-verifies one spec); it turns the proposed rules into current ones as the
@@ -111,7 +111,7 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
   formula section (`feature-spec + calculation`) goes to the migrator first: it merges the screen rules, links the
   calculation instead of copying values, and hands the formula part to the auditor; the last agent moves the page.
 - Architecture, decision and still-relevant process pages go to `@architect confluence-import/<SPACE>/<page>.md`
-  (task "Legacy page"; the board lists them, and the migrator hands one off when it is given one). Run them after
+  (task "Imported page"; the board lists them, and the migrator hands one off when it is given one). Run them after
   `/integrations-from-contracts` has refreshed `architecture/integrations.md` (and `scope = overview-draft` while the
   overview still carries the reference text), not after the skeletons: the architect merges the page's prose into
   `overview.md`, the `manual` rows of `integrations.md`, an ADR from `architecture/adr/template.md` or a document under
@@ -120,7 +120,7 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
 - Pages in another language are translated during normalisation through the glossary `Aliases` column; the original
   title and key terms go into `aliases:` so searches in the source language still work.
 
-The run-by-run lifecycle of one spec (skeleton -> legacy merge -> calculation audit -> owner decision), with what
+The run-by-run lifecycle of one spec (skeleton -> page merge -> calculation audit -> owner decision), with what
 each run reads and writes, is documented in `docs-repo/features/conventions.md`, section "Lifecycle of one spec".
 
 Review rhythm: one agent run, then a 10-15 minute human review of the diff (the hook `agentStop` already ran
@@ -131,7 +131,7 @@ Review rhythm: one agent run, then a 10-15 minute human review of the diff (the 
 A spec or calculation becomes `status: stable` only when an owner adds `verified: { by: human:<id>, at }` and
 `stale_after` (+90 days). Open questions are decided by the owner, the answer written on the question's item and one line added to the
 folder's `log.md` (a concept carries no history section), and the
-legacy page keeps `superseded_by:` for the audit trail. Index badges (`build-index.py`) show the state per concept.
+imported page keeps `superseded_by:` for the audit trail. Index badges (`build-index.py`) show the state per concept.
 
 ### Step 7: close the loop
 
@@ -157,7 +157,7 @@ legacy page keeps `superseded_by:` for the audit trail. Index badges (`build-ind
 ## 3a. Tracking the work
 
 `python3 scripts/migration-status.py --scope all` (or `@migration-lead` / `/migration-plan all` in Copilot) writes
-`docs-repo/migration/all.md`: per context the runs still due with the exact command to type, pending legacy pages,
+`docs-repo/migration/all.md`: per context the runs still due with the exact command to type, pending imported pages,
 calculations without concept or audit, and specs waiting for an owner. The lead agent appends processing order,
 targets for unclassified pages, batch-vs-interactive advice and blockers; it never edits specs itself.
 Lifecycle and per-run review checklist: `docs-repo/.github/skills/spec-lifecycle/`.
