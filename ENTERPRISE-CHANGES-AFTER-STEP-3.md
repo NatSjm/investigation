@@ -2186,3 +2186,24 @@ costs one line, one found after the stories costs the epic.
 ### 55.2 Setup guide (read only)
 
 `ANALYST-DOCS-SETUP.md`, the analyst procedure step 1: the same clause in the Parts table sentence.
+
+## 56. The graph's node vocabulary is in CONCEPT (investigation commits after `6fb22ee`, 2026-10-30)
+
+`CONCEPT.md` described the graph as "about 300 nodes - contexts, classes, endpoints, tables, topics, pages, hooks, specs"
+and the glossary row as "nodes by kind". A reader comparing the kit with a symbol-level code graph could not see from
+the concept that the two differ in kind, not in size. The "From the code" paragraph now says the nodes are
+architectural, not symbols, and lists what `gen-graph.py` emits: a context, an endpoint, a backend class with its
+layer and Spring stereotype, a table, a Kafka topic, a frontend page, a route, a component, a hook, a browser channel,
+and the spec or calculation that documents them, with the edge relations; admin parameters and named datasets are
+named as map rows, not nodes. The glossary row "Graph" lists the same kinds. Prose only; no script, template or
+agent file changed.
+
+### 56.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `CONCEPT.md` | the "From the code" paragraph and the glossary row "Graph" |
+
+### 56.2 Nothing else
+
+No setup guide, kit or script change.

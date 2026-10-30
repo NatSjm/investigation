@@ -1,6 +1,11 @@
 # Update Log
 
 ## 2026-10-30
+* **The graph's node vocabulary is in CONCEPT.** The "From the code" paragraph said "about 300 nodes - contexts,
+  classes, endpoints, tables, topics, pages, hooks, specs"; it now says that the nodes are architectural, not
+  symbols, and lists the kinds `gen-graph.py` emits (context, endpoint, class with layer and Spring stereotype,
+  table, topic, page, route, component, hook, channel, spec, calculation) with the edge relations, and that admin
+  parameters and named datasets are map rows, not nodes. The glossary row "Graph" names the same kinds.
 * **The blast radius is a Parts row.** Every context that appears in the pack's Graph neighbourhood and the request
   did not name gets a row in the analyst's Parts table (`unchanged` with the linking node and why nothing changes,
   or `changed` / `new` and then a subject with one rebuild), so it is confirmed with the reading instead of found
