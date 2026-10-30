@@ -90,9 +90,4 @@ are summed and capped at 1 (**to confirm**) · Time zone: UTC. (source: code imp
 ## Performance notes
 Computed together with the projection refresh; policies per client are few (< 20).
 
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-09 | Draft created for the Harbor bundle | — |
-
 [^impl]: CoverRatioCalculator.kt (harbor-backend, `core`, layer `utils`)

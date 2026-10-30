@@ -132,8 +132,3 @@ rules are in PRS-001.
 ## Open questions
 - [ ] Should the step navigation prevent "Run stress test" before scenarios exist, or is an empty run acceptable
   (STR-001 BR-6)?
-
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-15 | Created with the spec split of product1 / product2 (conventions "Shaping specs") | — |

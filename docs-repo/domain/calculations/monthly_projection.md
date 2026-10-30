@@ -176,13 +176,6 @@ Rows ≤ 60 months × ≤ 3 sub-products × ≤ 4 dimension values × 2 directio
 memory on `getProduct1Projection` / `getProduct2Projection` and on `movements-loaded` refresh; result persisted
 per session.
 
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-09 | Rebuilt for the Harbor bundle; examples re-copied from `ProjectionAggregatorTest` | — |
-| 2026-10-12 | Horizon totals (each table summed per key over the horizon, overall line, share of value) split out as [horizon_totals](horizon_totals.md); derived from these tables, never persisted | — |
-| 2026-10-12 | Run 3 audit: 6 MATCH, 3 DOC-STALE (corrected), 1 UNDOCUMENTED, 1 CODE-SUSPECT → status draft, open questions Q1-Q2 for the owner | — |
-
 [^impl]: ProjectionAggregator.kt (harbor-backend, `core`, layer `utils`)
 [^rounding]: Rounding.kt (harbor-backend, `core`, layer `utils`)
 [^tests]: ProjectionAggregatorTest.kt (harbor-backend, `core` tests, `utils`)

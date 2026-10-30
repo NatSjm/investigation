@@ -152,8 +152,8 @@ already hold.
 
 ### H. Delta vocabulary for change requests (from OpenSpec)
 `analyse-request` and `jira-from-spec` describe a change to an existing spec as ADDED / MODIFIED / REMOVED against
-rule IDs ("MODIFIED BR-P1-002-3: ...", "ADDED BR-P1-002-7"), in the request epic, in each story and in the spec's
-`## Change log`. Reviewers and Copilot for Jira then see exactly which rules a story touches; `coverage-report`
+rule IDs ("MODIFIED BR-P1-002-3: ...", "ADDED BR-P1-002-7"), in the request epic, in each story and in the context
+folder's `log.md` line. Reviewers and Copilot for Jira then see exactly which rules a story touches; `coverage-report`
 can count rules changed without a story.
 
 ## 4. Consider later

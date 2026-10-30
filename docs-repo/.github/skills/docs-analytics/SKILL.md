@@ -17,7 +17,7 @@ Gherkin, and the graph's spec coverage.
 | Which code has no spec / which spec has no code? | `generated/graph/REPO_MAP.md` -> **Spec coverage** (`spec + code`, `code only`, `spec only`) | `python3 scripts/gen-graph.py` |
 | What is open? | `## Open questions` sections; `questions[]` in `work-items/*.yml` | `search` for `- [ ]` under features/ |
 | Where did the documentation run out? | `generated/analytics/coverage-matrix.md`, column **answered from code**: open questions the analyst settled from source (`code-read` items) | `python3 scripts/coverage-matrix.py` |
-| What changed recently? | `log.md`; spec **Change log** tables | - |
+| What changed recently? | root `log.md` (lifecycle events); `features/<ctx>/log.md`, `domain/calculations/log.md`, `flows/log.md`, `architecture/log.md` (one line per change, newest first) | - |
 | Which specs does a code change hit? | `scripts/map-paths.py`, `graph-query.py --files` | - |
 
 ## Report shape (<= 25 lines)

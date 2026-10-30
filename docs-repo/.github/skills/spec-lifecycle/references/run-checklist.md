@@ -31,7 +31,7 @@
 - [ ] legacy formula page cited in the concept's `sources[]`, moved by `scripts/legacy-done.py` (`superseded_by` the concept) when the auditor is the last agent to take it (screen rules merged by the migrator before, or none); screen rules of a mixed page handed to `confluence-migrator`, never merged by the auditor
 
 ## Run 4 - owner decision (human)
-- [ ] each open question answered; decision recorded as a Change log row with date and reference
+- [ ] each open question answered in place on its item with date, `human:<id>` and reference; one `features/<ctx>/log.md` line
 - [ ] each rule checked against the symbol its `(source: ...)` marker names (the method, not the file); the markers stay
 - [ ] `verified: { by: human:<id>, at: <ISO> }` and `stale_after` (+90 days) added; `status: stable`
 - [ ] legacy page keeps `superseded_by: <concept>` for the audit trail

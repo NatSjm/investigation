@@ -768,7 +768,7 @@ questions per spec, Copilot premium requests per run.
 
 - **Code changes.** The collector's PR names the specs in the blast radius (manifest diff through `docs-map.yml`).
   `doc-sync` runs on that PR: compares API, events and data sections with the new contracts and maps, updates them,
-  appends a change-log row, flags calculations for `calc-auditor` when calculator files changed, stubs any new
+  adds a line to the context folder's `log.md`, flags calculations for `calc-auditor` when calculator files changed, stubs any new
   context. A person reviews and merges. The freshness gate in the code repos (`check-freshness.py`,
   `ci-examples/code-repo-freshness-gate.yml`) requires a PR touching a mapped path to bump `last_verified` or carry
   the label `docs-not-affected`.
@@ -780,7 +780,7 @@ questions per spec, Copilot premium requests per run.
 - **The board.** `migration-status.py --scope all` weekly; the `migration-lead` agent annotates order and blockers.
 
 **With an agent.** 1. On every collector PR: `@doc-sync` with the PR body (changed paths mapped to specs); it compares the
-API, events and data sections with the new contracts and maps, updates them, appends change-log rows and flags calculations
+API, events and data sections with the new contracts and maps, updates them, adds one folder `log.md` line per spec and flags calculations
 whose calculator files changed for `/audit-calculation`; a person reviews and merges. 2. Before a risky code change:
 `/impact-from-graph` with the pasted `git diff --name-only` (agent `impact-analyst`) for the blast-radius checklist.
 3. Weekly: `/migration-plan all` (board notes) and `/coverage-report` (agent `analyst`) for the sprint review.
@@ -842,7 +842,7 @@ Code repositories, `scripts/docs/` (regex scanners, no build, no execution of ap
 | `spec-writer` | context + ID | pack, `generated/graph/<ctx>.md`, contracts, the entry-point class | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | week 1 |
 | `calc-auditor` | calculation name, spec ID or formula page | the calculator and its unit test, nothing else | `domain/calculations/<name>.md` with audit table | week 1 |
 | `confluence-migrator` | one page path | the page, the pack, `generated/` | merged concept, glossary rows, page moved to `_done/` | week 2 |
-| `doc-sync` | the collector's PR | `map-paths`, `graph-query --files`, contracts, maps | change-log rows, `last_verified`, stubs | week 3 |
+| `doc-sync` | the collector's PR | `map-paths`, `graph-query --files`, contracts, maps | folder `log.md` lines, `last_verified`, stubs | week 3 |
 | `migration-lead` | scope | `migration-status` output, REPO_MAP, index badges | `migration/<scope>.md` notes | week 2 |
 | `test-designer` | spec ID | the pack | `test-design/features/<ID>.feature`, fixtures | week 3 |
 | `architect` | spec or epic | `architecture/`, graph, contracts, spec frontmatter | `architecture/hld/<ID>.md`, ADR drafts | week 4 |

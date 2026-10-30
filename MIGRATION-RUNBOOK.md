@@ -129,7 +129,8 @@ Review rhythm: one agent run, then a 10-15 minute human review of the diff (the 
 ### Step 6: owners verify (domain owners, continuous)
 
 A spec or calculation becomes `status: stable` only when an owner adds `verified: { by: human:<id>, at }` and
-`stale_after` (+90 days). Open questions are decided by the owner, recorded in the concept's Change log, and the
+`stale_after` (+90 days). Open questions are decided by the owner, the answer written on the question's item and one line added to the
+folder's `log.md` (a concept carries no history section), and the
 legacy page keeps `superseded_by:` for the audit trail. Index badges (`build-index.py`) show the state per concept.
 
 ### Step 7: close the loop

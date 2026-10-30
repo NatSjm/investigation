@@ -178,12 +178,6 @@ Findings: 13 items: 7 MATCH, 4 DOC-STALE (2 fixed in the worked examples, 2 left
 Input is at most 60 months × (3 sub-products + 4 dimension values + 2 directions) = 540 lines per session; the totals
 are computed in memory on every read of the tables and are not stored.
 
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-12 | Created: totals split out of `monthly_projection` as their own concept; examples copied from `ProjectionAggregatorTest` | — |
-| 2026-10-12 | Re-audit: 13 items (7 MATCH, 4 DOC-STALE, 2 UNDOCUMENTED); worked examples restricted to test-asserted values with method names; Q1-Q3 opened | — |
-
 [^impl]: ProjectionAggregator.kt (harbor-backend, `core`, layer `utils`)
 [^rounding]: Rounding.kt (harbor-backend, `core`, layer `utils`)
 [^tests]: ProjectionAggregatorTest.kt (harbor-backend, `core` tests, `utils`)

@@ -47,7 +47,8 @@ or a free-text feature description.
    `generated: { by: copilot/spec-writer, at: <ISO> }`, `stale_after` +90 days, no `verified`.
 6. Add / update the `docs-map.yml` mapping for every `code_refs` directory.
 7. Run `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/okf-validate.py --strict`,
-   `python3 scripts/build-index.py`; append a `## <date>` line to `log.md` ("created <ID>").
+   `python3 scripts/build-index.py`; append a `## <date>` line to the root `log.md` ("created <ID>") and the first
+   line of `features/<ctx>/log.md` (`* **[<ID>](<ID>.md)**: created from <what>`; the spec carries no history).
 
 ## Output
 The spec file (and `docs-map.yml`, `log.md`). Chat <= 10 lines: which sections came from the graph, from the manager,

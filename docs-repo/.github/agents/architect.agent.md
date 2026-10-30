@@ -67,5 +67,6 @@ documentation folders and the graph; no code).
 ## Style
 Mermaid only (`C4Context`, `C4Container`, `sequenceDiagram`, `erDiagram`, `flowchart`); one diagram <= 25 nodes.
 Terms from `domain/glossary.md`. Provenance: `generated: { by: copilot/architect, at }`, `sources[]`.
-Finish with `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`; a legacy page migrated
-also gets a `log.md` line.
+Finish with `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`; what changed in which
+file is one line per file in `architecture/log.md` (`* **[<file>](<file>)**: <what changed> (<page or request>)`), and
+a legacy page migrated also gets a root `log.md` line.

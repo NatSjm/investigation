@@ -62,7 +62,3 @@ Links to `domain/calculations/*.md` and which BRs they satisfy.
 
 ## Open questions
 - [ ] …
-
-## Change log
-| Date | Change | Ref |
-|---|---|---|

@@ -14,8 +14,8 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 | 1 Skeleton | `spec-writer` via `/spec-skeleton-from-graph <ctx> <ID> [entry file]` | context pack: `generated/graph/<ctx>.md`, contracts, `generated/be/components.md`; one source file: `manager/<Ctx>Manager.kt`, or the entry file the call names when the context has one entry class per screen | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | `status: draft`, open questions listed |
 | 2 Legacy merge | `confluence-migrator <page>` (one page per run; the page may touch several specs, each fact goes to the context that owns it) | the page, the catalogue, the pack | merged facts, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]`, glossary terms, page -> `_done/` | `draft`; every legacy claim cited |
 | 3 Calculation | `calc-auditor` via handoff or `/audit-calculation <name>` | calculator class + its unit test only | `domain/calculations/<name>.md` (`## Audit <date>` table, open questions) | calculation `stable` only when all rows `MATCH` |
-| 4 Owner decision | human | open questions | Change log rows, `verified: { by: human:<id>, at }`, `stale_after` | `status: stable`, badge *human-reviewed* |
-| ongoing | `doc-sync` per generated-diff PR | generated diff, pack | Change log row, `last_verified` | stays `stable`, or back to `draft` if a BR changed |
+| 4 Owner decision | human | open questions | the answer on each question's item, a `features/<ctx>/log.md` line, `verified: { by: human:<id>, at }`, `stale_after` | `status: stable`, badge *human-reviewed* |
+| ongoing | `doc-sync` per generated-diff PR | generated diff, pack | `features/<ctx>/log.md` line, `last_verified` | stays `stable`, or back to `draft` if a BR changed |
 
 ## Which run am I in?
 - No `features/<ctx>/<ID>.md` exists -> Run 1. Never start from a legacy page.
@@ -34,7 +34,8 @@ code is the truth: the skeleton comes from the code maps first; Confluence pages
 - Build the context pack first (`scripts/context-pack.py --task <ID|name|page>`); read the pack, not the repo.
 - Never copy numbers from a legacy page; link the calculation and let Run 3 verify.
 - Never write `verified.by: human:*`; never edit `generated/**`.
-- Finish with `okf-validate.py --strict`, `build-index.py`, a `log.md` line. The `agentStop` hook
+- Finish with `okf-validate.py --strict`, `build-index.py`, one line per changed concept in its folder's `log.md`
+  (never a history section in the concept) and a root `log.md` line for a lifecycle event. The `agentStop` hook
   repeats the checks.
 
 ## Planning (migration-lead)

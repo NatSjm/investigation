@@ -212,7 +212,7 @@ Each file is YAML frontmatter (`name`, `description`, `tools`, optional `handoff
 |---|---|---|---|---|
 | `analyst` | business/system analyst: epic, stories, subtasks with Gherkin criteria; analytics mode for coverage/freshness questions | the six context steps of `task-context`, all of them: the pack and its pointers, the documentation folders and the graph, then code last - through the maps, freely for a question that still blocks; everything read from code is recorded as evidence and open questions | `work-items/<ID>.yml`, open questions in the spec | `test-designer`, `spec-writer` |
 | `spec-writer` | writes or refreshes a feature spec from the graph and one manager file; marks everything unsourced as unverified | pack, `generated/graph/<ctx>.md`, contracts, `manager/<Ctx>Manager.kt` | `features/<ctx>/<ID>.md`, `docs-map.yml`, `log.md` | `analyst`, `calc-auditor` |
-| `doc-sync` | keeps specs in sync with code changes from the generated diffs with minimal source reading | `map-paths`, `graph-query --files`, contracts, maps | change-log rows, `last_verified`, stubs for unmapped contexts | `calc-auditor` for utils changes |
+| `doc-sync` | keeps specs in sync with code changes from the generated diffs with minimal source reading | `map-paths`, `graph-query --files`, contracts, maps | folder `log.md` lines, `last_verified`, stubs for unmapped contexts | `calc-auditor` for utils changes |
 | `calc-auditor` | verifies a calculation concept or a legacy formula page against the calculator and its unit test; never changes numbers | two source files only | `## Audit <date>` table, status, open questions | `spec-writer`, `confluence-migrator` for the screen rules of a mixed legacy page |
 | `confluence-migrator` | converts one legacy page into the right concept: merge new facts, mark conflicts, extract glossary terms, cite the page | the page, the pack, `generated/` | merged concept, glossary, page moved to `_done/` | `calc-auditor` for formula pages, `architect` for architecture, decision and process pages |
 | `test-designer` | Gherkin scenarios and synthetic fixtures from the spec's BRs and worked examples | pack | `test-design/features/<ID>.feature`, fixtures | - |
@@ -316,8 +316,8 @@ truth; existing files are overwritten.
    the source paths changed since the previous manifest, mapped to specs through `docs-map.yml`. A second run against
    unchanged sources opens nothing. Lower latency, when needed, is a `repository_dispatch` from the code repos' CI.
 3. In the docs repo, `doc-sync` runs on that PR: `map-paths` and `graph-query --files` name the specs in the blast
-   radius; it compares their API/Events/Data sections with the new contracts and maps, updates them, appends a
-   change-log row, sets `last_verified`, flags calculations for `calc-auditor` if `utils/` changed, and stubs any
+   radius; it compares their API/Events/Data sections with the new contracts and maps, updates them, adds a
+   line to the context folder's `log.md`, sets `last_verified`, flags calculations for `calc-auditor` if `utils/` changed, and stubs any
    context that has no spec. Hooks validate; a person reviews and merges.
 
 ### B. A spec is written (the four runs, see `spec-lifecycle`)

@@ -70,7 +70,3 @@ Month grid: · Rounding: · Price basis: · Missing data: · Time zone: (source:
 
 ## Performance notes
 e.g. computed for `months × scenarios × dimension values`; caching; batch size.
-
-## Change log
-| Date | Change | Ref |
-|---|---|---|

@@ -131,11 +131,6 @@ in the same run so that the concept has an executor).
 At most 12 months × clients of the segment; computed in memory on `postProduct1PeerSimulation` and stored as
 `session_peer_simulation` (BR-P1-003-1).
 
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-12 | Created from the calculator and a new executor test (was "code only" in REPO_MAP); 2 open questions for the owner | — |
-
 [^impl]: PeerBenchmark.kt (harbor-backend, `core`, layer `utils`)
 [^rounding]: Rounding.kt (harbor-backend, `core`, layer `utils`)
 [^tests]: PeerBenchmarkTest.kt (harbor-backend, `core` tests, `utils`)

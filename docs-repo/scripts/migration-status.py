@@ -250,7 +250,7 @@ def main():
                     what.append(f"status {s['Status']}")
                 if not s['Verified']:
                     what.append('no verified.by')
-                runs.append('- [ ] **Run 4 - owner decision** ' + code(s['Id']) + f" ({', '.join(what)}): decide the open questions in " + code(s['File']) + ', record them in the Change log, add ' + code('verified: { by: human:<id>, at }') + ' and ' + code('stale_after'))
+                runs.append('- [ ] **Run 4 - owner decision** ' + code(s['Id']) + f" ({', '.join(what)}): decide the open questions in " + code(s['File']) + ' (the answer on each item, one line in the folder log.md), add ' + code('verified: { by: human:<id>, at }') + ' and ' + code('stale_after'))
         if not runs:
             totals['ready'] += 1
             state = 'ready'

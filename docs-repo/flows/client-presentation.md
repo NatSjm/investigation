@@ -113,8 +113,3 @@ authorisation than the representative's is an open question in PRS-001.
 
 ## Open questions
 - [ ] Should the representative see a "client screen connected" indicator (requires a reply message from the subscriber)?
-
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-12 | Created with PRS-001 | — |

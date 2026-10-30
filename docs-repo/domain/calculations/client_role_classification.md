@@ -112,10 +112,5 @@ Copied from the executor test.[^tests] Thresholds: `min_volume = 100`, `importer
 One call per client × product group on `getClientOverview` / `getClientRole`; inputs come from two indexed sums
 over `movement_monthly`. No caching needed.
 
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-09 | Rebuilt for the Harbor bundle; examples re-copied from `RoleClassifierTest` | — |
-
 [^impl]: RoleClassifier.kt (harbor-backend, `core`, layer `utils`)
 [^tests]: RoleClassifierTest.kt (harbor-backend, `core` tests, `utils`)

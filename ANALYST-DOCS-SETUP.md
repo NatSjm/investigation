@@ -341,7 +341,7 @@ unassigned pages and blockers. It never edits specs.
 | 1 Skeleton | agent `spec-writer`, prompt `/spec-skeleton-from-graph <context> <CTX>-001` | graph neighbourhood, contracts, **one** manager file | `features/<ctx>/<CTX>-001.md` (`draft`), `docs-map.yml`, `log.md` | API/Events/Data match the contracts; rules are single MUST statements; gaps are in Open questions |
 | 2 Legacy merge | agent `confluence-migrator`, message `confluence-import/<SPACE>/<page>.md` | the page + context pack | merged new facts, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]`, glossary terms; page moved to `_done/` | every legacy claim is cited; no numbers copied; conflicts are visible |
 | 3 Calculation | agent `calc-auditor`, prompt `/audit-calculation <name>` (or the handoff button) | the calculator class + its unit test only | `domain/calculations/<name>.md` with `## Audit <date>` (`MATCH / DOC-STALE / CODE-SUSPECT / UNDOCUMENTED`) | worked examples come from the test, with test method names |
-| 4 Owner decision | a person, no agent | open questions | answers in the Change log, `verified: { by: human:<id>, at }`, `stale_after` (+90 days), `status: stable` | - |
+| 4 Owner decision | a person, no agent | open questions | the answer on each question's item and one line in `features/<ctx>/log.md`, `verified: { by: human:<id>, at }`, `stale_after` (+90 days), `status: stable` | - |
 
 Order: all Run 1 first (they can be batched - one Copilot coding-agent issue per context with the same prompt), then
 Run 2 interactively page by page, Run 3 after each spec, Run 4 by the owner. Rerun `migration-status.py` after each

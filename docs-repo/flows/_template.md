@@ -54,7 +54,3 @@ What must never cross this boundary (e.g. internal indicators never reach the cl
 
 ## Open questions
 - [ ] …
-
-## Change log
-| Date | Change | Ref |
-|---|---|---|

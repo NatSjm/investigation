@@ -16,5 +16,5 @@ Rules and lifecycle: `contracts/conventions.md`.
   Purpose column says **proposed**.
 - Never copy a proposal into `generated/**`; never cite a proposal as current behaviour; stories built on one carry
   the label `needs-contract`.
-- When the collector brings the implemented contract, switch the spec's links to `generated/`, add a change-log row,
+- When the collector brings the implemented contract, switch the spec's links to `generated/`, add a line to `features/<ctx>/log.md`,
   and delete the proposal or set `x-status: implemented` with `x-implemented-in`.

@@ -29,8 +29,8 @@ One of:
    A **proposed** rule whose request was dropped (the owner says so in chat, or the analysis document
    `work-items/<slug>.md` is `status: superseded`) becomes **withdrawn** (request `<slug>`) with its text kept, never
    deleted (`features/conventions.md`, "Proposed rules"); a request that merely changed is the analyst's rerun, not yours.
-   Update the spec: business rules, API, data, edge cases; append a **Change log** row
-   (`YYYY-MM-DD - <what> - <PR/commit>`); set `last_verified`. A rule you add or rewrite ends, after its footnote,
+   Update the spec: business rules, API, data, edge cases; one line in `features/<ctx>/log.md` under today's date
+   (`* **[<ID>](<ID>.md)**: <what changed> (<PR/commit>)`; the spec itself carries no history); set `last_verified`. A rule you add or rewrite ends, after its footnote,
    with `(source: code <sources-id>#<symbol>)` naming the handler or manager method you read in step 3, or
    `(source: contract <operationId>)` when the contract diff alone explains it; `api[]` keeps only the operations
    this context handles (`features/conventions.md`, "Provenance per rule", "Owned versus called operations").
@@ -41,8 +41,9 @@ One of:
 7. OKF provenance on every concept you touch: `generated.by: copilot/doc-sync`, `generated.at: <ISO now>`,
    refresh `stale_after`, add a `sources[]` entry for the PR/commit; remove a `human:` verification if the section
    it covered changed.
-8. Run `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`; append a
-   `## YYYY-MM-DD` entry to `log.md`.
+8. Run `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`; a `## YYYY-MM-DD` entry
+   in the root `log.md` only for a lifecycle event (a spec back to `draft`, a stub created); what changed in which
+   spec is already in the folder log of step 5.
 
 ## Output
 Edited files; chat summary <= 10 lines: specs touched, calculations flagged, tests needing review

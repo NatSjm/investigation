@@ -1,5 +1,16 @@
 # Update Log
 
+## 2026-10-30
+* **Change history out of the concepts, into one `log.md` per folder.** The `## Change log` table of every spec,
+  calculation and flow (and of the three templates) is gone; its rows moved, one line per change under the date,
+  into `features/<ctx>/log.md`, `domain/calculations/log.md` and `flows/log.md` (OKF §9 format, newest first, the
+  line links the concept; `architecture/log.md` created empty). A concept carries no history and never links its
+  folder log; this root log stays lifecycle only. Conventions, the features and contracts instructions, the OKF and
+  spec-lifecycle skills with the run checklist, docs-analytics, AGENTS.md, CONCEPT, the five writing agents
+  (doc-sync, spec-writer, confluence-migrator, calc-auditor, architect) and the spec-from-code prompt say where a
+  change is recorded now; the owner's Run 4 answer goes on the question's item (`migration-status.py` wording,
+  boards regenerated).
+
 ## 2026-10-29
 * **The analyst's Context section is three sentences.** The paragraph that summarised the six steps was a second copy
   of the task-context skill; the agent now says: follow the skill, steps 1-6, for every input (open it before the first

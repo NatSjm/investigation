@@ -27,6 +27,9 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
   Confluence-migrated content MUST list the page as a source.
 - Our extension keys stay (`id`, `code_refs`, `api`, `events`, `tables`, `calculations`, `jira`, `tests`).
 - `log.md` (root) — lifecycle events only: created, deprecated, superseded, regenerated, verified. Append-only.
+- `log.md` in a folder (`features/<ctx>/`, `domain/calculations/`, `flows/`, `architecture/`) — the change history
+  of that folder's concepts, one line per change (§9 format, newest date first, the line links the concept). A
+  concept carries no history section of its own and never links its folder log.
 
 ## Modes
 ### produce
@@ -41,7 +44,8 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
 1. Find affected concepts (`search` by `resource`, code path via `docs-map.yml`, or topic).
 2. Update body + `generated: { by: copilot/<agent>, at }`; keep existing `verified` only if the change is
    editorial — otherwise remove it (a human must re-verify). Deprecate, never silently delete.
-3. After the last edit of the task: `build-index.py`; `log.md` entry only for lifecycle events; validate (below).
+3. After the last edit of the task: `build-index.py`; one line per changed concept in its folder `log.md`; root
+   `log.md` entry only for lifecycle events; validate (below).
 
 ### consume
 1. Read root `index.md`, then the directory `index.md`, then only the concepts you need. Never list directories.

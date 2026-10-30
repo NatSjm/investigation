@@ -131,10 +131,5 @@ Example 2: `175.00 + (200.00 + 75.00) = 450.00`. Example 3: `−100.00 + 75.00 =
 `months (≤ 60) × scenarios (≤ 10 per session) × dimension values (4)` = at most 2 400 rows per `runStressTest`;
 previous results of the session are deleted and re-inserted in one transaction.
 
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-09 | Rebuilt for the Harbor bundle; examples re-copied from `StressTestCalculatorTest` | — |
-
 [^impl]: StressTestCalculator.kt (harbor-backend, `core`, layer `utils`)
 [^tests]: StressTestCalculatorTest.kt (harbor-backend, `core` tests, `utils`)

@@ -76,7 +76,9 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
      facts are merged then.
 3. Verify claims against `generated/` (contracts, `api-index.md`, `events.md`, `db-schema.md`, `routes.md`). Mark
    unverifiable claims with `> ❓ UNVERIFIED (legacy: <page>, <date>)`. Removed features (e.g. steps that no longer
-   have a route or endpoint) are recorded in the spec's Change log as "legacy mentions X - not present in code".
+   have a route or endpoint) are recorded under the spec's Open questions as "legacy mentions X - not present in
+   code". Every spec you changed gets one line in its context folder's `log.md` (`* **[<ID>](<ID>.md)**: merged
+   <page>: <what>`); the spec itself carries no history.
 4. Extract domain terms into `domain/glossary.md` (alphabetical, one line each).
 5. Provenance: add a `sources[]` entry (`{ id: conf-<slug>, title, resource, author: human:<page author>, last_modified }`)
    and cite it with `[^conf-<slug>]`; set `generated.by: copilot/confluence-migrator`, `generated.at`, `status: draft`.

@@ -149,7 +149,7 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 | `spec-writer` | create or refresh a feature spec | spec ID + context | `features/<ctx>/<ID>.md`, `docs-map.yml` | the context's manager file only |
 | `confluence-migrator` | merge one legacy page into the right concept | `confluence-import/<SPACE>/<page>.md` | merged spec, glossary terms, page moved to `_done/` | no |
 | `calc-auditor` | verify a calculation concept or formula page against code | calculation name, spec ID or page | `## Audit <date>` table, open questions | calculator class + its unit test, nothing else |
-| `doc-sync` | keep specs in sync with code changes | changed paths or a generated diff | spec change-log rows, `last_verified` | narrow ranges only when the contract diff cannot explain behaviour |
+| `doc-sync` | keep specs in sync with code changes | changed paths or a generated diff | folder `log.md` lines, `last_verified` | narrow ranges only when the contract diff cannot explain behaviour |
 | `test-designer` | Gherkin scenarios and synthetic fixtures | spec ID or work items | `test-design/features/<ID>.feature`, fixtures | no |
 | `architect` | HLD, ADRs, integration map; legacy architecture, decision and process pages | spec ID, decision or `confluence-import/<SPACE>/<page>.md` | `architecture/hld/<ID>.md`, `adr/NNNN-*.md`, merged `overview.md` / `integrations.md` prose, page moved to `_done/` | never |
 | `impact-analyst` | blast radius of a change | file paths or a node | checklist across BE / FE / docs | no (graph only) |
@@ -216,7 +216,7 @@ only; publication is the docs repo's collector), `copilot-setup-steps.yml` for t
 | 2 Legacy merge | `confluence-migrator` | `@confluence-migrator confluence-import/<SPACE>/<page>.md` | new facts merged, conflicts marked, page moved to `_done/` |
 | 3 Calculation | `calc-auditor` | handoff or `/audit-calculation <name>` | audit table, open questions |
 | 4 Owner decision | a person | edit | `verified.by`, `stale_after`, status stable |
-| ongoing | `doc-sync` | on generated-diff PRs | change-log rows, `last_verified` |
+| ongoing | `doc-sync` | on generated-diff PRs | folder `log.md` lines, `last_verified` |
 
 One run, one human review of the diff, one commit. `migration/all.md` lists what is still due. Details:
 [MIGRATION-RUNBOOK.md](MIGRATION-RUNBOOK.md) and `docs-repo/features/conventions.md`, "Lifecycle of one spec".

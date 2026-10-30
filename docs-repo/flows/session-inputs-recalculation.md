@@ -144,8 +144,3 @@ no client's rows leak into another session's tables.
   after `generated_at` (owner: harbor-platform-team)? Today the report may combine a fresh projection with an old
   stress run.
 - [ ] Should the client window be told that numbers changed after an import (PRS-001 publishes filters only)?
-
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-15 | Created with the spec split of product1 / product2 (conventions "Shaping specs") | — |

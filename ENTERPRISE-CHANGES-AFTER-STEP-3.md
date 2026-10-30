@@ -2036,3 +2036,82 @@ change request continues below with the same pack.
 ### 52.2 Setup guide (read only)
 
 `ANALYST-DOCS-SETUP.md`, the analyst agent text: the same three-sentence Context section.
+
+## 53. Change history out of the concepts, into one `log.md` per folder (investigation commits after `8e68e4b`, 2026-10-30)
+
+Agents wrote their run reports into the `## Change log` table of every spec, calculation and flow, because the
+templates carried the table and nine agent, skill and prompt files said "append a Change log row". The table is gone.
+The history of a folder's concepts is one `log.md` per folder - `features/<ctx>/log.md`, `domain/calculations/log.md`,
+`flows/log.md`, `architecture/log.md` - in the format the OKF specification already allows at any level (§9:
+`## YYYY-MM-DD` headings newest first, one bullet per change; `okf-validate.py` checks it, `build-index.py` skips it).
+The line links the concept (`* **[P1-001](P1-001.md)**: <what changed> (<PR, commit or request>)`); a concept never
+links the log and carries no history section. The root `log.md` stays lifecycle only. An owner's Run 4 answer is
+written on the open question's item (date, `human:<id>`), with a folder log line.
+
+### 53.1 Docs repository: one-off move, then files to copy or re-copy whole
+
+1. Run the script below once from the repository root (`python -I move-changelog.py .`); it strips the section from
+   every spec, calculation, flow and the three templates, keeps footnote definitions that sat after the table, and
+   writes the folder logs from the rows. Create `architecture/log.md` with the single line `# Update Log`. Then
+   `okf-validate.py --strict`, `build-index.py --check` and `migration-status.py --scope all` (the Run 4 wording).
+2. Re-copy these files whole:
+
+| File | Why |
+|---|---|
+| `features/_template.md`, `domain/calculations/_template.md`, `flows/_template.md` | no `## Change log` section (the script does this too) |
+| `features/conventions.md` | "Sections (fixed order)": the paragraph on the folder log; lifecycle table rows 4 and ongoing; "Proposed rules" paragraph |
+| `.github/instructions/features.instructions.md`, `.github/instructions/contracts.instructions.md` | section order without Change log and the folder-log bullet; the close step of a proposal |
+| `.github/agents/doc-sync.agent.md`, `spec-writer.agent.md`, `confluence-migrator.agent.md`, `calc-auditor.agent.md`, `architect.agent.md` | where each one records a change now (folder log line; root log only for a lifecycle event) |
+| `.github/prompts/spec-from-code.prompt.md` | step 2 |
+| `.github/skills/spec-lifecycle/SKILL.md` and `references/run-checklist.md` | rows 4 and ongoing, the finish line, the Run 4 checklist item |
+| `.github/skills/okf/SKILL.md`, `.github/skills/docs-analytics/SKILL.md` | the folder-log rule next to the root-log rule; "What changed recently?" |
+| `AGENTS.md`, `CONCEPT.md`, `contracts/conventions.md` | the finish rule; the features row, the doc-sync row and lifecycle item 5; the close step |
+| `scripts/migration-status.py` | Run 4 board wording |
+
+The script (`move-changelog.py`, kept outside the repository):
+
+```python
+import collections, pathlib, re, sys
+root = pathlib.Path(sys.argv[1])
+targets = [root / 'features' / '_template.md'] + sorted(root.glob('features/*/*.md')) \
+    + sorted(root.glob('domain/calculations/*.md')) + sorted(root.glob('flows/*.md'))
+groups = {}
+for p in targets:
+    if p.name in ('index.md', 'log.md', 'conventions.md'):
+        continue
+    t = p.read_text(encoding='utf-8')
+    m = re.search(r'(?ms)^## Change log[^\n]*\n(.*?)(?=^## |\Z)', t)
+    if not m:
+        continue
+    keep, rows = [], []
+    for line in m.group(1).split('\n'):
+        s = line.strip()
+        if s.startswith('|'):
+            cells = [c.strip() for c in s.strip('|').split('|')]
+            if cells[0] == 'Date' or set(cells[0]) <= set('-: '):
+                continue
+            if len(cells) >= 2 and re.match(r'\d{4}-\d{2}-\d{2}$', cells[0]):
+                ref = cells[2] if len(cells) > 2 and cells[2] not in ('—', '-', '') else ''
+                rows.append((cells[0], cells[1], ref))
+                continue
+        keep.append(line)
+    rest = '\n'.join(keep).strip('\n')
+    p.write_text(t[:m.start()].rstrip('\n') + '\n' + ('\n' + rest + '\n' if rest else ''), encoding='utf-8', newline='\n')
+    for d, text, ref in rows:
+        groups.setdefault(p.parent, []).append((d, p.stem, p.name, text, ref))
+for folder, items in groups.items():
+    by_date = collections.defaultdict(list)
+    for d, docid, fname, text, ref in items:
+        by_date[d].append(f'* **[{docid}]({fname})**: {text}' + (f' ({ref})' if ref else ''))
+    out = ['# Update Log', '']
+    for d in sorted(by_date, reverse=True):
+        out += [f'## {d}', *by_date[d], '']
+    (folder / 'log.md').write_text('\n'.join(out).rstrip('\n') + '\n', encoding='utf-8', newline='\n')
+```
+
+### 53.2 Playbook, handbook, guide, runbook, setup guide and patterns (read only)
+
+`ENTERPRISE-PLAYBOOK.md` (doc-sync paragraphs and the agent table), `HANDBOOK.md` (agent table, doc-sync step),
+`GUIDE.md` (agent table, lifecycle table), `MIGRATION-RUNBOOK.md` (owner decision paragraph), `ANALYST-DOCS-SETUP.md`
+(lifecycle row 4), `EXTERNAL-PATTERNS.md` (ADDED / MODIFIED / REMOVED paragraph): "change-log row" reads "folder
+`log.md` line" everywhere.

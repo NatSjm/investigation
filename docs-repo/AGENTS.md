@@ -95,7 +95,10 @@ Never after each edit; the `agentStop` hook runs the full set again when you sto
   rename or deletion broke in another file included; an older problem in a file your task did not touch is reported,
   not fixed. A spec or a calculation also gets `validate-frontmatter.py <file>`.
 - Changed a work-item file: `validate-work-items.py <file>`.
-- A dated entry in `log.md` for lifecycle events only (created / deprecated / verified / regenerated).
+- One line per changed concept in its folder's `log.md` (`features/<ctx>/`, `domain/calculations/`, `flows/`,
+  `architecture/`; `## YYYY-MM-DD` newest first, `* **[<ID>](<file>)**: <what changed> (<ref>)`). A concept carries
+  no history section and never links the log. A dated entry in the root `log.md` for lifecycle events only
+  (created / deprecated / verified / regenerated).
 - A `stale` line is freshness, not a failure: never move `stale_after` or write `verified` to clear it.
 
 ## Agents, prompts, skills

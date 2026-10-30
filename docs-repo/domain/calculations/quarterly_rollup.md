@@ -104,8 +104,3 @@ tables and the recalculation flow stay monthly; the roll-up is applied on read.
 - [ ] Q1 (owner: harbor-platform-team) — partial first and last quarters: shown as such, or dropped? (request analysis question 1)
 - [ ] Q2 (owner: harbor-platform-team) — cover ratio per quarter as a ratio of sums (here) or as the mean of the
   monthly ratios? (request analysis question 4)
-
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-20 | Proposed by the request analysis quarterly-view-across-products | — |

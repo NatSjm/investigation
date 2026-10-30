@@ -110,7 +110,7 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
   same section, continuing the numbering, with the marker **proposed** (request `<slug>`) right after the ID:
   `- **BR-P1-001-12** **proposed** (request quarterly-view-across-products) — … MUST …`. It is cited by stories
   (label `needs-spec-review`) and by Gherkin like any rule; it is never presented as current behaviour. `doc-sync`
-  removes the marker when the code implements it (change-log row) or marks it withdrawn when the request is
+  removes the marker when the code implements it (a `features/<ctx>/log.md` line) or marks it withdrawn when the request is
   dropped. The analysis document `work-items/<slug>.md` lists every proposed rule it introduced.
   **A request that changes before the code has it** (a re-imported Confluence page, a changed ask) is the same
   request, rerun: `/analyse-request` under the **same slug**, the Reading confirmed again, the analysis document
@@ -129,7 +129,14 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
 ## Sections (fixed order)
 
 Summary → Actors → Business rules → UI flow → API / Events → Data → Calculations → Edge cases →
-Open questions → Change log. Keep empty sections with "none".
+Open questions. Keep empty sections with "none".
+
+A spec carries no change history. What changed in the specs of a context, when and why, is one line per change in
+the context folder's `log.md` (`features/<ctx>/log.md`, OKF §9: `## YYYY-MM-DD` headings newest first, then
+`* **[<ID>](<ID>.md)**: <what changed> (<PR, commit or request>)`); `domain/calculations/log.md`, `flows/log.md` and
+`architecture/log.md` do the same for their folders. The log links the spec, the spec never links the log. The root
+`log.md` stays lifecycle only (created, deprecated, verified, regenerated). An owner's answer to an open question is
+written in place, on the question's item, with the date and `human:<id>`, and gets a log line.
 
 ## References inside a spec
 
@@ -167,8 +174,8 @@ one commit per run. Runs are chained by the handoff buttons of the agents, not b
 | 1 Skeleton | `/spec-skeleton-from-graph <context> <ID>` (agent `spec-writer`) | context pack: `generated/graph/<context>.md`, contracts, the manager KDoc only | `features/<ctx>/<ID>.md` (API / Events / Data / UI flow / Calculations from the graph; Summary / Actors / BRs from the manager), `docs-map.yml`, `log.md` | `status: draft`, open questions listed, badge *draft* |
 | 2 Legacy merge | `@confluence-migrator confluence-import/<SPACE>/<page>.md`, one page per run | the page, the pack | new facts merged, `⚠️ CONFLICT` / `❓ UNVERIFIED` callouts, `sources[]` entry, glossary terms, page moved to `_done/` | still `draft`; legacy claims traceable |
 | 3 Calculations | handoff "Audit the linked calculations" (agent `calc-auditor`) | calculator class + its unit test, nothing else | `## Audit <date>` table in `domain/calculations/<name>.md`, open questions with an owner | calculation `draft` until all rows `MATCH` |
-| 4 Owner decision | human | open questions | decisions in the Change log, `verified: { by: human:<id>, at }`, `stale_after` | `status: stable`, badge *human-reviewed* |
-| ongoing | `doc-sync` on each generated-diff PR; `analyst` consumes via `context-pack.py` | generated diff, pack | Change log row, `last_verified` | stays `stable` or back to `draft` if a BR changed |
+| 4 Owner decision | human | open questions | the answer on each question's item, a `features/<ctx>/log.md` line, `verified: { by: human:<id>, at }`, `stale_after` | `status: stable`, badge *human-reviewed* |
+| ongoing | `doc-sync` on each generated-diff PR; `analyst` consumes via `context-pack.py` | generated diff, pack | `features/<ctx>/log.md` line, `last_verified` | stays `stable` or back to `draft` if a BR changed |
 
 Skill: `.github/skills/spec-lifecycle/SKILL.md` (with a per-run review checklist). Which runs are still due per
 context: `python3 scripts/migration-status.py --scope all` -> `migration/all.md` (agent `migration-lead`).

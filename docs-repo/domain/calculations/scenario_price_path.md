@@ -93,9 +93,4 @@ carry the last known value forward (**to confirm**) · Time zone: UTC. (source: 
 ## Performance notes
 `months × scenarios`; shocks per scenario ≤ 12. Computed on demand, not persisted.
 
-## Change log
-| Date | Change | Ref |
-|---|---|---|
-| 2026-10-09 | Draft created for the Harbor bundle | — |
-
 [^impl]: ScenarioPricePath.kt (harbor-backend, `core`, layer `utils`)

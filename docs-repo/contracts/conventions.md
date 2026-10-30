@@ -49,8 +49,8 @@ by folder:
    contract but without a handler show as `_not implemented_` in `generated/be/api-index.md`, so partially built
    APIs stay visible.
 5. **Close** - `doc-sync` switches the spec's API table from the proposal link to the `generated/` anchor, adds a
-   change-log row, and either deletes the proposal or sets `x-status: implemented` with `x-implemented-in: generated/openapi/backend.yaml`.
-   Keep it only while someone still needs the design history; the spec's change log is the record.
+   line to `features/<ctx>/log.md`, and either deletes the proposal or sets `x-status: implemented` with `x-implemented-in: generated/openapi/backend.yaml`.
+   Keep it only while someone still needs the design history; the folder log is the record.
 
 ## Rules
 
