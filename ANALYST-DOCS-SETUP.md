@@ -409,7 +409,8 @@ change request continues below with the same pack.
 ## Procedure (a change request, after the exit of the skill)
 1. Analyse: write `work-items/<slug>.md` from `work-items/_analysis-template.md` - the request verbatim, the Reading
    ending with *I read this as: ... - right?*, the Parts table (each piece `unchanged` / `changed` / `new` with
-   context, owner and evidence from the pack and the documents it points at), Trust, reused / changed / built,
+   context, owner and evidence from the pack and the documents it points at; a row too for every context in the
+   pack's Graph neighbourhood the request did not name - `unchanged` with why, or a subject and one rebuild), Trust, reused / changed / built,
    Contracts, Data, Flows, Calculations, Gaps, Sources. **Show the Reading line and the Parts table and stop until the
    analyst confirms or corrects**; then `status: confirmed`. (Optional for a single spec given by ID.)
 2. Nothing new without a rule: a new or changed behaviour gets its draft rule or draft spec (`spec-writer`; a new

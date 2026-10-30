@@ -2165,3 +2165,24 @@ templates. Your own specs and imported pages take the replace pass of step 2.
 ### 54.2 Playbook, handbook, guide, runbook, setup guide, patterns, blueprint, plan, investigation (read only)
 
 The same words in every root guide; `.claude/commands/audit-calculation.md` description.
+
+## 55. The blast radius is a Parts row (investigation commits after `ae196e4`, 2026-10-30)
+
+The analyst saw the blast radius of a request from step 2, in the pack's depth-2 Graph neighbourhood per subject, but
+nothing made it act on a neighbour context the request did not name; skill step 5 allowed adding it as a subject and
+nothing required a decision. Now every such context gets a row in the Parts table before the stop for confirmation:
+`unchanged`, with the node that links it and why nothing there changes, or `changed` / `new`, in which case it becomes
+a subject and the pack is rebuilt once. The person confirms the radius with the reading; a neighbour dismissed there
+costs one line, one found after the stories costs the epic.
+
+### 55.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/agents/analyst.agent.md` | step 1, the Parts table: the sentence on contexts from the Graph neighbourhood (for a colleague's own analyst agent: add that sentence where it defines its Parts or impact table) |
+| `work-items/_analysis-template.md` | Parts section: the same rule for the reader of the document |
+| `.github/skills/task-context/SKILL.md` | step 5: a neighbour context that turns out to change is added as a subject with the one rebuild |
+
+### 55.2 Setup guide (read only)
+
+`ANALYST-DOCS-SETUP.md`, the analyst procedure step 1: the same clause in the Parts table sentence.

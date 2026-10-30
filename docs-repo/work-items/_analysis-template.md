@@ -23,7 +23,9 @@ One row per distinct piece of the request. `State`: `unchanged` (already behaves
 (an existing rule or screen changes), `new` (nothing in the bundle does it). Evidence from the pack: rule IDs,
 calculation names, flow steps, graph node ids with `file:line`; or `code-read <file:line>` for a range read under
 step 6 of the task-context skill (unverified: it is also an Open question in the spec until a rule says the
-same).
+same). A context that appears in the pack's Graph neighbourhood but is not named by the request has a row as well:
+`unchanged` with the node that links it and why nothing there changes, or `changed` / `new` - then it became a
+subject and the pack was rebuilt once.
 
 | # | Part of the request | State | Context | Owner (spec / calculation / flow) | Evidence |
 |---|---|---|---|---|---|

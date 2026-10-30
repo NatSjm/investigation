@@ -87,7 +87,8 @@ Section markers, ranks and how `--task` is resolved: `references/pack-anatomy.md
    `_attachments/`); go deeper in the graph with `python3 scripts/graph-query.py --node <id> --depth 3` or from the
    table, topic or class node in question; open the one file a thin section points at under `generated/` (schema,
    contract, map). When a found document should be part of the recorded slice - the analysis document rests on it,
-   or the epic will cite it - add it as a subject and rebuild **once** (`--task <ID> --task <neighbour>`); the
+   or the epic will cite it - or a context in the pack's Graph neighbourhood that the request did not name turns out
+   to change (the analyst's Parts table has a row for every such context), add it as a subject and rebuild **once** (`--task <ID> --task <neighbour>`); the
    Contents of the new pack tells you which lines are new, and only those are read. Opening the neighbour directly
    is always allowed; the rebuild is for the record, not a precondition.
 6. **Read code, last.** Only when steps 1-5 leave a question open that the answer or the analysis needs - the state

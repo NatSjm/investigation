@@ -1,6 +1,10 @@
 # Update Log
 
 ## 2026-10-30
+* **The blast radius is a Parts row.** Every context that appears in the pack's Graph neighbourhood and the request
+  did not name gets a row in the analyst's Parts table (`unchanged` with the linking node and why nothing changes,
+  or `changed` / `new` and then a subject with one rebuild), so it is confirmed with the reading instead of found
+  after the stories. Analyst agent step 1, the analysis template's Parts section, skill step 5.
 * **"Legacy" is "imported".** The word named a pipeline role (a page exported from Confluence and not yet verified
   against the code), but Confluence stays the surface business readers use, so it read as a judgement. The kit now
   uses its own header vocabulary everywhere: imported pages, Run 2 "page merge", `(source: imported <id>)` markers

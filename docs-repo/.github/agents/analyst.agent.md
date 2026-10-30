@@ -41,7 +41,10 @@ change request continues below with the same pack.
    state **unchanged** (already behaves so: cite the rule), **changed** (which rule, screen, endpoint or table changes)
    or **new** (nothing in the bundle does it), its context, its owner and the evidence (rule IDs, calculation names,
    flow steps, node ids with `file:line` - from the pack and the documents it points at; `code-read` for a range read
-   under the skill's step 6); Trust; reused / changed / built; Contracts (changed operations, new operations in
+   under the skill's step 6). **Every context that appears in the pack's Graph neighbourhood and the request did not
+   name gets a row too**: `unchanged`, with the node that links it and why nothing there changes, or `changed` /
+   `new` - then it is a subject, rebuild the pack once (skill step 5). The blast radius is confirmed with the
+   reading, not discovered after the stories; Trust; reused / changed / built; Contracts (changed operations, new operations in
    existing controllers, a new service); Data; Flows (which step changes, whether a new flow is needed); Calculations
    (used as is / changed / new with inputs and outputs); Gaps and questions; Sources (the pack, what you opened after
    it, the code ranges and files read with the question each answered). For a single-spec request given by ID the
