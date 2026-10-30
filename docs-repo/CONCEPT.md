@@ -216,7 +216,7 @@ Three duties are not delegable to an agent: the human verification line, the mer
 
 Six situations cover the daily work; each is a short chain of one script, one agent and one human review.
 
-**A code change lands.** The code repo's CI regenerates its maps; the freshness gate fails the PR when a mapped path changed and no spec was re-verified. On merge the collector takes a snapshot and opens one PR in the docs repo with the specs in its blast radius listed. `doc-sync` works that PR: maps changed paths to specs, compares the contract and schema diffs with the API / Events / Data sections, updates the specs with a change-log row, flags a changed calculator to `calc-auditor`, promotes a proposal whose operation now exists. A person reviews and merges.
+**A code change lands.** The code repo's CI regenerates its maps; the freshness gate fails the PR when a mapped path changed and no spec was re-verified. On merge the collector takes a snapshot and opens one PR in the docs repo with the specs in its blast radius listed. `doc-sync` works that PR: maps changed paths to specs, compares the contract and schema diffs with the API / Events / Data sections, updates the specs with a folder `log.md` line each, flags a changed calculator to `calc-auditor`, promotes a proposal whose operation now exists. A person reviews and merges.
 
 **A request arrives in free text.** `/analyse-request "..."` - catalogue, one pack, analysis document, the reading confirmed by the analyst, proposed rules and proposals, the request epic, validation. Hand-offs: scenarios, HLD, draft rules. Then `jira-push.py` creates the epic, stories and subtasks and writes the keys back.
 
