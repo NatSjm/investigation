@@ -16,7 +16,7 @@
 - [ ] contradictions as `> ⚠️ CONFLICT (imported: <page>)`; unverifiable as `> ❓ UNVERIFIED`
 - [ ] no number, threshold or formula copied from the page
 - [ ] `sources[]` entry `conf-<slug>` with `last_modified` in every spec touched; citations `[^conf-<slug>]`
-- [ ] new terms in `domain/glossary.md` (Aliases column for the imported-page wording)
+- [ ] new terms in `domain/glossary.md` (`Term (<lang>)` cell for the page's word in its language, Aliases column for its other wording)
 - [ ] no spec created, no spec renumbered: a capability no spec covers is a `- [ ] candidate spec: <title> (imported conf-<slug>; owner: migration lead; in code | not in code) - ...` line under the primary spec's Open questions (the board lists it as a shaping decision with the run that follows: Run 1 with the next free number when in code, `/analyse-request` with proposed rules when not)
 - [ ] page moved by `scripts/import-done.py` (under `_done/<section>/`, `status: migrated | obsolete`, `superseded_by` naming every concept it went into, links re-pointed) - only when every context it describes has a spec and no candidate is pending; otherwise left in place with the pending part as an Open question
 - [ ] the page title in the `aliases` of every spec touched

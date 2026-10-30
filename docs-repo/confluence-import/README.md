@@ -73,8 +73,9 @@ until it is replaced.
    entries are carried forward and merged with `--into` (so `--into` may be omitted when the rerun merged nothing
    new), and `earlier_migration:` keeps the copy's migration date and export date. The tree holds one copy per page;
    git history keeps the replaced one, no `<slug>.v<date>.md` is left beside it.
-4. Terminology is translated only through `domain/glossary.md` (`Aliases` column); unknown terms are added to the
-   glossary first.
+4. Terminology is translated only through `domain/glossary.md` (the `Term (<lang>)` column of the page's language,
+   then `Aliases`); unknown terms are added to the glossary first, and a term the page names whose `Term (<lang>)`
+   cell is empty gets the page's word there.
 5. After a space is fully migrated, the Confluence pages are replaced by a banner plus a link to the published copy
    (`scripts/confluence-publish.py`).
 6. Only the images a page shows are imported (`_attachments/<slug>/`, listed in the page's `attachments:` header);
@@ -109,7 +110,7 @@ for a page, quote its note in the request, for example
    | `calculation` | how a number is computed: a formula, thresholds, rounding, worked examples | `calc-auditor` (`/audit-calculation <page>`), into `domain/calculations/<name>.md`; never merged by hand |
    | `architecture` | what the application is, its parts, integrations, deployment | `architect` (`@architect <page>`, task "Imported page", after `/integrations-from-contracts`), into `architecture/`; a page on what the application is and who uses it goes to `architecture/overview.md` |
    | `decision` | why something was done one way | `architect` (`@architect <page>`), as an ADR under `architecture/adr/` |
-   | `glossary` | term definitions | `confluence-migrator`, into `domain/glossary.md` |
+   | `glossary` | term definitions | `confluence-migrator`, into `domain/glossary.md` (English `Term`, the page's word in `Term (<lang>)`) |
    | `process` | how the team works (releases, reviews, onboarding), not what the product does | usually `obsolete`; a procedure that still matters, such as deployment, goes to `architect` as a document under `architecture/` |
    | `obsolete` | nothing the code does any more | `confluence-migrator` (or you): header `status: obsolete` with one line why, page moved to `<KEY>/_done/` |
 

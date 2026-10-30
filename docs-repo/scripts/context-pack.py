@@ -34,6 +34,7 @@ import os
 import re
 import subprocess
 import sys
+import unicodedata
 
 from _common import (repo_root, read_text_or_empty, write_text, rel, get_fm, get_val, get_list, badge, now_utc,
                      walk_files, like, sort_key, split_lines, utf8_stdout)
@@ -121,20 +122,31 @@ def load_contexts(repo):
 
 
 def glossary_terms(repo):
-    """domain/glossary.md rows: (term, [aliases], used-in cell)."""
+    """domain/glossary.md rows: (term, [aliases], [language terms], used-in cell); columns found by header (`Term`,
+    `Aliases`, `Used in`, and one `Term (<lang>)` column per language)."""
     terms = []
-    header_seen = False
+    cols = None
     for line in split_lines(read_text_or_empty(os.path.join(repo, 'domain', 'glossary.md'))):
-        if re.match(r'^\|\s*Term\s*\|', line, re.I):
-            header_seen = True
+        if cols is None:
+            if re.match(r'^\|\s*Term\s*\|', line, re.I):
+                cols = [c.strip().lower() for c in line.strip().strip('|').split('|')]
             continue
-        if not header_seen or not line.startswith('|') or re.match(r'^\|\s*-', line):
+        if not line.startswith('|') or re.match(r'^\|\s*-', line):
             continue
-        cells = [c.strip() for c in line.strip().strip('|').split('|')]
-        if len(cells) >= 3 and cells[0]:
-            aliases = [a.strip().strip('`') for a in cells[2].split(',') if a.strip()]
-            terms.append((cells[0], aliases, cells[3] if len(cells) > 3 else ''))
+        row = dict(zip(cols, [c.strip() for c in line.strip().strip('|').split('|')]))
+        if row.get('term'):
+            aliases = [a.strip().strip('`') for a in row.get('aliases', '').split(',') if a.strip()]
+            lang_terms = [row[c] for c in cols if re.match(r'^term \(\w+\)$', c) and row.get(c)]
+            terms.append((row['term'], aliases, lang_terms, row.get('used in', '')))
     return terms
+
+
+def lang_term_pattern(term):
+    """A `Term (<lang>)` cell as a regex that also meets its inflected forms: every word of the term minus one
+    trailing vowel (words longer than three letters) as a prefix, at a word start, in sequence ("cena dopravy" meets
+    "ceny dopravy", "klient" meets "klientů")."""
+    stems = [re.sub(r'[aeiouyáéíóúůýě]$', '', w) if len(w) > 3 else w for w in term.lower().split()]
+    return re.compile(r'(?<!\w)' + r'\w*\s+'.join(re.escape(w) for w in stems) + r'\w*')
 
 
 def openapi_summaries(repo):
@@ -205,13 +217,16 @@ def build_subject(task, repo, here, now, budget, depth, contexts, glossary):
         node = task
     else:
         # free text: score concepts by token hits (title / aliases / id count double, description / tags / contexts
-        # once); a glossary alias in the text (customer -> Client, lane -> Corridor) adds the term's words and gives
+        # once); a glossary alias or language term in the text (customer -> Client, lane -> Corridor, klientů -> Client) adds the term's words and gives
         # the concepts the glossary lists the term under a bonus - only for an alias, a term typed as such is a token already
         low = task.lower()
         tokens = [t for t in re.split(r'[^a-z0-9_\-]+', low) if len(t) >= 4 and t not in STOPWORDS]
         bonus = {}
-        for term, aliases, used in glossary:
+        for term, aliases, lang_terms, used in glossary:
             hit = next((a for a in [term] + aliases if len(a) >= 4 and re.search(r'(?<![a-z0-9])' + re.escape(a.lower()) + r'(?![a-z0-9])', low)), None)
+            if not hit:
+                m = next((lang_term_pattern(a).search(low) for a in lang_terms if lang_term_pattern(a).search(low)), None)
+                hit = m.group(0) if m else None
             if not hit or hit.lower() == term.lower():
                 continue
             glossary_notes.append(f'{hit} -> {term}')
@@ -838,7 +853,8 @@ def main():
     out.append('- rule: this pack is the recorded slice of the task - what was read first and what it points at. Procedure: `.github/skills/task-context/SKILL.md`, six steps, the same for a question and a change request: the documentation folders of this repository are open after the pack (never `raw-html/` or `_attachments/`; what you open is listed in your Sources), code last - at the `file:line` named above for most agents, through the generated maps and then freely for the analyst - and whatever code says is evidence and an Open question, never a rule.\n')
     result = ''.join(out)
 
-    slug = re.sub(r'[^a-z0-9]+', '-', '+'.join(tasks).lower()).strip('-')[:60]
+    folded = unicodedata.normalize('NFKD', '+'.join(tasks).lower()).encode('ascii', 'ignore').decode()
+    slug = re.sub(r'[^a-z0-9]+', '-', folded).strip('-')[:60]
     out_path = os.path.join(repo, a.out_dir, f'{slug}.md')
     write_text(out_path, result)
     line_count = len(split_lines(result))

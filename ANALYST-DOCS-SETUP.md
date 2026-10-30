@@ -161,7 +161,8 @@ each agent goes is one table there. Never `raw-html/` or `_attachments/`; what c
   Work items and test scenarios cite them.
 - Confluence pages are evidence, not rules. Never copy numbers or thresholds from them; link the calculation.
 - Unknown = open question in the concept, never a guess in prose.
-- Terminology from `domain/glossary.md`; English in files; answer in the user's language in chat.
+- Terminology from `domain/glossary.md`; English in files; answer in the user's language in chat through the
+  glossary's `Term (<lang>)` column.
 - No real customer data, personal data or secrets in any file.
 - Outputs go to files; chat summaries <= 15 lines. Specs <= 300 lines; diagrams <= 25 nodes.
 
@@ -290,8 +291,10 @@ free text and names no ID (step 14).
 
 ### Step 9. Glossary and `docs-map.yml`
 
-- `domain/glossary.md`: one line per term taken from the contracts and entity names (code vocabulary). Leave the
-  `Aliases` column for Confluence wording and other languages - `confluence-migrator` fills it.
+- `domain/glossary.md`: one line per term taken from the contracts and entity names (code vocabulary). The
+  `Term (<lang>)` column holds the team's term in its language: fill it with `/translate-glossary <lang>` from the
+  frontend translation file and the imported pages (a term found nowhere is proposed under Open questions for an
+  owner). Leave the `Aliases` column for Confluence wording - `confluence-migrator` fills it.
 - `docs-map.yml`: one mapping per context, even before the spec exists (`specs: []  # TODO: <CTX>-001`). BE globs select
   by prefix: `be/<module>/src/main/kotlin/<project>/**/<Prefix>*.kt`. Add calculations
   (`be/<module>/src/main/kotlin/<project>/utils/**` -> `domain/calculations/**`) and messaging paths.

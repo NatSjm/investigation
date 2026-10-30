@@ -150,7 +150,9 @@ permissions, and review of what gets committed.
    only. Wherever this playbook writes `/name`, in the CLI type
    `Follow .github/prompts/<name>.prompt.md with <input> = <value>, ...`, after selecting the agent named in the
    prompt's `agent:` line with `/agent` when it is not the default one. Verify once that hooks fire in `-p` mode.
-7. **Language.** English in files; glossary aliases keep the source-language terms findable.
+7. **Language.** English in files; the glossary's `Term (<lang>)` column holds the team's term in its language (agents
+   say it in chat, `translate-for-publish` renders it), filled by `/translate-glossary <lang>`; aliases keep the other
+   wordings findable.
 
 ---
 
@@ -169,7 +171,7 @@ contexts.yml                   rewrite (section 4)
 docs-map.yml                   rewrite (section 4)
 .markdownlint-cli2.yaml, .gitignore, .gitattributes   (line-ending normalisation, section 20)
 features/_template.md, features/conventions.md
-domain/glossary.md             empty table, keep the columns
+domain/glossary.md             empty table, keep the columns (`Term (<lang>)` for your language)
 domain/context-map.md          rewrite from your context list
 domain/calculations/_template.md
 architecture/overview.md, integrations.md, adr/template.md     rewrite the prose, keep the frontmatter
@@ -707,8 +709,9 @@ participants, steps with `file:line`, invariants, source map. The spec-writer cr
 neighbourhood crosses communities; the architect writes larger ones on request. They follow the lifecycle of the spec
 that spawned them.
 
-**Glossary** rows are added by the migrator (Run 2) and the spec-writer; the Aliases column keeps imported and
-source-language wording so searches still find the concept.
+**Glossary** rows are added by the migrator (Run 2) and the spec-writer, with the `Term (<lang>)` cell when the source
+names the word; `/translate-glossary <lang>` fills the column for the seed from the frontend translation file and the
+imported pages; the Aliases column keeps imported and other wording so searches still find the concept.
 
 **With an agent.** Calculations: `/audit-calculation <name>` per calculation named by a spec (Run 3); the auditor reports
 a calculator without a unit test as a finding and stops, a developer writes the test, then the audit is rerun. Flows: ask
@@ -1061,7 +1064,7 @@ it may use; forbid invention explicitly.
 | `contexts.yml` (bounded contexts, class prefixes, FE features) | `docs-repo/contexts.yml` | `generated/be/codebase-map.md`, `generated/fe/codebase-map.md`, the team's own context names | the list is complete and the prefixes do not overlap |
 | `docs-map.yml` (code paths to spec IDs) | `docs-repo/docs-map.yml` | `contexts.yml`, `generated/be/components.md`, `generated/fe/codebase-map.md` | every path pattern matches at least one file; `map-paths.py` agrees |
 | `domain/context-map.md` | `docs-repo/domain/context-map.md` | `contexts.yml`, `generated/graph/REPO_MAP.md` (cross-community edges), `generated/be/events.md` | the relationships are the real ones; direction of each dependency |
-| `domain/glossary.md` seed | `docs-repo/domain/glossary.md` | `generated/be/db-schema.md`, enum files named in `components.md`, the Confluence inventory | definitions; aliases in the source language |
+| `domain/glossary.md` seed | `docs-repo/domain/glossary.md` | `generated/be/db-schema.md`, enum files named in `components.md`, the Confluence inventory | definitions; the `Term (<lang>)` column (`/translate-glossary`); aliases in the source language |
 | `architecture/overview.md`, `integrations.md` | `docs-repo/architecture/overview.md`, `integrations.md` | `generated/be/codebase-map.md`, `api-index.md`, `events.md`, `generated/openapi/external/*.yaml`; the tables and the context diagram through `/integrations-from-contracts`, the whole overview once through its `scope = overview-draft`, the prose by hand afterwards | boundaries, ownership, anything the maps cannot show (hosting, auth) |
 | `architecture/adr/*.md` | `docs-repo/architecture/adr/template.md`, `0002-openapi-first-contracts.md` | the decision as you would say it in one paragraph, plus the alternatives considered | the decision itself; an ADR is never generated from code |
 | `flows/*.md` | `docs-repo/flows/client-presentation.md` | the pack of each spec involved, `generated/graph/<community>.md` | steps and invariants; participants |

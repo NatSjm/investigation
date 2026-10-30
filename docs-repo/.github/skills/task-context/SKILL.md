@@ -60,7 +60,7 @@ Section markers, ranks and how `--task` is resolved: `references/pack-anatomy.md
 1. **Resolve the subjects.** A spec ID, a calculation name, a flow or a graph node is the subject. Free text: read
    `generated/catalogue.md` (`python3 scripts/gen-catalogue.py`; one line per context - also the ones with code but
    no spec yet -, flow, spec with aliases, calculation with parameters, endpoint, topic, table with owner, external
-   service and glossary alias) and decide which lines the request is about. One subject or several - a flow plus two
+   service and glossary alias or language term) and decide which lines the request is about. One subject or several - a flow plus two
    specs, an existing calculation plus a new one - are all normal. A part that matches no line is **new** work: note
    the context it belongs to (`contexts.yml`) and add `context:<name>` as a subject; its overview shows what the new
    piece sits next to. When several lines fit a question, take the narrowest that answers it: the calculation for

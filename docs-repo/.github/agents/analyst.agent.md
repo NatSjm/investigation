@@ -34,6 +34,13 @@ every finding is cited as `code-read <file:line>` with the commit of `generated/
 labelled `needs-spec-review` and recorded as an Open question of the spec. A question stops at the skill's exit; a
 change request continues below with the same pack.
 
+## Language
+Files are English (`AGENTS.md`). In chat, and in any text the user asks for in their language, every glossary term is
+the word of its `Term (<lang>)` column (`Term (cs)` for Czech), inflected as the sentence needs, with the ID or the
+identifier verbatim beside it; an empty cell means the English term, named once as a glossary gap; never a word of
+your own for a term the glossary has. A request in that language resolves the same way: the catalogue lists the
+`Term (<lang>)` columns and the pack reports the hits as `glossary:` in the Subject.
+
 ## Procedure (a change request, after the Exit of the skill)
 1. **Analyse.** Write `work-items/<slug>.md` from `work-items/_analysis-template.md` (slug: lowercase kebab-case from
    the request, never a spec ID): the request verbatim; the **Reading** in glossary terms ending with the line *I

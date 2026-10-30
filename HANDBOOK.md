@@ -151,7 +151,7 @@ docs-repo/
     conventions.md            ID scheme, BR numbering, size caps, section order, lifecycle of one spec
     <ctx>/<CTX>-NNN.md        the specs; <ctx>/index.md generated
   domain/
-    glossary.md               canonical terms; Aliases column for imported / source-language wording
+    glossary.md               canonical terms; Term (cs) column for the Czech term; Aliases for other wording
     context-map.md            the contexts, prefixes, entry points, relationships
     calculations/             one Attested Computation per calculation: formula, parameters, worked examples, audit
       _template.md
@@ -262,6 +262,7 @@ beside it under `references/`.
 | `/migration-plan <ctx|all>` | migration-lead | migration board with lead notes |
 | `/okf-produce`, `/okf-validate` | - | capture knowledge as concepts; validate and fix conformance |
 | `/translate-for-publish <path> <lang>` | - | glossary-controlled rendering for Confluence readers, not committed |
+| `/translate-glossary <lang> [translation file]` | - | fill the glossary's `Term (<lang>)` column from the frontend translation file and the imported pages; unsourced terms proposed under Open questions |
 
 ---
 
@@ -385,8 +386,8 @@ page is evidence; a person has to judge every conflict.
 else is noise and tokens. The test also supplies the worked examples, so numbers are copied, never re-derived.
 
 **Why English in files when the source language is different?** One language for IDs, search and agents; the
-glossary's Aliases column keeps the source-language terms findable, and `translate-for-publish` renders the other
-language for Confluence readers.
+glossary's `Term (<lang>)` column holds the team's term in each other language - the word agents use in chat and
+`translate-for-publish` renders for Confluence readers - and the Aliases column keeps the other wordings findable.
 
 **Why synthetic data only?** Docs, fixtures and packs are read by agents and may be attached to PRs. No client
 identifiers or contract values may ever be in them.

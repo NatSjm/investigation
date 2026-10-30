@@ -250,7 +250,7 @@ Deliberate state of the sample content (so the agents have real work to do):
 | `generated/openapi/backend.yaml`, `generated/openapi/external/*.yaml`, `generated/asyncapi/backend.yaml` | copies of the contracts |
 | `generated/graph/` | built by `scripts/gen-graph.py` |
 
-Glossary terms (English canonical; `aliases` may hold other-language synonyms): client, representative, meeting, session, preparation session,
+Glossary terms (English canonical; `Term (cs)` holds the Czech term, `aliases` other-language synonyms): client, representative, meeting, session, preparation session,
 product group, sub-product, corridor, price basis, importer, exporter, mixed, role override, actual movement, modelled movement, peer simulation,
 projection, landed cost, cover, cover ratio, cover share, premium rate, baseline curve, scenario, shock, stress test, exposure, transport price,
 dimension (city / transport mode), parameter set, import batch, report payload.

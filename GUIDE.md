@@ -174,7 +174,7 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 
 `context-pack`, `jira-from-spec`, `tests-from-spec`, `hld-from-spec`, `impact-from-graph`, `spec-from-code`,
 `spec-skeleton-from-graph`, `audit-calculation`, `coverage-report`, `migration-plan`, `okf-produce`, `okf-validate`,
-`translate-for-publish`.
+`translate-for-publish`, `translate-glossary`.
 
 ### Scripts (`docs-repo/scripts/`, Python 3.11+, standard library only)
 
@@ -292,8 +292,8 @@ The full plan with risks is [IMPLEMENTATION-PLAN.md](IMPLEMENTATION-PLAN.md); th
    validates the snapshot, writes `generated/manifest.yml`, then `gen-graph.py` and `build-index.py`.
 2. Read `generated/graph/REPO_MAP.md`. Iterate `contexts.yml` until the `shared` community holds only true helpers
    and every context has a manager as entry point. Every community is a future spec; `code only` is your backlog.
-3. Seed `domain/glossary.md` with the vocabulary of the contracts and entities; leave the Aliases column for the
-   Confluence wording.
+3. Seed `domain/glossary.md` with the vocabulary of the contracts and entities; fill the `Term (<lang>)` column with
+   `/translate-glossary <lang>`; leave the Aliases column for the Confluence wording.
 
 ### Week 2 - Pilot context end to end
 1. `/spec-skeleton-from-graph <ctx> <PFX>-001` (Run 1). Review the draft with the owner for 15 minutes.

@@ -40,7 +40,9 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
    hand the rest to `architect` naming the specs you touched and whether the page may move (step 6: it may not
    while a candidate spec or a context without a spec keeps it in place); the architect moves it when it may.
    **Language**: the repository is English. If the page is in another language, translate while normalising using
-   `domain/glossary.md` (`Aliases` column) for every domain term - add missing terms there first. Set frontmatter
+   `domain/glossary.md` (the `Term (<lang>)` column of the page's language, then `Aliases`) for every domain term -
+   add missing terms there first, and when the page names an existing term whose `Term (<lang>)` cell is empty, put
+   the page's word there (a second wording goes to `Aliases`). Set frontmatter
    `source_lang: <code>`, `lang: en`, and put the original title / key terms into `aliases: [...]` so searches in
    the source language still find the concept. Keep numbers, IDs and field names verbatim. Translated business
    rules are `status: draft` until an owner adds `verified.by: human:<id>`.
@@ -79,7 +81,9 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
    have a route or endpoint) are recorded under the spec's Open questions as "imported page mentions X - not present in
    code". Every spec you changed gets one line in its context folder's `log.md` (`* **[<ID>](<ID>.md)**: merged
    <page>: <what>`); the spec itself carries no history.
-4. Extract domain terms into `domain/glossary.md` (alphabetical, one line each).
+4. Extract domain terms into `domain/glossary.md` (alphabetical, one line each): `Term` in English, the page's word
+   in the `Term (<lang>)` column of its language (empty when the page is English and no word is known - never your
+   own translation), `Definition`, `Aliases` (the page's other wordings), `Used in`.
 5. Provenance: add a `sources[]` entry (`{ id: conf-<slug>, title, resource, author: human:<page author>, last_modified }`)
    and cite it with `[^conf-<slug>]`; set `generated.by: copilot/confluence-migrator`, `generated.at`, `status: draft`.
    Add the page title (and its original-language title) to the `aliases` of every spec you touched, so a search by

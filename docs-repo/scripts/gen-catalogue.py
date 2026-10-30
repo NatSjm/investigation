@@ -190,18 +190,20 @@ def main():
         topics.append((m.group(1), names(m.group(2)), names(m.group(3))))
     topics.sort(key=lambda t: sort_key(t[0]))
 
-    # ---------- glossary: term, aliases, used in ----------
+    # ---------- glossary: term, the `Term (<lang>)` columns, aliases, used in (columns found by header) ----------
     terms = []
-    header_seen = False
+    cols, lang_cols = None, []
     for line in split_lines(read_text_or_empty(os.path.join(repo, 'domain', 'glossary.md'))):
-        if re.match(r'^\|\s*Term\s*\|', line, re.I):
-            header_seen = True
+        if cols is None:
+            if re.match(r'^\|\s*Term\s*\|', line, re.I):
+                cols = [c.strip() for c in line.strip().strip('|').split('|')]
+                lang_cols = [c for c in cols if re.match(r'^Term \(\w+\)$', c)]
             continue
-        if not header_seen or not line.startswith('|') or re.match(r'^\|\s*-', line):
+        if not line.startswith('|') or re.match(r'^\|\s*-', line):
             continue
-        cells = [c.strip() for c in line.strip().strip('|').split('|')]
-        if len(cells) >= 2 and cells[0]:
-            terms.append((cells[0], cells[2] if len(cells) > 2 else '', cells[3] if len(cells) > 3 else ''))
+        row = dict(zip(cols, [c.strip() for c in line.strip().strip('|').split('|')]))
+        if row.get('Term'):
+            terms.append((row['Term'], [row.get(c, '') for c in lang_cols], row.get('Aliases', ''), row.get('Used in', '')))
     terms.sort(key=lambda t: sort_key(t[0]))
 
     # ---------- render ----------
@@ -375,10 +377,10 @@ def main():
     out.append('## Glossary terms and their aliases (`domain/glossary.md`)')
     out.append('')
     if terms:
-        out.append('| Term | Aliases (what people also say) | Used in |')
-        out.append('|---|---|---|')
-        for term, aliases, used in terms:
-            out.append(f'| {term} | {aliases} | {used} |')
+        out.append('| Term | ' + ''.join(f'{c} | ' for c in lang_cols) + 'Aliases (what people also say) | Used in |')
+        out.append('|---|' + '---|' * len(lang_cols) + '---|---|')
+        for term, lang_terms, aliases, used in terms:
+            out.append(f'| {term} | ' + ''.join(f'{t} | ' for t in lang_terms) + f'{aliases} | {used} |')
     else:
         out.append('_(domain/glossary.md missing)_')
     out.append('')

@@ -65,7 +65,8 @@ what matches no line is new work: add the context it belongs to as a subject, it
   operations its own context handles ("Owned versus called operations").
 - Traceability IDs are mandatory: specs `<CTX>-<NNN>` (`CLI SES IMP P1 P2 COV MKT STR RPT ADM`), rules
   `BR-<ID>-<n>`, calculations `snake_case`. Work items and test scenarios cite them.
-- Terminology from `domain/glossary.md`; English only in files (answer in the user's language in chat).
+- Terminology from `domain/glossary.md`; English only in files (answer in the user's language in chat: every term
+  through its `Term (<lang>)` column, an empty cell = the English term named as a gap, never an ad-hoc translation).
 - Synthetic data only: no real client names, identifiers or contract values in docs, fixtures or examples.
 - A contract designed before code lives under `contracts/proposed/` (`x-status: proposed`), is cited as **proposed**
   and never as current behaviour; it reaches `generated/` only through a code repository and the collector.

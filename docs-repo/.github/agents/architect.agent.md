@@ -39,8 +39,9 @@ documentation folders and the graph; no code).
   in the message). Run it after the integration map refresh (scope `integrations`, and `overview-draft` while
   `overview.md` still carries another product's text), so the page is merged into evidence and checked against it.
   It does not wait for the specs.
-  1. Read the page. A page in another language is translated through `domain/glossary.md` (`Aliases`), as the
-     migrator does: `source_lang: <code>`, original title and key terms into `aliases: [...]`.
+  1. Read the page. A page in another language is translated through `domain/glossary.md` (the `Term (<lang>)`
+     column of its language, then `Aliases`), as the migrator does: `source_lang: <code>`, original title and key
+     terms into `aliases: [...]`, an empty `Term (<lang>)` cell of a term the page names filled with the page's word.
   2. Target by content: what the application is, who uses it, its parts and boundaries -> the prose of
      `architecture/overview.md`; integrations, topics, external services, auth and resilience -> the `manual` rows
      and prose of `architecture/integrations.md`; a decision ("why one way") -> a new ADR from
@@ -53,7 +54,8 @@ documentation folders and the graph; no code).
      existing human prose, is a `> ⚠️ CONFLICT (imported: <page>)` callout; unverifiable claims
      `> ❓ UNVERIFIED (imported: <page>, <date>)`; something the code no longer has is recorded as "imported page mentions X -
      not present in code" under the target's open questions. Existing prose is kept word for word.
-  4. Domain terms into `domain/glossary.md`.
+  4. Domain terms into `domain/glossary.md`: `Term` in English, the page's word in the `Term (<lang>)` column of its
+     language (never your own translation), definition, aliases, used in.
   5. Provenance on every file you touched: the `sources[]` entry (`{ id: conf-<slug>, title, resource, author:
      human:<page author>, last_modified }`) cited with `[^conf-<slug>]`, `generated.by: copilot/architect`,
      `status: draft` until the page owner re-verifies.

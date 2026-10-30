@@ -1,6 +1,16 @@
 # Update Log
 
 ## 2026-10-30
+* **The glossary carries the team's term in Czech.** `domain/glossary.md` has a `Term (cs)` column right after
+  `Term`: the one word the team uses for the concept, what an agent says in chat and `translate-for-publish`
+  renders; `Aliases` keeps the other wordings; another language gets its own `Term (<code>)` column. The scripts read
+  the columns by header: the catalogue lists the column, and a free-text request in Czech resolves through it with
+  its inflected forms (`klientů -> Client`, `ceny dopravy -> Transport price`; the pack file name folds diacritics).
+  The prompt `translate-glossary` fills a column from the frontend translation file and the imported pages in that
+  language and proposes the rest under the glossary's Open questions; the migrator and the architect fill the cell
+  of a term an imported page names; the analyst and every agent render a term in the user's language through the
+  column, never ad hoc. The Harbor column was filled by the prompt: 33 terms, all proposed (no translation file,
+  English pages), one Open question each; the misplaced *Presentation window* row is back in alphabetical order.
 * **The graph's node vocabulary is in CONCEPT.** The "From the code" paragraph said "about 300 nodes - contexts,
   classes, endpoints, tables, topics, pages, hooks, specs"; it now says that the nodes are architectural, not
   symbols, and lists the kinds `gen-graph.py` emits (context, endpoint, class with layer and Spring stereotype,

@@ -17,7 +17,7 @@ or flagged `❓ UNVERIFIED` / `⚠️ CONFLICT`.
 |---|---|---|
 | `features/<context>/<CTX>-<NNN>.md` | functional specs (OKF Feature Spec), business rules `BR-<ID>-<n>` | `spec-writer`, `confluence-migrator`, humans verify |
 | `domain/calculations/<name>.md` | one concept per calculation: formula, parameters, worked examples, audit table | `calc-auditor`, `spec-writer` |
-| `domain/glossary.md`, `domain/context-map.md` | terminology (with `Aliases` for imported / source-language terms), bounded contexts | humans + `confluence-migrator` |
+| `domain/glossary.md`, `domain/context-map.md` | terminology (`Term (<lang>)` for the team's term in another language, `Aliases` for imported wording), bounded contexts | humans + `confluence-migrator` |
 | `architecture/` | overview, integration map, ADRs, HLDs | `architect` |
 | `confluence-import/<SPACE>/` | raw exported pages (quarantine): `<section>/<slug>.md` per page tree, `_attachments/<slug>/` images, `_done/` after migration; `raw-html/` the HTML export as received | `scripts/confluence-import.py` (HTML export), `scripts/confluence-export.py` (REST, stub) |
 | `generated/be`, `generated/fe`, `generated/openapi`, `generated/asyncapi` | code maps and contracts collected from the code repos as one validated snapshot (`generated/manifest.yml` names the source commits); never edited by hand | the docs repo's collector `scripts/collect-evidence.py` (CI: `ci-examples/collect-evidence.yml`, one PR per snapshot) |
@@ -117,8 +117,9 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
   `overview.md`, the `manual` rows of `integrations.md`, an ADR from `architecture/adr/template.md` or a document under
   `architecture/`, marks claims that differ from a `gen` row as conflicts, and moves the page to `_done/`. A page with a
   feature part goes to the migrator first, which merges that part and hands the rest on.
-- Pages in another language are translated during normalisation through the glossary `Aliases` column; the original
-  title and key terms go into `aliases:` so searches in the source language still work.
+- Pages in another language are translated during normalisation through the glossary (`Term (<lang>)` column, then
+  `Aliases`; an empty cell of a term the page names takes the page's word); the original title and key terms go into
+  `aliases:` so searches in the source language still work.
 
 The run-by-run lifecycle of one spec (skeleton -> page merge -> calculation audit -> owner decision), with what
 each run reads and writes, is documented in `docs-repo/features/conventions.md`, section "Lifecycle of one spec".

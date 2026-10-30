@@ -53,7 +53,8 @@ lines are new.
 
 Free-text resolution: the words of the task (>= 4 characters, function words dropped) are scored against every spec,
 calculation and flow - a hit in `title`, `aliases` or the id counts 2, in `description`, `tags` or `contexts` 1; a
-glossary alias in the text (customer -> Client, lane -> Corridor) adds the term's words and gives the concepts the
-glossary lists the term under a bonus, and is reported as `glossary:` in the Subject. The best match is packed, up to
+glossary alias or language term in the text (customer -> Client, lane -> Corridor, klientů -> Client: a `Term (<lang>)`
+cell meets its inflected forms) adds the term's words and gives the concepts the glossary lists the term under a
+bonus, and is reported as `glossary:` in the Subject. The best match is packed, up to
 three runners-up are listed under `candidates:`. It is single-subject by construction: a request about several
 contexts needs the subjects named (`--task` per subject), which is what the catalogue is for.

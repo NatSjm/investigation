@@ -2207,3 +2207,48 @@ agent file changed.
 ### 56.2 Nothing else
 
 No setup guide, kit or script change.
+
+## 57. The glossary carries the team's term in each language (investigation commits after `c599bac`, 2026-10-30)
+
+The glossary was English with an `Aliases` column that mixed synonyms and source-language wording, so an agent
+answering in Czech picked a Czech word of its own for a term the team names differently. `domain/glossary.md` now has
+a `Term (cs)` column right after `Term`: the one word the team uses for the concept in Czech, nominative singular, the
+English word itself when that is what the team says; an empty cell means no term is agreed yet (the English term is
+used and named as a gap). `Aliases` keeps the other wordings in any language; another language gets its own
+`Term (<code>)` column. The scripts read the columns by header: `gen-catalogue.py` lists the column in the
+catalogue, `context-pack.py` resolves a free-text request through it with inflected forms (`klientů -> Client`) and
+folds diacritics in the pack file name. The new prompt `translate-glossary` fills a column from the frontend
+translation file and the imported pages in that language and lists every term it had to propose under the
+glossary's `## Open questions` for an owner; the migrator and the architect fill the cell of a term an imported page
+names (never their own translation); the analyst and every agent render a term in the user's language through the
+column; `translate-for-publish` renders through it too.
+
+### 57.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/prompts/translate-glossary.prompt.md` | new: fills `Term (<lang>)` from the translation file and the imported pages, proposes the rest |
+| `scripts/context-pack.py` | glossary columns by header; `Term (<lang>)` cells matched with inflected forms; pack file name folds diacritics |
+| `scripts/gen-catalogue.py` | glossary columns by header; the catalogue's glossary table carries every `Term (<lang>)` column |
+| `.github/agents/confluence-migrator.agent.md` | step 1 Language and step 4: the page's word into the `Term (<lang>)` cell |
+| `.github/agents/architect.agent.md` | imported page steps 1 and 4: the same |
+| `.github/agents/analyst.agent.md` | new section Language: every term through its `Term (<lang>)` column in chat and in texts asked for in that language (for a colleague's own analyst agent that answers in Czech: add that section) |
+| `.github/prompts/translate-for-publish.prompt.md` | rule 1: render through the column, `Aliases` only confirms |
+| `.github/skills/spec-lifecycle/references/run-checklist.md`, `.github/skills/task-context/SKILL.md`, `.github/skills/task-context/references/pack-anatomy.md` | the Run 2 glossary line; "language term" beside "glossary alias" |
+| `AGENTS.md`, `CONCEPT.md`, `confluence-import/README.md`, `scripts/README.md` | the language rule names the column; the glossary row; the translation rule and the `glossary` class row; the catalogue description |
+
+### 57.2 Docs repository: your glossary
+
+Do not copy the Harbor `domain/glossary.md`: add the column to yours. Insert `Term (cs)` right after `Term` in the header
+and the separator row, an empty cell in every row, and replace the header prose by the Harbor one (the paragraph
+under `# Glossary`). Then run `/translate-glossary cs <path of your frontend's Czech translation JSON>` (in the CLI:
+`Follow .github/prompts/translate-glossary.prompt.md with lang = cs, i18n = <path>`); the prompt fills the cells from
+the translation file first, the Czech Confluence pages second, and proposes the rest under `## Open questions` of the
+glossary, one line per term, for the owners to tick or replace. Regenerate the catalogue (`gen-catalogue.py`) after
+it. From then on a row added by the migrator, the architect or a person carries its Czech cell.
+
+### 57.3 Setup guide and the wrapper (read only)
+
+`ANALYST-DOCS-SETUP.md` (the hard rules and step 9), `HANDBOOK.md`, `GUIDE.md`, `MIGRATION-RUNBOOK.md`,
+`ENTERPRISE-PLAYBOOK.md` and `BLUEPRINT.md` name the column; `.claude/commands/translate-glossary.md` is the
+investigation-only wrapper.
