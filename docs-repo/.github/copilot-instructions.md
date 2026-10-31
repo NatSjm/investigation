@@ -17,6 +17,7 @@ contain the relevant `file:line` references.
 | Stories, subtasks, estimates, questions for Jira | `analyst` | `/jira-from-spec`, `/coverage-report` | the six context steps of `task-context`: catalogue, one pack and its pointers, the documentation folders and the graph freely, then code last - through the maps, freely for a question that still blocks |
 | A request in free text: a question, or a change spanning contexts with existing and new behaviour -> analysis document, confirmed reading, request epic | `analyst` | `/analyse-request` | `generated/catalogue.md` + one merged context pack, the same six steps for a question (the narrowest subject, one section read) and a change (the whole pack) |
 | New or refreshed feature spec | `spec-writer` | `/spec-skeleton-from-graph`, `/spec-from-code` | graph neighbourhood + one manager file |
+| Cross-context flow composing the rules of several specs | `spec-writer` | `/flow-from-specs` | one pack of those specs, the graph; no code |
 | Keep specs in sync with a code change / generated PR | `doc-sync` | - | `map-paths.py` output, generated maps, contracts |
 | Check a formula doc or imported page against the code | `calc-auditor` | `/audit-calculation` | calculation doc, `docs-tags.md`, one class + its test |
 | Gherkin + fixtures for the tests repo | `test-designer` | `/tests-from-spec` | spec BRs + the worked examples of the calculation concepts the pack points at |

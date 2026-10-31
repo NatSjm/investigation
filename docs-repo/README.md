@@ -46,7 +46,8 @@ flowchart LR
 - `@test-designer` / `/tests-from-spec` — Gherkin + fixtures → `test-design/`.
 - `@architect` / `/hld-from-spec` — HLD.
 - `@impact-analyst` / `/impact-from-graph` — blast radius from `generated/graph/` (no source reading);
-  `/spec-skeleton-from-graph` — spec skeleton prefilled from a context neighbourhood (skill `code-graph`).
+  `/spec-skeleton-from-graph` — spec skeleton prefilled from a context neighbourhood (skill `code-graph`);
+  `/flow-from-specs <name> <spec IDs>` — cross-context flow under `flows/` composing the rules of those specs.
   CLI: `scripts/graph-query.py --node spec:P1-001 --depth 2` or `--files (git diff --name-only)`.
 - `@confluence-migrator confluence-import/HARBOR/<page>.md` — migrate an imported page.
 - `@migration-lead` / `/migration-plan all` — which lifecycle runs (skeleton, page merge, calculation audit, owner

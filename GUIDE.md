@@ -173,8 +173,8 @@ After each run the `agentStop` hook validates the bundle. Edits under `generated
 ### Prompts (`/name` in Copilot Chat)
 
 `context-pack`, `jira-from-spec`, `tests-from-spec`, `hld-from-spec`, `impact-from-graph`, `spec-from-code`,
-`spec-skeleton-from-graph`, `audit-calculation`, `coverage-report`, `migration-plan`, `okf-produce`, `okf-validate`,
-`translate-for-publish`, `translate-glossary`.
+`spec-skeleton-from-graph`, `flow-from-specs`, `audit-calculation`, `coverage-report`, `migration-plan`, `okf-produce`,
+`okf-validate`, `translate-for-publish`, `translate-glossary`.
 
 ### Scripts (`docs-repo/scripts/`, Python 3.11+, standard library only)
 

@@ -52,7 +52,7 @@ your own for a term the glossary has. A request in that language resolves the sa
    name gets a row too**: `unchanged`, with the node that links it and why nothing there changes, or `changed` /
    `new` - then it is a subject, rebuild the pack once (skill step 5). The blast radius is confirmed with the
    reading, not discovered after the stories; Trust; reused / changed / built; Contracts (changed operations, new operations in
-   existing controllers, a new service); Data; Flows (which step changes, whether a new flow is needed); Calculations
+   existing controllers, a new service); Data; Flows (which step changes, whether a new flow is needed - then `spec-writer` writes it via `/flow-from-specs`); Calculations
    (used as is / changed / new with inputs and outputs); Gaps and questions; Sources (the pack, what you opened after
    it, the code ranges and files read with the question each answered). For a single-spec request given by ID the
    analysis document is optional.

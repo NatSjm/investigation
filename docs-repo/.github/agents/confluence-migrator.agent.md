@@ -55,7 +55,8 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
    - Target exists -> merge only *new* facts, **each fact into the spec of the context that owns that behaviour**
      (`features/conventions.md`, "Ownership is by rule, not by component"); a sequence across contexts the page
      describes belongs to a flow under `flows/`, never to a rule repeated in two specs - when no flow exists, record
-     it as an Open question in the primary spec. Mark contradictions with `> ⚠️ CONFLICT (imported: <page>)`. Every
+     it as an Open question in the primary spec (`candidate flow: <name> - <spec IDs>`; `spec-writer` writes it via
+     `/flow-from-specs`, then the page is rerun). Mark contradictions with `> ⚠️ CONFLICT (imported: <page>)`. Every
      business rule you add ends, after its footnote, with `(source: imported conf-<slug>)`; you open no code, so the
      code form of the marker is never yours (`features/conventions.md`, "Provenance per rule"). Every spec you
      touched gets the `sources[]` entry of step 5.

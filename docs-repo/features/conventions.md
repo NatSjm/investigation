@@ -64,7 +64,8 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
    as dimension" and keeps its own ID so tests and stories can cite it (`P2-002`).
 6. **Behaviour across contexts is a flow**, never a rule repeated in several specs: the session journey
    across the product, scenario and stress screens, or the recalculation chain that one input change triggers
-   (`/flows/`). Each spec keeps its local rule; the flow composes them and lists the specs in `specs[]`.
+   (`/flows/`). Each spec keeps its local rule; the flow composes them and lists the specs in `specs[]`. Written
+   by `spec-writer` via `/flow-from-specs <name> <spec IDs>` from one pack of those specs and the graph.
 7. **Formulas are calculation documents.** A table column or chart series names the quantity it shows; the
    quantity is a file under `domain/calculations/` with inputs, parameters, formula, worked examples from the
    unit test and an audit table. One document per output quantity, not per table.

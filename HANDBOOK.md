@@ -258,6 +258,7 @@ beside it under `references/`.
 | `/impact-from-graph <node|file>` | impact-analyst | blast radius checklist |
 | `/spec-skeleton-from-graph <ctx> <ID>` | spec-writer | Run 1: new spec from graph + manager |
 | `/spec-from-code <ID>` | spec-writer | refresh an existing spec against contracts and maps |
+| `/flow-from-specs <name> <spec IDs>` | spec-writer | cross-context flow under `flows/` composing the rules of those specs, linked back from each |
 | `/audit-calculation <name|ID|page>` | calc-auditor | Run 3: audit table |
 | `/migration-plan <ctx|all>` | migration-lead | migration board with lead notes |
 | `/okf-produce`, `/okf-validate` | - | capture knowledge as concepts; validate and fix conformance |

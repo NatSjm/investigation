@@ -1,5 +1,13 @@
 # Update Log
 
+## 2026-10-31
+* **A flow has a prompt.** `/flow-from-specs <name> <spec IDs>` (agent `spec-writer`): one pack with a `--task` per
+  spec the flow composes, `flows/_template.md`, Trigger / Participants / Steps from the graph with a node id and
+  `file:line` per step, Invariants citing `BR-<ID>-<n>` and restating nothing (a behaviour no spec owns is a candidate
+  rule under Open questions), `specs:` and each spec's `flows:` linked both ways, the folder logs. Until now the two
+  existing flows were written by `spec-writer` with the rules carried by hand in the ask; the agent file names the task,
+  conventions point 6, the analyst's Flows line and the migrator's "no flow exists" case point at the prompt.
+
 ## 2026-10-30
 * **The glossary carries the team's term in Czech.** `domain/glossary.md` has a `Term (cs)` column right after
   `Term`: the one word the team uses for the concept, what an agent says in chat and `translate-for-publish`

@@ -2252,3 +2252,33 @@ it. From then on a row added by the migrator, the architect or a person carries 
 `ANALYST-DOCS-SETUP.md` (the hard rules and step 9), `HANDBOOK.md`, `GUIDE.md`, `MIGRATION-RUNBOOK.md`,
 `ENTERPRISE-PLAYBOOK.md` and `BLUEPRINT.md` name the column; `.claude/commands/translate-glossary.md` is the
 investigation-only wrapper.
+
+## 58. A flow has a prompt (investigation commits after `2ce5c20`, 2026-10-31)
+
+Behaviour across contexts is a flow under `flows/` (conventions "Shaping specs" point 6), but nothing produced one:
+the two existing flows were written by `spec-writer` from `flows/_template.md` with every rule carried by hand in the
+ask, and the agent file listed no flow task. New prompt `flow-from-specs` (agent `spec-writer`): `/flow-from-specs
+<name> <spec IDs> [behaviour]` builds one pack with a `--task` per spec the flow composes (no code), creates or
+refreshes `flows/<name>.md` from the template, takes Trigger, Participants and Steps from the graph (node id and
+`file:line` per step, a `sequenceDiagram` above five steps), writes Invariants as `BR-<ID>-<n>` citations that restate
+nothing (a behaviour no spec owns becomes a candidate rule under Open questions, never a rule of the flow), lists every
+cited spec in `specs:` and adds `/flows/<name>.md` to each spec's `flows:`, then validates, rebuilds and writes the
+`flows/log.md`, folder log and root log lines. When every step belongs to one screen of one context it stops: that is
+the spec's UI flow. In the CLI: `Follow .github/prompts/flow-from-specs.prompt.md with name = <slug>, specs = <IDs>`.
+
+### 58.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `.github/prompts/flow-from-specs.prompt.md` | new |
+| `.github/agents/spec-writer.agent.md` | new section "Flow (prompt `flow-from-specs`)" before Output |
+| `.github/agents/analyst.agent.md` | the Flows line of the analysis: a new flow is written by `spec-writer` via the prompt |
+| `.github/agents/confluence-migrator.agent.md` | "when no flow exists": the open question reads `candidate flow: <name> - <spec IDs>`, the prompt writes it, the page is rerun |
+| `.github/copilot-instructions.md` | the agent / prompt table has the row |
+| `features/conventions.md` | point 6 names the prompt |
+| `CONCEPT.md`, `README.md` | the prompt lists |
+
+### 58.2 Setup guide (read only)
+
+`HANDBOOK.md` (prompt table) and `GUIDE.md` (prompt list) name the prompt. No `.claude/commands` wrapper: the prompt
+is run in Copilot (IDE `/flow-from-specs`, CLI "Follow ... with ...").

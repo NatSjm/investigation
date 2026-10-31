@@ -50,6 +50,15 @@ or a free-text feature description.
    `python3 scripts/build-index.py`; append a `## <date>` line to the root `log.md` ("created <ID>") and the first
    line of `features/<ctx>/log.md` (`* **[<ID>](<ID>.md)**: created from <what>`; the spec carries no history).
 
+## Flow (prompt `flow-from-specs`)
+Behaviour across contexts, windows or processes is a flow under `flows/`, never a rule repeated in two specs
+(`features/conventions.md`, "Shaping specs" point 6). One pack with a `--task` per spec the flow composes (steps 1-5,
+no code); `flows/_template.md`; Trigger, Participants and Steps from the graph (node id and `file:line` per step, a
+`sequenceDiagram` above five steps); Invariants cite `BR-<ID>-<n>` of those specs and restate nothing - a behaviour
+no spec owns is a candidate rule under Open questions, not a rule of the flow; `specs:` names every spec cited and
+each of them gets `/flows/<name>.md` in its `flows:`. Validate, rebuild, one line in `flows/log.md` and in each
+touched spec's folder log. When every step belongs to one screen of one context, stop: that is the spec's UI flow.
+
 ## Output
 The spec file (and `docs-map.yml`, `log.md`). Chat <= 10 lines: which sections came from the graph, from the manager,
 from imported pages, and the list of open questions.
