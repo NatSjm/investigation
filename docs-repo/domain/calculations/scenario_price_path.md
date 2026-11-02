@@ -20,7 +20,6 @@ stale_after: 2027-01-07T00:00:00Z
 sources:
   - id: impl
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt
-    title: ScenarioPricePath.kt
 # --- repo extensions ---
 name: scenario_price_path
 used_by: [MKT-001, STR-001]
@@ -93,4 +92,5 @@ carry the last known value forward (**to confirm**) · Time zone: UTC. (source: 
 ## Performance notes
 `months × scenarios`; shocks per scenario ≤ 12. Computed on demand, not persisted.
 
-[^impl]: ScenarioPricePath.kt (harbor-backend, `core`, layer `utils`)
+<!-- footnotes: generated from sources[] by scripts/build-index.py -->
+[^impl]: [ScenarioPricePath.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/ScenarioPricePath.kt)

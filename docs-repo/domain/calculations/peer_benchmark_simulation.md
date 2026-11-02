@@ -18,13 +18,10 @@ stale_after: 2027-01-10T00:00:00Z
 sources:
   - id: impl
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt
-    title: PeerBenchmark.kt
   - id: tests
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/PeerBenchmarkTest.kt
-    title: PeerBenchmarkTest.kt
   - id: rounding
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt
-    title: Rounding.kt
 # --- repo extensions ---
 name: peer_benchmark_simulation
 used_by: [P1-003, P2-003]
@@ -131,6 +128,7 @@ in the same run so that the concept has an executor).
 At most 12 months × clients of the segment; computed in memory on `postProduct1PeerSimulation` and stored as
 `session_peer_simulation` (BR-P1-003-1).
 
-[^impl]: PeerBenchmark.kt (harbor-backend, `core`, layer `utils`)
-[^rounding]: Rounding.kt (harbor-backend, `core`, layer `utils`)
-[^tests]: PeerBenchmarkTest.kt (harbor-backend, `core` tests, `utils`)
+<!-- footnotes: generated from sources[] by scripts/build-index.py -->
+[^impl]: [PeerBenchmark.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/PeerBenchmark.kt)
+[^tests]: [PeerBenchmarkTest.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/PeerBenchmarkTest.kt)
+[^rounding]: [Rounding.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt)

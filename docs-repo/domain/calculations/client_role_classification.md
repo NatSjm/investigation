@@ -22,10 +22,8 @@ stale_after: 2027-01-06T00:00:00Z
 sources:
   - id: impl
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/RoleClassifier.kt
-    title: RoleClassifier.kt
   - id: tests
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/RoleClassifierTest.kt
-    title: RoleClassifierTest.kt
 # --- repo extensions ---
 name: client_role_classification
 used_by: [CLI-001, STR-001]
@@ -112,5 +110,6 @@ Copied from the executor test.[^tests] Thresholds: `min_volume = 100`, `importer
 One call per client × product group on `getClientOverview` / `getClientRole`; inputs come from two indexed sums
 over `movement_monthly`. No caching needed.
 
-[^impl]: RoleClassifier.kt (harbor-backend, `core`, layer `utils`)
-[^tests]: RoleClassifierTest.kt (harbor-backend, `core` tests, `utils`)
+<!-- footnotes: generated from sources[] by scripts/build-index.py -->
+[^impl]: [RoleClassifier.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/RoleClassifier.kt)
+[^tests]: [RoleClassifierTest.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/RoleClassifierTest.kt)

@@ -2282,3 +2282,52 @@ the spec's UI flow. In the CLI: `Follow .github/prompts/flow-from-specs.prompt.m
 
 `HANDBOOK.md` (prompt table) and `GUIDE.md` (prompt list) name the prompt. No `.claude/commands` wrapper: the prompt
 is run in Copilot (IDE `/flow-from-specs`, CLI "Follow ... with ...").
+
+## 59. One source list per concept (investigation commits after `768864a`, 2026-11-02)
+
+A spec's sources lived in three places: the `[^id]` citations in the body (needed), the `sources[]` entries in the
+frontmatter (the list OKF, the validator and the scripts read) and the `[^id]: ...` definition lines at the end of the
+file (what GitHub renders and what the context pack carries, since the pack drops the frontmatter). The definition
+lines were a hand-kept copy: some specs had them, some did not, and one named a file its entry did not. Now
+`scripts/build-index.py` writes that block from `sources[]` under the marker `<!-- footnotes: generated from
+sources[] by scripts/build-index.py -->`, one `[^id]: [title](resource)` line per entry the body cites (a resource
+that is neither a URL nor a bundle path is shown as code); `--check` fails when the block is stale, and the hook and CI
+already run both. `okf-validate.py --strict` warns on a hand-written `[^id]:` line and, in a Feature Spec or an
+Attested Computation, on a `sources[].id` no footnote or source marker cites. The frontmatter list itself is
+smaller: no `title` that repeats the file name, an uncited file in `code_refs` only, and `doc-sync` no longer adds a
+`sources[]` entry per PR (it refreshes `last_modified` on the touched file's entry; the PR is in the folder log line).
+A folder `log.md` is created with its first line, never empty (the empty `architecture/log.md` is gone), and
+`validate-frontmatter.py` skips the reserved `log.md` files it had been reporting as "missing frontmatter" since the
+folder logs appeared in section 53.
+
+### 59.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `scripts/build-index.py` | the footnote block: `source_entries`, `footnote_block`, `with_footnote_block`, the second pass over the concepts, `--check` covers it; `generated/**` untouched |
+| `scripts/okf-validate.py` | the two warnings (hand-written definition line; uncited `sources[].id` in a spec or calculation) |
+| `scripts/validate-frontmatter.py` | `log.md` skipped in the default selection and in the flows loop |
+| `features/conventions.md` | "Business rules": the `sources[]` bullet (what the list holds, the generated block, the warnings); "Sections": a folder log appears with its first line |
+| `.github/instructions/features.instructions.md`, `.github/instructions/calculations.instructions.md` | the `sources[]` rule and the generated block |
+| `.github/skills/okf/SKILL.md`, `.github/skills/okf/templates/concept.md` | provenance bullet, folder log bullet; the template has no definition line |
+| `.github/agents/doc-sync.agent.md` | step 7: no entry per PR, `last_modified` refreshed, the block is never edited |
+| `.github/agents/spec-writer.agent.md`, `.github/agents/architect.agent.md` | step 7 / Style: the block comes from `build-index.py`, a folder log is created with its first line |
+| `AGENTS.md`, `CONCEPT.md`, `README.md`, `scripts/README.md`, `.github/skills/docs-analytics/SKILL.md` | the rule and the script's second output |
+| `features/_template.md`, `domain/calculations/_template.md` | the `sources` comment; no `title` placeholder for the code file |
+
+### 59.2 Your own concepts (one pass, then the script keeps it)
+
+1. Delete every hand-written `[^id]: ...` line at the end of your specs and calculations. A note such a line carried
+   that is not in the `sources[]` entry (an "outdated on this point" remark about an imported page) becomes an open
+   question in the kit's form ("imported page mentions X - not present in code").
+2. In `sources[]`, drop `title` where it repeats the file name of `resource`; keep it for imported pages and generated
+   catalogues. Drop an entry no footnote or `(source: ...)` marker cites, or cite it where the body uses it; the
+   file stays in `code_refs`.
+3. Run `python3 scripts/build-index.py` (writes the blocks), then `python3 scripts/okf-validate.py --strict` and
+   `python3 scripts/build-index.py --check`; both must be clean. The blocks are committed with the concepts.
+4. Delete a folder `log.md` that has no entry; it comes back with its first line.
+
+### 59.3 Setup guide (read only)
+
+Nothing in `HANDBOOK.md`, `GUIDE.md` or the other root guides changes: they name `build-index.py` without describing
+its output.

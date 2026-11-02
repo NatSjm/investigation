@@ -25,7 +25,8 @@ sources:                          # what this was derived from; omit if nothing
 # Overview
 
 <What this concept is and why it matters. Attribute a sourced claim with a
-footnote whose label is a `sources[].id`.[^short-key]>
+footnote whose label is a `sources[].id`.[^short-key] The footnote block at the end of the file is written by
+`scripts/build-index.py` from `sources[]`, never by hand.>
 
 # Schema
 
@@ -34,5 +35,3 @@ footnote whose label is a `sources[].id`.[^short-key]>
 | Field | Type | Description |
 |-------|------|-------------|
 |       |      |             |
-
-[^short-key]: <Human-readable label of the source>

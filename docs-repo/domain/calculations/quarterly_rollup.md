@@ -32,7 +32,7 @@ last_verified: null
 
 # Quarterly roll-up of monthly projection and stress rows (proposed)
 
-> **Proposed** — introduced by the request analysis [quarterly-view-across-products](/work-items/quarterly-view-across-products.md)
+> **Proposed** — introduced by the request analysis [quarterly-view-across-products](/work-items/quarterly-view-across-products.md)[^request]
 > (BR-P1-001-12, BR-P2-001-10, BR-STR-001-9). Nothing in the code computes this yet; the Formula is the intended
 > behaviour, the Worked examples come from the unit test once story S1 is implemented, then `calc-auditor` audits it.
 
@@ -40,7 +40,7 @@ last_verified: null
 The product overviews and the stress test page show one row per **month** of the session horizon. With
 `period = QUARTER` the same tables show one row per **calendar quarter**: the quarterly rows are a roll-up of the
 persisted monthly lines, derived wherever the tables are loaded, never stored - the same pattern as
-[horizon_totals](horizon_totals.md). Returned by `getProduct1Overview`, `getProduct1Projection`,
+[horizon_totals](horizon_totals.md).[^totals] Returned by `getProduct1Overview`, `getProduct1Projection`,
 `getProduct2Overview`, `getProduct2Projection` and `getStressTest` when `period = QUARTER`; mirrored by the client
 window (PRS-001).
 
@@ -104,3 +104,7 @@ tables and the recalculation flow stay monthly; the roll-up is applied on read.
 - [ ] Q1 (owner: harbor-platform-team) — partial first and last quarters: shown as such, or dropped? (request analysis question 1)
 - [ ] Q2 (owner: harbor-platform-team) — cover ratio per quarter as a ratio of sums (here) or as the mean of the
   monthly ratios? (request analysis question 4)
+
+<!-- footnotes: generated from sources[] by scripts/build-index.py -->
+[^request]: [Request analysis: quarterly view across products](/work-items/quarterly-view-across-products.md)
+[^totals]: [Horizon totals (the pattern: derived, never persisted)](/domain/calculations/horizon_totals.md)

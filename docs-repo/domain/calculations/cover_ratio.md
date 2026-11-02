@@ -19,7 +19,6 @@ stale_after: 2027-01-07T00:00:00Z
 sources:
   - id: impl
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/CoverRatioCalculator.kt
-    title: CoverRatioCalculator.kt
 # --- repo extensions ---
 name: cover_ratio
 used_by: [COV-001, P1-001, P2-001, STR-001]
@@ -90,4 +89,5 @@ are summed and capped at 1 (**to confirm**) · Time zone: UTC. (source: code imp
 ## Performance notes
 Computed together with the projection refresh; policies per client are few (< 20).
 
-[^impl]: CoverRatioCalculator.kt (harbor-backend, `core`, layer `utils`)
+<!-- footnotes: generated from sources[] by scripts/build-index.py -->
+[^impl]: [CoverRatioCalculator.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/CoverRatioCalculator.kt)

@@ -19,13 +19,10 @@ stale_after: 2027-01-10T00:00:00Z
 sources:
   - id: impl
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt
-    title: ProjectionAggregator.kt
   - id: tests
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt
-    title: ProjectionAggregatorTest.kt
   - id: rounding
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt
-    title: Rounding.kt
 # --- repo extensions ---
 name: horizon_totals
 used_by: [P1-001, P2-001]
@@ -178,6 +175,7 @@ Findings: 13 items: 7 MATCH, 4 DOC-STALE (2 fixed in the worked examples, 2 left
 Input is at most 60 months × (3 sub-products + 4 dimension values + 2 directions) = 540 lines per session; the totals
 are computed in memory on every read of the tables and are not stored.
 
-[^impl]: ProjectionAggregator.kt (harbor-backend, `core`, layer `utils`)
-[^rounding]: Rounding.kt (harbor-backend, `core`, layer `utils`)
-[^tests]: ProjectionAggregatorTest.kt (harbor-backend, `core` tests, `utils`)
+<!-- footnotes: generated from sources[] by scripts/build-index.py -->
+[^impl]: [ProjectionAggregator.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/ProjectionAggregator.kt)
+[^tests]: [ProjectionAggregatorTest.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/ProjectionAggregatorTest.kt)
+[^rounding]: [Rounding.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/Rounding.kt)

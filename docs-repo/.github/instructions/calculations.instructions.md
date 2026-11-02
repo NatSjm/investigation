@@ -27,3 +27,6 @@ description: Rules for calculation concepts (OKF Attested Computation) - formula
   draft step or paragraph without one; a calculation tagged `proposed` (no implementation yet) is exempt.
 - Imported descriptions (Confluence) are evidence, not truth: cite them in `sources[]` and mark any difference
   with `> ⚠️ CONFLICT (imported: <page>)` until `calc-auditor` resolves it.
+- `sources[]` holds what the steps and rows cite (`id`, `resource`; no `title` for a code file, the file name is
+  derived); the footnote block at the end is written by `scripts/build-index.py` from `sources[]`, never by hand
+  (`features/conventions.md`, "Business rules"). `okf-validate.py --strict` warns on an uncited entry.

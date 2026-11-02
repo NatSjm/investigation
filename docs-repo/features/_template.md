@@ -7,7 +7,7 @@ status: draft                   # draft | stable | deprecated
 generated: { by: copilot/doc-sync, at: 2026-01-01T00:00:00Z }
 # verified: { by: human:<id>, at: <ISO> }     # added by a human reviewer only
 # stale_after: <ISO>                          # verified + 90 days
-sources: []                     # imported pages / code URLs actually read; cite claims with [^id]
+sources: []                     # files and pages the rules cite with [^id] (id, resource; title only when it says more than the file name); an uncited file goes to code_refs; build-index.py writes the footnote block at the end
 # --- repo extensions ---
 id: CTX-000
 lang: en                       # repo language is always English

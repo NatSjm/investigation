@@ -39,8 +39,10 @@ One of:
 6. Changed path with no mapping: add a `TODO` entry in `docs-map.yml` and, if the context has no spec at all,
    create a stub from `features/_template.md` (or hand over to `spec-writer`).
 7. OKF provenance on every concept you touch: `generated.by: copilot/doc-sync`, `generated.at: <ISO now>`,
-   refresh `stale_after`, add a `sources[]` entry for the PR/commit; remove a `human:` verification if the section
-   it covered changed.
+   refresh `stale_after`; no `sources[]` entry for the PR or commit (that reference is the folder log line of step 4):
+   refresh `last_modified` on the entry of the file the change touched and add an entry only for a file a rule you
+   wrote now cites; remove a `human:` verification if the section it covered changed. `build-index.py` (step 8)
+   rewrites the footnote block at the end of the spec from `sources[]`; never edit it.
 8. Run `python3 scripts/okf-validate.py --strict` and `python3 scripts/build-index.py`; a `## YYYY-MM-DD` entry
    in the root `log.md` only for a lifecycle event (a spec back to `draft`, a stub created); what changed in which
    spec is already in the folder log of step 5.

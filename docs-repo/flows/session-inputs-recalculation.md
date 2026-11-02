@@ -9,13 +9,10 @@ stale_after: 2027-01-13T00:00:00Z
 sources:
   - id: projection
     resource: be/harbor-core/src/main/kotlin/com/acme/harbor/service/ProjectionService.kt
-    title: ProjectionService.kt
   - id: stress
     resource: be/harbor-core/src/main/kotlin/com/acme/harbor/service/StressTestService.kt
-    title: StressTestService.kt
   - id: report
     resource: be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt
-    title: ReportManager.kt
 # --- repo extensions ---
 id: FLOW-session-inputs-recalculation
 contexts: [imports, product1, product2, cover, stress, reports]

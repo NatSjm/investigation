@@ -25,7 +25,7 @@ def main():
     paths = a.paths
     if not paths:
         paths = [rel(repo, f) for d in ('features', 'domain/calculations') for f in walk_files(os.path.join(repo, d), '*.md')
-                 if not re.match(r'^(_template|README|INDEX)\.md$', os.path.basename(f), re.I)]
+                 if not re.match(r'^(_template|README|INDEX|log)\.md$', os.path.basename(f), re.I)]   # index/log: reserved OKF files
     errors = []
 
     for p in paths:
@@ -77,7 +77,7 @@ def main():
     flow_dir = os.path.join(repo, 'flows')
     if os.path.isdir(flow_dir):
         for ff in sorted(os.listdir(flow_dir), key=str.lower):
-            if not ff.lower().endswith('.md') or re.match(r'^(_template|index)\.md$', ff, re.I):
+            if not ff.lower().endswith('.md') or re.match(r'^(_template|index|log)\.md$', ff, re.I):
                 continue
             ft = read_text(os.path.join(flow_dir, ff))
             sm = re.search(r'(?m)^specs:\s*\[(.*?)\]', ft, re.I)

@@ -23,13 +23,15 @@ Consequence: folder `README.md` files are **not allowed** inside the bundle — 
   `process:<ci-job>` for CI. Use `human:` **only** for real human sign-off — trust tiers key off it.
 - Lifecycle: `status: draft|stable|deprecated`; `stale_after` absolute ISO datetime. Feature specs default
   `stale_after` = verified + 90 days; generated concepts = generated + 30 days.
-- Provenance: `sources[]` with `id`, `resource`, `title`, `last_modified`; per-claim footnotes `[^id]`.
+- Provenance: `sources[]` with `id`, `resource` (`title` when it says more than the file name, `last_modified` for a
+  page); per-claim footnotes `[^id]`; only what the body cites, an uncited file in `code_refs`. The footnote block at
+  the end of a concept is written by `scripts/build-index.py` from `sources[]`, never by hand.
   Confluence-migrated content MUST list the page as a source.
 - Our extension keys stay (`id`, `code_refs`, `api`, `events`, `tables`, `calculations`, `jira`, `tests`).
 - `log.md` (root) — lifecycle events only: created, deprecated, superseded, regenerated, verified. Append-only.
 - `log.md` in a folder (`features/<ctx>/`, `domain/calculations/`, `flows/`, `architecture/`) — the change history
-  of that folder's concepts, one line per change (§9 format, newest date first, the line links the concept). A
-  concept carries no history section of its own and never links its folder log.
+  of that folder's concepts, one line per change (§9 format, newest date first, the line links the concept), created
+  with its first line, never empty. A concept carries no history section of its own and never links its folder log.
 
 ## Modes
 ### produce

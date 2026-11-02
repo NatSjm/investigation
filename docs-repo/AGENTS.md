@@ -58,7 +58,8 @@ what matches no line is new work: add the context it belongs to as a subject, it
 - Every concept under `architecture/`, `domain/`, `features/`, `flows/` (cross-context behaviour, `type: Flow`), `generated/` has frontmatter with `type`; folders use
   `index.md` (built by `scripts/build-index.py`), never `README.md`.
 - Provenance: set `generated: { by: copilot/<agent>, at: <ISO> }` on anything you write; cite `sources[]` with
-  `[^id]`; never write `verified.by: human:<id>` yourself; `status: draft` until a person verifies. A business rule
+  `[^id]` (only what the body cites; the footnote block at the end is written by `build-index.py` from `sources[]`,
+  never by hand); never write `verified.by: human:<id>` yourself; `status: draft` until a person verifies. A business rule
   you write ends with its source marker, `(source: code <sources-id>#<symbol>)` or the imported / contract / person /
   spec form (`features/conventions.md`, "Provenance per rule"); so does every Formula step and the Conventions
   paragraph of a calculation (`calculations.instructions.md`, "Provenance per step"); a spec's `api[]` lists only the
@@ -97,7 +98,8 @@ Never after each edit; the `agentStop` hook runs the full set again when you sto
   not fixed. A spec or a calculation also gets `validate-frontmatter.py <file>`.
 - Changed a work-item file: `validate-work-items.py <file>`.
 - One line per changed concept in its folder's `log.md` (`features/<ctx>/`, `domain/calculations/`, `flows/`,
-  `architecture/`; `## YYYY-MM-DD` newest first, `* **[<ID>](<file>)**: <what changed> (<ref>)`). A concept carries
+  `architecture/`; `## YYYY-MM-DD` newest first, `* **[<ID>](<file>)**: <what changed> (<ref>)`; a folder log is
+  created with its first line). A concept carries
   no history section and never links the log. A dated entry in the root `log.md` for lifecycle events only
   (created / deprecated / verified / regenerated).
 - A `stale` line is freshness, not a failure: never move `stale_after` or write `verified` to clear it.

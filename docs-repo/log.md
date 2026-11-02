@@ -1,5 +1,22 @@
 # Update Log
 
+## 2026-11-02
+* **One source list per concept.** The footnote definition lines at the end of a spec or calculation repeated the
+  `sources[]` entries by hand (fifteen files had them, seven did not, ADM-001's named a file its entry did not) and the
+  context pack, which drops the frontmatter, could resolve a `[^id]` only where they existed. `scripts/build-index.py`
+  now writes that block from `sources[]` under `<!-- footnotes: generated from sources[] by scripts/build-index.py -->`,
+  one `[^id]: [title](resource)` line per cited entry (`--check` fails when it is stale, the hook and CI already run
+  it); `okf-validate.py --strict` warns on a hand-written `[^id]:` line and, in a Feature Spec or an Attested
+  Computation, on a `sources[].id` no footnote or source marker cites. `sources[]` holds what the body cites: no
+  `title` that repeats the file name (dropped from every code entry), an uncited file in `code_refs` only (ADM-001's
+  `catalogue` entry dropped, P1-003 and P2-001 now cite their modal and page, `quarterly_rollup` its request and
+  pattern), and `doc-sync` no longer adds an entry per PR (it refreshes `last_modified`; the PR is in the folder log
+  line). The two notes the removed definition lines carried (CLI-001, SES-001: what the imported Meeting-flow page
+  gets wrong) are open questions now. A folder `log.md` is created with its first line: the empty
+  `architecture/log.md` is gone. `validate-frontmatter.py` skips the reserved `log.md` files it had been failing on
+  since the folder logs appeared. Conventions, the features and calculations instructions, the OKF skill and
+  templates, AGENTS.md, CONCEPT, README, the scripts README and the doc-sync, spec-writer and architect agents say so.
+
 ## 2026-10-31
 * **A flow has a prompt.** `/flow-from-specs <name> <spec IDs>` (agent `spec-writer`): one pack with a `--task` per
   spec the flow composes, `flows/_template.md`, Trigger / Participants / Steps from the graph with a node id and

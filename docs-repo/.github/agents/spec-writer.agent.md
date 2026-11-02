@@ -47,8 +47,10 @@ or a free-text feature description.
    `generated: { by: copilot/spec-writer, at: <ISO> }`, `stale_after` +90 days, no `verified`.
 6. Add / update the `docs-map.yml` mapping for every `code_refs` directory.
 7. Run `python3 scripts/validate-frontmatter.py <file>`, `python3 scripts/okf-validate.py --strict`,
-   `python3 scripts/build-index.py`; append a `## <date>` line to the root `log.md` ("created <ID>") and the first
-   line of `features/<ctx>/log.md` (`* **[<ID>](<ID>.md)**: created from <what>`; the spec carries no history).
+   `python3 scripts/build-index.py` (it also writes the footnote block at the end of the spec from `sources[]`; never
+   write `[^id]:` lines yourself); append a `## <date>` line to the root `log.md` ("created <ID>") and the first
+   line of `features/<ctx>/log.md` (`* **[<ID>](<ID>.md)**: created from <what>`; the spec carries no history; the
+   file is created with this line when the context has none).
 
 ## Flow (prompt `flow-from-specs`)
 Behaviour across contexts, windows or processes is a flow under `flows/`, never a rule repeated in two specs

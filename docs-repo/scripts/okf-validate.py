@@ -22,6 +22,7 @@ DEFAULT_EXCLUDE = ['.github', 'scripts', 'ci-examples', 'third-party', 'node_mod
 ACTOR_RX = re.compile(r'^(human:[^\s/]+|process:[^\s/]+|[A-Za-z0-9_.\-]+/[A-Za-z0-9_.\-]+)$', re.I)
 ISO_RX = re.compile(r'^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?(Z|[+\-]\d{2}:\d{2}))?$', re.I)
 LEVELS = ('ERROR', 'warn', 'stale')
+FOOTNOTES_MARK = '<!-- footnotes: generated from sources[] by scripts/build-index.py -->'   # written by build-index.py
 
 
 def frontmatter(text):
@@ -156,16 +157,37 @@ def main():
         if typ.lower() == 'attested computation' and not scalar(fm, 'runtime'):
             findings.append(('warn', r, "Attested Computation without 'runtime' (§10.2)"))
 
-        # footnote labels must match a sources[].id
+        # footnote labels must match a sources[].id (a `[^id]` quoted in a code span or a fenced block is prose)
         source_ids = [m.group(1).strip('"\'').lower() for m in re.finditer(r'(?m)^\s*-\s*(?:\{\s*)?id:\s*([^\s,}]+)', fm)]
+        prose = re.sub(r'`[^`\r\n]*`', '', re.sub(r'(?s)```.*?```', '', text))
         seen = []
-        for m in re.finditer(r'\[\^([^\]]+)\]', text):
+        for m in re.finditer(r'\[\^([^\]]+)\]', prose):
             label = m.group(1)
             if label in seen:
                 continue
             seen.append(label)
             if label.lower() not in source_ids:
                 findings.append(('warn', r, f'footnote [^{label}] names no sources[].id (§5.1)'))
+
+        # repo rule (features/conventions.md, "Business rules"): the footnote block at the end of a concept is written
+        # by build-index.py from sources[]; a definition line outside that block is a hand-kept copy that drifts
+        bm = re.search(r'(?m)^' + re.escape(FOOTNOTES_MARK) + r'[ \t]*\r?$', text)   # at line start: quoted in prose it is not the block
+        block_at = bm.start() if bm else -1
+        for m in re.finditer(r'(?m)^\[\^([^\]\s]+)\]:', text):   # same string as block_at (offsets must agree)
+            if block_at < 0 or m.start() < block_at:
+                findings.append(('warn', r, f'footnote definition [^{m.group(1)}]: written by hand - build-index.py '
+                                            'generates the block from sources[]'))
+
+        # repo rule (same section): in a Feature Spec or an Attested Computation, sources[] holds what the body cites;
+        # a file nobody cites belongs in code_refs
+        if typ.lower() in ('feature spec', 'attested computation'):
+            cited = set(l.lower() for l in re.findall(r'\[\^([^\]\s]+)\](?!:)', prose))
+            cited |= set(m.group(1).split('#')[0].lower()
+                         for m in re.finditer(r'\(source: (?:code|imported) ([^\s)]+)\)', prose))
+            for sid in source_ids:
+                if sid not in cited:
+                    findings.append(('warn', r, f"sources[].id '{sid}' is cited by no footnote or source marker "
+                                                '(repo rule: sources[] holds what the body cites; an uncited file goes to code_refs)'))
 
         # repo rule "Provenance per rule" (features/conventions.md): in a draft Feature Spec no person has verified,
         # every business rule that is neither proposed nor withdrawn ends with a source marker

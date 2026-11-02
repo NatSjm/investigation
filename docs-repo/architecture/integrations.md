@@ -15,7 +15,7 @@ sources:
     title: OpenAPI (backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml)
   - id: topics
     resource: be/harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt
-    title: TOPIC constants of the event/ classes (schemas in kafka-client/src/main/resources, copied to generated/asyncapi/schemas/)
+    title: "const val TOPIC in the companion object of each event/ class (schemas in kafka-client/src/main/resources, published as generated/asyncapi/schemas/, fields tabled in generated/be/events.md)"
 ---
 
 # Integrations map
@@ -96,5 +96,6 @@ path requires header `X-Harbor-Session` (`component/SessionHeaderFilter`, see [S
 | `DailyMovementImportJob` | `0 0 2 * * *` | imports | pulls new files from `file-exchange`, parses into `goods_movement`, emits `movements-loaded` |
 | `MonthlySnapshotJob` | `0 0 3 1 * *` | imports | rolls `goods_movement` up into `movement_monthly` |
 
-[^topics]: `const val TOPIC` in the companion object of each class in `harbor-core/.../event/`; schemas `kafka-client/src/main/resources/{avro,json_<service>}`, published as `generated/asyncapi/schemas/{avro,json_<service>}/` with their fields tabled in `generated/be/events.md`
-[^openapi]: `generated/openapi/backend.yaml` (copy of `backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml`)
+<!-- footnotes: generated from sources[] by scripts/build-index.py -->
+[^openapi]: [OpenAPI (backend/harbor-core/src/main/resources/openapi/openapi_harbor.yaml)](/generated/openapi/backend.yaml)
+[^topics]: const val TOPIC in the companion object of each event/ class (schemas in kafka-client/src/main/resources, published as generated/asyncapi/schemas/, fields tabled in generated/be/events.md) - `be/harbor-core/src/main/kotlin/com/acme/harbor/event/SessionEventsPublisher.kt`

@@ -1,5 +1,8 @@
 # Update Log
 
+## 2026-11-02
+* **[SES-001](SES-001.md)**: Open question added: the imported Meeting-flow page mentions an "export to spreadsheet" step not present in code (the note moved from the removed footnote definition line)
+
 ## 2026-10-15
 * **[SES-001](SES-001.md)**: Spec prefix renamed `MTG` → `SES` (file `MTG-001.md` → `SES-001.md`, rules `BR-MTG-001-n` → `BR-SES-001-n`, dataset `mtg-session-snapshot` → `ses-session-snapshot`); the context folder stays `meetings`
 

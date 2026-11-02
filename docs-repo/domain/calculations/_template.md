@@ -17,8 +17,7 @@ generated: { by: copilot/doc-sync, at: 2026-01-01T00:00:00Z }
 # stale_after: <ISO>
 sources:
   - id: impl
-    resource: <code URL of the file, no line anchor>
-    title: <X>.kt
+    resource: <code URL of the file, no line anchor>   # no title for a code file; build-index.py writes the footnote block at the end
 # --- repo extensions ---
 name: <snake_case_name>
 used_by: [CTX-000]

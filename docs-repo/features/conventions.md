@@ -96,7 +96,15 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
 - Each rule is **one testable MUST / MUST NOT statement**; work items (`acceptance_criteria[].rule`) and Gherkin
   tags (`@BR-<ID>-<n>`) cite the rule, so a rule must not contain two independent assertions.
 - Claims are backed by `sources[]` entries and footnotes whose label equals a `sources[].id` (manager file,
-  controller, imported page).
+  controller, imported page). `sources[]` holds what the body cites and nothing more: one entry per file or page a
+  footnote or source marker names (`id`, `resource`; `title` only when it says more than the file name, as for an
+  imported page; `last_modified` for a page), a file nobody cites goes to `code_refs` only, and a code change never
+  adds an entry (`doc-sync` refreshes `last_modified`; the PR is in the folder log line). The footnote block at the
+  end of the concept is generated: `scripts/build-index.py` writes it from `sources[]` under the marker
+  `<!-- footnotes: generated from sources[] by scripts/build-index.py -->`, one `[^id]: [title](resource)` line per
+  cited entry, so GitHub renders the footnotes and the context pack (which drops the frontmatter) carries them.
+  Never write a `[^id]:` line by hand. `okf-validate.py --strict` warns on an uncited entry in a spec or a
+  calculation and on a hand-written definition line.
 - **Provenance per rule.** Until a person verifies the spec, every rule written from evidence ends with a source
   marker after its footnotes, one per rule: `(source: code <sources-id>#<symbol>)` names the `sources[]` entry of
   the file and the method, function or component inside it whose code or KDoc states the rule (never a line range:
@@ -135,7 +143,8 @@ Open questions. Keep empty sections with "none".
 A spec carries no change history. What changed in the specs of a context, when and why, is one line per change in
 the context folder's `log.md` (`features/<ctx>/log.md`, OKF §9: `## YYYY-MM-DD` headings newest first, then
 `* **[<ID>](<ID>.md)**: <what changed> (<PR, commit or request>)`); `domain/calculations/log.md`, `flows/log.md` and
-`architecture/log.md` do the same for their folders. The log links the spec, the spec never links the log. The root
+`architecture/log.md` do the same for their folders; a folder log appears with its first line, never empty. The log
+links the spec, the spec never links the log. The root
 `log.md` stays lifecycle only (created, deprecated, verified, regenerated). An owner's answer to an open question is
 written in place, on the question's item, with the date and `human:<id>`, and gets a log line.
 

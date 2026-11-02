@@ -24,10 +24,8 @@ stale_after: 2027-01-06T00:00:00Z
 sources:
   - id: impl
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/StressTestCalculator.kt
-    title: StressTestCalculator.kt
   - id: tests
     resource: https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/StressTestCalculatorTest.kt
-    title: StressTestCalculatorTest.kt
 # --- repo extensions ---
 name: stress_test_monthly
 used_by: [STR-001]
@@ -131,5 +129,6 @@ Example 2: `175.00 + (200.00 + 75.00) = 450.00`. Example 3: `−100.00 + 75.00 =
 `months (≤ 60) × scenarios (≤ 10 per session) × dimension values (4)` = at most 2 400 rows per `runStressTest`;
 previous results of the session are deleted and re-inserted in one transaction.
 
-[^impl]: StressTestCalculator.kt (harbor-backend, `core`, layer `utils`)
-[^tests]: StressTestCalculatorTest.kt (harbor-backend, `core` tests, `utils`)
+<!-- footnotes: generated from sources[] by scripts/build-index.py -->
+[^impl]: [StressTestCalculator.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/main/kotlin/com/acme/harbor/utils/StressTestCalculator.kt)
+[^tests]: [StressTestCalculatorTest.kt](https://git.example.com/harbor/harbor-backend/blob/main/harbor-core/src/test/kotlin/com/acme/harbor/utils/StressTestCalculatorTest.kt)

@@ -9,13 +9,10 @@ stale_after: 2027-01-13T00:00:00Z
 sources:
   - id: overview
     resource: fe/src/pages/ClientOverviewPage/ClientOverviewPage.tsx
-    title: ClientOverviewPage.tsx
   - id: layout
     resource: fe/src/components/layout/SessionLayout.tsx
-    title: SessionLayout.tsx
   - id: report
     resource: be/harbor-core/src/main/kotlin/com/acme/harbor/manager/ReportManager.kt
-    title: ReportManager.kt
 # --- repo extensions ---
 id: FLOW-meeting-journey
 contexts: [clients, meetings, product1, product2, market, stress, reports, presentation]
