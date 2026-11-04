@@ -34,7 +34,11 @@ A context name (`product2`), a list of contexts, a Confluence space key (`HARBOR
    - for every unassigned imported page a proposed target (read only its title and first paragraph);
    - for every **candidate spec** (a shaping line the board reads from a spec's Open questions): the proposed ID
      and title, whether it is a spec of its own or fits an existing one (`features/conventions.md`, "Shaping
-     specs"), and the developer who confirms it; the confirmed row goes to the board before its Run 1;
+     specs"), and the developer who confirms it - or the decision to **decline** it when the page only states an
+     intent nobody requests today (point 9 of the same section): then the line is ticked with `declined <date> by
+     human:<id>: stated intent only, no request`, the title goes to the primary spec's `aliases`, and the page is
+     rerun with that decision in the message so the migrator moves it; the confirmed row goes to the board before
+     its Run 1, a declined one leaves the board;
    - which Run 1 items may go to the Copilot coding agent in batch (one issue per context, same prompt) and which
      must stay interactive (every Run 2);
    - blockers: missing `@docs` tags (a manager with no row in `generated/be/docs-tags.md`), prefixes missing in

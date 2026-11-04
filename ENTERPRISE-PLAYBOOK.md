@@ -655,7 +655,10 @@ spec of the context covers leaves a `candidate spec:` line under the primary spe
 built); the board lists it as a shaping decision with the next free number and the run that follows; the lead and a
 developer confirm it (or fold it into an existing spec); `in code`: Run 1 writes it from the code; `not in code`: the
 analyst takes the page as a request (`/analyse-request`, section 12) and `spec-writer` drafts the spec with every rule
-**proposed**; then the page is rerun. The spec takes the next free number either way: the existing specs of the
+**proposed**; then the page is rerun; a candidate nobody requests (the page only states an intent) is declined by
+the lead: the line ticked with `declined <date> by human:<id>: stated intent only, no request`, the title in the
+primary spec's `aliases`, the page moved - no spec, and the board stops listing it. The spec takes the next free
+number either way: the existing specs of the
 context are never renumbered (IDs are never reused, rule IDs are cited by flows, calculations, stories and Gherkin in
 Jira), and a main screen that arrives late is marked by `aliases`, `tags` and the manual block of `index.md`, not by
 `-001` (`features/conventions.md`, "Shaping specs" point 9). A new spec has two origins only: the code (Run 1) and a

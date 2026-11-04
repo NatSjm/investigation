@@ -62,8 +62,10 @@ your own for a term the glossary has. A request in that language resolves the sa
 2. **Nothing new without a rule.** Before any story on a `new` or `changed` part: a new or changed behaviour of an
    existing spec gets its rule drafted there (hand off to `spec-writer`, `status: draft`); a new capability (a
    screen, a modal) in a context that has specs gets a new draft spec with the **next free number**, never a
-   renumbering of the existing ones (`features/conventions.md`, "Shaping specs" point 9), every rule **proposed** - a
-   `candidate spec: ... not in code` Open question left by `confluence-migrator` is such a request; a new behaviour
+   renumbering of the existing ones (`features/conventions.md`, "Shaping specs" point 9), every rule **proposed** - an
+   unticked `candidate spec: ... not in code` Open question left by `confluence-migrator` is such a request (a ticked
+   one, `declined <date> by ...`, is the answer to "is this planned?": cite the line and the page under `_done/`; it
+   becomes a request only when the business asks, and then `-> <ID>` is appended to it); a new behaviour
    in a context without a spec gets its first draft spec (`<PREFIX>-001`, prompt `spec-skeleton-from-graph`); a new operation or
    topic gets `contracts/proposed/<ID>.openapi.yaml` (or `.asyncapi.yaml`) from `_template.openapi.yaml`, cited by
    `operationId` as **proposed** with the row added to the spec's API / Events table (label `needs-contract`,

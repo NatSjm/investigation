@@ -2331,3 +2331,49 @@ folder logs appeared in section 53.
 
 Nothing in `HANDBOOK.md`, `GUIDE.md` or the other root guides changes: they name `build-index.py` without describing
 its output.
+
+## 60. A declined candidate is a ticked line (investigation commits after `3436192`, 2026-11-04)
+
+A `candidate spec: ... not in code` line the migrator leaves had two outcomes - Run 1 when the code has the capability,
+the analyst's request with proposed rules when it does not - and none for the common third case: an imported page that
+only states an intent ("will be implemented later", two sentences) that nobody requests today. Left unticked, such a
+line kept the page out of `_done/`, counted as a shaping decision in `migration/*.md` and held the context from "ready
+for the analyst" indefinitely; a spec drafted from it would have been invented content, `draft` forever. Now the lead,
+with a developer or the product owner, **declines** it: the line is ticked with `declined <date> by human:<id>: stated
+intent only, no request`, the candidate's title goes to the primary spec's `aliases` (the catalogue routes a question
+about the capability to that spec, whose Open questions carry the line in every context pack - one line, counted by no
+report: the coverage matrix and the status script match unticked items only), and the page is rerun with the decision
+in the message so the migrator moves it `--into` the primary spec; the exact wording stays one hop away under `_done/`.
+The analyst answers "is this planned?" from the line and cites it; when the business asks later it is a request as for
+any "not in code" candidate, the spec takes the next free number, and `-> <ID>` is appended to the ticked line, which
+is never deleted. The migrator never declines on its own: the decision travels in the message it is given.
+
+### 60.1 Docs repository: files to copy or re-copy whole
+
+| File | Why |
+|---|---|
+| `features/conventions.md` | "Shaping specs" point 9: the third outcome **declined** (the ticked line's form, the alias, the page move, the later request) |
+| `.github/agents/confluence-migrator.agent.md` | step 2 "no spec covers the capability": the declined case; step 6: an unticked candidate holds the page, a ticked one does not; Never: no declining on its own |
+| `.github/agents/migration-lead.agent.md` | the candidate bullet: confirm or decline, what each does to the board |
+| `.github/agents/analyst.agent.md` | step 2: an unticked candidate is a request, a ticked one is the answer to "is this planned?" |
+| `.github/skills/spec-lifecycle/SKILL.md`, `.github/skills/spec-lifecycle/references/run-checklist.md` | the declined candidate; "no unticked candidate is pending" |
+| `confluence-import/README.md` | Target step: the declined candidate and its Known state cell; a page in place may also wait for the lead's decision |
+| `scripts/migration-status.py` | prose only (docstring, comment, the Order-of-work sentence); the regex already matched unticked lines only - then rerun it for your scopes |
+| `CONCEPT.md` | Run 2 paragraph: the declined candidate |
+
+### 60.2 Your own candidates (one pass)
+
+1. For every unticked `candidate spec: ... not in code` line, ask the lead and the product owner the two questions:
+   does anyone commit to building it today, and does the page give enough to state one rule without guessing? Yes to
+   both: `/analyse-request` with the page as the request text, as before. No to either: tick the line and append
+   `declined <date> by human:<id>: stated intent only, no request`.
+2. Put each declined candidate's title into the primary spec's `aliases`, then rerun the migrator on the page with
+   the decision in the message ("candidate <title> declined"); it moves the page `--into` the primary spec.
+3. `python3 scripts/build-index.py`, `python3 scripts/okf-validate.py --strict`, `python3 scripts/migration-status.py
+   --scope all`: the board no longer lists the candidate.
+
+### 60.3 Root guides
+
+`ENTERPRISE-PLAYBOOK.md` (Run 2 paragraph) and `MIGRATION-RUNBOOK.md` (the migrator bullet) carry the declined
+outcome in one sentence each; `HANDBOOK.md`, `GUIDE.md` and the other root guides do not describe the candidate
+outcomes and are unchanged.

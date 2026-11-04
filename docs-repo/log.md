@@ -1,5 +1,19 @@
 # Update Log
 
+## 2026-11-04
+* **A declined candidate is a ticked line.** A `candidate spec: ... not in code` line had two outcomes - Run 1 or the
+  analyst's request - and none for a page that only states an intent ("will be implemented later") nobody requests:
+  left unticked it kept the page out of `_done/`, counted as a shaping decision in `migration/*.md` and held the
+  context from "ready for the analyst" indefinitely. Now the lead, with a developer or the product owner, declines
+  it: the line is ticked with `declined <date> by human:<id>: stated intent only, no request`, the title goes to the
+  primary spec's `aliases` (the catalogue routes a question about the capability to the spec, whose Open questions
+  carry the line in every pack - one line, counted by no report), and the page is rerun with the decision in the
+  message so the migrator moves it `--into` the primary spec. The analyst answers "is this planned?" from the line;
+  a request that comes later appends `-> <ID>` to it. `features/conventions.md` point 9 (third outcome), the migrator
+  (step 2 case, step 6, a Never line), the migration lead, the analyst, the lifecycle skill and run checklist, the
+  import README, `migration-status.py` prose (the regex already matched unticked lines only), CONCEPT; `migration/*.md`
+  regenerated for the new Order-of-work sentence.
+
 ## 2026-11-02
 * **One source list per concept.** The footnote definition lines at the end of a spec or calculation repeated the
   `sources[]` entries by hand (fifteen files had them, seven did not, ADM-001's named a file its entry did not) and the

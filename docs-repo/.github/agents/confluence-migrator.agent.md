@@ -72,7 +72,11 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
      (step 6) and report the line. The candidate gets the next free number of the context, never a renumbering of
      the specs it has (`features/conventions.md`, "Shaping specs" point 9). After the candidate's Run 1 (in code)
      or the analyst's request with proposed rules (not in code: `/analyse-request` with the page as the request
-     text) the page is rerun and only the new facts are merged.
+     text) the page is rerun and only the new facts are merged. When the message you were given says the candidate
+     is **declined** (the page only states an intent nobody requests today; `features/conventions.md`, "Shaping
+     specs" point 9), tick the line and append `declined <date> by human:<id>: stated intent only, no request`, put
+     the candidate's title into the primary spec's `aliases`, merge nothing from those sentences, and move the page
+     (step 6, `--into` the primary spec). The decision is the lead's, carried by the message - never yours.
    - A context the page describes has **no spec yet** -> merge what has a target, record the rest as an Open
      question in the primary spec ("imported <page> states ... for <context>, no spec yet") and leave the page out
      of `_done/` (step 6) so the board keeps listing it; it is rerun after that context's Run 1, and only the new
@@ -93,7 +97,7 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
    per spec, flow, calculation or architecture file the page went into; `--status obsolete --reason "<why>"` for an
    obsolete page). The script puts the file under `confluence-import/<space>/_done/<section>/` from the page's
    `section:` header, writes `status`, `migrated` and `superseded_by`, and re-points the image and page links; never
-   move the file or edit those header lines by hand. A page is processed once: it moves when every spec it touches has received its facts, not per context, and only
+   move the file or edit those header lines by hand. A page is processed once: it moves when every spec it touches has received its facts, not per context (an unticked candidate holds it; a ticked one - declined, or written and merged - does not), and only
    by the last agent that takes it: when you hand the rest to `architect` or `calc-auditor`, that agent moves it;
    when `architect` or `calc-auditor` handed the feature part to you, you move it.
 7. `python3 scripts/okf-validate.py --strict`, `python3 scripts/build-index.py`; log the migration
@@ -106,6 +110,7 @@ copy in `sources[]` are the targets, the diff against the copy is the work, and 
   analyst's request with proposed rules; a page is merged into it afterwards. What no spec covers is a
   `candidate spec:` Open question, never a file, whether or not the code has the capability.
 - Renumber specs. A candidate takes the next free number; the existing specs of the context keep theirs.
+- Decline a candidate on your own. Ticking the line needs the lead's decision in the message you were given.
 
 ## Output
 Files only; chat: classification + target path per page, <= 1 line each.

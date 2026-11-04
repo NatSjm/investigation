@@ -79,7 +79,7 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
    has specs keeps them, and a main screen that arrives as `<CTX>-004` is marked as the main screen by its
    `aliases` ("main screen", the Confluence title), its `tags` and its place in the manual block of `index.md`
    (point 1), not by its number. The candidate line says where the capability stands, and that decides who
-   writes the spec:
+   writes the spec - or that none is written:
    - **in code** (the catalogue or the graph has a route, page or endpoint for it): Run 1,
      `/spec-skeleton-from-graph <ctx> <next free ID>`, then the page is rerun and only the new facts are merged.
    - **not in code** (the page describes behaviour still to be built): a request, not an imported merge.
@@ -88,6 +88,18 @@ Decisions taken before Run 1 of a context, by the migration lead with a develope
      operation under `contracts/proposed/`, the stories labelled `needs-spec-review`; then the page is rerun so
      the migrator ticks the candidate, merges what is left and moves the page; `doc-sync` drops the markers as
      the code lands.
+   - **declined** (the page only states an intent - "will be implemented later" - and nobody asks for the
+     capability today): neither a spec nor an open decision. The lead, with a developer or the product owner,
+     ticks the line and appends the disposition -
+     `- [x] candidate spec: <title> (imported conf-<slug>; owner: migration lead; not in code) - <what the page describes> - declined <date> by human:<id>: stated intent only, no request` -
+     puts `<title>` into the primary spec's `aliases` (the catalogue then routes a question about the capability
+     to that spec, whose Open questions carry the line in every context pack: one line, counted by no report), and
+     the page is rerun with that decision in the message so the migrator moves it `--into` the primary spec - the
+     exact wording stays one hop away under `_done/`. A ticked candidate is settled: the board stops listing it and
+     it does not keep the context from "ready for the analyst". The analyst answers "is this planned?" from the
+     line. When the business asks for the capability later it is a request (`/analyse-request`, as "not in code"),
+     the spec takes the next free number of that day, and `-> <ID>` is appended to the ticked line, which is never
+     deleted.
 
 ## Business rules
 

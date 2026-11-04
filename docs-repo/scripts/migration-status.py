@@ -12,7 +12,8 @@ ID of the context; otherwise it is listed as unassigned). A page whose title rea
 the contexts' runs. A `candidate spec:` line under a spec's Open questions (left by the migrator when a page describes a
 capability no spec covers) is listed as a shaping decision of the context, with the next free spec number (never a
 renumbering) and the run that follows: Run 1 when the line says `in code`, the analyst's request with proposed rules
-(`/analyse-request`) when it says `not in code`.
+(`/analyse-request`) when it says `not in code`. A ticked line (`- [x] candidate spec: ...`: declined by the lead, or
+written and merged) is settled and not listed.
 Examples:
   python3 scripts/migration-status.py --scope all
   python3 scripts/migration-status.py --scope product2 --print"""
@@ -86,7 +87,7 @@ def main():
         sid = get_val(fm, 'id') or os.path.splitext(os.path.basename(f))[0]
         ctx = get_val(fm, 'context') or context_of_spec_id(sid)
         open_q = 0
-        candidates = []   # "candidate spec: <title> (...)" lines the migrator leaves when a page describes a capability no spec covers
+        candidates = []   # unticked "candidate spec: <title> (...)" lines the migrator leaves when a page describes a capability no spec covers (a ticked one is settled: declined, or written and merged)
         om = re.search(r'(?s)## Open questions\r?\n(.*?)(\r?\n## |\Z)', t, re.I)
         if om:
             open_q = len(re.findall(r'(?m)^\s*- \[ \]', om.group(1)))
@@ -290,7 +291,7 @@ def main():
         for p in unassigned:
             sb.append('- ' + code(p['File']) + f" (last_modified {p['Modified']}, {p['Kind']})\n")
         sb.append('\n')
-    sb.append('Order of work: Run 1 for every context without a spec first (code is the truth, pages are merged into a skeleton), then Run 2 page by page, Run 3 as the handoff after each spec, Run 4 by the owner. A candidate spec a page left behind is a shaping decision before its Run 1 (in code) or its request to the analyst (not in code), never a spec written from the page and never a renumbering of the context\'s specs. Architecture pages wait only for the integration map refresh, not for the specs. One run, one review, one commit.\n\n')
+    sb.append('Order of work: Run 1 for every context without a spec first (code is the truth, pages are merged into a skeleton), then Run 2 page by page, Run 3 as the handoff after each spec, Run 4 by the owner. A candidate spec a page left behind is a shaping decision before its Run 1 (in code) or its request to the analyst (not in code), never a spec written from the page and never a renumbering of the context\'s specs; a candidate the lead declines (an intent nobody requests) is ticked with the disposition and leaves the board. Architecture pages wait only for the integration map refresh, not for the specs. One run, one review, one commit.\n\n')
     sb.extend(detail)
 
     text = ''.join(sb)

@@ -138,7 +138,13 @@ for a page, quote its note in the request, for example
    `in code` or `not in code`, the board lists it as a shaping decision, and the spec is written before the page is
    rerun: from the code (Run 1) when the code has the capability, by the analyst with proposed rules
    (`/analyse-request`, the page as the request text) when the page describes behaviour still to be built. The
-   candidate takes the next free number; the existing specs of the context keep theirs either way.
+   candidate takes the next free number; the existing specs of the context keep theirs either way. A candidate
+   nobody asks for (the page states an intent - "later", "planned" - and no owner requests it today) is
+   **declined** by the lead: the line is ticked with `declined <date> by human:<id>: stated intent only, no request`,
+   the title goes to the primary spec's `aliases`, and the page is rerun with that decision in the message so the
+   migrator moves it `--into` the primary spec (Known state cell, for example, `migrated 2026-11-04 into P1-001,
+   candidate <title> declined`). The analyst answers "is this planned?" from that line; a request, if it comes,
+   starts there and appends `-> <ID>` to it.
 
 **Examples of finished cells**
 
@@ -168,7 +174,7 @@ your triage note is replaced at that moment (the script prints the row). Replace
 table you update the cell yourself.
 
 **A page that changes while still in place.** A page not yet under `_done/` (a `not in code` candidate waiting for
-its spec, a context without a skeleton) is rewritten by the next import with the new text and `last_modified`; its
+its spec or for the lead's decision, a context without a skeleton) is rewritten by the next import with the new text and `last_modified`; its
 Known state cell stays. Rerun the step the page is in: `/analyse-request` under the same slug when the page is the
 text of a request (the analyst rewrites the analysis in place, `spec-writer` adjusts the proposed rules, a rule the
 page no longer asks for is withdrawn, never deleted), the migrator when the page waits for a Run 1. A page already

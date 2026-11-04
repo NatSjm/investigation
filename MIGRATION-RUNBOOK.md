@@ -94,7 +94,10 @@ questions listed, `docs-map.yml` updated. For every `@docs <calculation>` tag wi
   shaping decision with the next free number (the existing specs keep theirs) and the run that follows; the lead and
   a developer confirm it; `in code`: Run 1 (step 4) writes it from the code; `not in code` (a screen still to be
   built, written in Confluence first): `/analyse-request` with the page as the request text, `spec-writer` drafts the
-  spec with every rule **proposed**; then the page is rerun.
+  spec with every rule **proposed**; then the page is rerun. A candidate nobody requests (the page only states an
+  intent) is declined by the lead: the line ticked with `declined <date> by human:<id>: stated intent only, no
+  request`, the title in the primary spec's `aliases`, the page rerun with that decision and moved; no spec, and the
+  board stops listing it.
 - A page that changes in Confluence while it still waits in place is rewritten by the next import; rerun the step it
   is in - `/analyse-request` under the same slug for a `not in code` candidate (analysis rewritten in place, proposed
   rules adjusted, a rule no longer asked for withdrawn, never deleted), the migrator otherwise. A page already under
